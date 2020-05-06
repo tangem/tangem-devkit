@@ -18,7 +18,7 @@ rootProject.allprojects {
   repositories {
     google()
     jcenter()
-    maven { url 'https://jitpack.io' }
+    maven {url 'https://jitpack.io'}
   }
 }
 
@@ -38,7 +38,6 @@ android {
   lintOptions {
     disable 'InvalidPackage'
   }
-
 }
 
 dependencies {
