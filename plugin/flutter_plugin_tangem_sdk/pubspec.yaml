@@ -1,7 +1,7 @@
 name: tangemsdk
 description: A new Flutter plugin for the TangemSdk.
-version: 0.0.1
-author:
+version: 0.1.0
+author: Anton Zhilenkov
 homepage:
 
 environment:

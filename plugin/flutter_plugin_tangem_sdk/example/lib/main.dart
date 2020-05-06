@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:developer' as dev;
 
 import 'package:flutter/services.dart';
 import 'package:tangemsdk/tangemsdk.dart';
@@ -45,10 +46,20 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Flutter: TangemSDK plugin'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: OutlineButton(
+          child: Text('Scan card'),
+          onPressed: () {
+            final callback = Callback();
+            callback.onSuccess = () {
+              dev.log("onSuccess");
+            };
+            callback.onError = () {
+              dev.log("onError");
+            };
+            TangemSdk.scanCard(callback);
+          },
         ),
       ),
     );
