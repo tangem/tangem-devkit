@@ -1,6 +1,6 @@
 # devkit
 
-Development kit for Tangem
+A new Flutter application.
 
 ## Getting Started
 
