@@ -1,4 +1,4 @@
-name: devkit
+name: DevKit
 description: A new Flutter application.
 
 # The following defines the version and build number for your application.
@@ -11,7 +11,10 @@ description: A new Flutter application.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+
+# andriod - flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
+# ios     - flutter build ios (then archive from Xcode)
+version: 0.0.1+1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -26,12 +29,36 @@ dependencies:
     path: plugin/flutter_plugin_tangem_sdk
   cupertino_icons: ^0.1.2
 
+  bloc: ^4.0.0
+  flutter_bloc: ^4.0.0
+  rxdart: ^0.24.0
+  async: ^2.4.0
+  flutter_simple_dependency_injection: ^1.0.2
+  prefs: ^3.2.0
+  fluttertoast: ^4.0.1
+  flutter_launcher_icons: ^0.7.5
+  logging: ^0.11.4
+  share: ^0.6.4+1
+
+
+flutter_icons:
+  # How to update icons? Launch in terminal - flutter pub run flutter_launcher_icons:main
+  image_path_android: "assets/icons/ic_launcher.png"
+  image_path_ios: "assets/icons/ic_launcher.jpg"
+  android: true
+  ios: true
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/icons/ic_launcher.png"
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 
-# For information on the generic Dart part of this file, see the
+# For informaadbtion on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
@@ -52,6 +79,10 @@ flutter:
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
+  assets:
+    - assets/
+    - assets/icons/
+
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
