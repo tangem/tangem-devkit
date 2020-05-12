@@ -1,12 +1,16 @@
 package com.tangem.flutter.plugin.tangemsdk
 
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.NonNull
 import androidx.lifecycle.Lifecycle
 import com.tangem.Config
 import com.tangem.TangemSdk
+import com.tangem.common.CompletionResult
 import com.tangem.tangem_sdk_new.DefaultSessionViewDelegate
 import com.tangem.tangem_sdk_new.NfcLifecycleObserver
 import com.tangem.tangem_sdk_new.TerminalKeysStorage
+import com.tangem.tangem_sdk_new.converter.ResponseConverter
 import com.tangem.tangem_sdk_new.nfc.NfcManager
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -20,6 +24,9 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 
 /** TangemsdkPlugin */
 public class TangemsdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
+
+  private val handler = Handler(Looper.getMainLooper())
+  private val converter = ResponseConverter()
   private lateinit var sdk: TangemSdk
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -39,13 +46,21 @@ public class TangemsdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   private fun scanCard(result: Result) {
-
     try {
-      sdk.scanCard(null) {
-        result.success("card scanned")
-      }
+      sdk.scanCard { handleResult(result, it) }
     } catch (ex: Exception) {
       result.error("Scan card error", ex.toString(), ex)
+    }
+  }
+
+  private fun handleResult(result: Result, completionResult: CompletionResult<*>) {
+    when (completionResult) {
+      is CompletionResult.Success -> {
+        handler.post { result.success(converter.gson.toJson(completionResult.data)) }
+      }
+      is CompletionResult.Failure -> {
+        handler.post { result.success(converter.gson.toJson(completionResult.error)) }
+      }
     }
   }
 

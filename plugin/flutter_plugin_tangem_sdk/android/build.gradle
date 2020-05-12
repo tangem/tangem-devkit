@@ -43,8 +43,9 @@ android {
 dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-  implementation 'com.github.tangem.tangem-sdk-android:tangem-core:0.6.0'
-  implementation 'com.github.tangem.tangem-sdk-android:tangem-sdk:0.6.0'
+  implementation 'com.github.tangem.tangem-sdk-android:tangem-core:0.7.0'
+  implementation 'com.github.tangem.tangem-sdk-android:tangem-sdk:0.7.0'
+  implementation 'com.google.code.gson:gson:2.8.6'
   implementation 'androidx.appcompat:appcompat:1.1.0'
   implementation 'androidx.core:core-ktx:1.2.0'
 }

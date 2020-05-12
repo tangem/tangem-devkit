@@ -51,13 +51,7 @@ class _MyAppState extends State<MyApp> {
         body: OutlineButton(
           child: Text('Scan card'),
           onPressed: () {
-            final callback = Callback();
-            callback.onSuccess = () {
-              dev.log("onSuccess");
-            };
-            callback.onError = () {
-              dev.log("onError");
-            };
+            final callback = Callback((result) => dev.log("onSuccess"), (error) => dev.log("onError"));
             TangemSdk.scanCard(callback);
           },
         ),

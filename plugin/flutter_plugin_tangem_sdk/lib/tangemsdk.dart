@@ -11,14 +11,18 @@ class TangemSdk {
   }
 
   static Future scanCard(Callback callback) async {
-    return _channel.invokeMethod('scanCard');
+    final result = await _channel.invokeMethod('scanCard');
+    callback.onError(result);
+    callback.onSuccess(result);
   }
 }
 
-typedef Success = Function();
-typedef Error = Function();
+typedef Success = Function(dynamic error);
+typedef Error = Function(dynamic response);
 
 class Callback {
-  Success onSuccess;
-  Error onError;
+  final Success onSuccess;
+  final Error onError;
+
+  Callback(this.onSuccess, this.onError);
 }
