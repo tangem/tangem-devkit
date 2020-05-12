@@ -1,3 +1,4 @@
+import 'package:devkit/app/resources/ids.dart';
 import 'package:devkit/app/resources/strings.dart';
 import 'package:devkit/app/ui/widgets/semi.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class MainBody extends StatelessWidget {
     return ListView.separated(
       itemBuilder: (context, index) {
         final actionName = S.actionList[index];
-        return ListTile(
+        return ListTile(key: localKey(actionName),
           title: Text(actionName),
           subtitle: DescriptionWidget(name: "Description of...",),
           onTap: () => Navigator.of(context).pushNamed("/${actionName.toLowerCase()}"),
