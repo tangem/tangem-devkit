@@ -2,7 +2,7 @@ import 'package:devkit/app/resources/strings.dart';
 import 'package:devkit/app/ui/widgets/text.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:tangemsdk/tangemsdk.dart';
+import 'package:tangem_sdk/tangem_sdk.dart';
 
 class ScanScreen extends StatelessWidget {
   @override

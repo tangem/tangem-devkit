@@ -1,5 +1,5 @@
 import 'package:devkit/commons/utils/logger.dart';
-import 'package:tangemsdk/tangemsdk.dart';
+import 'package:tangem_sdk/tangem_sdk.dart';
 
 Callback logCallback(dynamic from) {
   return Callback(

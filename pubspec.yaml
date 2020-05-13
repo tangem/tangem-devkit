@@ -25,8 +25,8 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  tangemsdk:
-    path: plugin/flutter_plugin_tangem_sdk
+  tangem_sdk:
+    path: plugin/flutter_plugin_tangem_sdk2
   cupertino_icons: ^0.1.2
 
   bloc: ^4.0.0
