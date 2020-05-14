@@ -1,0 +1,67 @@
+PODS:
+  - Flutter (1.0.0)
+  - fluttertoast (0.0.2):
+    - Flutter
+  - KeychainSwift (19.0.0)
+  - secp256k1.swift (0.1.4)
+  - share (0.0.1):
+    - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
+  - shared_preferences_macos (0.0.1):
+    - Flutter
+  - shared_preferences_web (0.0.1):
+    - Flutter
+  - tangem_sdk (0.0.1):
+    - Flutter
+    - TangemSdk (~> 2.0.2)
+  - TangemSdk (2.0.2):
+    - KeychainSwift
+    - secp256k1.swift
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - share (from `.symlinks/plugins/share/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
+  - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
+  - tangem_sdk (from `.symlinks/plugins/tangem_sdk/ios`)
+
+SPEC REPOS:
+  trunk:
+    - KeychainSwift
+    - secp256k1.swift
+    - TangemSdk
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
+  share:
+    :path: ".symlinks/plugins/share/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
+  shared_preferences_macos:
+    :path: ".symlinks/plugins/shared_preferences_macos/ios"
+  shared_preferences_web:
+    :path: ".symlinks/plugins/shared_preferences_web/ios"
+  tangem_sdk:
+    :path: ".symlinks/plugins/tangem_sdk/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
+  KeychainSwift: a06190cf933ad46b1e0abc3d77d29c06331715c7
+  secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
+  share: 0b2c3e82132f5888bccca3351c504d0003b3b410
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
+  shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
+  tangem_sdk: 7c9d06b95f9499b723da0b318d64ac4fa3433d41
+  TangemSdk: 4bd155490c8e5c52b8739f9f692d36c8b2342bc3
+
+PODFILE CHECKSUM: 6036a20cc381da37badeb0bb09af517f5cf742d8
+
+COCOAPODS: 1.9.1
