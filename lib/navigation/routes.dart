@@ -1,4 +1,5 @@
 import 'package:devkit/app/ui/screen/card_action/scan_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/sign_screen.dart';
 import 'package:devkit/app/ui/screen/main_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,8 @@ class Routes {
         return PageRouteBuilder(pageBuilder: (_, _1, _2) => MainScreen());
       case SCAN:
         return PageRouteBuilder(pageBuilder: (_, _1, _2) => ScanScreen());
+      case SIGN:
+        return PageRouteBuilder(pageBuilder: (_, _1, _2) => SignScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

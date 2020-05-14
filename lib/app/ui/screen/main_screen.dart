@@ -39,7 +39,7 @@ class MainBody extends StatelessWidget {
     return ListView.separated(
       itemBuilder: (context, index) {
         final actionName = S.actionList[index];
-        return ListTile(key: localKey(actionName),
+        return ListTile(key: stringKey(actionName),
           title: Text(actionName),
           subtitle: DescriptionWidget(name: "Description of...",),
           onTap: () => Navigator.of(context).pushNamed("/${actionName.toLowerCase()}"),

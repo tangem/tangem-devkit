@@ -12,6 +12,8 @@ class App {
   static DeviceMetrics metrics;
   static PlatformType platformType;
 
+  static bool showDescription = false;
+
   static forceClose() {
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }

@@ -1,6 +1,9 @@
 
 import 'package:flutter/cupertino.dart';
 
-LocalKey localKey(String id) {
-  return ValueKey<String>(id);
+LocalKey stringKey(String id) => ValueKey<String>(id);
+
+class FieldKey {
+  static final cid = stringKey("cid");
+  static final dataForHashing = stringKey("dataForHashing");
 }
