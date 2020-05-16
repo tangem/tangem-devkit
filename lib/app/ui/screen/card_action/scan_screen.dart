@@ -1,5 +1,5 @@
 import 'package:devkit/app/resources/localization.dart';
-import 'package:devkit/app/ui/widgets/text.dart';
+import 'package:devkit/app/ui/widgets/text_widget.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
@@ -38,7 +38,12 @@ class _ScanFrameState extends State<ScanFrame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(Transl.of(context).screen_scan)),
-      body: CenterText(text: Transl.of(context).how_to_scan),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: TextWidget.center(Transl.of(context).how_to_scan),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
         onPressed: _scanAction,

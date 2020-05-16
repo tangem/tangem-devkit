@@ -1,6 +1,6 @@
 import 'package:devkit/app/resources/keys.dart';
 import 'package:devkit/app/resources/localization.dart';
-import 'package:devkit/app/ui/widgets/semi.dart';
+import 'package:devkit/app/ui/widgets/semi_widget.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 

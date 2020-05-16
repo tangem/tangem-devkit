@@ -1,18 +1,16 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'exp_utils.dart';
+import 'package:rxdart/rxdart.dart';
 
 class App {
   static const isDebug = !kReleaseMode;
   static DeviceMetrics metrics;
   static PlatformType platformType;
 
-  static bool showDescription = false;
+  static Stream<bool> streamShowDescription = BehaviorSubject<bool>()..add(true)..stream;
 
   static forceClose() {
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
@@ -86,6 +84,10 @@ class AppDimen {
   static const double toolbarHeight = 55;
   static const double toolbarBorderRadius = 16;
 
+  static const itemBaseHeight = 55.0;
+  static const itemTextSize = 16.0;
+  static const itemDescTextSize = 12;
+
   // Если это виджет созданный внутри проекта, то функцию convert(double) использовать
   // внутри виджета для конвертации собственных, а не в входных параметрах. Для всех остальных
   // виджетов, включая системные конвертацию применять на этапе создания виджета
@@ -96,6 +98,8 @@ class AppColor {
   static final Color primaryColor = Colors.blueGrey;
   static final Color primaryDarkColor = Colors.blueGrey[700];
   static final Color accentColor = Colors.blueGrey[700];
+
+  static final textHintDescription = Colors.grey;
 }
 
 class AppDimenEdgeInsets extends EdgeInsets {
