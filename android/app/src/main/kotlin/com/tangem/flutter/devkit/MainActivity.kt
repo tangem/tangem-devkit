@@ -1,4 +1,4 @@
-package com.tangem.devkit
+package com.tangem.flutter.devkit
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
