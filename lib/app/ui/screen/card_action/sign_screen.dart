@@ -1,8 +1,8 @@
 import 'package:devkit/app/domain/actions_bloc/sign/sign_bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/sign/sign_events.dart';
 import 'package:devkit/app/domain/actions_bloc/sign/sign_state.dart';
-import 'package:devkit/app/resources/ids.dart';
-import 'package:devkit/app/resources/strings.dart';
+import 'package:devkit/app/resources/keys.dart';
+import 'package:devkit/app/resources/localization.dart';
 import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class SignFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.screen_sign)),
+      appBar: AppBar(title: Text(Transl.of(context).screen_sign)),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0),
         child: BlocProvider(
@@ -69,6 +69,7 @@ class _SignSegmentState extends State<SignSegment> {
 
   @override
   Widget build(BuildContext context) {
+    final transl = Transl.of(context);
     return BlocBuilder<SignBloc, SignState>(
       builder: (context, state) {
         return Form(
@@ -77,15 +78,15 @@ class _SignSegmentState extends State<SignSegment> {
               BaseInputField(
                 FieldKey.cid,
                 _cidController,
-                S.cidTitle,
-                S.cidInfo,
+                transl.card_id,
+                transl.desc_card_id,
                 App.showDescription,
               ),
               BaseInputField(
                 FieldKey.dataForHashing,
                 _dataController,
-                S.dataUsedForHashingTitle,
-                S.dataUsedForHashingTitleInfo,
+                transl.data_for_hashing,
+                transl.desc_data_for_hashing,
                 App.showDescription,
               ),
             ],
