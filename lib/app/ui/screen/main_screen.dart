@@ -1,6 +1,8 @@
 import 'package:devkit/app/resources/keys.dart';
 import 'package:devkit/app/resources/localization.dart';
+import 'package:devkit/app/ui/widgets/item_widget.dart';
 import 'package:devkit/app/ui/widgets/semi_widget.dart';
+import 'package:devkit/app/ui/widgets/text_widget.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 
@@ -60,12 +62,10 @@ class MainBody extends StatelessWidget {
       itemBuilder: (context, index) {
         final pair = _transKeys[index];
 
-        return ListTile(
+        return ListItemWidget(
           key: stringKey(pair.b),
-          title: Text(trans.get(pair.a)),
-          subtitle: DescriptionWidget(
-            name: trans.getDesc(pair.a),
-          ),
+          item: TextWidget(trans.get(pair.a), fontSize: 18),
+          description: DescriptionWidget(trans.getDesc(pair.a)),
           onTap: () => Navigator.of(context).pushNamed("/${pair.b.toLowerCase()}"),
         );
       },
@@ -75,18 +75,31 @@ class MainBody extends StatelessWidget {
   }
 }
 
-class DescriptionWidget extends StatelessWidget {
-  final String name;
-  final String description;
+class ListItemWidget extends StatelessWidget {
+  final Widget item;
+  final Widget description;
+  final Function onTap;
 
-  const DescriptionWidget({Key key, this.name, this.description}) : super(key: key);
+  const ListItemWidget({Key key, @required this.item, @required this.description, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Container(
-        child: Align(alignment: Alignment.centerLeft, child: Text(name)),
+    return InkWell(
+      onTap: onTap,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: 50),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Align(alignment: Alignment.centerLeft, child: item),
+              description,
+            ],
+          ),
+        ),
       ),
     );
   }

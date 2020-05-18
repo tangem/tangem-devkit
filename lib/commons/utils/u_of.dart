@@ -1,4 +1,3 @@
-
 int intOf(dynamic from, {int def}) {
   if (from == null) return def;
   if (from is int) return from;

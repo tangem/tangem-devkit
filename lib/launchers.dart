@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:devkit/commons/global/show_description.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,6 +12,8 @@ class AppLauncher {
   launch() async {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: AppColor.primaryDarkColor));
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    DescriptionState.init(false);
   }
 
   _launchApplication(AppLauncher initializer) {

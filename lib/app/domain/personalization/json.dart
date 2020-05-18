@@ -1,6 +1,4 @@
-
 class PersonalizationJson {
-
   static const defaultJson = '''
 {
   "CVC": "000",
@@ -132,4 +130,3 @@ class PersonalizationJson {
 }
   ''';
 }
-

@@ -3,14 +3,11 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rxdart/rxdart.dart';
 
 class App {
   static const isDebug = !kReleaseMode;
   static DeviceMetrics metrics;
   static PlatformType platformType;
-
-  static Stream<bool> streamShowDescription = BehaviorSubject<bool>()..add(true)..stream;
 
   static forceClose() {
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');

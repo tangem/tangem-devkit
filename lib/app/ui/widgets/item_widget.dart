@@ -1,5 +1,5 @@
-import 'package:devkit/app/ui/widgets/semi_widget.dart';
 import 'package:devkit/app/ui/widgets/text_widget.dart';
+import 'package:devkit/commons/global/show_description.dart';
 import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
 
@@ -43,30 +43,29 @@ class ItemWidget extends StatelessWidget {
         ),
         style: TextStyle(fontSize: AppDimen.itemTextSize),
       ),
-      description: DescriptionWidget(
-        description: description,
-        isDescriptionEnabled: App.streamShowDescription,
-      ),
+      description: DescriptionWidget(description),
     );
   }
 }
 
 class DescriptionWidget extends StatelessWidget {
   final String description;
-  final Stream<bool> isDescriptionEnabled;
 
-  const DescriptionWidget({Key key, this.description, this.isDescriptionEnabled}) : super(key: key);
+  DescriptionWidget(this.description);
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<bool>(
       initialData: false,
-      stream: isDescriptionEnabled,
+      stream: DescriptionState.streamShowDescription,
       builder: (context, snapshot) {
-        if (snapshot == null || !snapshot.data) return StubWidget();
-
-        return Container(
-          child: TextWidget(description, color: AppColor.textHintDescription),
+        return AnimatedOpacity(
+          opacity: snapshot.data ? 1.0 : 0.0,
+          duration: Duration(milliseconds: 300),
+          child: Visibility(
+            visible: snapshot.data,
+            child: TextWidget(description, color: AppColor.textHintDescription),
+          ),
         );
       },
     );
