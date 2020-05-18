@@ -786,9 +786,5 @@ class Transl {
 
   String get unknown => get("unknown");
 
-  String get data_for_hashing => get("data_for_hashing");
-
-  String get desc_data_for_hashing => get("desc_data_for_hashing");
-
   String get how_to_scan => get("how_to_scan");
 }
