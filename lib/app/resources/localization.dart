@@ -122,13 +122,13 @@ class Transl {
 
   String get menu_pers_export => get("menu_pers_export");
 
-  String get action_scan => get("action_card_scan");
+  String get action_scan => get("action_scan");
 
-  String get desc_action_scan => get("desc_action_card_scan");
+  String get desc_action_scan => get("desc_action_scan");
 
-  String get action_sign => get("action_card_sign");
+  String get action_sign => get("action_sign");
 
-  String get desc_action_sign => get("desc_action_card_sign");
+  String get desc_action_sign => get("desc_action_sign");
 
   String get action_personalize => get("action_personalize");
 
