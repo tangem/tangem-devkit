@@ -1,5 +1,5 @@
 import 'package:devkit/app/resources/localization.dart';
-import 'package:devkit/app/ui/widgets/text_widget.dart';
+import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';

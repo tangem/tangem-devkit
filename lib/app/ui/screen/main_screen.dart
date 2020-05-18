@@ -1,8 +1,8 @@
 import 'package:devkit/app/resources/keys.dart';
 import 'package:devkit/app/resources/localization.dart';
-import 'package:devkit/app/ui/widgets/item_widget.dart';
-import 'package:devkit/app/ui/widgets/semi_widget.dart';
-import 'package:devkit/app/ui/widgets/text_widget.dart';
+import 'package:devkit/app/ui/widgets/specific/item_base_widget.dart';
+import 'package:devkit/app/ui/widgets/basic/semi_widget.dart';
+import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 

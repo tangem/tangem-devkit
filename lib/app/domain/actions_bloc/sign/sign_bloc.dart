@@ -11,12 +11,6 @@ class SignBloc extends Bloc<Event, SignState> {
   SignState get initialState => SignState.initial();
 
   @override
-  void onTransition(Transition<Event, SignState> transition) {
-    print(transition);
-    super.onTransition(transition);
-  }
-
-  @override
   Stream<SignState> mapEventToState(Event event) async* {
     if (event is CidChanged) {
       yield state.copyWith(cid: event.cid, cidIsValid: regCid.hasMatch(event.cid));

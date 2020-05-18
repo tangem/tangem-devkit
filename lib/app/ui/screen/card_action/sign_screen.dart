@@ -3,7 +3,8 @@ import 'package:devkit/app/domain/actions_bloc/sign/sign_events.dart';
 import 'package:devkit/app/domain/actions_bloc/sign/sign_state.dart';
 import 'package:devkit/app/resources/keys.dart';
 import 'package:devkit/app/resources/localization.dart';
-import 'package:devkit/app/ui/widgets/item_widget.dart';
+import 'package:devkit/app/ui/widgets/specific/item_base_widget.dart';
+import 'package:devkit/app/ui/widgets/specific/item_input.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,14 +55,14 @@ class _SignSegmentState extends State<SignSegment> {
   final TextEditingController _cidController = TextEditingController();
   final TextEditingController _dataController = TextEditingController();
 
-  SignBloc _signBloc;
+  SignBloc _block;
 
   @override
   void initState() {
     super.initState();
-    _signBloc = BlocProvider.of<SignBloc>(context);
-    _cidController.addListener(() => _signBloc.add(CidChanged(_cidController.text)));
-    _dataController.addListener(() => _signBloc.add(DataChanged(_dataController.text)));
+    _block = BlocProvider.of<SignBloc>(context);
+    _cidController.addListener(() => _block.add(CidChanged(_cidController.text)));
+    _dataController.addListener(() => _block.add(DataChanged(_dataController.text)));
   }
 
   @override
@@ -69,26 +70,28 @@ class _SignSegmentState extends State<SignSegment> {
     final transl = Transl.of(context);
     return BlocBuilder<SignBloc, SignState>(
       builder: (context, state) {
+        _theseFromBloc(state);
         return Column(
           children: <Widget>[
-            ItemWidget.input(
-              FieldKey.cid,
-              _cidController,
-              TextInputType.text,
-              transl.card_id,
-              transl.desc_card_id,
+            ItemWidget(
+              item: InputCidWidget(FieldKey.cid, _cidController, () {}),
+              description: DescriptionWidget(transl.desc_card_id),
             ),
-            ItemWidget.input(
-              FieldKey.dataForHashing,
-              _dataController,
-              TextInputType.text,
-              transl.data_for_hashing,
-              transl.desc_data_for_hashing,
+            ItemWidget(
+              item: InputWidget(FieldKey.dataForHashing, _dataController, TextInputType.text, transl.transaction_out_hash),
+              description: DescriptionWidget(transl.desc_transaction_out_hash),
             ),
           ],
         );
       },
     );
+  }
+
+  _theseFromBloc(SignState state) {
+    if (state.theseFromBloc) {
+      _dataController.text = state.dataForHashing;
+      _cidController.text = state.cid;
+    }
   }
 
   @override

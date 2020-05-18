@@ -4,18 +4,24 @@ class SignState {
   final String dataForHashing;
   final bool isDataValid;
 
+  bool _theseFromBloc = false;
+
+  bool get theseFromBloc => _theseFromBloc;
+
   SignState({
     this.cid,
     this.isCidValid,
     this.dataForHashing,
     this.isDataValid,
-  });
+    bool isChangesFromBlock = false,
+  }) : this._theseFromBloc = isChangesFromBlock;
 
   factory SignState.initial() => SignState(
         cid: "",
         isCidValid: false,
         dataForHashing: "Data used for hashing",
         isDataValid: true,
+        isChangesFromBlock: true,
       );
 
   SignState copyWith({

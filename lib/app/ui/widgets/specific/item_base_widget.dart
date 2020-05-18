@@ -1,4 +1,4 @@
-import 'package:devkit/app/ui/widgets/text_widget.dart';
+import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 import 'package:devkit/commons/global/show_description.dart';
 import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
@@ -20,30 +20,11 @@ class ItemWidget extends StatelessWidget {
         children: <Widget>[
           Container(
             height: AppDimen.itemBaseHeight,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: item,
-            ),
+            child: Align(alignment: Alignment.centerLeft, child: item),
           ),
           description,
         ],
       ),
-    );
-  }
-
-  factory ItemWidget.input(Key key, TextEditingController controller, TextInputType inputType, [String hint = "", String description = ""]) {
-    return ItemWidget(
-      item: TextField(
-        controller: controller,
-        keyboardType: inputType,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 3),
-          labelText: hint,
-          isDense: true,
-        ),
-        style: TextStyle(fontSize: AppDimen.itemTextSize),
-      ),
-      description: DescriptionWidget(description),
     );
   }
 }
