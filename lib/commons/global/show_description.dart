@@ -8,8 +8,11 @@ class DescriptionState {
 
   static bool _state = false;
 
-  static bool get showDescriptionState => _state;
+  static bool get state => _state;
 
+  static toggle(){
+    sinkShowDescription.add(!_state);
+  }
   static init(bool initialValue) {
     streamShowDescription.listen((event) => _state = event);
     sinkShowDescription.add(initialValue);

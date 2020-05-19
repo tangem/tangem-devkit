@@ -1,8 +1,9 @@
 import 'package:devkit/app/resources/keys.dart';
 import 'package:devkit/app/resources/localization.dart';
-import 'package:devkit/app/ui/widgets/specific/item_base_widget.dart';
+import 'package:devkit/app/ui/menu/menu.dart';
 import 'package:devkit/app/ui/widgets/basic/semi_widget.dart';
 import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
+import 'package:devkit/app/ui/widgets/specific/item_base_widget.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,10 @@ class MainFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(Transl.of(context).app_name)),
+      appBar: AppBar(
+        title: Text(Transl.of(context).app_name),
+        actions: [Menu.popupDescription()],
+      ),
       body: MainBody(),
     );
   }

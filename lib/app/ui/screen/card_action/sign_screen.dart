@@ -3,6 +3,7 @@ import 'package:devkit/app/domain/actions_bloc/sign/sign_events.dart';
 import 'package:devkit/app/domain/actions_bloc/sign/sign_state.dart';
 import 'package:devkit/app/resources/keys.dart';
 import 'package:devkit/app/resources/localization.dart';
+import 'package:devkit/app/ui/menu/menu.dart';
 import 'package:devkit/app/ui/widgets/specific/item_base_widget.dart';
 import 'package:devkit/app/ui/widgets/specific/item_input.dart';
 import 'package:devkit/navigation/routes.dart';
@@ -22,7 +23,10 @@ class SignFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(Transl.of(context).screen_sign)),
+      appBar: AppBar(
+        title: Text(Transl.of(context).screen_sign),
+        actions: [Menu.popupDescription()],
+      ),
       body: BlocProvider(
         create: (context) => SignBloc(),
         child: SignBody(),

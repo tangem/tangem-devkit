@@ -1,4 +1,5 @@
 import 'package:devkit/app/resources/localization.dart';
+import 'package:devkit/app/ui/menu/menu.dart';
 import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,10 @@ class _ScanFrameState extends State<ScanFrame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(Transl.of(context).screen_scan)),
+      appBar: AppBar(
+        title: Text(Transl.of(context).screen_scan),
+        actions: [Menu.popupDescription()],
+      ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(16),

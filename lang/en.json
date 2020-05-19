@@ -26,7 +26,7 @@
   "screen_response_read_user_data": "Read User Data Response",
   "screen_response_write_user_data": "Write User Data Response",
   "menu_share": "Share",
-  "menu_enable_description": "Switch description visibility",
+  "menu_enable_description": "Description",
   "menu_pers_preset_reset": "Reset to default",
   "menu_pers_preset_save": "Save preset",
   "menu_pers_preset_load": "Load preset",
