@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'application.dart';
 import 'commons/utils/app_attributes.dart';
+import 'commons/utils/logger.dart';
 
 class AppLauncher {
   // launches before runApp()
@@ -13,6 +14,7 @@ class AppLauncher {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: AppColor.primaryDarkColor));
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+    Logger.instance.logAction(this, "launch");
     DescriptionState.init(false);
   }
 
