@@ -25,7 +25,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import org.json.JSONObject
 import java.lang.ref.WeakReference
 
 /** TangemSdkPlugin */
@@ -155,57 +154,58 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       return javaList.map { it.hexToBytes() }.toTypedArray()
     }
 
-//    @Throws(Exception::class)
-//    fun issuerData(jsO: JSONObject): ByteArray? {
-//      return fetchHexStringAndConvertToBytes(jsO, "issuerData")
-//    }
-//
-//    @Throws(Exception::class)
-//    fun issuerDataSignatures(jsO: JSONObject): ByteArray? {
-//      return fetchHexStringAndConvertToBytes(jsO, "issuerDataSignature")
-//    }
-//
-//    @Throws(Exception::class)
-//    fun startingSignature(jsO: JSONObject): ByteArray? {
-//      return fetchHexStringAndConvertToBytes(jsO, "startingSignature")
-//    }
-//
-//    @Throws(Exception::class)
-//    fun finalizingSignature(jsO: JSONObject): ByteArray? {
-//      return fetchHexStringAndConvertToBytes(jsO, "finalizingSignature")
-//    }
-//
-//    @Throws(Exception::class)
-//    fun issuerDataCounter(jsO: JSONObject): Int? {
-//      return if (jsO.has("issuerDataCounter")) jsO.getInt("issuerDataCounter") else null
-//    }
-//
-//    @Throws(Exception::class)
-//    fun userData(jsO: JSONObject): ByteArray? {
-//      return fetchHexStringAndConvertToBytes(jsO, "userData")
-//    }
-//
-//    @Throws(Exception::class)
-//    fun userProtectedData(jsO: JSONObject): ByteArray? {
-//      return fetchHexStringAndConvertToBytes(jsO, "userProtectedData")
-//    }
-//
-//    @Throws(Exception::class)
-//    fun userCounter(jsO: JSONObject): Int? {
-//      return if (jsO.has("userCounter")) jsO.getInt("userCounter") else null
-//    }
-//
-//    @Throws(Exception::class)
-//    fun userProtectedCounter(jsO: JSONObject): Int? {
-//      return if (jsO.has("userProtectedCounter")) jsO.getInt("userProtectedCounter") else null
-//    }
-//
-//    @Throws(Exception::class)
-//    private fun fetchHexStringAndConvertToBytes(jsO: JSONObject, name: String): ByteArray? {
-//      val hexString = jsO.getString(name)
-//      return hexString.hexToBytes()
-//    }
-//  }
+    //    @Throws(Exception::class)
+    //    fun issuerData(jsO: JSONObject): ByteArray? {
+    //      return fetchHexStringAndConvertToBytes(jsO, "issuerData")
+    //    }
+    //
+    //    @Throws(Exception::class)
+    //    fun issuerDataSignatures(jsO: JSONObject): ByteArray? {
+    //      return fetchHexStringAndConvertToBytes(jsO, "issuerDataSignature")
+    //    }
+    //
+    //    @Throws(Exception::class)
+    //    fun startingSignature(jsO: JSONObject): ByteArray? {
+    //      return fetchHexStringAndConvertToBytes(jsO, "startingSignature")
+    //    }
+    //
+    //    @Throws(Exception::class)
+    //    fun finalizingSignature(jsO: JSONObject): ByteArray? {
+    //      return fetchHexStringAndConvertToBytes(jsO, "finalizingSignature")
+    //    }
+    //
+    //    @Throws(Exception::class)
+    //    fun issuerDataCounter(jsO: JSONObject): Int? {
+    //      return if (jsO.has("issuerDataCounter")) jsO.getInt("issuerDataCounter") else null
+    //    }
+    //
+    //    @Throws(Exception::class)
+    //    fun userData(jsO: JSONObject): ByteArray? {
+    //      return fetchHexStringAndConvertToBytes(jsO, "userData")
+    //    }
+    //
+    //    @Throws(Exception::class)
+    //    fun userProtectedData(jsO: JSONObject): ByteArray? {
+    //      return fetchHexStringAndConvertToBytes(jsO, "userProtectedData")
+    //    }
+    //
+    //    @Throws(Exception::class)
+    //    fun userCounter(jsO: JSONObject): Int? {
+    //      return if (jsO.has("userCounter")) jsO.getInt("userCounter") else null
+    //    }
+    //
+    //    @Throws(Exception::class)
+    //    fun userProtectedCounter(jsO: JSONObject): Int? {
+    //      return if (jsO.has("userProtectedCounter")) jsO.getInt("userProtectedCounter") else null
+    //    }
+    //
+    //    @Throws(Exception::class)
+    //    private fun fetchHexStringAndConvertToBytes(jsO: JSONObject, name: String): ByteArray? {
+    //      val hexString = jsO.getString(name)
+    //      return hexString.hexToBytes()
+    //    }
+    //  }
+  }
 }
 
 data class PluginError(val code: Int, val localizedDescription: String)
