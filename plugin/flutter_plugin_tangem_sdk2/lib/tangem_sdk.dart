@@ -16,22 +16,31 @@ class TangemSdk {
   }
 
   static Future scanCard(Callback callback) async {
-    final result = await _channel.invokeMethod('scanCard');
-    callback.onSuccess(result);
+    _channel.invokeMethod('scanCard').then((result) {
+      callback.onSuccess(result);
+    }).catchError((error) {
+      callback.onError(error);
+    });
   }
 
   static Future sign(Callback callback, String cid, List<String> listOfHexHashes, [Map<String, dynamic> optional]) async {
     final valuesToExport = _createExportingValues(optional, cid);
     valuesToExport[hashes] = listOfHexHashes;
 
-    final result = await _channel.invokeMethod('sign', valuesToExport);
-    callback.onSuccess(result);
+    _channel.invokeMethod('sign', valuesToExport).then((result) {
+      callback.onSuccess(result);
+    }).catchError((error) {
+      callback.onError(error);
+    });
   }
 
-  static Future depersonalize(Callback callback, String cid, Map<String, dynamic> optional) async{
+  static Future depersonalize(Callback callback, String cid, Map<String, dynamic> optional) async {
     var valuesToExport = _createExportingValues(optional, cid);
-    final result = await _channel.invokeMethod('depersonalize', valuesToExport);
-    callback.onSuccess(result);
+    _channel.invokeMethod('depersonalize', valuesToExport).then((result) {
+      callback.onSuccess(result);
+    }).catchError((error) {
+      callback.onError(error);
+    });
   }
 
   /*
@@ -98,7 +107,7 @@ class TangemSdk {
    */
 
   static Map<String, dynamic> _createExportingValues(Map<String, dynamic> optional, String optionalCid) {
-    var valuesToExport = {};
+    var valuesToExport = <String, dynamic>{};
     if (optionalCid != null) valuesToExport[cid] = optionalCid;
     if (optional == null) return valuesToExport;
 

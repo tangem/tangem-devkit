@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
@@ -50,7 +51,31 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           child: Text('Running on: $_platformVersion\n'),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            final callback = Callback((result) {
+              print(result);
+            }, (error) {
+              print(error);
+            });
+            TangemSdk.scanCard(callback);
+//            TangemSdk.sign(callback, "bb03000000000004", [
+//              "some hex string".toHexString(),
+//              "some hex string".toHexString(),
+//            ]);
+          },
+        ),
       ),
     );
+  }
+}
+
+extension ToHexConverter on String {
+  String toHexString() => hex.encode(this.codeUnits);
+}
+
+extension ToStringConverter on List<int> {
+  String toHexString() {
+    return hex.encode(this);
   }
 }
