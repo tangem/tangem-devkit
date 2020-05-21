@@ -1,15 +1,25 @@
-abstract class Event {
-  const Event();
-}
+import '../base_events.dart';
 
-class CidChanged extends Event {
+class EInitSign extends Event {}
+
+class ECidChanged extends Event {
   final String cid;
 
-  CidChanged(this.cid);
+  ECidChanged(this.cid);
 }
 
-class DataChanged extends Event {
+class EDataChanged extends Event {
   final String dataForHashing;
 
-  DataChanged(this.dataForHashing);
+  EDataChanged(this.dataForHashing);
+}
+
+class ESign extends Event {}
+
+class ESignSuccess extends ECardSuccess {
+  ESignSuccess(Object success) : super(success);
+}
+
+class ESignError extends ECardError {
+  ESignError(Object success) : super(success);
 }

@@ -27,14 +27,14 @@ class Menu {
     return PopupMenuItem<MenuItem>(
       value: MenuItem.switchDescription,
       child: StreamBuilder(
-        stream: DescriptionState.streamShowDescription,
+        stream: DescriptionState.listen(),
         initialData: DescriptionState.state,
         builder: (context, snapshot) {
           return CheckboxListTile(
             value: snapshot.data,
             onChanged: (isChecked) {
-              Navigator.of(context).pop();
               DescriptionState.toggle();
+              Navigator.of(context).pop();
             },
             title: TextWidget(Transl.of(context).menu_enable_description),
           );

@@ -9,22 +9,7 @@ import 'package:flutter/material.dart';
 
 class MainScreen extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => MainScreenInh(screenBlock: MainScreenBlock(), child: MainFrame());
-}
-
-class MainScreenInh extends InheritedWidget {
-  final MainScreenBlock screenBlock;
-
-  MainScreenInh({@required this.screenBlock, @required child}) : super(child: child);
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) => true;
-
-  static MainScreenInh of(BuildContext context) => context.dependOnInheritedWidgetOfExactType();
-}
-
-class MainScreenBlock {
-  static MainScreenBlock of(BuildContext context) => MainScreenInh.of(context).screenBlock;
+  Widget build(BuildContext context) => MainFrame();
 }
 
 class MainFrame extends StatelessWidget {

@@ -2,19 +2,22 @@ import 'package:rxdart/rxdart.dart';
 
 class DescriptionState {
   static BehaviorSubject<bool> _showDescription = BehaviorSubject<bool>();
-
-  static Sink<bool> sinkShowDescription = _showDescription.sink;
-  static Stream<bool> streamShowDescription = _showDescription.stream;
-
   static bool _state = false;
 
   static bool get state => _state;
 
-  static toggle(){
-    sinkShowDescription.add(!_state);
-  }
   static init(bool initialValue) {
-    streamShowDescription.listen((event) => _state = event);
-    sinkShowDescription.add(initialValue);
+    _showDescription.listen((event) => _state = event);
+    _showDescription.add(initialValue);
+  }
+
+  static add(bool state) {
+    _showDescription.add(state);
+  }
+
+  static Stream<bool> listen() => _showDescription.stream;
+
+  static toggle() {
+    add(!_state);
   }
 }

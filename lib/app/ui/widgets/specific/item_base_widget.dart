@@ -38,7 +38,7 @@ class DescriptionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<bool>(
       initialData: false,
-      stream: DescriptionState.streamShowDescription,
+      stream: DescriptionState.listen(),
       builder: (context, snapshot) {
         return AnimatedOpacity(
           opacity: snapshot.data ? 1.0 : 0.0,

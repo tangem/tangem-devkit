@@ -1,40 +1,32 @@
-class SignState {
+import '../base_state.dart';
+
+class SSign extends SState {
   final String cid;
-  final bool isCidValid;
   final String dataForHashing;
-  final bool isDataValid;
+  final bool theseFromBloc;
 
-  bool _theseFromBloc = false;
+  SSign({this.cid, this.dataForHashing, this.theseFromBloc = false});
+  
+  factory SSign.initial() => SSign(cid: "", dataForHashing: "");
+  factory SSign.def() => SSign(cid: "", dataForHashing: "Data for hashing", theseFromBloc: true);
 
-  bool get theseFromBloc => _theseFromBloc;
-
-  SignState({
-    this.cid,
-    this.isCidValid,
-    this.dataForHashing,
-    this.isDataValid,
-    bool isChangesFromBlock = false,
-  }) : this._theseFromBloc = isChangesFromBlock;
-
-  factory SignState.initial() => SignState(
-        cid: "",
-        isCidValid: false,
-        dataForHashing: "Data used for hashing",
-        isDataValid: true,
-        isChangesFromBlock: true,
-      );
-
-  SignState copyWith({
-    String cid,
-    bool cidIsValid,
-    String dataForHashing,
-    bool dataForHashingIsValid,
-  }) {
-    return SignState(
+  SSign copyWith({String cid, String dataForHashing, bool theseFromBloc}) {
+    return SSign(
       cid: cid ?? this.cid,
-      isCidValid: cidIsValid ?? this.isCidValid,
       dataForHashing: dataForHashing ?? this.dataForHashing,
-      isDataValid: dataForHashingIsValid ?? this.isDataValid,
+      theseFromBloc: theseFromBloc ?? false,
     );
+  }
+}
+
+class SSignSuccess extends SSign with SCardResponseSuccess {
+  SSignSuccess(Object success, SSign state) : super(cid: state.cid, dataForHashing: state.dataForHashing) {
+    this.success = success;
+  }
+}
+
+class SSignError extends SSign with SCardResponseError {
+  SSignError(Object error, SSign state) : super(cid: state.cid, dataForHashing: state.dataForHashing) {
+    this.error = error;
   }
 }

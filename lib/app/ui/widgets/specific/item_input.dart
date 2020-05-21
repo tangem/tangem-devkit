@@ -38,14 +38,6 @@ class InputCidWidget extends StatefulWidget {
 }
 
 class _InputCidWidgetState extends State<InputCidWidget> {
-  TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-    _controller.addListener(_updateOuterController);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +50,12 @@ class _InputCidWidgetState extends State<InputCidWidget> {
         Expanded(
           child: Align(
             alignment: Alignment.centerLeft,
-            child: InputWidget(widget.key, _controller, TextInputType.text, transl.card_id),
+            child: InputWidget(widget.key, widget.controller, TextInputType.text, transl.card_id),
           ),
         ),
         SizedBox(width: 10),
         Visibility(
-          visible: _controller.text.isEmpty,
+          visible: widget.controller.text.isEmpty,
           child: RaisedButton(
             key: stringKey("${widget.key}.btn"),
             child: TextWidget(Transl.of(context).action_scan),
@@ -72,16 +64,5 @@ class _InputCidWidgetState extends State<InputCidWidget> {
         ),
       ],
     );
-  }
-
-  _updateOuterController() {
-    widget.controller.text = _controller.text;
-    setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }
