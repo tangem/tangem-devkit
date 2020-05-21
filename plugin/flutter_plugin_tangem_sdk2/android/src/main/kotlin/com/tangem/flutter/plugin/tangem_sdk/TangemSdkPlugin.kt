@@ -33,6 +33,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private val handler = Handler(Looper.getMainLooper())
   private val converter = ResponseConverter()
   private lateinit var sdk: TangemSdk
+  private var replyАlreadySubmitte = false;
 
   override fun onAttachedToActivity(pluginBinding: ActivityPluginBinding) {
     val activity = pluginBinding.activity
@@ -69,6 +70,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    replyАlreadySubmitte = false
     when (call.method) {
       "scanCard" -> scanCard(call, result)
       "sign" -> sign(call, result)
@@ -94,6 +96,9 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   private fun handleResult(result: Result, completionResult: CompletionResult<*>) {
+    if (replyАlreadySubmitte) return
+    replyАlreadySubmitte = true
+
     when (completionResult) {
       is CompletionResult.Success -> {
         handler.post { result.success(converter.gson.toJson(completionResult.data)) }
@@ -110,6 +115,9 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   private fun handleException(result: Result, ex: Exception) {
+    if (replyАlreadySubmitte) return
+    replyАlreadySubmitte = true
+
     handler.post {
       val code = 9999
       val localizedDescription = ex.localizedMessage ?: ex.message ?: ex.toString()
