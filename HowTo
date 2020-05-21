@@ -1,0 +1,6 @@
+# switch the flutter to stable channel and update it
+flutter channel stable
+flutter upgrade --force
+flutter pub cache repair
+cd <YOUR APP FOLDER>
+flutter clean
