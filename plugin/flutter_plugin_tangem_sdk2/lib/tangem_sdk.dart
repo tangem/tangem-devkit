@@ -1,7 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:tangem_sdk/card_responses/card_response.dart';
 
+import 'card_responses/other_responses.dart';
+
+/// Flutter TangemSdk is an interface which provides access to platform specific TangemSdk library.
+/// The response from the successfully completed execution of the 'channel method' is expected in the json.
+/// If an error occurs within the 'channel method', it is expected PlatformException converter to the json.
 class TangemSdk {
   static const cid = "cid";
   static const initialMessage = "initialMessage";
@@ -18,32 +25,27 @@ class TangemSdk {
   }
 
   static Future scanCard(Callback callback, [Map<String, dynamic> optional]) async {
-    final valuesToExport = _createExportingValues(optional);
-    _channel.invokeMethod('scanCard', valuesToExport).then((result) {
-      callback.onSuccess(result);
-    }).catchError((error) {
-      callback.onError(error);
-    });
+    _channel
+        .invokeMethod('scanCard', _createExportingValues(optional))
+        .then((result) => callback.onSuccess(Card.fromJson(jsonDecode(result))))
+        .catchError((error) => _sendBackError(callback, error));
   }
 
   static Future sign(Callback callback, List<String> listOfHexHashes, [Map<String, dynamic> optional]) async {
     final valuesToExport = _createExportingValues(optional);
     valuesToExport[hashes] = listOfHexHashes;
 
-    _channel.invokeMethod('sign', valuesToExport).then((result) {
-      callback.onSuccess(result);
-    }).catchError((error) {
-      callback.onError(error);
-    });
+    _channel
+        .invokeMethod('sign', valuesToExport)
+        .then((result) => callback.onSuccess(SignResponse.fromJson(jsonDecode(result))))
+        .catchError((error) => _sendBackError(callback, error));
   }
 
   static Future depersonalize(Callback callback, [Map<String, dynamic> optional]) async {
-    var valuesToExport = _createExportingValues(optional);
-    _channel.invokeMethod('depersonalize', valuesToExport).then((result) {
-      callback.onSuccess(result);
-    }).catchError((error) {
-      callback.onError(error);
-    });
+    _channel
+        .invokeMethod('depersonalize', _createExportingValues(optional))
+        .then((result) => callback.onSuccess(DepersonalizeResponse.fromJson(jsonDecode(result))))
+        .catchError((error) => _sendBackError(callback, error));
   }
 
   /*
@@ -109,6 +111,10 @@ class TangemSdk {
   }
    */
 
+  static _sendBackError(Callback callback, PlatformException ex) {
+    callback.onError(ErrorResponse.fromException(ex));
+  }
+
   static Map<String, dynamic> _createExportingValues(Map<String, dynamic> optional) {
     var valuesToExport = <String, dynamic>{};
     if (optional == null || optional.isEmpty) return valuesToExport;
@@ -119,12 +125,9 @@ class TangemSdk {
   }
 }
 
-typedef Success = Function(dynamic error);
-typedef Error = Function(dynamic response);
-
 class Callback {
-  final Success onSuccess;
-  final Error onError;
+  final Function(dynamic success) onSuccess;
+  final Function(dynamic error) onError;
 
   Callback(this.onSuccess, this.onError);
 }

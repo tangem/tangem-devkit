@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
@@ -49,27 +50,37 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-//            _scan();
-//            _sign();
-//            _personalize();
-            _depersonalize();
-          },
-        ),
+            child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(child: Text("Scan"), onPressed: _scan),
+                SizedBox(width: 10),
+                RaisedButton(child: Text("Sign"), onPressed: _sign),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(child: Text("Personalize"), onPressed: _personalize),
+                SizedBox(width: 10),
+                RaisedButton(child: Text("Depersonalize"), onPressed: _depersonalize)
+              ],
+            )
+          ],
+        )),
       ),
     );
   }
 
   final callback = Callback((result) {
     print(result);
+    print(jsonEncode(result));
   }, (error) {
     print(error);
+    print(jsonEncode(error));
   });
-
-  final cid = "bb03000000000004";
 
   _scan() {
     TangemSdk.scanCard(callback);
