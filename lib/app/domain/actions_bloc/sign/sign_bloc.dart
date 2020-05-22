@@ -3,6 +3,7 @@ import 'package:devkit/commons/extensions/export.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../base_events.dart';
+import '../scan_card/scan_bloc.dart';
 import 'sign_events.dart';
 import 'sign_state.dart';
 
@@ -49,13 +50,4 @@ class SignBloc extends Bloc<Event, SSign> {
       state.dataForHashing.toHexString(),
     ]);
   }
-}
-
-onReadCard(Bloc bloc) {
-  final callback = Callback((result) {
-    bloc.add(EReadSuccess(result));
-  }, (error) {
-    bloc.add(EReadError(error));
-  });
-  TangemSdk.scanCard(callback);
 }
