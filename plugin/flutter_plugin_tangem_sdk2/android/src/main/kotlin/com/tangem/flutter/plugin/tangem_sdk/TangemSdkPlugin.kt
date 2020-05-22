@@ -8,12 +8,12 @@ import androidx.lifecycle.Lifecycle
 import com.tangem.Config
 import com.tangem.Message
 import com.tangem.TangemSdk
+import com.tangem.commands.common.ResponseConverter
 import com.tangem.common.CompletionResult
 import com.tangem.common.extensions.hexToBytes
 import com.tangem.tangem_sdk_new.DefaultSessionViewDelegate
 import com.tangem.tangem_sdk_new.NfcLifecycleObserver
 import com.tangem.tangem_sdk_new.TerminalKeysStorage
-import com.tangem.tangem_sdk_new.converter.ResponseConverter
 import com.tangem.tangem_sdk_new.extensions.localizedDescription
 import com.tangem.tangem_sdk_new.nfc.NfcManager
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -90,7 +90,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun sign(call: MethodCall, result: Result) {
     try {
-      sdk.sign(hashes(call), cid(call) !!, message(call)) { handleResult(result, it) }
+      sdk.sign(hashes(call), cid(call), message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -135,13 +135,11 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   companion object {
+    // Companion methods must be of two types:
+    // for optional request => return if (fieldIsFound) foundField else null
+    // for required parameters request => return if (fieldIsFound) foundField else throw NoSuchFieldException
+    // All exceptions must be handled by an external representative.
     lateinit var wActivity: WeakReference<Activity>
-
-    @JvmStatic
-    fun registerWith(registrar: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "sdk")
-      channel.setMethodCallHandler(TangemSdkPlugin())
-    }
 
     @Throws(Exception::class)
     fun message(call: MethodCall): Message? {
