@@ -1,46 +1,47 @@
 import 'package:bloc/bloc.dart';
+import 'package:devkit/app/domain/actions_bloc/card_optional_values.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../base_events.dart';
-import '../base_state.dart';
-
-class EScan extends Event {}
-
-class SScan extends SState {}
-
-class SScanSuccess extends SScan with SCardResponseSuccess {
-  SScanSuccess(Object success) {
-    this.success = success;
-  }
-}
-
-class SScanError extends SScan with SCardResponseError {
-  SScanError(Object error) {
-    this.error = error;
-  }
-}
+import 'scan_card_es.dart';
 
 class ScanBloc extends Bloc<Event, SScan> {
+  Bloc _scanHandler;
+
   @override
   SScan get initialState => SScan();
 
   @override
   Stream<SScan> mapEventToState(Event event) async* {
-    if (event is EScan) {
-      onReadCard(this);
-    } else if (event is EReadSuccess) {
-      yield SScanSuccess(event.success);
-    } else if (event is EReadError) {
-      yield SScanError(event.error);
+    if (event is ECardScanError) {
+      yield SCardScanError(event.error);
+    } else if (event is ECardScanSuccess) {
+      yield SCardScanSuccess(event.success);
+    } else if (event is EScanCard) {
+      _onScanCard(_scanHandler ?? this);
     }
+  }
+
+  scanCardWith(Bloc handler) {
+    this._scanHandler = handler;
+    add(EScanCard());
+  }
+
+  _onScanCard(Bloc bloc) {
+    final callback = Callback((result) {
+      bloc.add(ECardScanSuccess(result));
+      _scanHandler = null;
+    }, (error) {
+      bloc.add(ECardScanError(error));
+      _scanHandler = null;
+    });
+    TangemSdk.scanCard(
+      callback,
+      CardOptionalValues().get(),
+    );
   }
 }
 
-onReadCard(Bloc bloc) {
-  final callback = Callback((result) {
-    bloc.add(EReadSuccess(result));
-  }, (error) {
-    bloc.add(EReadError(error));
-  });
-  TangemSdk.scanCard(callback);
+String parseCidFromSuccessScan(Object success) {
+  return "bb03000000000004";
 }

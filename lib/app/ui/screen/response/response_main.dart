@@ -1,8 +1,7 @@
 import 'dart:convert';
 
-import 'package:devkit/app/resources/localization.dart';
-import 'package:devkit/app/ui/menu/menu.dart';
-import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
+import 'package:devkit/app/resources/app_resources.dart';
+import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 

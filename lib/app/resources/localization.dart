@@ -787,4 +787,6 @@ class Transl {
   String get unknown => get("unknown");
 
   String get how_to_scan => get("how_to_scan");
+
+  String get how_to_depersonalize => get("how_to_depersonalize");
 }

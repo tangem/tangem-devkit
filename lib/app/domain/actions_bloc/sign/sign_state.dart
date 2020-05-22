@@ -18,15 +18,3 @@ class SSign extends SState {
     );
   }
 }
-
-class SSignSuccess extends SSign with SCardResponseSuccess {
-  SSignSuccess(Object success, SSign state) : super(cid: state.cid, dataForHashing: state.dataForHashing) {
-    this.success = success;
-  }
-}
-
-class SSignError extends SSign with SCardResponseError {
-  SSignError(Object error, SSign state) : super(cid: state.cid, dataForHashing: state.dataForHashing) {
-    this.error = error;
-  }
-}

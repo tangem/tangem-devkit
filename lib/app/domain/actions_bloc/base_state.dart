@@ -1,9 +1,9 @@
 class SState {}
 
-class SCardResponseSuccess {
+class SCardActionSuccess {
   Object success;
 }
 
-class SCardResponseError {
+class SCardActionError {
   Object error;
 }

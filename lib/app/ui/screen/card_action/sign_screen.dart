@@ -1,33 +1,24 @@
-import 'package:devkit/app/domain/actions_bloc/base_events.dart';
-import 'package:devkit/app/domain/actions_bloc/sign/sign_bloc.dart';
-import 'package:devkit/app/domain/actions_bloc/sign/sign_events.dart';
-import 'package:devkit/app/domain/actions_bloc/sign/sign_state.dart';
-import 'package:devkit/app/resources/keys.dart';
-import 'package:devkit/app/resources/localization.dart';
-import 'package:devkit/app/ui/menu/menu.dart';
+import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
+import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/screen/response/response_main.dart';
-import 'package:devkit/app/ui/snackbar.dart';
-import 'package:devkit/app/ui/widgets/specific/item_base_widget.dart';
-import 'package:devkit/app/ui/widgets/specific/item_input.dart';
-import 'package:devkit/navigation/routes.dart';
+import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../bloc_finder.dart';
 
 class SignScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SignBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SignBloc>(create: (context) => SignBloc()),
+        BlocProvider<ScanBloc>(create: (context) => ScanBloc()),
+      ],
       child: SignFrame(),
     );
   }
-
-  static navigate(context) {
-    Navigator.of(context).pushNamed(Routes.SIGN);
-  }
 }
-
-SignBloc _signBloc(context) => BlocProvider.of<SignBloc>(context);
 
 class SignFrame extends StatelessWidget {
   @override
@@ -40,29 +31,18 @@ class SignFrame extends StatelessWidget {
       body: SignBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
-        onPressed: () => _signBloc(context).add(ESign()),
+        onPressed: () => BlocFinder.sign(context).add(ESign()),
       ),
     );
   }
 }
 
-class SignBody extends StatelessWidget {
+class SignBody extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        SignSegment(),
-      ],
-    );
-  }
+  _SignBodyState createState() => _SignBodyState();
 }
 
-class SignSegment extends StatefulWidget {
-  @override
-  _SignSegmentState createState() => _SignSegmentState();
-}
-
-class _SignSegmentState extends State<SignSegment> {
+class _SignBodyState extends State<SignBody> {
   final TextEditingController _cidController = TextEditingController();
   final TextEditingController _dataController = TextEditingController();
 
@@ -73,7 +53,7 @@ class _SignSegmentState extends State<SignSegment> {
     super.initState();
     _cidController.addListener(() => _block.add(ECidChanged(_cidController.text)));
     _dataController.addListener(() => _block.add(EDataChanged(_dataController.text)));
-    _block = _signBloc(context);
+    _block = BlocFinder.sign(context);
     _block.add(EInitSign());
   }
 
@@ -82,9 +62,9 @@ class _SignSegmentState extends State<SignSegment> {
     final transl = Transl.of(context);
     return BlocListener<SignBloc, SSign>(
       listener: (context, state) {
-        if (state is SSignError) {
+        if (state is SCardSignError) {
           showError(context, state.error);
-        } else if (state is SSignSuccess) {
+        } else if (state is SCardSignSuccess) {
           ResponseScreen.navigate(context, state.success);
         } else if (state.theseFromBloc) {
           _cidController.text = state.cid;
@@ -96,9 +76,7 @@ class _SignSegmentState extends State<SignSegment> {
           return Column(
             children: <Widget>[
               ItemWidget(
-                item: InputCidWidget(FieldKey.cid, _cidController, () {
-                  _block.add(EReadCard());
-                }),
+                item: InputCidWidget(FieldKey.cid, _cidController, () => BlocFinder.scan(context).scanCardWith(_block)),
                 description: DescriptionWidget(transl.desc_card_id),
               ),
               ItemWidget(

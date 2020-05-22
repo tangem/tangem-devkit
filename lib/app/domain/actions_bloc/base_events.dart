@@ -2,24 +2,14 @@ abstract class Event {
   const Event();
 }
 
-class ECardSuccess extends Event {
+class ECardActionSuccess extends Event {
   final Object success;
 
-  ECardSuccess(this.success);
+  ECardActionSuccess(this.success);
 }
 
-class ECardError extends Event {
+class ECardActionError extends Event {
   final Object error;
 
-  ECardError(this.error);
-}
-
-class EReadCard extends Event {}
-
-class EReadSuccess extends ECardSuccess {
-  EReadSuccess(Object success) : super(success);
-}
-
-class EReadError extends ECardError {
-  EReadError(Object error) : super(error);
+  ECardActionError(this.error);
 }

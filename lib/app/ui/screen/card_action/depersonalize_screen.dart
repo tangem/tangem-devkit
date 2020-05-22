@@ -6,48 +6,48 @@ import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ScanScreen extends StatelessWidget {
+class DepersonalizeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ScanBloc(),
-      child: ScanFrame(),
+    return BlocProvider<DepersonalizeBloc>(
+      create: (context) => DepersonalizeBloc(),
+      child: DepersonalizeFrame(),
     );
   }
 }
 
-class ScanFrame extends StatelessWidget {
+class DepersonalizeFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Transl.of(context).screen_scan),
+        title: Text(Transl.of(context).screen_depersonalize),
         actions: [Menu.popupDescription()],
       ),
-      body: ScanBody(),
+      body: DepersonalizeBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
-        onPressed: () => BlocFinder.scan(context).add(EScanCard()),
+        onPressed: () => BlocFinder.depersonalize(context).add(EDepersonalize()),
       ),
     );
   }
 }
 
-class ScanBody extends StatelessWidget {
+class DepersonalizeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ScanBloc, SScan>(
+    return BlocListener<DepersonalizeBloc, SDepersonalize>(
       listener: (context, state) {
-        if (state is SCardScanSuccess) {
+        if (state is SCardDepersonalizeSuccess) {
           ResponseScreen.navigate(context, state.success);
-        } else if (state is SCardScanError) {
+        } else if (state is SCardDepersonalizeError) {
           showError(context, state.error);
         }
       },
       child: Center(
         child: Padding(
           padding: EdgeInsets.all(16),
-          child: TextWidget.center(Transl.of(context).how_to_scan),
+          child: TextWidget.center(Transl.of(context).how_to_depersonalize),
         ),
       ),
     );

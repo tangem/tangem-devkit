@@ -1,9 +1,6 @@
 import 'package:devkit/app/resources/keys.dart';
 import 'package:devkit/app/resources/localization.dart';
-import 'package:devkit/app/ui/menu/menu.dart';
-import 'package:devkit/app/ui/widgets/basic/semi_widget.dart';
-import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
-import 'package:devkit/app/ui/widgets/specific/item_base_widget.dart';
+import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 
@@ -30,8 +27,8 @@ class MainBody extends StatelessWidget {
   final _transKeys = [
     Pair("action_scan", "scan"),
     Pair("action_sign", "sign"),
-    Pair("action_personalize", "implement screen and routing"),
-    Pair("action_depersonalize", "implement screen and routing"),
+    Pair("action_personalize", "personalize"),
+    Pair("action_depersonalize", "depersonalize"),
 //    Pair("action_wallet_create", "implement screen and routing"),
 //    Pair("action_wallet_purge", "implement screen and routing"),
 //    Pair("action_issuer_read_data", "implement screen and routing"),
