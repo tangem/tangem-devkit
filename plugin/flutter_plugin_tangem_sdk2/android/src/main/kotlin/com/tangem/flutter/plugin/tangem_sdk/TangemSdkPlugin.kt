@@ -74,6 +74,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     when (call.method) {
       "scanCard" -> scanCard(call, result)
       "sign" -> sign(call, result)
+      "depersonalize" -> depersonalize(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
@@ -89,7 +90,15 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun sign(call: MethodCall, result: Result) {
     try {
-      sdk.sign(hashes(call), cid(call), message(call)) { handleResult(result, it) }
+      sdk.sign(hashes(call), cid(call) !!, message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun depersonalize(call: MethodCall, result: Result) {
+    try {
+      sdk.depersonalize(cid(call), message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -148,8 +157,8 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     @Throws(Exception::class)
-    fun cid(call: MethodCall): String {
-      return call.argument<String>("cid") !!
+    fun cid(call: MethodCall): String? {
+      return call.argument<String>("cid")
     }
 
     @Throws(Exception::class)

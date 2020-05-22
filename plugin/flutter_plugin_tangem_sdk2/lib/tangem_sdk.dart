@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 class TangemSdk {
   static const cid = "cid";
   static const initialMessage = "initialMessage";
+  static const initialMessageHeader = "header";
+  static const initialMessageBody = "body";
   static const hashes = "hashes";
   static const _ = "";
 
@@ -15,16 +17,17 @@ class TangemSdk {
     return version;
   }
 
-  static Future scanCard(Callback callback) async {
-    _channel.invokeMethod('scanCard').then((result) {
+  static Future scanCard(Callback callback, [Map<String, dynamic> optional]) async {
+    final valuesToExport = _createExportingValues(optional);
+    _channel.invokeMethod('scanCard', valuesToExport).then((result) {
       callback.onSuccess(result);
     }).catchError((error) {
       callback.onError(error);
     });
   }
 
-  static Future sign(Callback callback, String cid, List<String> listOfHexHashes, [Map<String, dynamic> optional]) async {
-    final valuesToExport = _createExportingValues(optional, cid);
+  static Future sign(Callback callback, List<String> listOfHexHashes, [Map<String, dynamic> optional]) async {
+    final valuesToExport = _createExportingValues(optional);
     valuesToExport[hashes] = listOfHexHashes;
 
     _channel.invokeMethod('sign', valuesToExport).then((result) {
@@ -34,8 +37,8 @@ class TangemSdk {
     });
   }
 
-  static Future depersonalize(Callback callback, String cid, Map<String, dynamic> optional) async {
-    var valuesToExport = _createExportingValues(optional, cid);
+  static Future depersonalize(Callback callback, [Map<String, dynamic> optional]) async {
+    var valuesToExport = _createExportingValues(optional);
     _channel.invokeMethod('depersonalize', valuesToExport).then((result) {
       callback.onSuccess(result);
     }).catchError((error) {
@@ -106,11 +109,11 @@ class TangemSdk {
   }
    */
 
-  static Map<String, dynamic> _createExportingValues(Map<String, dynamic> optional, String optionalCid) {
+  static Map<String, dynamic> _createExportingValues(Map<String, dynamic> optional) {
     var valuesToExport = <String, dynamic>{};
-    if (optionalCid != null) valuesToExport[cid] = optionalCid;
-    if (optional == null) return valuesToExport;
+    if (optional == null || optional.isEmpty) return valuesToExport;
 
+    valuesToExport[cid] = optional[cid];
     valuesToExport[initialMessage] = optional[initialMessage];
     return valuesToExport;
   }

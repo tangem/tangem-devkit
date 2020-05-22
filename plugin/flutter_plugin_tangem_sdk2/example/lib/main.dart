@@ -53,29 +53,36 @@ class _MyAppState extends State<MyApp> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            final callback = Callback((result) {
-              print(result);
-            }, (error) {
-              print(error);
-            });
-            TangemSdk.scanCard(callback);
-//            TangemSdk.sign(callback, "bb03000000000004", [
-//              "some hex string".toHexString(),
-//              "some hex string".toHexString(),
-//            ]);
+//            _scan();
+//            _sign();
+//            _personalize();
+            _depersonalize();
           },
         ),
       ),
     );
   }
-}
 
-extension ToHexConverter on String {
-  String toHexString() => hex.encode(this.codeUnits);
-}
+  final callback = Callback((result) {
+    print(result);
+  }, (error) {
+    print(error);
+  });
 
-extension ToStringConverter on List<int> {
-  String toHexString() {
-    return hex.encode(this);
+  final cid = "bb03000000000004";
+
+  _scan() {
+    TangemSdk.scanCard(callback);
+  }
+
+  _sign() {
+    final hexData = hex.encode("some hex string".codeUnits);
+    TangemSdk.sign(callback, [hexData, hexData]);
+  }
+
+  _personalize() {}
+
+  _depersonalize() {
+    TangemSdk.depersonalize(callback, null);
   }
 }
