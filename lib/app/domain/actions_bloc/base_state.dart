@@ -1,3 +1,5 @@
+import 'package:tangem_sdk/card_responses/other_responses.dart';
+
 class SState {}
 
 class SCardActionSuccess {
@@ -5,5 +7,5 @@ class SCardActionSuccess {
 }
 
 class SCardActionError {
-  Object error;
+  ErrorResponse error;
 }

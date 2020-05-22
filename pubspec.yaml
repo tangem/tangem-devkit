@@ -29,6 +29,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   tangem_sdk:
     path: plugin/flutter_plugin_tangem_sdk2
+  json_annotation: ^3.0.0
   cupertino_icons: ^0.1.2
 
   bloc: ^4.0.0

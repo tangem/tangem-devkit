@@ -1,3 +1,5 @@
+import 'package:tangem_sdk/card_responses/other_responses.dart';
+
 import '../base_events.dart';
 import '../base_state.dart';
 
@@ -8,7 +10,7 @@ class ECardScanSuccess extends ECardActionSuccess {
 }
 
 class ECardScanError extends ECardActionError {
-  ECardScanError(Object error) : super(error);
+  ECardScanError(ErrorResponse error) : super(error);
 }
 
 class SScan extends SState {}
@@ -20,7 +22,7 @@ class SCardScanSuccess extends SScan with SCardActionSuccess {
 }
 
 class SCardScanError extends SScan with SCardActionError {
-  SCardScanError(Object error) {
+  SCardScanError(ErrorResponse error) {
     this.error = error;
   }
 }

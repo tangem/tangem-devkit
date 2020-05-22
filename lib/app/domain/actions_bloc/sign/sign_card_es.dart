@@ -1,9 +1,13 @@
+import 'package:tangem_sdk/card_responses/other_responses.dart';
+
 import '../base_events.dart';
 import '../base_state.dart';
 import 'sign_state.dart';
 
 class ECardSignSuccess extends ECardActionSuccess {
-  ECardSignSuccess(Object success) : super(success);
+  SignResponse signResponse;
+
+  ECardSignSuccess(this.signResponse) : super(signResponse);
 }
 
 class ECardSignError extends ECardActionError {
