@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:devkit/app/resources/lang/languages.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -27,7 +28,8 @@ class _LocalizationDelegate extends LocalizationsDelegate<Transl> {
   Future<Transl> load(Locale locale) async {
     // AppLocalizations class is where the JSON loading actually runs
     Transl localizations = new Transl(locale);
-    await localizations.load();
+//    await localizations.loadFromAsset();
+    localizations.loadFromStaticField();
     return localizations;
   }
 
@@ -42,12 +44,22 @@ class Transl {
 
   Transl(this.locale);
 
-  Future<bool> load() async {
+  Future loadFromAsset() async {
     final jsonString = await rootBundle.loadString("lang/${locale.languageCode}.json");
-    Map<String, dynamic> jsonMap = json.decode(jsonString);
+    _load(jsonString);
+  }
 
-    _localizedStrings = jsonMap.map((key, value) => MapEntry(key, stringOf(value)));
-    return true;
+  loadFromStaticField() {
+    _load(Languages.map[locale.languageCode]);
+  }
+
+  _load(String jsonString) {
+    try {
+      Map<String, dynamic> jsonMap = json.decode(jsonString);
+      _localizedStrings = jsonMap.map((key, value) => MapEntry(key, stringOf(value)));
+    } catch (ex) {
+      logD(this, stringOf(ex));
+    }
   }
 
   static Transl of(BuildContext context) => Localizations.of<Transl>(context, Transl);
