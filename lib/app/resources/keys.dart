@@ -5,4 +5,5 @@ LocalKey stringKey(String id) => ValueKey<String>(id);
 class FieldKey {
   static final cid = stringKey("cid");
   static final dataForHashing = stringKey("dataForHashing");
+  static final responseJson = stringKey("responseJson");
 }
