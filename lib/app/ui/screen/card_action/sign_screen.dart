@@ -2,6 +2,7 @@ import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/screen/response/response_main.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/export.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -75,14 +76,13 @@ class _SignBodyState extends State<SignBody> {
         builder: (context, state) {
           return Column(
             children: <Widget>[
-              ItemWidget(
-                item: InputCidWidget(FieldKey.cid, _cidController, () => BlocFinder.scan(context).scanCardWith(_block)),
-                description: DescriptionWidget(transl.desc_card_id),
-              ),
-              ItemWidget(
-                item: InputWidget(FieldKey.dataForHashing, _dataController, TextInputType.text, transl.transaction_out_hash),
-                description: DescriptionWidget(transl.desc_transaction_out_hash),
-              ),
+              InputCidWidget(ItemName.cid, _cidController, () => BlocFinder.scan(context).scanCardWith(_block)).paddingH16(),
+              InputWidget(
+                ItemName.dataForHashing,
+                _dataController,
+                hint: transl.transaction_out_hash,
+                description: transl.desc_transaction_out_hash,
+              ).paddingH16(),
             ],
           );
         },

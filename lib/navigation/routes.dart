@@ -1,4 +1,5 @@
 import 'package:devkit/app/ui/screen/card_action/depersonalize_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/personalize/personalize_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/scan_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/sign_screen.dart';
 import 'package:devkit/app/ui/screen/main_screen.dart';
@@ -21,8 +22,8 @@ class Routes {
         return MaterialPageRoute(builder: (_) => ScanScreen());
       case SIGN:
         return MaterialPageRoute(builder: (_) => SignScreen());
-//      case PERSONALIZE:
-//        return MaterialPageRoute(builder: (_) => PersonalizeScreen());
+      case PERSONALIZE:
+        return MaterialPageRoute(builder: (_) => PersonalizeScreen());
       case DEPERSONALIZE:
         return MaterialPageRoute(builder: (_) => DepersonalizeScreen());
       case RESPONSE:

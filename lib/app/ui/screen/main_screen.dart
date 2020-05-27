@@ -49,7 +49,7 @@ class MainBody extends StatelessWidget {
         final pair = _transKeys[index];
 
         return ListItemWidget(
-          key: stringKey(pair.b),
+          key: ItemId.from(pair.b),
           item: TextWidget(trans.get(pair.a), fontSize: 18),
           description: DescriptionWidget(trans.getDesc(pair.a)),
           onTap: () => Navigator.of(context).pushNamed("/${pair.b.toLowerCase()}"),
