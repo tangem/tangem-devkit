@@ -15,6 +15,7 @@ class InputWidget extends StatelessWidget {
   final String hint;
   final String description;
   final double minHeight;
+  final EdgeInsets padding;
 
   const InputWidget(
     this.keyName,
@@ -23,11 +24,12 @@ class InputWidget extends StatelessWidget {
     this.description,
     this.inputType = TextInputType.text,
     this.minHeight = AppDimen.itemMinHeight,
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
+    final widget = ConstrainedBox(
       constraints: BoxConstraints(minHeight: minHeight),
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -45,7 +47,8 @@ class InputWidget extends StatelessWidget {
           DescriptionWidget(description)
         ],
       ),
-    ).padding16();
+    );
+    return padding == null ? widget.padding16() : Padding(padding: padding, child: widget);
   }
 }
 
@@ -53,8 +56,9 @@ class InputCidWidget extends StatefulWidget {
   final String keyName;
   final TextEditingController controller;
   final Function onTap;
+  final EdgeInsets padding;
 
-  InputCidWidget(this.keyName, this.controller, this.onTap);
+  InputCidWidget(this.keyName, this.controller, this.onTap, {this.padding});
 
   @override
   _InputCidWidgetState createState() => _InputCidWidgetState();
@@ -64,29 +68,36 @@ class _InputCidWidgetState extends State<InputCidWidget> {
   @override
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: InputWidget(widget.keyName, widget.controller, hint: transl.card_id, description: transl.desc_card_id),
+    return Padding(
+      padding: widget.padding ?? EdgeInsets.all(0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: InputWidget(
+                widget.keyName,
+                widget.controller,
+                hint: transl.card_id,
+                description: transl.desc_card_id,
+                minHeight: 0,
+                padding: EdgeInsets.only(right: 10),
+              ),
+            ),
           ),
-        ),
-        Visibility(
-          visible: widget.controller.text.isEmpty,
-          child: Padding(
-            padding: EdgeInsets.only(left: 10),
+          Visibility(
+            visible: widget.controller.text.isEmpty,
             child: RaisedButton(
               key: ItemId.from("${widget.keyName}.btn"),
               child: TextWidget(Transl.of(context).action_scan),
               onPressed: widget.onTap,
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
