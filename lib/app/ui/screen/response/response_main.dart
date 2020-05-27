@@ -48,6 +48,6 @@ class ReadResponseBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: TextWidget(jsonEncode(readResponse), key: FieldKey.responseJson));
+    return Center(child: TextWidget(jsonEncode(readResponse), keyName: KeyName.responseJson));
   }
 }
