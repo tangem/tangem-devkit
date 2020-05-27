@@ -7,7 +7,11 @@ void main() {
     // test suite. Note: the Strings provided to the `byValueKey` method must
     // be the same as the Strings we used for the Keys in step 1.
 
-    final scanItem = find.byValueKey("Scan");
+    final scanItem = find.byValueKey("scan");
+    final fab = find.byType("FloatingActionButton");
+    final responseText = find.byValueKey('response_text');
+    final expectResult = "OPA!";
+
     FlutterDriver driver;
 
     // Connect to the Flutter driver before running any tests.
@@ -15,18 +19,24 @@ void main() {
       driver = await FlutterDriver.connect();
     });
 
-    // Close the connection to the driver after the tests have completed.
+    test("Test ReadCard", () async {
+      print("Start Read Card test");
+      await Future.delayed(Duration(seconds: 1));
+      print("Tap ReadCard in menu");
+      await driver.tap(scanItem);
+      await Future.delayed(Duration(seconds: 1));
+      print("Tab action button");
+      await driver.tap(fab);
+      await Future.delayed(Duration(seconds: 7));
+      print("AAAAAAA");
+     // await driver.tap(responseText);
+     expect(await driver.getText(responseText), expectResult);
+    });
+
     tearDownAll(() async {
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });
-
-    test("test scan", () async {
-      await Future.delayed(Duration(seconds: 1));
-      await driver.tap(scanItem);
-      await Future.delayed(Duration(seconds: 1));
-      final fab = find.byType("FloatingActionButton");
-      await driver.tap(fab);
-    });
   });
 }
+
