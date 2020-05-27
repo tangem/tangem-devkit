@@ -30,7 +30,7 @@ class PersonalizeFrame extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(Transl.of(context).screen_personalize),
-        actions: [Menu.popupDescription()],
+        actions: [Menu.popupPersonalization((MenuItem item) {})],
       ),
       body: PersonalizeBody(),
       floatingActionButton: FloatingActionButton(
