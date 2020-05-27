@@ -8,9 +8,9 @@ void main() {
     // be the same as the Strings we used for the Keys in step 1.
 
     final scanItem = find.byValueKey("scan");
-    final fab = find.byType("FloatingActionButton");
+    final floatingActionButton = find.byType("FloatingActionButton");
     final responseText = find.byValueKey('responseJson');
-    //final expectResult = "OPA!";
+    final expectedResult = "OPA!";
 
     FlutterDriver driver;
 
@@ -21,24 +21,22 @@ void main() {
 
     test("Test ReadCard", () async {
       print("Start Read Card test");
-      await Future.delayed(Duration(seconds: 1));
+
+      print("Checking whether an element ReadCard is present");
+      await isExist(scanItem, driver);
       print("Tap ReadCard in menu");
       await driver.tap(scanItem);
-      await Future.delayed(Duration(seconds: 1));
+
+      print("Checking whether an element ActionButton is present");
+      await isExist(floatingActionButton, driver);
       print("Tab action button");
-      await driver.tap(fab);
-      await Future.delayed(Duration(seconds: 7));
-      print("AAAAAAA");
-     // await driver.tap(responseText);
-     //expect(await driver.getText(responseText), expectResult);
-      final isExists = await isPresent(responseText, driver);
-      if (isExists) {
-        print('widget is present');
-      } else {
-        print('widget is not present');
-      }
-      print("DDDDDDDD");
-      print(driver.getText(responseText));
+      await driver.tap(floatingActionButton);
+
+      print("Checking whether an element ResponseText is present");
+      await isExist(responseText, driver);
+
+      print("Reconciliation of Results and Expected Result");
+      expect(await driver.getText(responseText), expectedResult);
     });
 
     tearDownAll(() async {
@@ -48,7 +46,16 @@ void main() {
   });
 }
 
-isPresent(SerializableFinder byValueKey, FlutterDriver driver, {Duration timeout = const Duration(seconds: 1)}) async {
+isExist(parameter, driver) async{
+  final isExists = await isPresent(parameter, driver);
+  if (isExists) {
+    print('Widget is present');
+  } else {
+    print('Widget is not present');
+  }
+}
+
+isPresent(SerializableFinder byValueKey, FlutterDriver driver, {Duration timeout = const Duration(seconds: 3)}) async {
   try {
     await driver.waitFor(byValueKey,timeout: timeout);
     return true;
