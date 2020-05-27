@@ -9,8 +9,8 @@ void main() {
 
     final scanItem = find.byValueKey("scan");
     final fab = find.byType("FloatingActionButton");
-    final responseText = find.byValueKey('response_text');
-    final expectResult = "OPA!";
+    final responseText = find.byValueKey('responseJson');
+    //final expectResult = "OPA!";
 
     FlutterDriver driver;
 
@@ -30,7 +30,15 @@ void main() {
       await Future.delayed(Duration(seconds: 7));
       print("AAAAAAA");
      // await driver.tap(responseText);
-     expect(await driver.getText(responseText), expectResult);
+     //expect(await driver.getText(responseText), expectResult);
+      final isExists = await isPresent(responseText, driver);
+      if (isExists) {
+        print('widget is present');
+      } else {
+        print('widget is not present');
+      }
+      print("DDDDDDDD");
+      print(driver.getText(responseText));
     });
 
     tearDownAll(() async {
@@ -38,5 +46,14 @@ void main() {
       driver?.close();
     });
   });
+}
+
+isPresent(SerializableFinder byValueKey, FlutterDriver driver, {Duration timeout = const Duration(seconds: 1)}) async {
+  try {
+    await driver.waitFor(byValueKey,timeout: timeout);
+    return true;
+  } catch(exception) {
+    return false;
+  }
 }
 
