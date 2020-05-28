@@ -5,7 +5,7 @@ import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc_finder.dart';
+import '../finders.dart';
 
 class SignScreen extends StatelessWidget {
   @override

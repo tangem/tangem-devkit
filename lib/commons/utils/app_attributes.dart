@@ -21,7 +21,8 @@ class AppDimen {
 
   static const itemMinHeight = 52.0;
   static const itemTextSize = 16.0;
-  static const itemDescTextSize = 12;
+  static const itemTitleTextSize = 12.0;
+  static const itemDescTextSize = 12.0;
 }
 
 class AppColor {
@@ -29,7 +30,7 @@ class AppColor {
   static final Color primaryDarkColor = Colors.blueGrey[700];
   static final Color accentColor = Colors.blueGrey[700];
 
-  static final listDelimiter = Colors.grey;
+  static final listDelimiter = Colors.grey.withAlpha(70);
   static final dropDownUnderline = Colors.grey;
 
   static final itemTitle = Colors.grey;

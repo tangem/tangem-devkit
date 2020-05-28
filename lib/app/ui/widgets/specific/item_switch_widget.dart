@@ -16,8 +16,8 @@ class SwitchWidget extends StatelessWidget {
   const SwitchWidget(
     this.keyName,
     this.title,
-    this.bSubject, {
     this.description,
+    this.bSubject, {
     this.initialData = false,
   });
 
@@ -74,7 +74,7 @@ class _ExSwitchState extends State<ExSwitch> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(child: TextWidget(widget.title)),
+            Center(child: TextWidget(widget.title, fontSize: AppDimen.itemTextSize)),
             Expanded(flex: 1, child: Container()),
             Switch(value: _isChecked, onChanged: _onWidgetTap),
           ],

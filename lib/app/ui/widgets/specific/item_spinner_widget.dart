@@ -11,12 +11,12 @@ class SpinnerWidget extends StatelessWidget {
   final String title;
   final String description;
   final List<Pair> items;
-  final BehaviorSubject<Pair> bSubject;
+  final BehaviorSubject<Pair> subject;
 
   const SpinnerWidget(
     this.keyName,
     this.items,
-    this.bSubject,
+    this.subject,
     this.title,
     this.description,
   );
@@ -34,20 +34,29 @@ class SpinnerWidget extends StatelessWidget {
             children: <Widget>[
               TitleWidget(title: title),
               StreamBuilder(
-                stream: bSubject,
-                initialData: items[0],
-                builder: (context, snapshot) => ButtonTheme(
-                  alignedDropdown: true,
-                  child: DropdownButton<Pair>(
-                    key: ItemId.from(keyName),
-                    itemHeight: null,
-                    isExpanded: true,
-                    underline: Container(margin: EdgeInsets.only(bottom: 8), height: 1, color: AppColor.dropDownUnderline),
-                    value: snapshot.data,
-                    items: items.map((Pair pair) => DropdownMenuItem<Pair>(value: pair, child: Text(Transl.of(context).get(pair.a)))).toList(),
-                    onChanged: (pair) => bSubject.add(pair),
-                  ),
-                ),
+                stream: subject,
+                initialData: items == null || items.isEmpty ? null : items[0],
+                builder: (context, snapshot) {
+                  if (snapshot == null || snapshot.data == null) return StubWidget();
+
+                  return ButtonTheme(
+                    alignedDropdown: true,
+                    child: DropdownButton<Pair>(
+                      key: ItemId.from(keyName),
+                      itemHeight: null,
+                      isExpanded: true,
+                      underline: Container(margin: EdgeInsets.only(bottom: 8), height: 1, color: AppColor.dropDownUnderline),
+                      value: snapshot.data,
+                      items: items
+                          .map((Pair pair) => DropdownMenuItem<Pair>(
+                                value: pair,
+                                child: Text(Transl.of(context).get(pair.a)),
+                              ))
+                          .toList(),
+                      onChanged: (pair) => subject.add(pair),
+                    ),
+                  );
+                },
               ),
             ],
           ),

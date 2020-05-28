@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 
 import '../app_widgets.dart';
 
-class BlockDelimiterWidget extends StatelessWidget {
+class SegmentHeader extends StatelessWidget {
   final String title;
   final String description;
 
-  const BlockDelimiterWidget(this.title, {Key key, this.description}) : super(key: key);
+  const SegmentHeader(this.title, {Key key, this.description}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,14 @@ class BlockDelimiterWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          TextWidget(title),
-          StreamBuilder<bool>(
-            stream: DescriptionState.listen(),
-            initialData: DescriptionState.state,
-            builder: (context, snapshot) => !snapshot.data ? StubWidget() : SizedBox(height: 3),
-          ),
+          TextWidget(title, fontSize: AppDimen.itemTextSize),
+          description == null || description.isEmpty
+              ? StubWidget()
+              : StreamBuilder<bool>(
+                  stream: DescriptionState.listen(),
+                  initialData: DescriptionState.state,
+                  builder: (context, snapshot) => !snapshot.data ? StubWidget() : SizedBox(height: 3),
+                ),
           DescriptionWidget(description),
         ],
       ),

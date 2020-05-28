@@ -14,7 +14,7 @@ class TitleWidget extends StatelessWidget {
     return Container(
       child: TextWidget(
         title,
-        fontSize: 12,
+        fontSize: AppDimen.itemTitleTextSize,
         color: AppColor.itemTitle,
       ),
     );
@@ -28,7 +28,7 @@ class DescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return description == null
+    return description == null || description.isEmpty
         ? StubWidget()
         : StreamBuilder<bool>(
             initialData: false,
@@ -39,7 +39,7 @@ class DescriptionWidget extends StatelessWidget {
                 duration: Duration(milliseconds: 300),
                 child: Visibility(
                   visible: snapshot.data,
-                  child: TextWidget(description, color: AppColor.itemDescription),
+                  child: TextWidget(description, fontSize: AppDimen.itemDescTextSize, color: AppColor.itemDescription),
                 ),
               );
             },

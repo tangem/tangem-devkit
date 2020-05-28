@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:core';
 
-class PersonalizationJson {
+import 'package:devkit/app/domain/personalization/json.dart';
+
+class PersonalizationConfig {
   String cVC;
   int maxSignatures;
   String pIN;
@@ -44,7 +47,7 @@ class PersonalizationJson {
   bool useNDEF;
   bool useOneCommandAtTime;
 
-  PersonalizationJson(
+  PersonalizationConfig(
       {this.cVC,
       this.maxSignatures,
       this.pIN,
@@ -88,7 +91,7 @@ class PersonalizationJson {
       this.useNDEF,
       this.useOneCommandAtTime});
 
-  PersonalizationJson.fromJson(Map<String, dynamic> json) {
+  PersonalizationConfig.fromJson(Map<String, dynamic> json) {
     cVC = json['CVC'];
     maxSignatures = json['MaxSignatures'];
     pIN = json['PIN'];
@@ -187,6 +190,11 @@ class PersonalizationJson {
     data['useNDEF'] = this.useNDEF;
     data['useOneCommandAtTime'] = this.useOneCommandAtTime;
     return data;
+  }
+
+  static PersonalizationConfig getDefault(){
+    final map = json.decode(DefaultPersonalizationJson.jsonString);
+    return PersonalizationConfig.fromJson(map);
   }
 }
 
