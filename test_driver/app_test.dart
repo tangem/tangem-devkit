@@ -9,7 +9,7 @@ void main() {
 
     final scanItem = find.byValueKey("scan");
     final floatingActionButton = find.byType("FloatingActionButton");
-    final responseText = find.byValueKey('responseJson');
+    final responseTextWidget = find.byValueKey('responseJson');
     final expectedResult = "OPA!";
 
     FlutterDriver driver;
@@ -33,10 +33,18 @@ void main() {
       await driver.tap(floatingActionButton);
 
       print("Checking whether an element ResponseText is present");
-      await isExist(responseText, driver);
+      await isExist(responseTextWidget, driver);
 
       print("Reconciliation of Results and Expected Result");
-      expect(await driver.getText(responseText), expectedResult);
+      //print(driver.getText(responseText));
+     // expect(await driver.getText(responseText), expectedResult);
+
+      String response = await getResponce(driver,responseTextWidget);
+      print(response);
+
+      var blockchainName = "ETH";
+      var cardId = "bb03000000000004";
+
     });
 
     tearDownAll(() async {
@@ -64,3 +72,7 @@ isPresent(SerializableFinder byValueKey, FlutterDriver driver, {Duration timeout
   }
 }
 
+Future<String> getResponce(driver, responceElement) async {
+  final response = await driver.getText(responceElement);
+  return response;
+}
