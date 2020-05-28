@@ -1,4 +1,4 @@
-part of 'common_segment_widget.dart';
+part of 'common_segment.dart';
 
 abstract class BaseSegment {
   final PersonalizationBloc _bloc;
