@@ -1,5 +1,6 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
+import 'dart:convert';
 
 void main() {
   group('Tangem DevKit app', () {
@@ -35,16 +36,20 @@ void main() {
       print("Checking whether an element ResponseText is present");
       await isExist(responseTextWidget, driver);
 
-      print("Reconciliation of Results and Expected Result");
+      //print("Reconciliation of Results and Expected Result");
       //print(driver.getText(responseText));
      // expect(await driver.getText(responseText), expectedResult);
 
       String response = await getResponce(driver,responseTextWidget);
-      print(response);
+      Map<String, dynamic> responceJson = jsonDecode(response);
+      //print('${responceJson['cardId']}');
+      var cardId = responceJson['cardId'];
 
-      var blockchainName = "ETH";
-      var cardId = "bb03000000000004";
+      var expectCardId = "bb03000000000004";
 
+      print("Reconciliation of Results and Expected Result");
+      expect(cardId, expectCardId);
+      
     });
 
     tearDownAll(() async {
