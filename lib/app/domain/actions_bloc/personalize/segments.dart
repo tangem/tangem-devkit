@@ -185,9 +185,9 @@ class ProductMask extends BaseSegment {
 
   @override
   _initSubscriptions() {
-    note.listen((isChecked) => _config.cardData.productNote = isChecked);
-    tag.listen((isChecked) => _config.cardData.productTag = isChecked);
-    idCard.listen((isChecked) => _config.cardData.productIdCard = isChecked);
-    idIssuer.listen((isChecked) => _config.cardData.productIdIssuer = isChecked);
+    _subscriptions.add(note.listen((isChecked) => _config.cardData.productNote = isChecked));
+    _subscriptions.add(tag.listen((isChecked) => _config.cardData.productTag = isChecked));
+    _subscriptions.add(idCard.listen((isChecked) => _config.cardData.productIdCard = isChecked));
+    _subscriptions.add(idIssuer.listen((isChecked) => _config.cardData.productIdIssuer = isChecked));
   }
 }
