@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:devkit/app/domain/personalization/peresonalization.dart';
+import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
 

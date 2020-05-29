@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:devkit/app/domain/personalization/peresonalization.dart';
+import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
 import 'package:devkit/commons/global/shared_preferences.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:prefs/prefs.dart';

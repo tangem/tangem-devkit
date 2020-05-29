@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 
-import 'package:devkit/app/domain/personalization/json.dart';
+import 'json.dart';
 
 class PersonalizationConfig {
   String cVC;
