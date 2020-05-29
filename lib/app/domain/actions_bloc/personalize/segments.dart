@@ -210,3 +210,28 @@ class SettingMaskProtocolEncryption extends BaseSegment {
     _subscriptions.add(allowFastEncryption.listen((isChecked) => _config.protocolAllowStaticEncryption = isChecked));
   }
 }
+
+class PinsSegment extends BaseSegment {
+  final pin1 = BehaviorSubject<String>();
+  final pin2 = BehaviorSubject<String>();
+  final pin3 = BehaviorSubject<String>();
+  final cvc = BehaviorSubject<String>();
+
+  PinsSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    pin1.add(_config.pIN.toString());
+    pin2.add(_config.pIN2.toString());
+    pin3.add(_config.pIN3.toString());
+    cvc.add(_config.cVC.toString());
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(pin1.listen((value) => _config.pIN = value));
+    _subscriptions.add(pin2.listen((value) => _config.pIN2 = value));
+    _subscriptions.add(pin3.listen((value) => _config.pIN3 = value));
+    _subscriptions.add(cvc.listen((value) => _config.cVC = value));
+  }
+}

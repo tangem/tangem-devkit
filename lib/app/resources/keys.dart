@@ -34,6 +34,10 @@ class ItemName {
   static final idIssuer = "idIssuer";
   static final allowUnencrypted = "allowUnencrypted";
   static final allowFastEncryption = "allowFastEncryption";
+  static final pin1 = "pin1";
+  static final pin2 = "pin2";
+  static final pin3 = "pin3";
+  static final cvc = "cvc";
 
   //response screen
   static final responseJson = "responseJson";
