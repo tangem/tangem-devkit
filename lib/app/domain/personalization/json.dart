@@ -1,5 +1,5 @@
-class PersonalizationJson {
-  static const defaultJson = '''
+class DefaultPersonalizationJson {
+  static const jsonString = '''
 {
   "CVC": "000",
   "MaxSignatures": 999999,
@@ -63,7 +63,7 @@ class PersonalizationJson {
 }
   ''';
 
-  static const defaultWithTokenJson = '''
+  static const jsonStringWithToken = '''
 {
   "CVC": "000",
   "MaxSignatures": 999999,

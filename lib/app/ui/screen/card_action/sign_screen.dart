@@ -5,7 +5,7 @@ import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc_finder.dart';
+import '../finders.dart';
 
 class SignScreen extends StatelessWidget {
   @override
@@ -75,13 +75,21 @@ class _SignBodyState extends State<SignBody> {
         builder: (context, state) {
           return Column(
             children: <Widget>[
-              ItemWidget(
-                item: InputCidWidget(FieldKey.cid, _cidController, () => BlocFinder.scan(context).scanCardWith(_block)),
-                description: DescriptionWidget(transl.desc_card_id),
+              SizedBox(height: 8),
+              InputCidWidget(
+                ItemName.cid,
+                _cidController,
+                () => BlocFinder.scan(context).scanCardWith(_block),
+                padding: EdgeInsets.symmetric(horizontal: 16),
               ),
-              ItemWidget(
-                item: InputWidget(FieldKey.dataForHashing, _dataController, TextInputType.text, transl.transaction_out_hash),
-                description: DescriptionWidget(transl.desc_transaction_out_hash),
+              SizedBox(height: 8),
+              InputWidget(
+                ItemName.dataForHashing,
+                _dataController,
+                hint: transl.transaction_out_hash,
+                description: transl.desc_transaction_out_hash,
+                minHeight: 0,
+                padding: EdgeInsets.symmetric(horizontal: 16),
               ),
             ],
           );

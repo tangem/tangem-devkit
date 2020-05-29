@@ -42,4 +42,18 @@ class Menu {
       ),
     );
   }
+
+  static PopupMenuButton popupPersonalization(Function(MenuItem) callback) {
+    return PopupMenuButton<MenuItem>(
+      onSelected: (MenuItem item) => callback,
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
+        Menu.descriptionItem(),
+        PopupMenuItem(value: MenuItem.personalizationReset, child: TextWidget(Transl.of(context).menu_pers_preset_reset)),
+        PopupMenuItem(value: MenuItem.personalizationSavePreset, child: TextWidget(Transl.of(context).menu_pers_preset_save)),
+        PopupMenuItem(value: MenuItem.personalizationLoadPreset, child: TextWidget(Transl.of(context).menu_pers_preset_load)),
+        PopupMenuItem(value: MenuItem.personalizationImport, child: TextWidget(Transl.of(context).menu_pers_import)),
+        PopupMenuItem(value: MenuItem.personalizationExport, child: TextWidget(Transl.of(context).menu_pers_export)),
+      ],
+    );
+  }
 }
