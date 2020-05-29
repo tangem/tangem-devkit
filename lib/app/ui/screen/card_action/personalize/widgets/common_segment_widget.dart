@@ -3,6 +3,7 @@ import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../finders.dart';
 
@@ -14,6 +15,7 @@ class CommonSegmentWidget extends StatefulWidget {
 class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
   PersonalizationBloc _bloc;
   TextStreamController _customBlockchainController;
+  TextStreamController _maxSignaturesController;
 
   @override
   void initState() {
@@ -21,6 +23,7 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
 
     _bloc = RepoFinder.personalizationBloc(context);
     _customBlockchainController = TextStreamController(_bloc.common.bsCustomBlockchain);
+    _maxSignaturesController = TextStreamController(_bloc.common.bsMaxSignatures);
   }
 
   @override
@@ -51,6 +54,14 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
           _bloc.common.bsCurve,
           transl.pers_item_curve,
           transl.desc_pers_item_curve,
+        ),
+        HorizontalDelimiter(),
+        InputWidget(
+          ItemName.maxSignatures,
+          _maxSignaturesController.controller,
+          hint: transl.pers_item_max_signatures,
+          description: transl.desc_pers_item_max_signatures,
+          inputType: TextInputType.number,
         ),
         HorizontalDelimiter(),
         SwitchWidget(

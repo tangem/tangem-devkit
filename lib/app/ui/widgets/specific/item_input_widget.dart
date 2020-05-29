@@ -5,6 +5,7 @@ import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 import 'package:devkit/commons/extensions/export.dart';
 import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'item_inner_widgets.dart';
 
@@ -12,6 +13,7 @@ class InputWidget extends StatelessWidget {
   final String keyName;
   final TextEditingController controller;
   final TextInputType inputType;
+  final List<TextInputFormatter> textInputFormatter;
   final String hint;
   final String description;
   final double minHeight;
@@ -23,6 +25,7 @@ class InputWidget extends StatelessWidget {
     this.hint,
     this.description,
     this.inputType = TextInputType.text,
+    this.textInputFormatter,
     this.minHeight = AppDimen.itemMinHeight,
     this.padding,
   });
@@ -40,6 +43,7 @@ class InputWidget extends StatelessWidget {
             key: ItemId.from(keyName),
             controller: controller,
             keyboardType: inputType,
+            inputFormatters: textInputFormatter,
             decoration: InputDecoration(contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 5), labelText: hint, isDense: true),
             style: TextStyle(fontSize: AppDimen.itemTextSize),
           ),
