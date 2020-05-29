@@ -46,6 +46,7 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
           _customBlockchainController.controller,
           hint: transl.pers_item_custom_blockchain,
           description: transl.desc_pers_item_custom_blockchain,
+          scrollStream: _bloc.scrollingStateStream,
         ),
         HorizontalDelimiter(),
         SpinnerWidget(
@@ -62,6 +63,7 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
           hint: transl.pers_item_max_signatures,
           description: transl.desc_pers_item_max_signatures,
           inputType: TextInputType.number,
+          scrollStream: _bloc.scrollingStateStream,
         ),
         HorizontalDelimiter(),
         SwitchWidget(

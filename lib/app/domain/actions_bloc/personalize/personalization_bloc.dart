@@ -1,6 +1,7 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
 import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
+import 'package:flutter/src/widgets/scroll_notification.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'segments.dart';
@@ -15,19 +16,21 @@ class Done extends PersonalizationState {}
 class ShowLoadConfig extends PersonalizationState {}
 
 class PersonalizationBloc {
-  PersonalizationValues values = PersonalizationValues();
-
-  List<BaseSegment> _configSegments = [];
-  PersonalizationConfigStore _store;
+  final PersonalizationValues values = PersonalizationValues();
+  final List<BaseSegment> _configSegments = [];
+  final _scrollingState = PublishSubject<bool>();
 
   PublishSubject<List<String>> psSavedConfigNames = PublishSubject();
 
+  PersonalizationConfigStore _store;
   CommonSegment common;
   CardNumberSegment cardNumber;
   SigningMethodSegment signingMethod;
   ProductMask productMask;
   SettingMaskProtocolEncryption settingMaskProtocolEncryption;
   PinsSegment pins;
+
+  Stream<bool> get scrollingStateStream => _scrollingState.stream;
 
   PersonalizationBloc() {
     logD(this, "new instance");
@@ -89,5 +92,14 @@ class PersonalizationBloc {
   dispose() {
     _configSegments.forEach((element) => element.dispose());
     _store.save();
+  }
+
+  bool handleScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      _scrollingState.add(true);
+    } else if (notification is ScrollEndNotification) {
+      _scrollingState.add(false);
+    }
+    return false;
   }
 }

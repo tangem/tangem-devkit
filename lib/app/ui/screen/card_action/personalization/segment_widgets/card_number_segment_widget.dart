@@ -40,6 +40,7 @@ class _CardNumberSegmentWidgetState extends State<CardNumberSegmentWidget> {
           _seriesController.controller,
           hint: transl.pers_item_series,
           description: transl.desc_pers_item_series,
+          scrollStream: _bloc.scrollingStateStream,
         ),
         HorizontalDelimiter(),
         InputWidget(
@@ -48,6 +49,7 @@ class _CardNumberSegmentWidgetState extends State<CardNumberSegmentWidget> {
           hint: transl.pers_item_number,
           description: transl.desc_pers_item_number,
           inputType: TextInputType.number,
+          scrollStream: _bloc.scrollingStateStream,
         ),
         HorizontalDelimiter(),
         InputWidget(
@@ -55,6 +57,7 @@ class _CardNumberSegmentWidgetState extends State<CardNumberSegmentWidget> {
           _batchIdController.controller,
           hint: transl.pers_item_batch_id,
           description: transl.desc_pers_item_batch_id,
+          scrollStream: _bloc.scrollingStateStream,
         ),
         HorizontalDelimiter(),
       ],

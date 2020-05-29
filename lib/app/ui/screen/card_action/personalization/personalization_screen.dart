@@ -1,5 +1,6 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
+import 'package:devkit/app/ui/screen/finders.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,15 +60,19 @@ class PersonalizeFrame extends StatelessWidget {
 class PersonalizeBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        CardNumberSegmentWidget(),
-        CommonSegmentWidget(),
-        SigningMethodSegmentWidget(),
-        ProductMaskSegmentWidget(),
-        SettingMaskProtocolEncryptionSegmentWidget(),
-        PinsSegmentWidget(),
-      ],
+    final bloc = RepoFinder.personalizationBloc(context);
+    return NotificationListener<ScrollNotification>(
+      onNotification: bloc.handleScrollNotification,
+      child: ListView(
+        children: <Widget>[
+          CardNumberSegmentWidget(),
+          CommonSegmentWidget(),
+          SigningMethodSegmentWidget(),
+          ProductMaskSegmentWidget(),
+          SettingMaskProtocolEncryptionSegmentWidget(),
+          PinsSegmentWidget(),
+        ],
+      ),
     );
   }
 }

@@ -42,6 +42,7 @@ class _PinsSegmentWidgetState extends State<PinsSegmentWidget> {
           _pin1Controller.controller,
           hint: transl.pers_item_pin,
           description: transl.desc_pers_item_pin,
+          scrollStream: _bloc.scrollingStateStream,
         ),
         HorizontalDelimiter(),
         InputWidget(
@@ -56,6 +57,7 @@ class _PinsSegmentWidgetState extends State<PinsSegmentWidget> {
           _pin3Controller.controller,
           hint: transl.pers_item_pin3,
           description: transl.desc_pers_item_pin3,
+          scrollStream: _bloc.scrollingStateStream,
         ),
         HorizontalDelimiter(),
         InputWidget(
@@ -63,6 +65,7 @@ class _PinsSegmentWidgetState extends State<PinsSegmentWidget> {
           _cvcController.controller,
           hint: transl.pers_item_cvc,
           description: transl.desc_pers_item_cvc,
+          scrollStream: _bloc.scrollingStateStream,
         ),
         HorizontalDelimiter(),
       ],

@@ -17,6 +17,7 @@ class InputWidget extends StatelessWidget {
   final String description;
   final double minHeight;
   final EdgeInsets padding;
+  final Stream scrollStream;
 
   const InputWidget(
     this.keyName,
@@ -26,6 +27,7 @@ class InputWidget extends StatelessWidget {
     this.inputType = TextInputType.text,
     this.minHeight = AppDimen.itemMinHeight,
     this.padding,
+    this.scrollStream,
   });
 
   @override
@@ -37,19 +39,32 @@ class InputWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          TextField(
-            key: ItemId.from(keyName),
-            controller: controller,
-            keyboardType: inputType,
-            decoration: InputDecoration(contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 5), labelText: hint, isDense: true),
-            style: TextStyle(fontSize: AppDimen.itemTextSize),
-          ),
+          scrollStream == null
+              ? buildTextField(true)
+              : StreamBuilder(
+                  stream: scrollStream,
+                  initialData: true,
+                  builder: (context, snapshot) => buildTextField(snapshot.data),
+                ),
           SizedBox(height: 5),
-          DescriptionWidget(description)
+          DescriptionWidget(description),
         ],
       ),
     );
     return padding == null ? widget.padding16() : Padding(padding: padding, child: widget);
+  }
+
+  // crutch! -> hide cursor while the widget is scrolling. If don't do this, the scroll jumps to the textField
+  // when it receive a textValue through a textController
+  TextField buildTextField(bool isScrolling) {
+    return TextField(
+      key: ItemId.from(keyName),
+      controller: controller,
+      keyboardType: inputType,
+      decoration: InputDecoration(contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 5), labelText: hint, isDense: true),
+      style: TextStyle(fontSize: AppDimen.itemTextSize),
+      showCursor: !isScrolling,
+    );
   }
 }
 
