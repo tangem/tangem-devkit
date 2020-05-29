@@ -11,6 +11,9 @@ class ItemName {
   static final dataForHashing = "dataForHashing";
 
   //personalization screen
+  static final series = "series";
+  static final number = "number";
+  static final batchId = "batchId";
   static final blockchain = "blockchain";
   static final customBlockchain = "customBlockchain";
   static final curve = "curve";

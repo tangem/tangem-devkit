@@ -4,6 +4,7 @@ import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'widgets/card_number_segment_widget.dart';
 import 'widgets/common_segment_widget.dart';
 
 class PersonalizeScreen extends StatefulWidget {
@@ -54,6 +55,7 @@ class PersonalizeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: <Widget>[
+        CardNumberSegmentWidget(),
         CommonSegmentWidget(),
       ],
     );

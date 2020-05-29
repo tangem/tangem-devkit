@@ -29,7 +29,30 @@ abstract class BaseSegment {
   }
 
   _initSubscriptions();
+
   _configWasUpdated();
+}
+
+class CardNumberSegment extends BaseSegment {
+  final bsSeries = BehaviorSubject<String>();
+  final bsNumber = BehaviorSubject<String>();
+  final bsBatchId = BehaviorSubject<String>();
+
+  CardNumberSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(bsSeries.listen((value) => _config.series = value));
+    _subscriptions.add(bsNumber.listen((value) => _config.startNumber = int.parse(value)));
+    _subscriptions.add(bsBatchId.listen((value) => _config.cardData.batch = value));
+  }
+
+  @override
+  _configWasUpdated() {
+    bsSeries.add(_config.series);
+    bsNumber.add(_config.startNumber.toString());
+    bsBatchId.add(_config.cardData.batch);
+  }
 }
 
 class CommonSegment extends BaseSegment {

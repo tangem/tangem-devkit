@@ -23,6 +23,7 @@ class PersonalizationBloc {
   PublishSubject<List<String>> psSavedConfigNames = PublishSubject();
 
   CommonSegment common;
+  CardNumberSegment cardNumber;
 
   PersonalizationBloc() {
     logD(this, "new instance");
@@ -34,8 +35,12 @@ class PersonalizationBloc {
 
   _initSegments() {
     final currentConfig = _store.getCurrent();
+
     common = CommonSegment(this, currentConfig);
+    cardNumber = CardNumberSegment(this, currentConfig);
+
     _configSegments.add(common);
+    _configSegments.add(cardNumber);
   }
 
   resetToDefaultConfig() {
