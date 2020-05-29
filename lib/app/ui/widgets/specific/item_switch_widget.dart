@@ -72,10 +72,15 @@ class _ExSwitchState extends State<ExSwitch> {
         height: 40,
         child: Row(
           mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(child: TextWidget(widget.title, fontSize: AppDimen.itemTextSize)),
-            Expanded(flex: 1, child: Container()),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: TextWidget(widget.title, fontSize: AppDimen.itemTextSize, maxLines: 2),
+              ),
+            ),
             Switch(value: _isChecked, onChanged: _onWidgetTap),
           ],
         ),

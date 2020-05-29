@@ -7,11 +7,18 @@ class TextWidget extends StatelessWidget {
   final Color color;
   final double fontSize;
   final TextAlign textAlign;
+  final int maxLines;
 
-  const TextWidget(this.text, {this.keyName, this.fontSize, this.color, this.textAlign});
+  const TextWidget(this.text, {this.keyName, this.fontSize, this.color, this.textAlign, this.maxLines = 1});
 
   @override
-  Widget build(BuildContext context) => Text(text, key: ItemId.from(keyName), textAlign: textAlign, style: textStyle(color, fontSize));
+  Widget build(BuildContext context) => Text(
+        text,
+        key: ItemId.from(keyName),
+        textAlign: textAlign,
+        maxLines: maxLines,
+        style: textStyle(color, fontSize),
+      );
 
   static TextStyle textStyle(Color color, double fontSize) => TextStyle(
         color: color,
