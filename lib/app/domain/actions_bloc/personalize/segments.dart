@@ -191,3 +191,22 @@ class ProductMask extends BaseSegment {
     _subscriptions.add(idIssuer.listen((isChecked) => _config.cardData.productIdIssuer = isChecked));
   }
 }
+
+class SettingMaskProtocolEncryption extends BaseSegment {
+  final allowUnencrypted = BehaviorSubject<bool>();
+  final allowFastEncryption = BehaviorSubject<bool>();
+
+  SettingMaskProtocolEncryption(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    allowUnencrypted.add(_config.protocolAllowUnencrypted);
+    allowFastEncryption.add(_config.protocolAllowStaticEncryption);
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(allowUnencrypted.listen((isChecked) => _config.protocolAllowUnencrypted = isChecked));
+    _subscriptions.add(allowFastEncryption.listen((isChecked) => _config.protocolAllowStaticEncryption = isChecked));
+  }
+}

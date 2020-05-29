@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'segment_widgets/card_number_segment_widget.dart';
 import 'segment_widgets/common_segment_widget.dart';
 import 'segment_widgets/product_mask_segment_widget.dart';
+import 'segment_widgets/settings_mask_protocol_encryption_segment_widget.dart';
 import 'segment_widgets/signing_method_segment_widget.dart';
 
 class PersonalizationScreen extends StatefulWidget {
@@ -63,6 +64,7 @@ class PersonalizeBody extends StatelessWidget {
         CommonSegmentWidget(),
         SigningMethodSegmentWidget(),
         ProductMaskSegmentWidget(),
+        SettingMaskProtocolEncryptionSegmentWidget(),
       ],
     );
   }

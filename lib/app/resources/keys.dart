@@ -32,6 +32,8 @@ class ItemName {
   static final tag = "tag";
   static final idCard = "idCard";
   static final idIssuer = "idIssuer";
+  static final allowUnencrypted = "allowUnencrypted";
+  static final allowFastEncryption = "allowFastEncryption";
 
   //response screen
   static final responseJson = "responseJson";

@@ -26,6 +26,7 @@ class PersonalizationBloc {
   CardNumberSegment cardNumber;
   SigningMethodSegment signingMethod;
   ProductMask productMask;
+  SettingMaskProtocolEncryption settingMaskProtocolEncryption;
 
   PersonalizationBloc() {
     logD(this, "new instance");
@@ -42,11 +43,13 @@ class PersonalizationBloc {
     cardNumber = CardNumberSegment(this, currentConfig);
     signingMethod = SigningMethodSegment(this, currentConfig);
     productMask = ProductMask(this, currentConfig);
+    settingMaskProtocolEncryption = SettingMaskProtocolEncryption(this, currentConfig);
 
     _configSegments.add(common);
     _configSegments.add(cardNumber);
     _configSegments.add(signingMethod);
     _configSegments.add(productMask);
+    _configSegments.add(settingMaskProtocolEncryption);
   }
 
   resetToDefaultConfig() {
