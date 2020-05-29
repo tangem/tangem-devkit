@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
+import 'package:devkit/app/domain/utils/signing_method_mask_builder.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -104,5 +105,64 @@ class CommonSegment extends BaseSegment {
     bsCreateWallet.add(_config.createWallet == 1);
     bsPauseBeforePin.add(_bloc.values.getPauseBeforePin(_config.pauseBeforePIN2) ?? _bloc.values.pauseBeforePin[0]);
     bsMaxSignatures.add(_config.maxSignatures.toString());
+  }
+}
+
+class SigningMethodSegment extends BaseSegment {
+  final bsTxHashes = BehaviorSubject<bool>();
+  final bsRawTx = BehaviorSubject<bool>();
+  final bsValidatedTxHashes = BehaviorSubject<bool>();
+  final bsValidatedRawTx = BehaviorSubject<bool>();
+  final bsValidatedTxHashesWithIssuerData = BehaviorSubject<bool>();
+  final bsValidatedRawTxWithIssuerData = BehaviorSubject<bool>();
+  final bsExternalHash = BehaviorSubject<bool>();
+
+  final maskBuilder = SigningMethodMaskBuilder();
+
+  SigningMethodSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    final method = _config.signingMethod;
+    bsTxHashes.add(SigningMethodMaskBuilder.maskContainsMethod(method, 0));
+    bsRawTx.add(SigningMethodMaskBuilder.maskContainsMethod(method, 1));
+    bsValidatedTxHashes.add(SigningMethodMaskBuilder.maskContainsMethod(method, 2));
+    bsValidatedRawTx.add(SigningMethodMaskBuilder.maskContainsMethod(method, 3));
+    bsValidatedTxHashesWithIssuerData.add(SigningMethodMaskBuilder.maskContainsMethod(method, 4));
+    bsValidatedRawTxWithIssuerData.add(SigningMethodMaskBuilder.maskContainsMethod(method, 5));
+    bsExternalHash.add(SigningMethodMaskBuilder.maskContainsMethod(method, 6));
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(bsTxHashes.listen((value) {
+      _handleMethodChanges(value, 0);
+    }));
+    _subscriptions.add(bsRawTx.listen((value) {
+      _handleMethodChanges(value, 1);
+    }));
+    _subscriptions.add(bsValidatedTxHashes.listen((value) {
+      _handleMethodChanges(value, 2);
+    }));
+    _subscriptions.add(bsValidatedRawTx.listen((value) {
+      _handleMethodChanges(value, 3);
+    }));
+    _subscriptions.add(bsValidatedTxHashesWithIssuerData.listen((value) {
+      _handleMethodChanges(value, 4);
+    }));
+    _subscriptions.add(bsValidatedRawTxWithIssuerData.listen((value) {
+      _handleMethodChanges(value, 5);
+    }));
+    _subscriptions.add(bsExternalHash.listen((value) {
+      _handleMethodChanges(value, 6);
+    }));
+  }
+
+  _handleMethodChanges(bool isChecked, int method) {
+    if (isChecked)
+      maskBuilder.addMethod(method);
+    else
+      maskBuilder.removeMethod(method);
+    _config.signingMethod = maskBuilder.build();
   }
 }

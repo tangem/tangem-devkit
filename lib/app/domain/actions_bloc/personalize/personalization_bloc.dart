@@ -24,6 +24,7 @@ class PersonalizationBloc {
 
   CommonSegment common;
   CardNumberSegment cardNumber;
+  SigningMethodSegment signingMethod;
 
   PersonalizationBloc() {
     logD(this, "new instance");
@@ -38,9 +39,11 @@ class PersonalizationBloc {
 
     common = CommonSegment(this, currentConfig);
     cardNumber = CardNumberSegment(this, currentConfig);
+    signingMethod = SigningMethodSegment(this, currentConfig);
 
     _configSegments.add(common);
     _configSegments.add(cardNumber);
+    _configSegments.add(signingMethod);
   }
 
   resetToDefaultConfig() {

@@ -21,6 +21,14 @@ class ItemName {
   static final createWallet = "createWallet";
   static final pauseBeforePin2 = "pauseBeforePin2";
 
+  static final txHashes = "txHashes";
+  static final rawTx = "rawTx";
+  static final validatedTxHashes = "validatedTxHashes";
+  static final validatedRawTx = "validatedRawTx";
+  static final validatedTxHashesWithIssuerData = "validatedTxHashesWithIssuerData";
+  static final validatedRawTxWithIssuerData = "validatedRawTxWithIssuerData";
+  static final externalHash = "externalHash";
+
   //response screen
   static final responseJson = "responseJson";
 }
