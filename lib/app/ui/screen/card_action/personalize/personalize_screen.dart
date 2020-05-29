@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/actions_bloc/personalization/personalization_bloc.dart';
+import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';

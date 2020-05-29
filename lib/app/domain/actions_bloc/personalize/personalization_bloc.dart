@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/actions_bloc/personalization/personalization_values.dart';
+import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
 import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
