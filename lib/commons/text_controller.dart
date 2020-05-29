@@ -58,11 +58,12 @@ class TextStreamController {
   }
 
   String _applyRegExp(String value) {
-    String regExpValue = value;
+    if (regExpList == null || regExpList.isEmpty) return value;
+
     regExpList.forEach((regExp) {
-      regExpValue = regExp.allMatches(regExpValue).map<String>((Match match) => match.group(0)).join();
+      value = regExp.allMatches(value).map<String>((Match match) => match.group(0)).join();
     });
-    return regExpValue;
+    return value;
   }
 
   dispose() {
