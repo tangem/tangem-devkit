@@ -28,6 +28,10 @@ class ItemName {
   static final validatedTxHashesWithIssuerData = "validatedTxHashesWithIssuerData";
   static final validatedRawTxWithIssuerData = "validatedRawTxWithIssuerData";
   static final externalHash = "externalHash";
+  static final note = "note";
+  static final tag = "tag";
+  static final idCard = "idCard";
+  static final idIssuer = "idIssuer";
 
   //response screen
   static final responseJson = "responseJson";

@@ -135,26 +135,26 @@ class SigningMethodSegment extends BaseSegment {
 
   @override
   _initSubscriptions() {
-    _subscriptions.add(bsTxHashes.listen((value) {
-      _handleMethodChanges(value, 0);
+    _subscriptions.add(bsTxHashes.listen((isChecked) {
+      _handleMethodChanges(isChecked, 0);
     }));
-    _subscriptions.add(bsRawTx.listen((value) {
-      _handleMethodChanges(value, 1);
+    _subscriptions.add(bsRawTx.listen((isChecked) {
+      _handleMethodChanges(isChecked, 1);
     }));
-    _subscriptions.add(bsValidatedTxHashes.listen((value) {
-      _handleMethodChanges(value, 2);
+    _subscriptions.add(bsValidatedTxHashes.listen((isChecked) {
+      _handleMethodChanges(isChecked, 2);
     }));
-    _subscriptions.add(bsValidatedRawTx.listen((value) {
-      _handleMethodChanges(value, 3);
+    _subscriptions.add(bsValidatedRawTx.listen((isChecked) {
+      _handleMethodChanges(isChecked, 3);
     }));
-    _subscriptions.add(bsValidatedTxHashesWithIssuerData.listen((value) {
-      _handleMethodChanges(value, 4);
+    _subscriptions.add(bsValidatedTxHashesWithIssuerData.listen((isChecked) {
+      _handleMethodChanges(isChecked, 4);
     }));
-    _subscriptions.add(bsValidatedRawTxWithIssuerData.listen((value) {
-      _handleMethodChanges(value, 5);
+    _subscriptions.add(bsValidatedRawTxWithIssuerData.listen((isChecked) {
+      _handleMethodChanges(isChecked, 5);
     }));
-    _subscriptions.add(bsExternalHash.listen((value) {
-      _handleMethodChanges(value, 6);
+    _subscriptions.add(bsExternalHash.listen((isChecked) {
+      _handleMethodChanges(isChecked, 6);
     }));
   }
 
@@ -164,5 +164,30 @@ class SigningMethodSegment extends BaseSegment {
     else
       maskBuilder.removeMethod(method);
     _config.signingMethod = maskBuilder.build();
+  }
+}
+
+class ProductMask extends BaseSegment {
+  final note = BehaviorSubject<bool>();
+  final tag = BehaviorSubject<bool>();
+  final idCard = BehaviorSubject<bool>();
+  final idIssuer = BehaviorSubject<bool>();
+
+  ProductMask(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    note.add(_config.cardData.productNote);
+    tag.add(_config.cardData.productTag);
+    idCard.add(_config.cardData.productIdCard);
+    idIssuer.add(_config.cardData.productIdIssuer);
+  }
+
+  @override
+  _initSubscriptions() {
+    note.listen((isChecked) => _config.cardData.productNote = isChecked);
+    tag.listen((isChecked) => _config.cardData.productTag = isChecked);
+    idCard.listen((isChecked) => _config.cardData.productIdCard = isChecked);
+    idIssuer.listen((isChecked) => _config.cardData.productIdIssuer = isChecked);
   }
 }
