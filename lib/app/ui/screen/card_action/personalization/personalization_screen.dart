@@ -1,28 +1,30 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
-import 'package:devkit/app/ui/screen/card_action/personalize/widgets/signing_method_segment_widget.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'widgets/card_number_segment_widget.dart';
-import 'widgets/common_segment_widget.dart';
+import 'segment_widgets/card_number_segment_widget.dart';
+import 'segment_widgets/common_segment_widget.dart';
+import 'segment_widgets/signing_method_segment_widget.dart';
 
-class PersonalizeScreen extends StatefulWidget {
+class PersonalizationScreen extends StatefulWidget {
   @override
-  _PersonalizeScreenState createState() => _PersonalizeScreenState();
+  _PersonalizationScreenState createState() => _PersonalizationScreenState();
 }
 
-class _PersonalizeScreenState extends State<PersonalizeScreen> {
+class _PersonalizationScreenState extends State<PersonalizationScreen> {
   PersonalizationBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [RepositoryProvider(create: (context) {
-        _bloc = PersonalizationBloc();
-        return _bloc;
-      })],
+      providers: [
+        RepositoryProvider(create: (context) {
+          _bloc = PersonalizationBloc();
+          return _bloc;
+        })
+      ],
       child: PersonalizeFrame(),
     );
   }
@@ -63,4 +65,3 @@ class PersonalizeBody extends StatelessWidget {
     );
   }
 }
-
