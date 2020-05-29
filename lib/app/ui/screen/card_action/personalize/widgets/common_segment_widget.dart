@@ -23,7 +23,7 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
 
     _bloc = RepoFinder.personalizationBloc(context);
     _customBlockchainController = TextStreamController(_bloc.common.bsCustomBlockchain);
-    _maxSignaturesController = TextStreamController(_bloc.common.bsMaxSignatures);
+    _maxSignaturesController = TextStreamController(_bloc.common.bsMaxSignatures, [RegExp(r'\d+')]);
   }
 
   @override
