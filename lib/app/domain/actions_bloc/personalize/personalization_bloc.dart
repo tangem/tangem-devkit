@@ -3,7 +3,7 @@ import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'segments/common_segment.dart';
+import 'segments.dart';
 import 'store.dart';
 
 abstract class PersonalizationState {}
@@ -35,7 +35,6 @@ class PersonalizationBloc {
   _initSegments() {
     final currentConfig = _store.getCurrent();
     common = CommonSegment(this, currentConfig);
-
     _configSegments.add(common);
   }
 
