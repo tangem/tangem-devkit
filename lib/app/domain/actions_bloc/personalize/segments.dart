@@ -167,6 +167,10 @@ class SigningMethodSegment extends BaseSegment {
   }
 }
 
+//SignHashExProp
+
+//Token
+
 class ProductMask extends BaseSegment {
   final note = BehaviorSubject<bool>();
   final tag = BehaviorSubject<bool>();
@@ -189,50 +193,6 @@ class ProductMask extends BaseSegment {
     _subscriptions.add(tag.listen((isChecked) => _config.cardData.productTag = isChecked));
     _subscriptions.add(idCard.listen((isChecked) => _config.cardData.productIdCard = isChecked));
     _subscriptions.add(idIssuer.listen((isChecked) => _config.cardData.productIdIssuer = isChecked));
-  }
-}
-
-class SettingMaskProtocolEncryption extends BaseSegment {
-  final allowUnencrypted = BehaviorSubject<bool>();
-  final allowFastEncryption = BehaviorSubject<bool>();
-
-  SettingMaskProtocolEncryption(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
-
-  @override
-  _configWasUpdated() {
-    allowUnencrypted.add(_config.protocolAllowUnencrypted);
-    allowFastEncryption.add(_config.protocolAllowStaticEncryption);
-  }
-
-  @override
-  _initSubscriptions() {
-    _subscriptions.add(allowUnencrypted.listen((isChecked) => _config.protocolAllowUnencrypted = isChecked));
-    _subscriptions.add(allowFastEncryption.listen((isChecked) => _config.protocolAllowStaticEncryption = isChecked));
-  }
-}
-
-class PinsSegment extends BaseSegment {
-  final pin1 = BehaviorSubject<String>();
-  final pin2 = BehaviorSubject<String>();
-  final pin3 = BehaviorSubject<String>();
-  final cvc = BehaviorSubject<String>();
-
-  PinsSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
-
-  @override
-  _configWasUpdated() {
-    pin1.add(_config.pIN.toString());
-    pin2.add(_config.pIN2.toString());
-    pin3.add(_config.pIN3.toString());
-    cvc.add(_config.cVC.toString());
-  }
-
-  @override
-  _initSubscriptions() {
-    _subscriptions.add(pin1.listen((value) => _config.pIN = value));
-    _subscriptions.add(pin2.listen((value) => _config.pIN2 = value));
-    _subscriptions.add(pin3.listen((value) => _config.pIN3 = value));
-    _subscriptions.add(cvc.listen((value) => _config.cVC = value));
   }
 }
 
@@ -295,5 +255,127 @@ class SettingsMask extends BaseSegment {
     _subscriptions
         .add(skipSecurityDelayIfValidatedByLinkedTerminal.listen((isChecked) => _config.skipSecurityDelayIfValidatedByLinkedTerminal = isChecked));
     _subscriptions.add(restrictOverwriteIssuerDataEx.listen((isChecked) => _config.restrictOverwriteIssuerDataEx = isChecked));
+  }
+}
+
+class SettingMaskProtocolEncryption extends BaseSegment {
+  final allowUnencrypted = BehaviorSubject<bool>();
+  final allowFastEncryption = BehaviorSubject<bool>();
+
+  SettingMaskProtocolEncryption(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    allowUnencrypted.add(_config.protocolAllowUnencrypted);
+    allowFastEncryption.add(_config.protocolAllowStaticEncryption);
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(allowUnencrypted.listen((isChecked) => _config.protocolAllowUnencrypted = isChecked));
+    _subscriptions.add(allowFastEncryption.listen((isChecked) => _config.protocolAllowStaticEncryption = isChecked));
+  }
+}
+
+class SettingsMaskNdef extends BaseSegment {
+  final useNdef = BehaviorSubject<bool>();
+  final dynamicNdef = BehaviorSubject<bool>();
+  final disablePrecomputedNdef = BehaviorSubject<bool>();
+  final aar = BehaviorSubject<Pair<String, String>>();
+  final customAar = BehaviorSubject<String>();
+  final uri = BehaviorSubject<String>();
+
+  final typeAar = "AAR";
+  final typeUri = "URI";
+
+  SettingsMaskNdef(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    useNdef.add(_config.useNDEF);
+    dynamicNdef.add(_config.useDynamicNDEF);
+    disablePrecomputedNdef.add(_config.disablePrecomputedNDEF);
+    _updateNdefRecords();
+  }
+
+  _updateNdefRecords() {
+    Ndef findNdef(String type) => _config.ndef.firstWhere((element) => element.type == type, orElse: () => null);
+    final foundAar = findNdef(typeAar);
+    if (foundAar == null) {
+      aar.add(_bloc.values.getAar(""));
+    } else {
+      // isCustom?
+      if (_bloc.values.hasAar(foundAar.value)) {
+        aar.add(_bloc.values.getAar(foundAar.value));
+      } else {
+        customAar.add(foundAar.value);
+      }
+    }
+
+    final foundUri = findNdef(typeUri);
+    if (foundUri == null) return;
+
+    uri.add(foundUri.value);
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(useNdef.listen((value) => _config.useNDEF = value));
+    _subscriptions.add(dynamicNdef.listen((value) => _config.useDynamicNDEF = value));
+    _subscriptions.add(disablePrecomputedNdef.listen((value) => _config.disablePrecomputedNDEF = value));
+    _initNdefSubscriptions();
+  }
+
+  _initNdefSubscriptions() {
+    removeAll(String type) => _config.ndef.removeWhere((element) => element.type == type);
+    addNdef(String type, String value) => _config.ndef.add(Ndef(type: type, value: value));
+
+    _subscriptions.add(aar.listen((value) {
+      if (isCustom(value)) return;
+
+      removeAll(typeAar);
+      addNdef(typeAar, value.b);
+      customAar.add("");
+    }));
+
+    _subscriptions.add(customAar.listen((value) {
+      if (value.isEmpty) return;
+
+      removeAll(typeAar);
+      aar.add(_bloc.values.getCustom());
+      addNdef(typeAar, value);
+    }));
+
+    _subscriptions.add(uri.listen((value) {
+      removeAll(typeUri);
+      if (value.isEmpty) return;
+
+      addNdef(typeUri, value);
+    }));
+  }
+}
+
+class PinsSegment extends BaseSegment {
+  final pin1 = BehaviorSubject<String>();
+  final pin2 = BehaviorSubject<String>();
+  final pin3 = BehaviorSubject<String>();
+  final cvc = BehaviorSubject<String>();
+
+  PinsSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    pin1.add(_config.pIN.toString());
+    pin2.add(_config.pIN2.toString());
+    pin3.add(_config.pIN3.toString());
+    cvc.add(_config.cVC.toString());
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(pin1.listen((value) => _config.pIN = value));
+    _subscriptions.add(pin2.listen((value) => _config.pIN2 = value));
+    _subscriptions.add(pin3.listen((value) => _config.pIN3 = value));
+    _subscriptions.add(cvc.listen((value) => _config.cVC = value));
   }
 }

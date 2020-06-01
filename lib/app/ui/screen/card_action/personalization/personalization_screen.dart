@@ -9,6 +9,7 @@ import 'segment_widgets/card_number_segment_widget.dart';
 import 'segment_widgets/common_segment_widget.dart';
 import 'segment_widgets/pins_segment_widget.dart';
 import 'segment_widgets/product_mask_segment_widget.dart';
+import 'segment_widgets/settings_mask_ndef_segment_widget.dart';
 import 'segment_widgets/settings_mask_protocol_encryption_segment_widget.dart';
 import 'segment_widgets/settings_mask_segment_widget.dart';
 import 'segment_widgets/signing_method_segment_widget.dart';
@@ -69,10 +70,13 @@ class PersonalizeBody extends StatelessWidget {
           CardNumberSegmentWidget(),
           CommonSegmentWidget(),
           SigningMethodSegmentWidget(),
+          //SignHashExProp
+          //Token
           ProductMaskSegmentWidget(),
-          SettingMaskProtocolEncryptionSegmentWidget(),
-          PinsSegmentWidget(),
           SettingMaskSegmentWidget(),
+          SettingMaskProtocolEncryptionSegmentWidget(),
+          SettingsMaskNdefSegmentWidget(),
+          PinsSegmentWidget(),
         ],
       ),
     );

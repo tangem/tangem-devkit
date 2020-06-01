@@ -23,13 +23,17 @@ class PersonalizationBloc {
   PublishSubject<List<String>> psSavedConfigNames = PublishSubject();
 
   PersonalizationConfigStore _store;
-  CommonSegment common;
+
   CardNumberSegment cardNumber;
+  CommonSegment common;
   SigningMethodSegment signingMethod;
+  //SignHashExProp
+  //Token
   ProductMask productMask;
-  SettingMaskProtocolEncryption settingMaskProtocolEncryption;
-  PinsSegment pins;
   SettingsMask settingsMask;
+  SettingMaskProtocolEncryption settingMaskProtocolEncryption;
+  SettingsMaskNdef settingsMaskNdef;
+  PinsSegment pins;
 
   Stream<bool> get scrollingStateStream => _scrollingState.stream;
 
@@ -44,21 +48,27 @@ class PersonalizationBloc {
   _initSegments() {
     final currentConfig = _store.getCurrent();
 
-    common = CommonSegment(this, currentConfig);
     cardNumber = CardNumberSegment(this, currentConfig);
+    common = CommonSegment(this, currentConfig);
     signingMethod = SigningMethodSegment(this, currentConfig);
+    //SignHashExProp
+    //Token
     productMask = ProductMask(this, currentConfig);
-    settingMaskProtocolEncryption = SettingMaskProtocolEncryption(this, currentConfig);
-    pins = PinsSegment(this, currentConfig);
     settingsMask = SettingsMask(this, currentConfig);
+    settingMaskProtocolEncryption = SettingMaskProtocolEncryption(this, currentConfig);
+    settingsMaskNdef = SettingsMaskNdef(this, currentConfig);
+    pins = PinsSegment(this, currentConfig);
 
-    _configSegments.add(common);
     _configSegments.add(cardNumber);
+    _configSegments.add(common);
     _configSegments.add(signingMethod);
+    //SignHashExProp
+    //Token
     _configSegments.add(productMask);
-    _configSegments.add(settingMaskProtocolEncryption);
-    _configSegments.add(pins);
     _configSegments.add(settingsMask);
+    _configSegments.add(settingMaskProtocolEncryption);
+    _configSegments.add(settingsMaskNdef);
+    _configSegments.add(pins);
   }
 
   resetToDefaultConfig() {

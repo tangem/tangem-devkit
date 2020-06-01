@@ -54,6 +54,12 @@ class ItemName {
   static final skipCheckPIN2andCVCIfValidatedByIssuer = "skipCheckPIN2andCVCIfValidatedByIssuer";
   static final skipSecurityDelayIfValidatedByLinkedTerminal = "skipSecurityDelayIfValidatedByLinkedTerminal";
   static final restrictOverwriteIssuerDataEx = "restrictOverwriteIssuerDataEx";
+  static final useNdef = "useNdef";
+  static final dynamicNdef = "dynamicNdef";
+  static final disablePrecomputedNdef = "disablePrecomputedNdef";
+  static final aar = "aar";
+  static final customAar = "customAar";
+  static final uri = "uri";
 
   //response screen
   static final responseJson = "responseJson";
