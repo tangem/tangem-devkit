@@ -29,6 +29,7 @@ class PersonalizationBloc {
   ProductMask productMask;
   SettingMaskProtocolEncryption settingMaskProtocolEncryption;
   PinsSegment pins;
+  SettingsMask settingsMask;
 
   Stream<bool> get scrollingStateStream => _scrollingState.stream;
 
@@ -49,6 +50,7 @@ class PersonalizationBloc {
     productMask = ProductMask(this, currentConfig);
     settingMaskProtocolEncryption = SettingMaskProtocolEncryption(this, currentConfig);
     pins = PinsSegment(this, currentConfig);
+    settingsMask = SettingsMask(this, currentConfig);
 
     _configSegments.add(common);
     _configSegments.add(cardNumber);
@@ -56,6 +58,7 @@ class PersonalizationBloc {
     _configSegments.add(productMask);
     _configSegments.add(settingMaskProtocolEncryption);
     _configSegments.add(pins);
+    _configSegments.add(settingsMask);
   }
 
   resetToDefaultConfig() {

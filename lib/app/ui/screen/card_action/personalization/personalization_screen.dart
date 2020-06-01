@@ -10,6 +10,7 @@ import 'segment_widgets/common_segment_widget.dart';
 import 'segment_widgets/pins_segment_widget.dart';
 import 'segment_widgets/product_mask_segment_widget.dart';
 import 'segment_widgets/settings_mask_protocol_encryption_segment_widget.dart';
+import 'segment_widgets/settings_mask_segment_widget.dart';
 import 'segment_widgets/signing_method_segment_widget.dart';
 
 class PersonalizationScreen extends StatefulWidget {
@@ -71,6 +72,7 @@ class PersonalizeBody extends StatelessWidget {
           ProductMaskSegmentWidget(),
           SettingMaskProtocolEncryptionSegmentWidget(),
           PinsSegmentWidget(),
+          SettingMaskSegmentWidget(),
         ],
       ),
     );

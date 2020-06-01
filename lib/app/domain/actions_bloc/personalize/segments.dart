@@ -235,3 +235,65 @@ class PinsSegment extends BaseSegment {
     _subscriptions.add(cvc.listen((value) => _config.cVC = value));
   }
 }
+
+class SettingsMask extends BaseSegment {
+  final isReusable = BehaviorSubject<bool>();
+  final useActivation = BehaviorSubject<bool>();
+  final forbidPurgeWallet = BehaviorSubject<bool>();
+  final allowSelectBlockchain = BehaviorSubject<bool>();
+  final useBlock = BehaviorSubject<bool>();
+  final useOneCommandAtTime = BehaviorSubject<bool>();
+  final useCVC = BehaviorSubject<bool>();
+  final allowSwapPIN1 = BehaviorSubject<bool>();
+  final allowSwapPIN2 = BehaviorSubject<bool>();
+  final forbidDefaultPIN = BehaviorSubject<bool>();
+  final smartSecurityDelay = BehaviorSubject<bool>();
+  final protectIssuerDataAgainstReplay = BehaviorSubject<bool>();
+  final skipSecurityDelayIfValidatedByIssuer = BehaviorSubject<bool>();
+  final skipCheckPIN2andCVCIfValidatedByIssuer = BehaviorSubject<bool>();
+  final skipSecurityDelayIfValidatedByLinkedTerminal = BehaviorSubject<bool>();
+  final restrictOverwriteIssuerDataEx = BehaviorSubject<bool>();
+
+  SettingsMask(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    isReusable.add(_config.isReusable);
+    useActivation.add(_config.useActivation);
+    forbidPurgeWallet.add(_config.forbidPurgeWallet);
+    allowSelectBlockchain.add(_config.allowSelectBlockchain);
+    useBlock.add(_config.useBlock);
+    useOneCommandAtTime.add(_config.useOneCommandAtTime);
+    useCVC.add(_config.useCVC);
+    allowSwapPIN1.add(_config.allowSwapPIN);
+    allowSwapPIN2.add(_config.allowSwapPIN2);
+    forbidDefaultPIN.add(_config.forbidDefaultPIN);
+    smartSecurityDelay.add(_config.smartSecurityDelay);
+    protectIssuerDataAgainstReplay.add(_config.protectIssuerDataAgainstReplay);
+    skipSecurityDelayIfValidatedByIssuer.add(_config.skipSecurityDelayIfValidatedByIssuer);
+    skipCheckPIN2andCVCIfValidatedByIssuer.add(_config.skipCheckPIN2andCVCIfValidatedByIssuer);
+    skipSecurityDelayIfValidatedByLinkedTerminal.add(_config.skipSecurityDelayIfValidatedByLinkedTerminal);
+    restrictOverwriteIssuerDataEx.add(_config.restrictOverwriteIssuerDataEx);
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(isReusable.listen((isChecked) => _config.isReusable = isChecked));
+    _subscriptions.add(useActivation.listen((isChecked) => _config.useActivation = isChecked));
+    _subscriptions.add(forbidPurgeWallet.listen((isChecked) => _config.forbidPurgeWallet = isChecked));
+    _subscriptions.add(allowSelectBlockchain.listen((isChecked) => _config.allowSelectBlockchain = isChecked));
+    _subscriptions.add(useBlock.listen((isChecked) => _config.useBlock = isChecked));
+    _subscriptions.add(useOneCommandAtTime.listen((isChecked) => _config.useOneCommandAtTime = isChecked));
+    _subscriptions.add(useCVC.listen((isChecked) => _config.useCVC = isChecked));
+    _subscriptions.add(allowSwapPIN1.listen((isChecked) => _config.allowSwapPIN = isChecked));
+    _subscriptions.add(allowSwapPIN2.listen((isChecked) => _config.allowSwapPIN2 = isChecked));
+    _subscriptions.add(forbidDefaultPIN.listen((isChecked) => _config.forbidDefaultPIN = isChecked));
+    _subscriptions.add(smartSecurityDelay.listen((isChecked) => _config.smartSecurityDelay = isChecked));
+    _subscriptions.add(protectIssuerDataAgainstReplay.listen((isChecked) => _config.protectIssuerDataAgainstReplay = isChecked));
+    _subscriptions.add(skipSecurityDelayIfValidatedByIssuer.listen((isChecked) => _config.skipSecurityDelayIfValidatedByIssuer = isChecked));
+    _subscriptions.add(skipCheckPIN2andCVCIfValidatedByIssuer.listen((isChecked) => _config.skipCheckPIN2andCVCIfValidatedByIssuer = isChecked));
+    _subscriptions
+        .add(skipSecurityDelayIfValidatedByLinkedTerminal.listen((isChecked) => _config.skipSecurityDelayIfValidatedByLinkedTerminal = isChecked));
+    _subscriptions.add(restrictOverwriteIssuerDataEx.listen((isChecked) => _config.restrictOverwriteIssuerDataEx = isChecked));
+  }
+}
