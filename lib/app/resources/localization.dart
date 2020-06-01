@@ -354,9 +354,9 @@ class Transl {
 
   String get desc_pers_item_is_reusable => get("desc_pers_item_is_reusable");
 
-  String get pers_item_need_activation => get("pers_item_need_activation");
+  String get pers_item_use_activation => get("pers_item_use_activation");
 
-  String get desc_pers_item_need_activation => get("desc_pers_item_need_activation");
+  String get desc_pers_item_use_activation => get("desc_pers_item_use_activation");
 
   String get pers_item_forbid_purge => get("pers_item_forbid_purge");
 
@@ -378,9 +378,9 @@ class Transl {
 
   String get desc_pers_item_use_cvc => get("desc_pers_item_use_cvc");
 
-  String get pers_item_allow_swap_pin => get("pers_item_allow_swap_pin");
+  String get pers_item_allow_swap_pin1 => get("pers_item_allow_swap_pin");
 
-  String get desc_pers_item_allow_swap_pin => get("desc_pers_item_allow_swap_pin");
+  String get desc_pers_item_allow_swap_pin1 => get("desc_pers_item_allow_swap_pin");
 
   String get pers_item_allow_swap_pin2 => get("pers_item_allow_swap_pin2");
 

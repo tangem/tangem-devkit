@@ -12,7 +12,7 @@ class SettingMaskProtocolEncryptionSegmentWidget extends StatelessWidget {
 
     return Column(
       children: <Widget>[
-        SegmentHeader(transl.pers_segment_product_mask, description: transl.desc_pers_segment_product_mask),
+        SegmentHeader(transl.pers_segment_settings_mask_protocol_enc, description: transl.desc_pers_segment_settings_mask_protocol_enc),
         HorizontalDelimiter(),
         SwitchWidget(
           ItemName.allowUnencrypted,
