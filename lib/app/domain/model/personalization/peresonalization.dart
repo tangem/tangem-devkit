@@ -202,6 +202,9 @@ class CardData {
   String batch;
   String blockchain;
   String date;
+  String tokenSymbol;
+  String tokenContractAddress;
+  int tokenDeciaml;
   bool productIdCard;
   bool productIdIssuer;
   bool productNote;
@@ -213,6 +216,9 @@ class CardData {
     batch = json['batch'];
     blockchain = json['blockchain'];
     date = json['date'];
+    tokenSymbol = json['token_symbol'];
+    tokenContractAddress = json['token_contract_address'];
+    tokenDeciaml = json['token_decimal'];
     productIdCard = json['product_id_card'];
     productIdIssuer = json['product_id_issuer'];
     productNote = json['product_note'];
@@ -224,6 +230,9 @@ class CardData {
     data['batch'] = this.batch;
     data['blockchain'] = this.blockchain;
     data['date'] = this.date;
+    data['token_symbol'] = tokenSymbol;
+    data['token_contract_address'] = tokenContractAddress;
+    data['token_decimal'] = tokenDeciaml;
     data['product_id_card'] = this.productIdCard;
     data['product_id_issuer'] = this.productIdIssuer;
     data['product_note'] = this.productNote;
