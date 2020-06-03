@@ -196,7 +196,59 @@ class SignHashExProperties extends BaseSegment {
   }
 }
 
-//Token
+class Token extends BaseSegment {
+  final itsToken = BehaviorSubject<bool>();
+  final tokenSymbol = BehaviorSubject<String>();
+  final tokenContractAddress = BehaviorSubject<String>();
+  final tokenDecimal = BehaviorSubject<String>();
+
+  Token(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    itsToken.add(_itsToken());
+    tokenSymbol.add(stringOf(_config.cardData.tokenSymbol));
+    tokenContractAddress.add(stringOf(_config.cardData.tokenContractAddress));
+    tokenDecimal.add(stringOf(_config.cardData.tokenDeciaml));
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(itsToken.listen((value) {
+      if (!value) {
+        tokenSymbol.add("");
+        tokenContractAddress.add("");
+        tokenDecimal.add("");
+      }
+    }));
+    _subscriptions.add(tokenSymbol.listen((value) {
+      if (_config.cardData.tokenSymbol == value) return;
+
+      _config.cardData.tokenSymbol = value;
+      itsToken.add(_itsToken());
+    }));
+    _subscriptions.add(tokenContractAddress.listen((value) {
+      if (_config.cardData.tokenContractAddress == value) return;
+
+      _config.cardData.tokenContractAddress = value;
+      itsToken.add(_itsToken());
+    }));
+    _subscriptions.add(tokenDecimal.listen((value) {
+      final decimal = value.isEmpty ? null : int.parse(value);
+      if (_config.cardData.tokenDeciaml == decimal) return;
+
+      _config.cardData.tokenDeciaml = decimal;
+      itsToken.add(_itsToken());
+    }));
+  }
+
+  bool _itsToken() {
+    final symbol = stringOf(_config.cardData.tokenSymbol);
+    final address = stringOf(_config.cardData.tokenContractAddress);
+    final decimal = stringOf(_config.cardData.tokenDeciaml);
+    return symbol.isNotEmpty || address.isNotEmpty || decimal.isNotEmpty;
+  }
+}
 
 class ProductMask extends BaseSegment {
   final note = BehaviorSubject<bool>();

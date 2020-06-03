@@ -14,6 +14,7 @@ import 'segment_widgets/settings_mask_ndef_segment_widget.dart';
 import 'segment_widgets/settings_mask_protocol_encryption_segment_widget.dart';
 import 'segment_widgets/settings_mask_segment_widget.dart';
 import 'segment_widgets/signing_method_segment_widget.dart';
+import 'segment_widgets/token_segment_widget.dart';
 
 class PersonalizationScreen extends StatefulWidget {
   @override
@@ -72,7 +73,7 @@ class PersonalizeBody extends StatelessWidget {
           CommonSegmentWidget(),
           SigningMethodSegmentWidget(),
           SignHashExPropSegmentWidget(),
-          //Token
+          TokenSegmentWidget(),
           ProductMaskSegmentWidget(),
           SettingMaskSegmentWidget(),
           SettingMaskProtocolEncryptionSegmentWidget(),

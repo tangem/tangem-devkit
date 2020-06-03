@@ -1,7 +1,7 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
 import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
-import 'package:flutter/src/widgets/scroll_notification.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'segments.dart';
@@ -28,8 +28,7 @@ class PersonalizationBloc {
   CommonSegment common;
   SigningMethodSegment signingMethod;
   SignHashExProperties signHashExProperties;
-
-  //Token
+  Token token;
   ProductMask productMask;
   SettingsMask settingsMask;
   SettingMaskProtocolEncryption settingMaskProtocolEncryption;
@@ -53,7 +52,7 @@ class PersonalizationBloc {
     common = CommonSegment(this, currentConfig);
     signingMethod = SigningMethodSegment(this, currentConfig);
     signHashExProperties = SignHashExProperties(this, currentConfig);
-    //Token
+    token = Token(this, currentConfig);
     productMask = ProductMask(this, currentConfig);
     settingsMask = SettingsMask(this, currentConfig);
     settingMaskProtocolEncryption = SettingMaskProtocolEncryption(this, currentConfig);
@@ -64,7 +63,7 @@ class PersonalizationBloc {
     _configSegments.add(common);
     _configSegments.add(signingMethod);
     _configSegments.add(signHashExProperties);
-    //Token
+    _configSegments.add(token);
     _configSegments.add(productMask);
     _configSegments.add(settingsMask);
     _configSegments.add(settingMaskProtocolEncryption);
