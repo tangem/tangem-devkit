@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
 import 'package:devkit/app/domain/utils/signing_method_mask_builder.dart';
 import 'package:devkit/commons/common_abstracts.dart';
+import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'personalization_bloc.dart';
@@ -167,7 +168,33 @@ class SigningMethodSegment extends BaseSegment {
   }
 }
 
-//SignHashExProp
+class SignHashExProperties extends BaseSegment {
+  final pinLessFloorLimit = BehaviorSubject<String>();
+  final hexCrExKey = BehaviorSubject<String>();
+  final requireTerminalCertSignature = BehaviorSubject<bool>();
+  final requireTerminalTxSignature = BehaviorSubject<bool>();
+  final checkPIN3onCard = BehaviorSubject<bool>();
+
+  SignHashExProperties(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    pinLessFloorLimit.add("100000");
+    hexCrExKey.add(_config.hexCrExKey);
+    requireTerminalCertSignature.add(_config.requireTerminalCertSignature);
+    requireTerminalTxSignature.add(_config.requireTerminalTxSignature);
+    checkPIN3onCard.add(_config.checkPIN3onCard);
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(pinLessFloorLimit.listen((value) => logE(this, "Attribute not implemented in the personalization JSON")));
+    _subscriptions.add(hexCrExKey.listen((value) => _config.hexCrExKey = value));
+    _subscriptions.add(requireTerminalCertSignature.listen((value) => _config.requireTerminalCertSignature = value));
+    _subscriptions.add(requireTerminalTxSignature.listen((value) => _config.requireTerminalTxSignature = value));
+    _subscriptions.add(checkPIN3onCard.listen((value) => _config.checkPIN3onCard = value));
+  }
+}
 
 //Token
 

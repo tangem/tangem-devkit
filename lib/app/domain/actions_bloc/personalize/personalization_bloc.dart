@@ -27,7 +27,8 @@ class PersonalizationBloc {
   CardNumberSegment cardNumber;
   CommonSegment common;
   SigningMethodSegment signingMethod;
-  //SignHashExProp
+  SignHashExProperties signHashExProperties;
+
   //Token
   ProductMask productMask;
   SettingsMask settingsMask;
@@ -51,7 +52,7 @@ class PersonalizationBloc {
     cardNumber = CardNumberSegment(this, currentConfig);
     common = CommonSegment(this, currentConfig);
     signingMethod = SigningMethodSegment(this, currentConfig);
-    //SignHashExProp
+    signHashExProperties = SignHashExProperties(this, currentConfig);
     //Token
     productMask = ProductMask(this, currentConfig);
     settingsMask = SettingsMask(this, currentConfig);
@@ -62,7 +63,7 @@ class PersonalizationBloc {
     _configSegments.add(cardNumber);
     _configSegments.add(common);
     _configSegments.add(signingMethod);
-    //SignHashExProp
+    _configSegments.add(signHashExProperties);
     //Token
     _configSegments.add(productMask);
     _configSegments.add(settingsMask);

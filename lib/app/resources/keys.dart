@@ -60,6 +60,11 @@ class ItemName {
   static final aar = "aar";
   static final customAar = "customAar";
   static final uri = "uri";
+  static final pinLessFloorLimit = "pinLessFloorLimit";
+  static final hexCrExKey = "hexCrExKey";
+  static final requireTerminalCertSignature = "requireTerminalCertSignature";
+  static final requireTerminalTxSignature = "requireTerminalTxSignature";
+  static final checkPIN3onCard = "checkPIN3onCard";
 
   //response screen
   static final responseJson = "responseJson";

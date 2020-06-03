@@ -1,5 +1,6 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
+import 'package:devkit/app/ui/screen/card_action/personalization/segment_widgets/sign_hash_ex_prop_segment_widget.dart';
 import 'package:devkit/app/ui/screen/finders.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,7 @@ class PersonalizeBody extends StatelessWidget {
           CardNumberSegmentWidget(),
           CommonSegmentWidget(),
           SigningMethodSegmentWidget(),
-          //SignHashExProp
+          SignHashExPropSegmentWidget(),
           //Token
           ProductMaskSegmentWidget(),
           SettingMaskSegmentWidget(),
