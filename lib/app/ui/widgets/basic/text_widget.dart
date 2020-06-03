@@ -9,7 +9,7 @@ class TextWidget extends StatelessWidget {
   final TextAlign textAlign;
   final int maxLines;
 
-  const TextWidget(this.text, {this.keyName, this.fontSize, this.color, this.textAlign, this.maxLines = 1});
+  const TextWidget(this.text, {this.keyName, this.fontSize, this.color, this.textAlign, this.maxLines});
 
   @override
   Widget build(BuildContext context) => Text(
