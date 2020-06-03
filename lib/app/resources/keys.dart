@@ -38,6 +38,33 @@ class ItemName {
   static final pin2 = "pin2";
   static final pin3 = "pin3";
   static final cvc = "cvc";
+  static final isReusable = "isReusable";
+  static final useActivation = "useActivation";
+  static final forbidPurgeWallet = "forbidPurgeWallet";
+  static final allowSelectBlockchain = "allowSelectBlockchain";
+  static final useBlock = "useBlock";
+  static final useOneCommandAtTime = "useOneCommandAtTime";
+  static final useCVC = "useCVC";
+  static final allowSwapPIN1 = "allowSwapPIN";
+  static final allowSwapPIN2 = "allowSwapPIN2";
+  static final forbidDefaultPIN = "forbidDefaultPIN";
+  static final smartSecurityDelay = "smartSecurityDelay";
+  static final protectIssuerDataAgainstReplay = "protectIssuerDataAgainstReplay";
+  static final skipSecurityDelayIfValidatedByIssuer = "skipSecurityDelayIfValidatedByIssuer";
+  static final skipCheckPIN2andCVCIfValidatedByIssuer = "skipCheckPIN2andCVCIfValidatedByIssuer";
+  static final skipSecurityDelayIfValidatedByLinkedTerminal = "skipSecurityDelayIfValidatedByLinkedTerminal";
+  static final restrictOverwriteIssuerDataEx = "restrictOverwriteIssuerDataEx";
+  static final useNdef = "useNdef";
+  static final dynamicNdef = "dynamicNdef";
+  static final disablePrecomputedNdef = "disablePrecomputedNdef";
+  static final aar = "aar";
+  static final customAar = "customAar";
+  static final uri = "uri";
+  static final pinLessFloorLimit = "pinLessFloorLimit";
+  static final hexCrExKey = "hexCrExKey";
+  static final requireTerminalCertSignature = "requireTerminalCertSignature";
+  static final requireTerminalTxSignature = "requireTerminalTxSignature";
+  static final checkPIN3onCard = "checkPIN3onCard";
 
   //response screen
   static final responseJson = "responseJson";

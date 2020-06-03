@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
 import 'package:devkit/app/domain/utils/signing_method_mask_builder.dart';
 import 'package:devkit/commons/common_abstracts.dart';
+import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'personalization_bloc.dart';
@@ -167,6 +168,36 @@ class SigningMethodSegment extends BaseSegment {
   }
 }
 
+class SignHashExProperties extends BaseSegment {
+  final pinLessFloorLimit = BehaviorSubject<String>();
+  final hexCrExKey = BehaviorSubject<String>();
+  final requireTerminalCertSignature = BehaviorSubject<bool>();
+  final requireTerminalTxSignature = BehaviorSubject<bool>();
+  final checkPIN3onCard = BehaviorSubject<bool>();
+
+  SignHashExProperties(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    pinLessFloorLimit.add("100000");
+    hexCrExKey.add(_config.hexCrExKey);
+    requireTerminalCertSignature.add(_config.requireTerminalCertSignature);
+    requireTerminalTxSignature.add(_config.requireTerminalTxSignature);
+    checkPIN3onCard.add(_config.checkPIN3onCard);
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(pinLessFloorLimit.listen((value) => logE(this, "Attribute not implemented in the personalization JSON")));
+    _subscriptions.add(hexCrExKey.listen((value) => _config.hexCrExKey = value));
+    _subscriptions.add(requireTerminalCertSignature.listen((value) => _config.requireTerminalCertSignature = value));
+    _subscriptions.add(requireTerminalTxSignature.listen((value) => _config.requireTerminalTxSignature = value));
+    _subscriptions.add(checkPIN3onCard.listen((value) => _config.checkPIN3onCard = value));
+  }
+}
+
+//Token
+
 class ProductMask extends BaseSegment {
   final note = BehaviorSubject<bool>();
   final tag = BehaviorSubject<bool>();
@@ -192,6 +223,68 @@ class ProductMask extends BaseSegment {
   }
 }
 
+class SettingsMask extends BaseSegment {
+  final isReusable = BehaviorSubject<bool>();
+  final useActivation = BehaviorSubject<bool>();
+  final forbidPurgeWallet = BehaviorSubject<bool>();
+  final allowSelectBlockchain = BehaviorSubject<bool>();
+  final useBlock = BehaviorSubject<bool>();
+  final useOneCommandAtTime = BehaviorSubject<bool>();
+  final useCVC = BehaviorSubject<bool>();
+  final allowSwapPIN1 = BehaviorSubject<bool>();
+  final allowSwapPIN2 = BehaviorSubject<bool>();
+  final forbidDefaultPIN = BehaviorSubject<bool>();
+  final smartSecurityDelay = BehaviorSubject<bool>();
+  final protectIssuerDataAgainstReplay = BehaviorSubject<bool>();
+  final skipSecurityDelayIfValidatedByIssuer = BehaviorSubject<bool>();
+  final skipCheckPIN2andCVCIfValidatedByIssuer = BehaviorSubject<bool>();
+  final skipSecurityDelayIfValidatedByLinkedTerminal = BehaviorSubject<bool>();
+  final restrictOverwriteIssuerDataEx = BehaviorSubject<bool>();
+
+  SettingsMask(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    isReusable.add(_config.isReusable);
+    useActivation.add(_config.useActivation);
+    forbidPurgeWallet.add(_config.forbidPurgeWallet);
+    allowSelectBlockchain.add(_config.allowSelectBlockchain);
+    useBlock.add(_config.useBlock);
+    useOneCommandAtTime.add(_config.useOneCommandAtTime);
+    useCVC.add(_config.useCVC);
+    allowSwapPIN1.add(_config.allowSwapPIN);
+    allowSwapPIN2.add(_config.allowSwapPIN2);
+    forbidDefaultPIN.add(_config.forbidDefaultPIN);
+    smartSecurityDelay.add(_config.smartSecurityDelay);
+    protectIssuerDataAgainstReplay.add(_config.protectIssuerDataAgainstReplay);
+    skipSecurityDelayIfValidatedByIssuer.add(_config.skipSecurityDelayIfValidatedByIssuer);
+    skipCheckPIN2andCVCIfValidatedByIssuer.add(_config.skipCheckPIN2andCVCIfValidatedByIssuer);
+    skipSecurityDelayIfValidatedByLinkedTerminal.add(_config.skipSecurityDelayIfValidatedByLinkedTerminal);
+    restrictOverwriteIssuerDataEx.add(_config.restrictOverwriteIssuerDataEx);
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(isReusable.listen((isChecked) => _config.isReusable = isChecked));
+    _subscriptions.add(useActivation.listen((isChecked) => _config.useActivation = isChecked));
+    _subscriptions.add(forbidPurgeWallet.listen((isChecked) => _config.forbidPurgeWallet = isChecked));
+    _subscriptions.add(allowSelectBlockchain.listen((isChecked) => _config.allowSelectBlockchain = isChecked));
+    _subscriptions.add(useBlock.listen((isChecked) => _config.useBlock = isChecked));
+    _subscriptions.add(useOneCommandAtTime.listen((isChecked) => _config.useOneCommandAtTime = isChecked));
+    _subscriptions.add(useCVC.listen((isChecked) => _config.useCVC = isChecked));
+    _subscriptions.add(allowSwapPIN1.listen((isChecked) => _config.allowSwapPIN = isChecked));
+    _subscriptions.add(allowSwapPIN2.listen((isChecked) => _config.allowSwapPIN2 = isChecked));
+    _subscriptions.add(forbidDefaultPIN.listen((isChecked) => _config.forbidDefaultPIN = isChecked));
+    _subscriptions.add(smartSecurityDelay.listen((isChecked) => _config.smartSecurityDelay = isChecked));
+    _subscriptions.add(protectIssuerDataAgainstReplay.listen((isChecked) => _config.protectIssuerDataAgainstReplay = isChecked));
+    _subscriptions.add(skipSecurityDelayIfValidatedByIssuer.listen((isChecked) => _config.skipSecurityDelayIfValidatedByIssuer = isChecked));
+    _subscriptions.add(skipCheckPIN2andCVCIfValidatedByIssuer.listen((isChecked) => _config.skipCheckPIN2andCVCIfValidatedByIssuer = isChecked));
+    _subscriptions
+        .add(skipSecurityDelayIfValidatedByLinkedTerminal.listen((isChecked) => _config.skipSecurityDelayIfValidatedByLinkedTerminal = isChecked));
+    _subscriptions.add(restrictOverwriteIssuerDataEx.listen((isChecked) => _config.restrictOverwriteIssuerDataEx = isChecked));
+  }
+}
+
 class SettingMaskProtocolEncryption extends BaseSegment {
   final allowUnencrypted = BehaviorSubject<bool>();
   final allowFastEncryption = BehaviorSubject<bool>();
@@ -208,6 +301,84 @@ class SettingMaskProtocolEncryption extends BaseSegment {
   _initSubscriptions() {
     _subscriptions.add(allowUnencrypted.listen((isChecked) => _config.protocolAllowUnencrypted = isChecked));
     _subscriptions.add(allowFastEncryption.listen((isChecked) => _config.protocolAllowStaticEncryption = isChecked));
+  }
+}
+
+class SettingsMaskNdef extends BaseSegment {
+  final useNdef = BehaviorSubject<bool>();
+  final dynamicNdef = BehaviorSubject<bool>();
+  final disablePrecomputedNdef = BehaviorSubject<bool>();
+  final aar = BehaviorSubject<Pair<String, String>>();
+  final customAar = BehaviorSubject<String>();
+  final uri = BehaviorSubject<String>();
+
+  final typeAar = "AAR";
+  final typeUri = "URI";
+
+  SettingsMaskNdef(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+
+  @override
+  _configWasUpdated() {
+    useNdef.add(_config.useNDEF);
+    dynamicNdef.add(_config.useDynamicNDEF);
+    disablePrecomputedNdef.add(_config.disablePrecomputedNDEF);
+    _updateNdefRecords();
+  }
+
+  _updateNdefRecords() {
+    Ndef findNdef(String type) => _config.ndef.firstWhere((element) => element.type == type, orElse: () => null);
+    final foundAar = findNdef(typeAar);
+    if (foundAar == null) {
+      aar.add(_bloc.values.getAar(""));
+    } else {
+      // isCustom?
+      if (_bloc.values.hasAar(foundAar.value)) {
+        aar.add(_bloc.values.getAar(foundAar.value));
+      } else {
+        customAar.add(foundAar.value);
+      }
+    }
+
+    final foundUri = findNdef(typeUri);
+    if (foundUri == null) return;
+
+    uri.add(foundUri.value);
+  }
+
+  @override
+  _initSubscriptions() {
+    _subscriptions.add(useNdef.listen((value) => _config.useNDEF = value));
+    _subscriptions.add(dynamicNdef.listen((value) => _config.useDynamicNDEF = value));
+    _subscriptions.add(disablePrecomputedNdef.listen((value) => _config.disablePrecomputedNDEF = value));
+    _initNdefSubscriptions();
+  }
+
+  _initNdefSubscriptions() {
+    removeAll(String type) => _config.ndef.removeWhere((element) => element.type == type);
+    addNdef(String type, String value) => _config.ndef.add(Ndef(type: type, value: value));
+
+    _subscriptions.add(aar.listen((value) {
+      if (isCustom(value)) return;
+
+      removeAll(typeAar);
+      addNdef(typeAar, value.b);
+      customAar.add("");
+    }));
+
+    _subscriptions.add(customAar.listen((value) {
+      if (value.isEmpty) return;
+
+      removeAll(typeAar);
+      aar.add(_bloc.values.getCustom());
+      addNdef(typeAar, value);
+    }));
+
+    _subscriptions.add(uri.listen((value) {
+      removeAll(typeUri);
+      if (value.isEmpty) return;
+
+      addNdef(typeUri, value);
+    }));
   }
 }
 
