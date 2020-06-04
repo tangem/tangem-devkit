@@ -3,12 +3,16 @@ package com.tangem.flutter.plugin.tangem_sdk
 import android.app.Activity
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.lifecycle.Lifecycle
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.tangem.Config
 import com.tangem.Message
 import com.tangem.TangemSdk
 import com.tangem.commands.common.ResponseConverter
+import com.tangem.commands.personalization.entities.*
 import com.tangem.common.CompletionResult
 import com.tangem.common.extensions.hexToBytes
 import com.tangem.tangem_sdk_new.DefaultSessionViewDelegate
@@ -24,7 +28,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.lang.ref.WeakReference
 
 /** TangemSdkPlugin */
@@ -74,6 +77,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     when (call.method) {
       "scanCard" -> scanCard(call, result)
       "sign" -> sign(call, result)
+      "personalize" -> personalize(call, result)
       "depersonalize" -> depersonalize(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
@@ -94,6 +98,36 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     } catch (ex: Exception) {
       handleException(result, ex)
     }
+  }
+
+  private fun personalize(call: MethodCall, result: Result) {
+    try {
+      val cardConfig = extractCardConfig(call);
+      val issuer = extractObject("issuer", call, converter.gson, Issuer::class.java)
+      val manufacturer = extractObject("manufacturer", call, converter.gson, Manufacturer::class.java)
+      val acquirer = extractObject("acquirer", call, converter.gson, Acquirer::class.java)
+      sdk.personalize(cardConfig, issuer, manufacturer, acquirer, message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun extractCardConfig(call: MethodCall): CardConfig {
+    val broken = extractObject("cardConfig", call, converter.gson, CardConfig::class.java)
+    val repairedNdefRecords = mutableListOf<NdefRecord>()
+    broken.ndefRecords.forEach { repairedNdefRecords.add(NdefRecord(it.type, it.value)) }
+    val config = CardConfig(
+        broken.issuerName, broken.acquirerName, broken.series, broken.startNumber, broken.count, broken.pin, broken.pin2,
+        broken.pin3, broken.hexCrExKey, broken.cvc, broken.pauseBeforePin2, broken.smartSecurityDelay, broken.curveID,
+        broken.signingMethods, broken.maxSignatures, broken.isReusable, broken.allowSwapPin, broken.allowSwapPin2,
+        broken.useActivation, broken.useCvc, broken.useNdef, broken.useDynamicNdef, broken.useOneCommandAtTime, broken
+        .useBlock, broken.allowSelectBlockchain, broken.forbidPurgeWallet, broken.protocolAllowUnencrypted,
+        broken.protocolAllowStaticEncryption, broken.protectIssuerDataAgainstReplay, broken.forbidDefaultPin,
+        broken.disablePrecomputedNdef, broken.skipSecurityDelayIfValidatedByIssuer,
+        broken.skipCheckPIN2andCVCIfValidatedByIssuer, broken.skipSecurityDelayIfValidatedByLinkedTerminal,
+        broken.restrictOverwriteIssuerDataEx, broken.requireTerminalTxSignature, broken.requireTerminalCertSignature,
+        broken.checkPin3onCard, broken.createWallet, broken.cardData, repairedNdefRecords)
+    return config
   }
 
   private fun depersonalize(call: MethodCall, result: Result) {
@@ -129,8 +163,12 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
     handler.post {
       val code = 9999
-      val localizedDescription = ex.localizedMessage ?: ex.message ?: ex.toString()
-      result.error("$code", localizedDescription, PluginError(code, localizedDescription))
+      val localizedDescription: String = if (ex is JsonSyntaxException) {
+        ex.cause.toString()
+      } else {
+        ex.localizedMessage ?: ex.message ?: ex.toString()
+      }
+      result.error("$code", localizedDescription, converter.gson.toJson(PluginError(code, localizedDescription)))
     }
   }
 
@@ -167,6 +205,14 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       if (javaList == null || javaList.isEmpty()) throw NoSuchFieldException("hashes")
 
       return javaList.map { it.hexToBytes() }.toTypedArray()
+    }
+
+    @Throws(Exception::class)
+    private fun <T> extractObject(name: String, call: MethodCall, gson: Gson, type: Class<T>): T {
+      if (! call.hasArgument(name)) throw NoSuchFieldException(name)
+
+      val jsonString = call.argument<String>(name)
+      return gson.fromJson(jsonString, type)
     }
 
     //    @Throws(Exception::class)
