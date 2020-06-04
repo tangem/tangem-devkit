@@ -2,8 +2,8 @@ import 'package:devkit/app/domain/actions_bloc/personalize/personalization_value
 import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
-import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tangem_sdk/card_responses/card_response.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
@@ -41,11 +41,13 @@ class PersonalizationBloc {
   PublishSubject _successResponse = PublishSubject<Card>();
   PublishSubject _errorResponse = PublishSubject<ErrorResponse>();
 
-  Stream get successResponseStream => _successResponse.stream;
+  Stream<Card> get successResponseStream => _successResponse.stream;
 
-  Stream get errorResponseStream => _errorResponse.stream;
+  Stream<ErrorResponse> get errorResponseStream => _errorResponse.stream;
 
   Stream<bool> get scrollingStateStream => _scrollingState.stream;
+
+  Sink<bool> get scrollingStateSink => _scrollingState.sink;
 
   PersonalizationBloc() {
     logD(this, "new instance");
@@ -112,20 +114,6 @@ class PersonalizationBloc {
 
   PersonalizationConfig _getDefaultConfig() => PersonalizationConfig.getDefault();
 
-  dispose() {
-    _configSegments.forEach((element) => element.dispose());
-    _store.save();
-  }
-
-  bool handleScrollNotification(ScrollNotification notification) {
-    if (notification is ScrollStartNotification) {
-      _scrollingState.add(true);
-    } else if (notification is ScrollEndNotification) {
-      _scrollingState.add(false);
-    }
-    return false;
-  }
-
   personalize() {
     final issuer = Issuer.def();
     final acquirer = Acquirer.def();
@@ -143,5 +131,10 @@ class PersonalizationBloc {
       TangemSdk.acquirer: acquirer,
       TangemSdk.manufacturer: manufacturer,
     });
+  }
+
+  dispose() {
+    _configSegments.forEach((element) => element.dispose());
+    _store.save();
   }
 }

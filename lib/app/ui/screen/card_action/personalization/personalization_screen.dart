@@ -69,7 +69,14 @@ class PersonalizeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = RepoFinder.personalizationBloc(context);
     return NotificationListener<ScrollNotification>(
-      onNotification: bloc.handleScrollNotification,
+      onNotification: (notification) {
+        if (notification is ScrollStartNotification) {
+          bloc.scrollingStateSink.add(true);
+        } else if (notification is ScrollEndNotification) {
+          bloc.scrollingStateSink.add(false);
+        }
+        return false;
+      },
       child: ListView(
         children: <Widget>[
           ResponseHandlerWidget(),
