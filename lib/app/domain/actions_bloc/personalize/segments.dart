@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
-import 'package:devkit/app/domain/utils/signing_method_mask_builder.dart';
+import 'package:devkit/app/domain/model/personalization/support_classes.dart';
+import 'package:devkit/app/domain/model/personalization/signing_method_mask.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
@@ -72,7 +72,7 @@ class CommonSegment extends BaseSegment {
     _subscriptions.add(bsBlockchain.listen(_listenBlockchain));
     _subscriptions.add(bsCustomBlockchain.listen(_listenCustomBlockchain));
     _subscriptions.add(bsCurve.listen((value) => _config.curveID = value.b));
-    _subscriptions.add(bsMaxSignatures.listen((value) => _config.maxSignatures = value.isEmpty ? 0 : int.parse(value)));
+    _subscriptions.add(bsMaxSignatures.listen((value) => _config.MaxSignatures = value.isEmpty ? 0 : int.parse(value)));
     _subscriptions.add(bsCreateWallet.listen((value) => _config.createWallet = value ? 1 : 0));
     _subscriptions.add(bsPauseBeforePin.listen((value) => _config.pauseBeforePIN2 = value.b));
   }
@@ -105,7 +105,7 @@ class CommonSegment extends BaseSegment {
     bsCurve.add(_bloc.values.getCurve(_config.curveID) ?? _bloc.values.curves[0]);
     bsCreateWallet.add(_config.createWallet == 1);
     bsPauseBeforePin.add(_bloc.values.getPauseBeforePin(_config.pauseBeforePIN2) ?? _bloc.values.pauseBeforePin[0]);
-    bsMaxSignatures.add(_config.maxSignatures.toString());
+    bsMaxSignatures.add(_config.MaxSignatures.toString());
   }
 }
 
@@ -124,7 +124,7 @@ class SigningMethodSegment extends BaseSegment {
 
   @override
   _configWasUpdated() {
-    final method = _config.signingMethod;
+    final method = _config.SigningMethod;
     bsTxHashes.add(SigningMethodMaskBuilder.maskContainsMethod(method, 0));
     bsRawTx.add(SigningMethodMaskBuilder.maskContainsMethod(method, 1));
     bsValidatedTxHashes.add(SigningMethodMaskBuilder.maskContainsMethod(method, 2));
@@ -164,18 +164,18 @@ class SigningMethodSegment extends BaseSegment {
       maskBuilder.addMethod(method);
     else
       maskBuilder.removeMethod(method);
-    _config.signingMethod = maskBuilder.build();
+    _config.SigningMethod = maskBuilder.build();
   }
 }
 
-class SignHashExProperties extends BaseSegment {
+class SignHashExPropertiesSegment extends BaseSegment {
   final pinLessFloorLimit = BehaviorSubject<String>();
   final hexCrExKey = BehaviorSubject<String>();
   final requireTerminalCertSignature = BehaviorSubject<bool>();
   final requireTerminalTxSignature = BehaviorSubject<bool>();
   final checkPIN3onCard = BehaviorSubject<bool>();
 
-  SignHashExProperties(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  SignHashExPropertiesSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
@@ -196,20 +196,20 @@ class SignHashExProperties extends BaseSegment {
   }
 }
 
-class Token extends BaseSegment {
+class TokenSegment extends BaseSegment {
   final itsToken = BehaviorSubject<bool>();
   final tokenSymbol = BehaviorSubject<String>();
   final tokenContractAddress = BehaviorSubject<String>();
   final tokenDecimal = BehaviorSubject<String>();
 
-  Token(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  TokenSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
     itsToken.add(_itsToken());
     tokenSymbol.add(stringOf(_config.cardData.tokenSymbol));
     tokenContractAddress.add(stringOf(_config.cardData.tokenContractAddress));
-    tokenDecimal.add(stringOf(_config.cardData.tokenDeciaml));
+    tokenDecimal.add(stringOf(_config.cardData.tokenDecimal));
   }
 
   @override
@@ -235,9 +235,9 @@ class Token extends BaseSegment {
     }));
     _subscriptions.add(tokenDecimal.listen((value) {
       final decimal = value.isEmpty ? null : int.parse(value);
-      if (_config.cardData.tokenDeciaml == decimal) return;
+      if (_config.cardData.tokenDecimal == decimal) return;
 
-      _config.cardData.tokenDeciaml = decimal;
+      _config.cardData.tokenDecimal = decimal;
       itsToken.add(_itsToken());
     }));
   }
@@ -245,18 +245,18 @@ class Token extends BaseSegment {
   bool _itsToken() {
     final symbol = stringOf(_config.cardData.tokenSymbol);
     final address = stringOf(_config.cardData.tokenContractAddress);
-    final decimal = stringOf(_config.cardData.tokenDeciaml);
+    final decimal = stringOf(_config.cardData.tokenDecimal);
     return symbol.isNotEmpty || address.isNotEmpty || decimal.isNotEmpty;
   }
 }
 
-class ProductMask extends BaseSegment {
+class ProductMaskSegment extends BaseSegment {
   final note = BehaviorSubject<bool>();
   final tag = BehaviorSubject<bool>();
   final idCard = BehaviorSubject<bool>();
   final idIssuer = BehaviorSubject<bool>();
 
-  ProductMask(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  ProductMaskSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
@@ -275,7 +275,7 @@ class ProductMask extends BaseSegment {
   }
 }
 
-class SettingsMask extends BaseSegment {
+class SettingsMaskSegment extends BaseSegment {
   final isReusable = BehaviorSubject<bool>();
   final useActivation = BehaviorSubject<bool>();
   final forbidPurgeWallet = BehaviorSubject<bool>();
@@ -293,7 +293,7 @@ class SettingsMask extends BaseSegment {
   final skipSecurityDelayIfValidatedByLinkedTerminal = BehaviorSubject<bool>();
   final restrictOverwriteIssuerDataEx = BehaviorSubject<bool>();
 
-  SettingsMask(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  SettingsMaskSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
@@ -337,11 +337,11 @@ class SettingsMask extends BaseSegment {
   }
 }
 
-class SettingMaskProtocolEncryption extends BaseSegment {
+class SettingMaskProtocolEncryptionSegment extends BaseSegment {
   final allowUnencrypted = BehaviorSubject<bool>();
   final allowFastEncryption = BehaviorSubject<bool>();
 
-  SettingMaskProtocolEncryption(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  SettingMaskProtocolEncryptionSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
@@ -356,7 +356,7 @@ class SettingMaskProtocolEncryption extends BaseSegment {
   }
 }
 
-class SettingsMaskNdef extends BaseSegment {
+class SettingsMaskNdefSegment extends BaseSegment {
   final useNdef = BehaviorSubject<bool>();
   final dynamicNdef = BehaviorSubject<bool>();
   final disablePrecomputedNdef = BehaviorSubject<bool>();
@@ -367,7 +367,7 @@ class SettingsMaskNdef extends BaseSegment {
   final typeAar = "AAR";
   final typeUri = "URI";
 
-  SettingsMaskNdef(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  SettingsMaskNdefSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
@@ -378,7 +378,7 @@ class SettingsMaskNdef extends BaseSegment {
   }
 
   _updateNdefRecords() {
-    Ndef findNdef(String type) => _config.ndef.firstWhere((element) => element.type == type, orElse: () => null);
+    NdefRecord findNdef(String type) => _config.ndef.firstWhere((element) => element.type == type, orElse: () => null);
     final foundAar = findNdef(typeAar);
     if (foundAar == null) {
       aar.add(_bloc.values.getAar(""));
@@ -407,7 +407,7 @@ class SettingsMaskNdef extends BaseSegment {
 
   _initNdefSubscriptions() {
     removeAll(String type) => _config.ndef.removeWhere((element) => element.type == type);
-    addNdef(String type, String value) => _config.ndef.add(Ndef(type: type, value: value));
+    addNdef(String type, String value) => _config.ndef.add(NdefRecord(type: type, value: value));
 
     _subscriptions.add(aar.listen((value) {
       if (isCustom(value)) return;
@@ -434,27 +434,27 @@ class SettingsMaskNdef extends BaseSegment {
   }
 }
 
-class PinsSegment extends BaseSegment {
+class PinsSegmentSegment extends BaseSegment {
   final pin1 = BehaviorSubject<String>();
   final pin2 = BehaviorSubject<String>();
   final pin3 = BehaviorSubject<String>();
   final cvc = BehaviorSubject<String>();
 
-  PinsSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  PinsSegmentSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
-    pin1.add(_config.pIN.toString());
-    pin2.add(_config.pIN2.toString());
-    pin3.add(_config.pIN3.toString());
-    cvc.add(_config.cVC.toString());
+    pin1.add(_config.PIN.toString());
+    pin2.add(_config.PIN2.toString());
+    pin3.add(_config.PIN3.toString());
+    cvc.add(_config.CVC.toString());
   }
 
   @override
   _initSubscriptions() {
-    _subscriptions.add(pin1.listen((value) => _config.pIN = value));
-    _subscriptions.add(pin2.listen((value) => _config.pIN2 = value));
-    _subscriptions.add(pin3.listen((value) => _config.pIN3 = value));
-    _subscriptions.add(cvc.listen((value) => _config.cVC = value));
+    _subscriptions.add(pin1.listen((value) => _config.PIN = value));
+    _subscriptions.add(pin2.listen((value) => _config.PIN2 = value));
+    _subscriptions.add(pin3.listen((value) => _config.PIN3 = value));
+    _subscriptions.add(cvc.listen((value) => _config.CVC = value));
   }
 }
