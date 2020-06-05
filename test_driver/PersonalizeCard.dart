@@ -22,6 +22,5 @@ class PersonalizeCard {
     await driver.tap(menuButton);
     await driver.enterText(config);
 
-
   }
 }

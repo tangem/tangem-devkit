@@ -22,10 +22,9 @@ void main() {
     driver = await FlutterDriver.connect();
   });
 
-  test("Personalize ",() async {
+  test("Test Personalize ",() async {
     final config = await configForPersonalize.returnConfig('config1');
-
-   // final personalize = await personalizeCardMethod.personalizeCard(driver);
+    final personalize = await personalizeCardMethod.personalizeCard(driver, config);
 
   });
 
@@ -53,10 +52,62 @@ void main() {
   group('Tangem DevKit app', () {
 
     test("Test Read Card ",() async {
+      final config = await configForPersonalize.returnConfig('config1');
+      final personalize = await personalizeCardMethod.personalizeCard(driver, config);
+
+      await driver.tap(backButton);
+
       final responce = await readCardMethod.readCard2(driver);
-      var expectCardId = "bb03000000000004";
-      print("Reconciliation of Results and Expected Result");
-      expect(responce['cardId'], expectCardId);
+
+      print("Reconciliation cardId");
+      expect(responce['cardId'], personalize['cardId']);
+
+      print("Reconciliation cardPublicKey");
+      expect(responce['cardPublicKey'], personalize['cardPublicKey']);
+
+      print("Reconciliation curve");
+      expect(responce['curve'], personalize['curve']);
+
+      print("Reconciliation firmwareVersion");
+      expect(responce['firmwareVersion'], personalize['firmwareVersion']);
+
+      print("Reconciliation health");
+      expect(responce['health'], personalize['health']);
+
+      print("Reconciliation isActivated");
+      expect(responce['isActivated'], personalize['isActivated']);
+
+      print("Reconciliation issuerPublicKey");
+      expect(responce['issuerPublicKey'], personalize['issuerPublicKey']);
+
+      print("Reconciliation manufacturerName");
+      expect(responce['manufacturerName'], personalize['manufacturerName']);
+
+      print("Reconciliation maxSignatures");
+      expect(responce['maxSignatures'], personalize['maxSignatures']);
+
+      print("Reconciliation pauseBeforePin2");
+      expect(responce['pauseBeforePin2'], personalize['pauseBeforePin2']);
+
+      print("Reconciliation status");
+      expect(responce['status'], personalize['status']);
+
+      print("Reconciliation terminalIsLinked");
+      expect(responce['terminalIsLinked'], personalize['terminalIsLinked']);
+
+      print("Reconciliation walletPublicKey");
+      expect(responce['walletPublicKey'], personalize['walletPublicKey']);
+
+      print("Reconciliation walletRemainingSignatures");
+      expect(responce['walletRemainingSignatures'], personalize['walletRemainingSignatures']);
+
+      print("Reconciliation walletSignedHashes");
+      expect(responce['walletSignedHashes'], personalize['walletSignedHashes']);
+
+      print("Reconciliation productMask");
+      expect(responce['productMask'], personalize['productMask']);
+      //ToDo: cardData / settingsMask
+
     });
 
   });

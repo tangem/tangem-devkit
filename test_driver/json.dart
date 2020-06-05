@@ -1,3 +1,4 @@
+// МНЕ ЗА ЭТУ РАЗРАБОТКУ ТАКУЮ ПРЕМИЮ ДАДУТ ООООООЙЙЙ
 class ConfigForPersonalize{
   returnConfig(configName) async {
 
