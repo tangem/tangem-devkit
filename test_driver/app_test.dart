@@ -3,12 +3,17 @@ import 'package:test/test.dart';
 import 'dart:convert';
 import 'ReadCard.dart';
 import 'SignCard.dart';
+import 'PersonalizeCard.dart';
+import 'json.dart';
 
 void main() {
 
   final readCardMethod = ReadCard();
   final signCardMethod = SignCard();
+  final configForPersonalize = ConfigForPersonalize();
+  final personalizeCardMethod = PersonalizeCard();
   final backButton = find.byTooltip('Back');
+
 
   FlutterDriver driver;
 
@@ -17,11 +22,18 @@ void main() {
     driver = await FlutterDriver.connect();
   });
 
+  test("Personalize ",() async {
+    final config = await configForPersonalize.returnConfig('config1');
+
+   // final personalize = await personalizeCardMethod.personalizeCard(driver);
+
+  });
+
   test("Test Sign Card ",() async {
     final responceRead = await readCardMethod.readCard2(driver);
     final cid = responceRead['cardId'];
     final walletRemainingSignatures= responceRead['walletRemainingSignatures']-1;
-    final walletSignedHashes = responceRead['walletSignedHashes']+1;
+    final walletSignedHashes = responceRead['walletSignedHashes']+2;
 
     await driver.tap(backButton);
 
@@ -48,8 +60,6 @@ void main() {
     });
 
   });
-
-
 
   tearDownAll(() async {
     await Future.delayed(Duration(seconds: 3));
