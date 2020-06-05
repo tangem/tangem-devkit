@@ -42,7 +42,7 @@ class SignBloc extends Bloc<Event, SSign> {
     });
     TangemSdk.sign(
       callback,
-      [state.dataForHashing.toHexString(), state.dataForHashing.toHexString()],
+      [state.dataForHashing.toHexString()],
       CardOptionalValues().cid(state.cid).get(),
     );
   }
