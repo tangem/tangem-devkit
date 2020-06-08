@@ -31,7 +31,7 @@ class TangemSdk {
   static Future scanCard(Callback callback, [Map<String, dynamic> optional]) async {
     _channel
         .invokeMethod('scanCard', _createExportingValues(optional))
-        .then((result) => callback.onSuccess(Card.fromJson(jsonDecode(result))))
+        .then((result) => callback.onSuccess(CardResponse.fromJson(jsonDecode(result))))
         .catchError((error) => _sendBackError(callback, error));
   }
 
@@ -54,7 +54,7 @@ class TangemSdk {
 
     _channel
         .invokeMethod('personalize', valuesToExport)
-        .then((result) => callback.onSuccess(Card.fromJson(jsonDecode(result))))
+        .then((result) => callback.onSuccess(CardResponse.fromJson(jsonDecode(result))))
         .catchError((error) => _sendBackError(callback, error));
   }
 

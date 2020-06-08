@@ -43,6 +43,6 @@ class ScanBloc extends Bloc<Event, SScan> {
   }
 }
 
-String parseCidFromSuccessScan(Card card) {
+String parseCidFromSuccessScan(CardResponse card) {
   return card.cardId;
 }
