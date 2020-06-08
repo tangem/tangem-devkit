@@ -124,11 +124,13 @@ class Transl {
 
   String get menu_enable_description => get("menu_enable_description");
 
-  String get menu_pers_preset_reset => get("menu_pers_preset_reset");
+  String get menu_pers_configs => get("menu_pers_configs");
 
-  String get menu_pers_preset_save => get("menu_pers_preset_save");
+  String get menu_pers_config_reset => get("menu_pers_config_reset");
 
-  String get menu_pers_preset_load => get("menu_pers_preset_load");
+  String get menu_pers_config_save => get("menu_pers_config_save");
+
+  String get menu_pers_config_load => get("menu_pers_config_load");
 
   String get menu_pers_import => get("menu_pers_import");
 
@@ -764,7 +766,7 @@ class Transl {
 
   String get desc_counter => get("desc_counter");
 
-  String get hint_enter_preset_name => get("hint_enter_preset_name");
+  String get hint_enter_config_name => get("hint_enter_config_name");
 
   String get hint_paste => get("hint_paste");
 

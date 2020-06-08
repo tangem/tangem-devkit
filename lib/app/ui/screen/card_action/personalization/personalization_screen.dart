@@ -53,7 +53,20 @@ class PersonalizeFrame extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(Transl.of(context).screen_personalize),
-        actions: [Menu.popupPersonalization((MenuItem item) {})],
+        actions: [
+          Menu.popupPersonalization((MenuItem item) {
+            switch (item) {
+              case MenuItem.personalizationConfigs:
+                PersonalizationConfigsDialog(bloc).show(context);
+                bloc.fetchSavedConfigNames();
+                break;
+              case MenuItem.personalizationImport:
+                break;
+              case MenuItem.personalizationExport:
+                break;
+            }
+          })
+        ],
       ),
       body: PersonalizeBody(),
       floatingActionButton: FloatingActionButton(

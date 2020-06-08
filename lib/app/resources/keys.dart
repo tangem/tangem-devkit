@@ -72,4 +72,8 @@ class ItemName {
 
   //response screen
   static final responseJson = "responseJson";
+
+  //personalization config dialog
+  static final personalizationConfigInput = "personalizationConfigInput";
+  static final personalizationConfigTile = "personalizationConfigTile";
 }

@@ -23,7 +23,7 @@ class PersonalizationBloc {
   final List<BaseSegment> _configSegments = [];
   final _scrollingState = PublishSubject<bool>();
 
-  PublishSubject<List<String>> psSavedConfigNames = PublishSubject();
+  final psSavedConfigNames = BehaviorSubject<List<String>>();
 
   PersonalizationConfigStore _store;
 
@@ -83,10 +83,20 @@ class PersonalizationBloc {
     _configSegments.add(pins);
   }
 
-  resetToDefaultConfig() {
-    _store.setCurrent(_store.getDefault());
+  restoreDefaultConfig() {
+    _restoreConfig(_store.getDefault());
+  }
+
+  restoreConfig(String name) {
+    _restoreConfig(_store.get(name));
+  }
+
+  _restoreConfig(PersonalizationConfig config) {
+    if (config == null) return;
+
+    _store.setCurrent(config);
     _store.save();
-    _updateConfigIntoTheSegments(_store.getCurrent());
+    _updateConfigIntoTheSegments(config);
   }
 
   saveConfig() {
@@ -137,4 +147,6 @@ class PersonalizationBloc {
     _configSegments.forEach((element) => element.dispose());
     _store.save();
   }
+
+  bool isDefaultConfigName(String name) => StoreObject.defaultKey == name;
 }

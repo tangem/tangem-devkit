@@ -63,12 +63,15 @@ class PersonalizationConfigStore {
 
   String _replaceKey(String withKeys) => withKeys.replaceAll(spaceKey, " ");
 
-  List<String> getNames() => storeObject.keys().map((e) => _replaceKey(e)).toList();
+  List<String> getNames() {
+    return storeObject.keys().map((e) => _replaceKey(e)).where((element) => !element.contains(StoreObject.hidden)).toList();
+  }
 }
 
 class StoreObject {
-  final String defaultKey = "hide.default";
-  final String current = "hide.current";
+  static final String hidden = "hidden";
+  static final String defaultKey = "default";
+  final String current = "$hidden.current";
 
   Map<String, PersonalizationConfig> _store = {};
 
