@@ -6,6 +6,12 @@ class ItemId {
 }
 
 class ItemName {
+  static final menu = "menu";
+  static final menuDescription = "menuDescription";
+  static final menuConfigs = "menuConfigs";
+  static final menuImport = "menuImport";
+  static final menuExport = "menuExport";
+
   static final cid = "cid";
 
   //sign screen
