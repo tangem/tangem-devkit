@@ -1,11 +1,10 @@
 import 'package:convert/convert.dart';
 
-extension ToHexConverter on String {
+extension StringToHex on String {
   String toHexString() => hex.encode(this.codeUnits);
 }
 
-extension ToStringConverter on List<int> {
-  String toHexString(){
-    return hex.encode(this);
-  }
+// List<int> = byteArray
+extension ByteArrayToHex on List<int> {
+  String toHexString() => hex.encode(this);
 }

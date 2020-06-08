@@ -1,8 +1,11 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
-import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
+import 'package:devkit/app/domain/model/personalization/support_classes.dart';
+import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
-import 'package:flutter/src/widgets/scroll_notification.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tangem_sdk/card_responses/card_response.dart';
+import 'package:tangem_sdk/card_responses/other_responses.dart';
+import 'package:tangem_sdk/tangem_sdk.dart';
 
 import 'segments.dart';
 import 'store.dart';
@@ -20,23 +23,31 @@ class PersonalizationBloc {
   final List<BaseSegment> _configSegments = [];
   final _scrollingState = PublishSubject<bool>();
 
-  PublishSubject<List<String>> psSavedConfigNames = PublishSubject();
+  final psSavedConfigNames = BehaviorSubject<List<String>>();
 
   PersonalizationConfigStore _store;
 
   CardNumberSegment cardNumber;
   CommonSegment common;
   SigningMethodSegment signingMethod;
-  SignHashExProperties signHashExProperties;
+  SignHashExPropertiesSegment signHashExProperties;
+  TokenSegment token;
+  ProductMaskSegment productMask;
+  SettingsMaskSegment settingsMask;
+  SettingMaskProtocolEncryptionSegment settingMaskProtocolEncryption;
+  SettingsMaskNdefSegment settingsMaskNdef;
+  PinsSegmentSegment pins;
 
-  //Token
-  ProductMask productMask;
-  SettingsMask settingsMask;
-  SettingMaskProtocolEncryption settingMaskProtocolEncryption;
-  SettingsMaskNdef settingsMaskNdef;
-  PinsSegment pins;
+  PublishSubject _successResponse = PublishSubject<Card>();
+  PublishSubject _errorResponse = PublishSubject<ErrorResponse>();
+
+  Stream<Card> get successResponseStream => _successResponse.stream;
+
+  Stream<ErrorResponse> get errorResponseStream => _errorResponse.stream;
 
   Stream<bool> get scrollingStateStream => _scrollingState.stream;
+
+  Sink<bool> get scrollingStateSink => _scrollingState.sink;
 
   PersonalizationBloc() {
     logD(this, "new instance");
@@ -52,19 +63,19 @@ class PersonalizationBloc {
     cardNumber = CardNumberSegment(this, currentConfig);
     common = CommonSegment(this, currentConfig);
     signingMethod = SigningMethodSegment(this, currentConfig);
-    signHashExProperties = SignHashExProperties(this, currentConfig);
-    //Token
-    productMask = ProductMask(this, currentConfig);
-    settingsMask = SettingsMask(this, currentConfig);
-    settingMaskProtocolEncryption = SettingMaskProtocolEncryption(this, currentConfig);
-    settingsMaskNdef = SettingsMaskNdef(this, currentConfig);
-    pins = PinsSegment(this, currentConfig);
+    signHashExProperties = SignHashExPropertiesSegment(this, currentConfig);
+    token = TokenSegment(this, currentConfig);
+    productMask = ProductMaskSegment(this, currentConfig);
+    settingsMask = SettingsMaskSegment(this, currentConfig);
+    settingMaskProtocolEncryption = SettingMaskProtocolEncryptionSegment(this, currentConfig);
+    settingsMaskNdef = SettingsMaskNdefSegment(this, currentConfig);
+    pins = PinsSegmentSegment(this, currentConfig);
 
     _configSegments.add(cardNumber);
     _configSegments.add(common);
     _configSegments.add(signingMethod);
     _configSegments.add(signHashExProperties);
-    //Token
+    _configSegments.add(token);
     _configSegments.add(productMask);
     _configSegments.add(settingsMask);
     _configSegments.add(settingMaskProtocolEncryption);
@@ -72,10 +83,20 @@ class PersonalizationBloc {
     _configSegments.add(pins);
   }
 
-  resetToDefaultConfig() {
-    _store.setCurrent(_store.getDefault());
+  restoreDefaultConfig() {
+    _restoreConfig(_store.getDefault());
+  }
+
+  restoreConfig(String name) {
+    _restoreConfig(_store.get(name));
+  }
+
+  _restoreConfig(PersonalizationConfig config) {
+    if (config == null) return;
+
+    _store.setCurrent(config);
     _store.save();
-    _updateConfigIntoTheSegments(_store.getCurrent());
+    _updateConfigIntoTheSegments(config);
   }
 
   saveConfig() {
@@ -103,17 +124,29 @@ class PersonalizationBloc {
 
   PersonalizationConfig _getDefaultConfig() => PersonalizationConfig.getDefault();
 
+  personalize() {
+    final issuer = Issuer.def();
+    final acquirer = Acquirer.def();
+    final manufacturer = Manufacturer.def();
+
+    final callback = Callback((result) {
+      _successResponse.add(result);
+    }, (error) {
+      _errorResponse.add(error);
+    });
+
+    TangemSdk.personalize(callback, {
+      TangemSdk.cardConfig: Utils.createCardConfig(_store.getCurrent(), issuer, acquirer),
+      TangemSdk.issuer: issuer,
+      TangemSdk.acquirer: acquirer,
+      TangemSdk.manufacturer: manufacturer,
+    });
+  }
+
   dispose() {
     _configSegments.forEach((element) => element.dispose());
     _store.save();
   }
 
-  bool handleScrollNotification(ScrollNotification notification) {
-    if (notification is ScrollStartNotification) {
-      _scrollingState.add(true);
-    } else if (notification is ScrollEndNotification) {
-      _scrollingState.add(false);
-    }
-    return false;
-  }
+  bool isDefaultConfigName(String name) => StoreObject.defaultKey == name;
 }

@@ -17,8 +17,8 @@ double doubleOf(dynamic from, {double def}) {
   return def;
 }
 
-String stringOf(dynamic from, [typed = false]) {
-  if (from == null) return "";
+String stringOf(dynamic from, {String def = "", typed = false}) {
+  if (from == null) return def;
   if (from is Iterable) {
     return from.map((dyn) => stringOf(dyn)).toList().toString();
   }

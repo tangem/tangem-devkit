@@ -65,7 +65,15 @@ class ItemName {
   static final requireTerminalCertSignature = "requireTerminalCertSignature";
   static final requireTerminalTxSignature = "requireTerminalTxSignature";
   static final checkPIN3onCard = "checkPIN3onCard";
+  static final itsToken = "itsToken";
+  static final tokenSymbol = "tokenSymbol";
+  static final tokenContractAddress = "tokenContractAddress";
+  static final tokenDecimal = "tokenDecimal";
 
   //response screen
   static final responseJson = "responseJson";
+
+  //personalization config dialog
+  static final personalizationConfigInput = "personalizationConfigInput";
+  static final personalizationConfigTile = "personalizationConfigTile";
 }

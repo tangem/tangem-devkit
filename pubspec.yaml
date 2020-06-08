@@ -60,6 +60,8 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
   test: any
+  build_runner: ^1.0.0
+  json_serializable: ^3.2.0
 
 # For informaadbtion on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

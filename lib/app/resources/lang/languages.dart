@@ -32,9 +32,10 @@ class Languages {
   "screen_response_write_user_data": "Write User Data Response",
   "menu_share": "Share",
   "menu_enable_description": "Description",
-  "menu_pers_preset_reset": "Reset to default",
-  "menu_pers_preset_save": "Save preset",
-  "menu_pers_preset_load": "Load preset",
+  "menu_pers_configs": "Presets",
+  "menu_pers_config_reset": "Reset to default",
+  "menu_pers_config_save": "Save preset",
+  "menu_pers_config_load": "Load preset",
   "menu_pers_import": "Import",
   "menu_pers_export": "Export",
 
@@ -362,7 +363,7 @@ class Languages {
   "counter": "Counter",
   "desc_counter": "Counter that protects this type of data against replay attack.",
 
-  "hint_enter_preset_name": "Enter a preset name",
+  "hint_enter_config_name": "Enter a name for current preset",
   "hint_paste": "Paste",
   "show_rare_fields": "Show all fields",
   "hide_rare_fields": "Hide fields",

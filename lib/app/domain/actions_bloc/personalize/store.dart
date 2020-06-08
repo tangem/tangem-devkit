@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:devkit/app/domain/model/personalization/peresonalization.dart';
+import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/commons/global/shared_preferences.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:prefs/prefs.dart';
@@ -63,12 +63,15 @@ class PersonalizationConfigStore {
 
   String _replaceKey(String withKeys) => withKeys.replaceAll(spaceKey, " ");
 
-  List<String> getNames() => storeObject.keys().map((e) => _replaceKey(e)).toList();
+  List<String> getNames() {
+    return storeObject.keys().map((e) => _replaceKey(e)).where((element) => !element.contains(StoreObject.hidden)).toList();
+  }
 }
 
 class StoreObject {
-  final String defaultKey = "hide.default";
-  final String current = "hide.current";
+  static final String hidden = "hidden";
+  static final String defaultKey = "default";
+  final String current = "$hidden.current";
 
   Map<String, PersonalizationConfig> _store = {};
 

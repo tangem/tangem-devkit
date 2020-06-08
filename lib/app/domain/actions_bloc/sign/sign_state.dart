@@ -8,7 +8,7 @@ class SSign extends SState {
   SSign({this.cid, this.dataForHashing, this.theseFromBloc = false});
   
   factory SSign.initial() => SSign(cid: "", dataForHashing: "");
-  factory SSign.def() => SSign(cid: "", dataForHashing: "Data for hashing", theseFromBloc: true);
+  factory SSign.def() => SSign(cid: "", dataForHashing: "Data used for hashing", theseFromBloc: true);
 
   SSign copyWith({String cid, String dataForHashing, bool theseFromBloc}) {
     return SSign(

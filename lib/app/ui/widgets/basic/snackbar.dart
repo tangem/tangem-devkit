@@ -5,8 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
 
-showError(BuildContext context, ErrorResponse error) {
+showSnackbar(BuildContext context, String text) {
   final scaffold = Scaffold.of(context);
   scaffold.hideCurrentSnackBar();
-  scaffold.showSnackBar(SnackBar(content: TextWidget(json.encode(error))));
+  scaffold.showSnackBar(SnackBar(content: TextWidget(text)));
+}
+
+showError(BuildContext context, ErrorResponse error) {
+  showSnackbar(context, json.encode(error));
 }
