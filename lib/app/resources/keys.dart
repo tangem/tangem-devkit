@@ -82,7 +82,7 @@ class ItemName {
 
   //personalization save\restore config dialog
   static final personalizationConfigInput = "personalizationConfigInput";
-  static final personalizationConfigTile = "personalizationConfigTile";
+  static final personalizationConfigItems = "personalizationConfigItems";
   //personalization import config dialog
   static final personalizationImportInput = "personalizationImportInput";
 
