@@ -1,3 +1,4 @@
+import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/resources/localization.dart';
 import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 import 'package:devkit/commons/global/show_description.dart';
@@ -29,6 +30,7 @@ class Menu {
         initialData: DescriptionState.state,
         builder: (context, snapshot) {
           return CheckboxListTile(
+            key: ItemId.btnFrom(ItemName.menuDescription),
             value: snapshot.data,
             onChanged: (isChecked) {
               DescriptionState.toggle();
@@ -43,12 +45,25 @@ class Menu {
 
   static PopupMenuButton popupPersonalization(Function(MenuItem) callback) {
     return PopupMenuButton<MenuItem>(
+      key: ItemId.btnFrom(ItemName.menu),
       onSelected: callback,
       itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
         Menu.descriptionItem(),
-        PopupMenuItem(value: MenuItem.personalizationConfigs, child: TextWidget(Transl.of(context).menu_pers_configs)),
-        PopupMenuItem(value: MenuItem.personalizationImport, child: TextWidget(Transl.of(context).menu_pers_import)),
-        PopupMenuItem(value: MenuItem.personalizationExport, child: TextWidget(Transl.of(context).menu_pers_export)),
+        PopupMenuItem(
+          key: ItemId.btnFrom(ItemName.menuConfigs),
+          value: MenuItem.personalizationConfigs,
+          child: TextWidget(Transl.of(context).menu_pers_configs),
+        ),
+        PopupMenuItem(
+          key: ItemId.btnFrom(ItemName.menuImport),
+          value: MenuItem.personalizationImport,
+          child: TextWidget(Transl.of(context).menu_pers_import),
+        ),
+        PopupMenuItem(
+          key: ItemId.btnFrom(ItemName.menuExport),
+          value: MenuItem.personalizationExport,
+          child: TextWidget(Transl.of(context).menu_pers_export),
+        ),
       ],
     );
   }
