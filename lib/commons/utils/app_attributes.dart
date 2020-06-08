@@ -31,6 +31,7 @@ class AppColor {
   static final Color accentColor = Colors.blueGrey[700];
 
   static final listDelimiter = Colors.grey.withAlpha(70);
+  static final border = Colors.blueGrey.withAlpha(70);
   static final dropDownUnderline = Colors.grey;
 
   static final itemTitle = Colors.grey;

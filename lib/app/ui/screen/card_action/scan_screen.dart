@@ -41,7 +41,7 @@ class ScanBody extends StatelessWidget {
         if (state is SCardScanSuccess) {
           ResponseScreen.navigate(context, state.success);
         } else if (state is SCardScanError) {
-          showError(context, state.error);
+          showJsonSnackbar(context, state.error);
         }
       },
       child: Center(

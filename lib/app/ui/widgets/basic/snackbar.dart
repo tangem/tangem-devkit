@@ -3,14 +3,16 @@ import 'dart:convert';
 import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
 
-showSnackbar(BuildContext context, String text) {
+showSnackbar(BuildContext context, String message) {
   final scaffold = Scaffold.of(context);
   scaffold.hideCurrentSnackBar();
-  scaffold.showSnackBar(SnackBar(content: TextWidget(text)));
+  scaffold.showSnackBar(SnackBar(content: TextWidget(message)));
 }
 
-showError(BuildContext context, ErrorResponse error) {
-  showSnackbar(context, json.encode(error));
+showJsonSnackbar(BuildContext context, dynamic object) {
+  final scaffold = Scaffold.of(context);
+  scaffold.hideCurrentSnackBar();
+  final message = object is String ? object : json.encode(object);
+  scaffold.showSnackBar(SnackBar(content: TextWidget(message)));
 }

@@ -41,7 +41,7 @@ class DepersonalizeBody extends StatelessWidget {
         if (state is SCardDepersonalizeSuccess) {
           ResponseScreen.navigate(context, state.success);
         } else if (state is SCardDepersonalizeError) {
-          showError(context, state.error);
+          showJsonSnackbar(context, state.error);
         }
       },
       child: Center(

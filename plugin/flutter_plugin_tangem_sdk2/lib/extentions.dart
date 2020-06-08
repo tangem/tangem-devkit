@@ -4,7 +4,6 @@ extension HexStringToBytes on String {
     final byteArray = List<int>(length);
     for (int i = 0; i < length; i++) {
       final subs = this.substring(2 * i, 2 * i + 2);
-      print(subs);
       byteArray[i] = int.parse(subs, radix: 16);
     }
     return byteArray;

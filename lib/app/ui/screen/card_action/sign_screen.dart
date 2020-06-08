@@ -63,7 +63,7 @@ class _SignBodyState extends State<SignBody> {
     return BlocListener<SignBloc, SSign>(
       listener: (context, state) {
         if (state is SCardSignError) {
-          showError(context, state.error);
+          showJsonSnackbar(context, state.error);
         } else if (state is SCardSignSuccess) {
           ResponseScreen.navigate(context, state.success);
         } else if (state.theseFromBloc) {

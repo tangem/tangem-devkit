@@ -5,10 +5,10 @@ import 'package:devkit/app/ui/widgets/dialog/dialog.dart';
 import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
 
-class PersonalizationConfigsDialog {
+class SaveLoadConfigsDialog {
   final PersonalizationBloc _bloc;
 
-  PersonalizationConfigsDialog(this._bloc);
+  SaveLoadConfigsDialog(this._bloc);
 
   show(BuildContext context) {
     showDialog(
@@ -110,7 +110,7 @@ class ConfigListWidget extends StatelessWidget {
           initialData: [],
           builder: (context, snapshot) {
             return Container(
-              decoration: BoxDecoration(border: Border.all(color: AppColor.listDelimiter)),
+              decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
               child: ListBody(children: _generateTileList(context, snapshot.data)),
             );
           },

@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
 import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:share/share.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
@@ -40,10 +43,13 @@ class PersonalizationBloc {
 
   PublishSubject _successResponse = PublishSubject<Card>();
   PublishSubject _errorResponse = PublishSubject<ErrorResponse>();
+  PublishSubject _snackbarMessageStream = PublishSubject<dynamic>();
 
   Stream<Card> get successResponseStream => _successResponse.stream;
 
   Stream<ErrorResponse> get errorResponseStream => _errorResponse.stream;
+
+  Stream<dynamic> get snackbarMessageStream => _snackbarMessageStream.stream;
 
   Stream<bool> get scrollingStateStream => _scrollingState.stream;
 
@@ -94,9 +100,10 @@ class PersonalizationBloc {
   _restoreConfig(PersonalizationConfig config) {
     if (config == null) return;
 
-    _store.setCurrent(config);
+    final newCopyOfConfig = PersonalizationConfig.fromJson(json.decode(json.encode(config)));
+    _store.setCurrent(newCopyOfConfig);
     _store.save();
-    _updateConfigIntoTheSegments(config);
+    _updateConfigIntoTheSegments(newCopyOfConfig);
   }
 
   saveConfig() {
@@ -116,6 +123,24 @@ class PersonalizationBloc {
   deleteConfig(String name) {
     _store.remove(name);
     _store.save();
+  }
+
+  importConfig(String jsonConfig) {
+    try {
+      final configMap = json.decode(jsonConfig);
+      _restoreConfig(PersonalizationConfig.fromJson(configMap));
+    } catch (ex) {
+      _snackbarMessageStream.add(ex);
+    }
+  }
+
+  exportCurrentConfig() {
+    try {
+      final jsonConfig = json.encode(_store.getCurrent());
+      Share.share(jsonConfig);
+    } catch (ex) {
+      _snackbarMessageStream.add(ex);
+    }
   }
 
   _updateConfigIntoTheSegments(PersonalizationConfig config) {
