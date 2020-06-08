@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/card_optional_values.dart';
+import 'package:tangem_sdk/card_responses/card_response.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../base_events.dart';
@@ -42,6 +43,6 @@ class ScanBloc extends Bloc<Event, SScan> {
   }
 }
 
-String parseCidFromSuccessScan(Object success) {
-  return "bb03000000000004";
+String parseCidFromSuccessScan(Card card) {
+  return card.cardId;
 }
