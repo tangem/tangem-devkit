@@ -20,6 +20,22 @@ void main() {
       final config = await configForPersonalize.returnConfig('config1');
       String jsonString = jsonEncode(config);
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
+      print(config);
+
+      // ToDo: cid, manufacturerName,
+
+      print("Reconciliation maxSignatures");
+      expect(personalize['maxSignatures'], config['MaxSignatures']);
+
+      print("Reconciliation manufacturerName");
+      expect(personalize['manufacturerName'], "TANGEM");
+
+      print("Reconciliation status");
+      expect(personalize['status'], "Empty");
+
+      print("Reconciliation curve");
+      expect(personalize['curve'], config['curveID']);
+
     });
 
     tearDownAll(() async {

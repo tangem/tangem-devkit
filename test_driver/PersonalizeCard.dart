@@ -10,6 +10,8 @@ class PersonalizeCard {
   final menuImportButton = find.byValueKey('menuImport.btn');
   final personalizationImportInput = find.byValueKey('personalizationImportInput');
   final importButton = find.byValueKey('personalizationImportInput.btn');
+  final floatingActionButton = find.byType("FloatingActionButton");
+  final responseTextWidget = find.byValueKey('responseJson');
   final methods = Methods();
 
   personalizeCard(driver, config) async {
@@ -35,6 +37,22 @@ class PersonalizeCard {
     await methods.isExist(importButton, driver);
     print("Click  Import button");
     await driver.tap(importButton);
+
+    print("Search action button element");
+    await methods.isExist(floatingActionButton, driver);
+    print("Click action button");
+    await driver.tap(floatingActionButton);
+
+    print("Wait responce");
+    await methods.isExist(responseTextWidget, driver);
+    String getResponse = await methods.getResponce(responseTextWidget, driver);
+    Map<String, dynamic> responce = jsonDecode(getResponse);
+    //print('${responce['cardId']}');
+    print(responce);
+    print(getResponse);
+    return responce;
+
+
 
 
 
