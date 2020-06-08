@@ -2,6 +2,7 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 import 'PersonalizeCard.dart';
 import 'ConfigForPersonalize.dart';
+import 'dart:convert';
 
 void main() {
 
@@ -17,7 +18,8 @@ void main() {
 
     test("Test Personalize ",() async {
       final config = await configForPersonalize.returnConfig('config1');
-      final personalize = await personalizeCardMethod.personalizeCard(driver, config);
+      String jsonString = jsonEncode(config);
+      final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
     });
 
     tearDownAll(() async {
