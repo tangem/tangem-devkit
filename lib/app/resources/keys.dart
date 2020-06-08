@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class ItemId {
   static LocalKey from(String name) => ValueKey<String>(name);
+  static LocalKey btnFrom(String name) => ValueKey<String>("$name.btn");
 }
 
 class ItemName {
@@ -73,7 +74,10 @@ class ItemName {
   //response screen
   static final responseJson = "responseJson";
 
-  //personalization config dialog
+  //personalization save\restore config dialog
   static final personalizationConfigInput = "personalizationConfigInput";
   static final personalizationConfigTile = "personalizationConfigTile";
+  //personalization import config dialog
+  static final personalizationImportInput = "personalizationImportInput";
+
 }

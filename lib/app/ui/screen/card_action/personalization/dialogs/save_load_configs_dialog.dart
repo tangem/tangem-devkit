@@ -76,7 +76,7 @@ class _SaveConfigWidgetState extends State<SaveConfigWidget> {
             )),
         SizedBox(width: 10),
         OutlineButton(
-          key: ItemId.from("${ItemName.personalizationConfigInput}.btn"),
+          key: ItemId.btnFrom(ItemName.personalizationConfigInput),
           child: TextWidget(transl.btn_save),
           onPressed: _controller.text.isEmpty ? null : _onPressed,
         ),
@@ -135,7 +135,7 @@ class ConfigListWidget extends StatelessWidget {
       },
       title: TextWidget(configName, color: AppColor.itemDescription),
       trailing: IconButton(
-        key: ItemId.from("$itemName.btn"),
+        key: ItemId.btnFrom(itemName),
         icon: Icon(Icons.delete_outline),
         onPressed: null,
       ),
@@ -151,7 +151,7 @@ class ConfigListWidget extends StatelessWidget {
       },
       title: TextWidget(configName),
       trailing: IconButton(
-        key: ItemId.from("$itemName.btn"),
+        key: ItemId.btnFrom(itemName),
         icon: Icon(Icons.delete),
         onPressed: () {
           _bloc.deleteConfig(configName);
