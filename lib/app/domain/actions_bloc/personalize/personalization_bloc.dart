@@ -41,11 +41,11 @@ class PersonalizationBloc {
   SettingsMaskNdefSegment settingsMaskNdef;
   PinsSegmentSegment pins;
 
-  PublishSubject _successResponse = PublishSubject<Card>();
+  PublishSubject _successResponse = PublishSubject<CardResponse>();
   PublishSubject _errorResponse = PublishSubject<ErrorResponse>();
   PublishSubject _snackbarMessageStream = PublishSubject<dynamic>();
 
-  Stream<Card> get successResponseStream => _successResponse.stream;
+  Stream<CardResponse> get successResponseStream => _successResponse.stream;
 
   Stream<ErrorResponse> get errorResponseStream => _errorResponse.stream;
 

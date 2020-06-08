@@ -22,13 +22,6 @@ class SegmentHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           TextWidget(title, fontSize: AppDimen.itemTextSize),
-          description == null || description.isEmpty
-              ? StubWidget()
-              : StreamBuilder<bool>(
-                  stream: DescriptionState.listen(),
-                  initialData: DescriptionState.state,
-                  builder: (context, snapshot) => !snapshot.data ? StubWidget() : SizedBox(height: 3),
-                ),
           DescriptionWidget(description),
         ],
       ),

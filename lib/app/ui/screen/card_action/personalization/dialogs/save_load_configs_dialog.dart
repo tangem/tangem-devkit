@@ -121,7 +121,7 @@ class ConfigListWidget extends StatelessWidget {
 
   List<Widget> _generateTileList(BuildContext context, List<String> itemList) {
     return itemList.map((configName) {
-      final itemName = "${ItemName.personalizationConfigTile}.${itemList.indexOf(configName)}";
+      final itemName = "${ItemName.personalizationConfigItems}.${itemList.indexOf(configName)}";
       return _bloc.isDefaultConfigName(configName) ? _defaultTile(context, configName, itemName) : _usualTile(context, configName, itemName);
     }).toList();
   }

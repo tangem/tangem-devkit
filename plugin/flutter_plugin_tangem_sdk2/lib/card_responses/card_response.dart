@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'card_response.g.dart';
 
 @JsonSerializable(nullable: false)
-class Card {
+class CardResponse {
   CardData cardData;
   String cardId;
   String cardPublicKey;
@@ -23,7 +23,7 @@ class Card {
   int walletRemainingSignatures;
   int walletSignedHashes;
 
-  Card(
+  CardResponse(
       {this.cardData,
       this.cardId,
       this.cardPublicKey,
@@ -43,7 +43,7 @@ class Card {
       this.walletRemainingSignatures,
       this.walletSignedHashes});
 
-  factory Card.fromJson(Map<String, dynamic> json) => _$CardFromJson(json);
+  factory CardResponse.fromJson(Map<String, dynamic> json) => _$CardFromJson(json);
 
   Map<String, dynamic> toJson() => _$CardToJson(this);
 }
