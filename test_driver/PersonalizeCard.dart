@@ -6,8 +6,12 @@ import 'Methods.dart';
 
 class PersonalizeCard {
   final personalizeItem = find.byValueKey("personalize");
-  final menuButton = find.byValueKey('series'); //ToDo: need keys for menu button and menuItem
-
+  final menuButton = find.byValueKey('menu.btn');
+  final menuImportButton = find.byValueKey('menuImport.btn');
+  final personalizationImportInput = find.byValueKey('personalizationImportInput');
+  final importButton = find.byValueKey('personalizationImportInput.btn');
+  final floatingActionButton = find.byType("FloatingActionButton");
+  final responseTextWidget = find.byValueKey('responseJson');
   final methods = Methods();
 
   personalizeCard(driver, config) async {
@@ -18,9 +22,39 @@ class PersonalizeCard {
     print("Search menu button");
     await methods.isExist(menuButton, driver);
     print("Tap menu");
-    sleep(const Duration(seconds: 7));
     await driver.tap(menuButton);
+    print("Search Import button in menu");
+    await methods.isExist(menuImportButton, driver);
+    print("Click  Import button in menu");
+    await driver.tap(menuImportButton);
+
+    print("Search text input for config");
+    await methods.isExist(personalizationImportInput, driver);
+    print("Click text input for config");
+    await driver.tap(personalizationImportInput);
     await driver.enterText(config);
+    print("Search Import button");
+    await methods.isExist(importButton, driver);
+    print("Click  Import button");
+    await driver.tap(importButton);
+
+    print("Search action button element");
+    await methods.isExist(floatingActionButton, driver);
+    print("Click action button");
+    await driver.tap(floatingActionButton);
+
+    print("Wait responce");
+    await methods.isExist(responseTextWidget, driver);
+    String getResponse = await methods.getResponce(responseTextWidget, driver);
+    Map<String, dynamic> responce = jsonDecode(getResponse);
+    //print('${responce['cardId']}');
+    print(responce);
+    print(getResponse);
+    return responce;
+
+
+
+
 
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 import 'PersonalizeCard.dart';
 import 'ConfigForPersonalize.dart';
+import 'dart:convert';
 
 void main() {
 
@@ -17,7 +18,24 @@ void main() {
 
     test("Test Personalize ",() async {
       final config = await configForPersonalize.returnConfig('config1');
-      final personalize = await personalizeCardMethod.personalizeCard(driver, config);
+      String jsonString = jsonEncode(config);
+      final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
+      print(config);
+
+      // ToDo: cid, manufacturerName,
+
+      print("Reconciliation maxSignatures");
+      expect(personalize['maxSignatures'], config['MaxSignatures']);
+
+      print("Reconciliation manufacturerName");
+      expect(personalize['manufacturerName'], "TANGEM");
+
+      print("Reconciliation status");
+      expect(personalize['status'], "Empty");
+
+      print("Reconciliation curve");
+      expect(personalize['curve'], config['curveID']);
+
     });
 
     tearDownAll(() async {
