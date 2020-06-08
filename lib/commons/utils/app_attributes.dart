@@ -23,6 +23,7 @@ class AppDimen {
   static const itemTextSize = 16.0;
   static const itemTitleTextSize = 12.0;
   static const itemDescTextSize = 12.0;
+  static const descPadding = 5.0;
 }
 
 class AppColor {
