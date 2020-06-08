@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'ReadCard.dart';
 import 'SignCard.dart';
 import 'PersonalizeCard.dart';
-import 'json.dart';
+import 'ConfigForPersonalize.dart';
 
 void main() {
 
