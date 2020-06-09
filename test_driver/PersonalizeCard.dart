@@ -48,8 +48,6 @@ class PersonalizeCard {
     String getResponse = await methods.getResponce(responseTextWidget, driver);
     Map<String, dynamic> responce = jsonDecode(getResponse);
     //print('${responce['cardId']}');
-    print(responce);
-    print(getResponse);
     return responce;
 
 
