@@ -1,3 +1,4 @@
+import 'package:tangem_sdk/model/sdk.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import 'product_mask.dart';
@@ -21,8 +22,8 @@ class Utils {
     );
   }
 
-  static CardConfig createCardConfig(PersonalizationConfig config, Issuer issuer, Acquirer acquirer) {
-    return CardConfig(
+  static CardConfigSdk createCardConfig(PersonalizationConfig config, Issuer issuer, Acquirer acquirer) {
+    return CardConfigSdk(
       issuerName: issuer.name,
       acquirerName: acquirer.name,
       series: config.series,
@@ -36,7 +37,7 @@ class Utils {
       pauseBeforePin2: config.pauseBeforePIN2,
       smartSecurityDelay: config.smartSecurityDelay,
       curveID: config.curveID,
-      signingMethods: SigningMethodMask(config.SigningMethod),
+      signingMethods: SigningMethodMaskSdk(config.SigningMethod),
       maxSignatures: config.MaxSignatures,
       isReusable: config.isReusable,
       allowSwapPin: config.allowSwapPIN,
@@ -67,7 +68,7 @@ class Utils {
     );
   }
 
-  static ProductMask createProductMask(PersonalizationConfig config) {
+  static ProductMaskSdk createProductMask(PersonalizationConfig config) {
     final isNote = config.cardData.productNote;
     final isTag = config.cardData.productTag;
     final isIdCard = config.cardData.productIdCard;

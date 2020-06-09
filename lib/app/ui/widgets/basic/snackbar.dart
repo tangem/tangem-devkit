@@ -13,6 +13,10 @@ showSnackbar(BuildContext context, String message) {
 showJsonSnackbar(BuildContext context, dynamic object) {
   final scaffold = Scaffold.of(context);
   scaffold.hideCurrentSnackBar();
-  final message = object is String ? object : json.encode(object);
-  scaffold.showSnackBar(SnackBar(content: TextWidget(message)));
+  try {
+    final message = object is String ? object : json.encode(object);
+    showSnackbar(context, message);
+  } catch (ex) {
+    showSnackbar(context, object.toString());
+  }
 }

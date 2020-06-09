@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/model/personalization/support_classes.dart';
+import 'package:tangem_sdk/model/sdk.dart';
 
 enum Product {
   Note,
@@ -25,5 +25,5 @@ class ProductMaskBuilder {
     productMaskValue = productMaskValue | product.code;
   }
 
-  ProductMask build() => ProductMask(productMaskValue);
+  ProductMaskSdk build() => ProductMaskSdk(productMaskValue);
 }

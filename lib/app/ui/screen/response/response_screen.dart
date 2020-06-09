@@ -5,6 +5,8 @@ import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 
+import 'scan_personalize_response.dart';
+
 class ResponseScreen extends StatelessWidget {
   final Object arguments;
 
@@ -26,7 +28,7 @@ class ResponseFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         Navigator.popUntil(context, (Route route) => route.isFirst);
         return true;
       },
@@ -35,19 +37,17 @@ class ResponseFrame extends StatelessWidget {
           title: Text(Transl.of(context).screen_response_scan),
           actions: [Menu.popupDescription()],
         ),
-        body: ReadResponseBody(readResponse: arguments),
+        body: Stack(
+          children: <Widget>[
+            Visibility(visible: false, child: TextWidget(json.encode(arguments), keyName: ItemName.responseJson)),
+            _createAppropriateResponseWidget(),
+          ],
+        ),
       ),
     );
   }
-}
 
-class ReadResponseBody extends StatelessWidget {
-  final Object readResponse;
-
-  const ReadResponseBody({Key key, this.readResponse}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: TextWidget(jsonEncode(readResponse), keyName: ItemName.responseJson));
+  Widget _createAppropriateResponseWidget() {
+    return ReadResponseBody(arguments);
   }
 }

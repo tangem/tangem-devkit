@@ -5,7 +5,7 @@ import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/screen/card_action/personalization/dialogs/import_config_dialog.dart';
 import 'package:devkit/app/ui/screen/card_action/personalization/segment_widgets/sign_hash_ex_prop_segment_widget.dart';
 import 'package:devkit/app/ui/screen/finders.dart';
-import 'package:devkit/app/ui/screen/response/response_main.dart';
+import 'package:devkit/app/ui/screen/response/response_screen.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
