@@ -14,7 +14,7 @@ class ConfigForPersonalize{
         "allowSwapPIN": true,
         "allowSwapPIN2": true,
         "cardData": {
-          "batch": "FFFF",
+          "batch": "ffff",
           "blockchain": "BTC",
           "date": "",
           "product_id_card": false,

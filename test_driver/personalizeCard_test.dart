@@ -52,11 +52,12 @@ void main() {
       print("Reconciliation batchId");
       expect(personalize['cardData']['batchId'], config['cardData']['batch']);
 
-      print("Reconciliation batchId");
+      print("Reconciliation blockchainName");
       expect(personalize['cardData']['blockchainName'], config['cardData']['blockchain']);
 
       print("Reconciliation pauseBeforePIN2");
-      expect(personalize['pauseBeforePin2'], config['pauseBeforePIN2']);
+      final pauseBeforePin2 = config['pauseBeforePIN2']/10;
+      expect(personalize['pauseBeforePin2'], pauseBeforePin2 );
 
     });
 
