@@ -17,12 +17,11 @@ void main() {
     });
 
     test("Test Personalize ",() async {
-      final config = await configForPersonalize.returnConfig('config1');
+      final config = await configForPersonalize.returnConfig('config3');
       String jsonString = jsonEncode(config);
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       print(config);
-
-      // ToDo: cid, manufacturerName,
+      print(personalize);
 
       print("Reconciliation maxSignatures");
       expect(personalize['maxSignatures'], config['MaxSignatures']);
@@ -30,11 +29,34 @@ void main() {
       print("Reconciliation manufacturerName");
       expect(personalize['manufacturerName'], "TANGEM");
 
-      print("Reconciliation status");
-      expect(personalize['status'], "Empty");
+      print("Reconciliation createWallet");
+      if (config['createWallet']==0) {
+        expect(personalize['status'], "Empty");
+        expect(personalize['walletPublicKey'], null);
+        expect(personalize['walletRemainingSignatures'], null);
+        expect(personalize['walletSignedHashes'], null);
+      }
+      else {
+        expect(personalize['status'], "Loaded");
+      }
 
       print("Reconciliation curve");
       expect(personalize['curve'], config['curveID']);
+
+      print("Reconciliation terminalIsLinked");
+      expect(personalize['terminalIsLinked'], false);
+
+      print("Reconciliation isActivated");
+      expect(personalize['isActivated'], false);
+
+      print("Reconciliation batchId");
+      expect(personalize['cardData']['batchId'], config['cardData']['batch']);
+
+      print("Reconciliation batchId");
+      expect(personalize['cardData']['blockchainName'], config['cardData']['blockchain']);
+
+      print("Reconciliation pauseBeforePIN2");
+      expect(personalize['pauseBeforePin2'], config['pauseBeforePIN2']);
 
     });
 
@@ -44,3 +66,4 @@ void main() {
     });
   });
 }
+
