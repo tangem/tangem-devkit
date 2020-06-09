@@ -86,7 +86,7 @@ class ConfigForPersonalize{
         "checkPIN3onCard": false,
         "count": 0,
         "createWallet": 0,
-        "curveID": "secp256k1",
+        "curveID": "Secp256k1",
         "disablePrecomputedNDEF": false,
         "forbidDefaultPIN": false,
         "forbidPurgeWallet": false,

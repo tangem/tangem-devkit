@@ -23,8 +23,6 @@ void main() {
       print(config);
       print(personalize);
 
-      // ToDo: cid, manufacturerName,
-
       print("Reconciliation maxSignatures");
       expect(personalize['maxSignatures'], config['MaxSignatures']);
 
