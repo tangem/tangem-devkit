@@ -5,6 +5,7 @@ import 'package:devkit/app/domain/model/personalization/signing_method_mask.dart
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tangem_sdk/model/sdk.dart';
 
 import 'personalization_bloc.dart';
 import 'personalization_values.dart';
@@ -222,15 +223,17 @@ class TokenSegment extends BaseSegment {
       }
     }));
     _subscriptions.add(tokenSymbol.listen((value) {
-      if (_config.cardData.tokenSymbol == value) return;
+      final symbol = value.isEmpty ? null : value;
+      if (_config.cardData.tokenSymbol == symbol) return;
 
-      _config.cardData.tokenSymbol = value;
+      _config.cardData.tokenSymbol = symbol;
       itsToken.add(_itsToken());
     }));
     _subscriptions.add(tokenContractAddress.listen((value) {
-      if (_config.cardData.tokenContractAddress == value) return;
+      final address = value.isEmpty ? null : value;
+      if (_config.cardData.tokenContractAddress == address) return;
 
-      _config.cardData.tokenContractAddress = value;
+      _config.cardData.tokenContractAddress = address;
       itsToken.add(_itsToken());
     }));
     _subscriptions.add(tokenDecimal.listen((value) {
@@ -378,7 +381,7 @@ class SettingsMaskNdefSegment extends BaseSegment {
   }
 
   _updateNdefRecords() {
-    NdefRecord findNdef(String type) => _config.ndef.firstWhere((element) => element.type == type, orElse: () => null);
+    NdefRecordSdk findNdef(String type) => _config.ndef.firstWhere((element) => element.type == type, orElse: () => null);
     final foundAar = findNdef(typeAar);
     if (foundAar == null) {
       aar.add(_bloc.values.getAar(""));
@@ -407,7 +410,7 @@ class SettingsMaskNdefSegment extends BaseSegment {
 
   _initNdefSubscriptions() {
     removeAll(String type) => _config.ndef.removeWhere((element) => element.type == type);
-    addNdef(String type, String value) => _config.ndef.add(NdefRecord(type: type, value: value));
+    addNdef(String type, String value) => _config.ndef.add(NdefRecordSdk(type: type, value: value));
 
     _subscriptions.add(aar.listen((value) {
       if (isCustom(value)) return;

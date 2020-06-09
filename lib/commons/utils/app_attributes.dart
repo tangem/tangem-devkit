@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,9 +28,13 @@ class AppDimen {
 }
 
 class AppColor {
-  static final Color primaryColor = Colors.blueGrey;
-  static final Color primaryDarkColor = Colors.blueGrey[700];
-  static final Color accentColor = Colors.blueGrey[700];
+  static final Color primaryColor = Colors.blue[600];
+  static final Color primaryDarkColor = Colors.blue[600];
+  static final Color accentColor = Colors.blue[600];
+
+//  static final Color primaryColor = Colors.purpleAccent;
+//  static final Color primaryDarkColor = Colors.purpleAccent;
+//  static final Color accentColor = Colors.purpleAccent;
 
   static final listDelimiter = Colors.grey.withAlpha(70);
   static final border = Colors.blueGrey.withAlpha(70);
@@ -38,4 +43,8 @@ class AppColor {
   static final itemTitle = Colors.grey;
   static final itemDescription = Colors.grey;
   static final itemBgBlock = Colors.grey[350];
+
+  static final responseCardData = HexColor("#D7E4F3");
+  static final responseProductMask = HexColor("#D7E4F3");
+  static final responseSettingsMask = HexColor("#D7F3E6");
 }

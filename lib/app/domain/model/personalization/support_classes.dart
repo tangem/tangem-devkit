@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:tangem_sdk/model/sdk.dart';
 
 import 'json.dart';
 
@@ -17,7 +18,7 @@ class PersonalizationConfig {
   bool allowSelectBlockchain;
   bool allowSwapPIN;
   bool allowSwapPIN2;
-  CardData cardData;
+  PersonalizationCardData cardData;
   bool checkPIN3onCard;
   int count;
   int createWallet;
@@ -28,7 +29,7 @@ class PersonalizationConfig {
   String hexCrExKey;
   bool isReusable;
   String issuerName;
-  List<NdefRecord> ndef;
+  List<NdefRecordSdk> ndef;
   String numberFormat;
   int pauseBeforePIN2;
   bool protectIssuerDataAgainstReplay;
@@ -106,7 +107,7 @@ class PersonalizationConfig {
 }
 
 @JsonSerializable()
-class CardData {
+class PersonalizationCardData {
   String batch;
   String blockchain;
   String date;
@@ -125,7 +126,7 @@ class CardData {
   @JsonKey(name: 'token_decimal', includeIfNull: false)
   int tokenDecimal;
 
-  CardData({
+  PersonalizationCardData({
     this.tokenSymbol,
     this.tokenContractAddress,
     this.tokenDecimal,
@@ -138,167 +139,7 @@ class CardData {
     this.productTag,
   });
 
-  factory CardData.fromJson(Map<String, dynamic> json) => _$CardDataFromJson(json);
+  factory PersonalizationCardData.fromJson(Map<String, dynamic> json) => _$PersonalizationCardDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CardDataToJson(this);
-}
-
-@JsonSerializable()
-class CardDataSdk {
-  final String issuerName;
-  final String batchId;
-  final String blockchainName;
-  @JsonKey(includeIfNull: false)
-  final String tokenSymbol;
-  @JsonKey(includeIfNull: false)
-  final String tokenContractAddress;
-  @JsonKey(includeIfNull: false)
-  final int tokenDecimal;
-  @JsonKey(includeIfNull: false)
-  final List<int> manufacturerSignature;
-  final String manufactureDateTime;
-  final ProductMask productMask;
-
-  CardDataSdk({
-    this.productMask,
-    this.issuerName,
-    this.manufacturerSignature,
-    this.batchId,
-    this.blockchainName,
-    this.manufactureDateTime,
-    this.tokenSymbol,
-    this.tokenContractAddress,
-    this.tokenDecimal,
-  });
-
-  factory CardDataSdk.fromJson(Map<String, dynamic> json) => _$CardDataSdkFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CardDataSdkToJson(this);
-}
-
-@JsonSerializable()
-class CardConfig {
-  final String issuerName;
-  final String acquirerName;
-  final String series;
-  final int startNumber;
-  final int count;
-  final String pin;
-  final String pin2;
-  final String pin3;
-  final String hexCrExKey;
-  final String cvc;
-  final int pauseBeforePin2;
-  final bool smartSecurityDelay;
-  final String curveID;
-  final SigningMethodMask signingMethods;
-  final int maxSignatures;
-  final bool isReusable;
-  final bool allowSwapPin;
-  final bool allowSwapPin2;
-  final bool useActivation;
-  final bool useCvc;
-  final bool useNdef;
-  final bool useDynamicNdef;
-  final bool useOneCommandAtTime;
-  final bool useBlock;
-  final bool allowSelectBlockchain;
-  final bool forbidPurgeWallet;
-  final bool protocolAllowUnencrypted;
-  final bool protocolAllowStaticEncryption;
-  final bool protectIssuerDataAgainstReplay;
-  final bool forbidDefaultPin;
-  final bool disablePrecomputedNdef;
-  final bool skipSecurityDelayIfValidatedByIssuer;
-  final bool skipCheckPIN2andCVCIfValidatedByIssuer;
-  final bool skipSecurityDelayIfValidatedByLinkedTerminal;
-  final bool restrictOverwriteIssuerDataEx;
-  final bool requireTerminalTxSignature;
-  final bool requireTerminalCertSignature;
-  final bool checkPin3onCard;
-  final bool createWallet;
-  final CardDataSdk cardData;
-  final List<NdefRecord> ndefRecords;
-
-  CardConfig({
-    this.issuerName,
-    this.acquirerName,
-    this.series,
-    this.startNumber,
-    this.count,
-    this.pin,
-    this.pin2,
-    this.pin3,
-    this.hexCrExKey,
-    this.cvc,
-    this.pauseBeforePin2,
-    this.smartSecurityDelay,
-    this.curveID,
-    this.signingMethods,
-    this.maxSignatures,
-    this.isReusable,
-    this.allowSwapPin,
-    this.allowSwapPin2,
-    this.useActivation,
-    this.useCvc,
-    this.useNdef,
-    this.useDynamicNdef,
-    this.useOneCommandAtTime,
-    this.useBlock,
-    this.allowSelectBlockchain,
-    this.forbidPurgeWallet,
-    this.protocolAllowUnencrypted,
-    this.protocolAllowStaticEncryption,
-    this.protectIssuerDataAgainstReplay,
-    this.forbidDefaultPin,
-    this.disablePrecomputedNdef,
-    this.skipSecurityDelayIfValidatedByIssuer,
-    this.skipCheckPIN2andCVCIfValidatedByIssuer,
-    this.skipSecurityDelayIfValidatedByLinkedTerminal,
-    this.restrictOverwriteIssuerDataEx,
-    this.requireTerminalTxSignature,
-    this.requireTerminalCertSignature,
-    this.checkPin3onCard,
-    this.createWallet,
-    this.cardData,
-    this.ndefRecords,
-  });
-
-  factory CardConfig.fromJson(Map<String, dynamic> json) => _$CardConfigFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CardConfigToJson(this);
-}
-
-@JsonSerializable()
-class NdefRecord {
-  final String type;
-  final String value;
-
-  NdefRecord({this.type, this.value});
-
-  factory NdefRecord.fromJson(Map<String, dynamic> json) => _$NdefRecordFromJson(json);
-
-  Map<String, dynamic> toJson() => _$NdefRecordToJson(this);
-}
-
-@JsonSerializable()
-class ProductMask {
-  final int rawValue;
-
-  ProductMask(this.rawValue);
-
-  factory ProductMask.fromJson(Map<String, dynamic> json) => _$ProductMaskFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ProductMaskToJson(this);
-}
-
-@JsonSerializable()
-class SigningMethodMask {
-  final int rawValue;
-
-  SigningMethodMask(this.rawValue);
-
-  factory SigningMethodMask.fromJson(Map<String, dynamic> json) => _$SigningMethodMaskFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SigningMethodMaskToJson(this);
+  Map<String, dynamic> toJson() => _$PersonalizationCardDataToJson(this);
 }
