@@ -47,7 +47,7 @@ class ResponseFrame extends StatelessWidget {
         ),
         body: Stack(
           children: <Widget>[
-            Visibility(visible: false, child: TextWidget(jsonArguments, keyName: ItemName.responseJson)),
+            Opacity(opacity: 0.0, child: TextWidget(jsonArguments, keyName: ItemName.responseJson)),
             _createAppropriateResponseWidget(),
           ],
         ),

@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'card_response.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 class CardResponse {
   CardDataResponse cardData;
   String cardId;
