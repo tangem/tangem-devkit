@@ -72,13 +72,9 @@ class ReadResponseBody extends StatelessWidget {
             value: _card.isActivated,
             description: transl.desc_response_card_is_activated,
           ),
-          SegmentHeader(transl.response_card_signing_method, description: transl.desc_response_card_signing_method),
           SigningMethodsResponseWidget(_card),
-          SegmentHeader(transl.response_card_card_data, description: transl.desc_response_card_card_data),
           CardDataResponseWidget(_card.cardData),
-          SegmentHeader(transl.response_card_card_data_product_mask, description: transl.desc_response_card_card_data_product_mask),
           ProductMaskResponseWidget(_card.cardData),
-          SegmentHeader(transl.response_card_settings_mask, description: transl.desc_response_card_settings_mask),
           SettingsMaskResponseWidget(_card),
         ],
       ),
@@ -94,10 +90,12 @@ class CardDataResponseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final transl = Transl.of(context);
+    if (_cardData == null) return StubWidget();
 
+    final transl = Transl.of(context);
     return Column(
       children: <Widget>[
+        SegmentHeader(transl.response_card_card_data, description: transl.desc_response_card_card_data),
         ResponseTextWidget(
           name: transl.response_card_card_data_batch_id,
           value: _cardData.batchId,
@@ -161,9 +159,13 @@ class SigningMethodsResponseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: _signingMethods.map((method) => ResponseCheckboxWidget(name: method, value: _card.signingMethods.contains(method))).toList(),
-    );
+    if (_card.signingMethods == null) return StubWidget();
+
+    final transl = Transl.of(context);
+    List<Widget> widgets =
+        _signingMethods.map((method) => ResponseCheckboxWidget(name: method, value: _card.signingMethods.contains(method))).toList();
+    widgets.insert(0, SegmentHeader(transl.response_card_signing_method, description: transl.desc_response_card_signing_method));
+    return Column(children: widgets);
   }
 }
 
@@ -182,15 +184,14 @@ class ProductMaskResponseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: _productMaskList
-          .map((method) => ResponseCheckboxWidget(
-                name: method,
-                value: _cardData.productMask.contains(method),
-                bgColor: _color,
-              ))
-          .toList(),
-    );
+    if (_cardData == null || _cardData.productMask == null) return StubWidget();
+
+    final transl = Transl.of(context);
+    List<Widget> widgets = _productMaskList
+        .map((method) => ResponseCheckboxWidget(name: method, value: _cardData.productMask.contains(method), bgColor: _color))
+        .toList();
+    widgets.insert(0, SegmentHeader(transl.response_card_card_data_product_mask, description: transl.desc_response_card_card_data_product_mask));
+    return Column(children: widgets);
   }
 }
 
@@ -229,14 +230,12 @@ class SettingsMaskResponseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: _settingsMaskList
-          .map((method) => ResponseCheckboxWidget(
-                name: method,
-                value: _card.settingsMask.contains(method),
-                bgColor: _color,
-              ))
-          .toList(),
-    );
+    if (_card.settingsMask == null) return StubWidget();
+
+    final transl = Transl.of(context);
+    List<Widget> widgets =
+        _settingsMaskList.map((method) => ResponseCheckboxWidget(name: method, value: _card.settingsMask.contains(method), bgColor: _color)).toList();
+    widgets.insert(0, SegmentHeader(transl.response_card_settings_mask, description: transl.desc_response_card_settings_mask));
+    return Column(children: widgets);
   }
 }

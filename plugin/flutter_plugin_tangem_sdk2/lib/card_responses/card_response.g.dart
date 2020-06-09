@@ -8,8 +8,9 @@ part of 'card_response.dart';
 
 CardResponse _$CardResponseFromJson(Map<String, dynamic> json) {
   return CardResponse(
-    cardData:
-        CardDataResponse.fromJson(json['cardData'] as Map<String, dynamic>),
+    cardData: json['cardData'] == null
+        ? null
+        : CardDataResponse.fromJson(json['cardData'] as Map<String, dynamic>),
     cardId: json['cardId'] as String,
     cardPublicKey: json['cardPublicKey'] as String,
     curve: json['curve'] as String,
@@ -21,9 +22,9 @@ CardResponse _$CardResponseFromJson(Map<String, dynamic> json) {
     maxSignatures: json['maxSignatures'] as int,
     pauseBeforePin2: json['pauseBeforePin2'] as int,
     settingsMask:
-        (json['settingsMask'] as List).map((e) => e as String).toList(),
+        (json['settingsMask'] as List)?.map((e) => e as String)?.toList(),
     signingMethods:
-        (json['signingMethods'] as List).map((e) => e as String).toList(),
+        (json['signingMethods'] as List)?.map((e) => e as String)?.toList(),
     status: json['status'] as String,
     terminalIsLinked: json['terminalIsLinked'] as bool,
     walletPublicKey: json['walletPublicKey'] as String,
