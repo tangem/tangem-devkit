@@ -4,6 +4,8 @@ import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
+import 'package:tangem_sdk/card_responses/card_response.dart';
 
 import 'scan_personalize_response.dart';
 
@@ -22,8 +24,11 @@ class ResponseScreen extends StatelessWidget {
 
 class ResponseFrame extends StatelessWidget {
   final Object arguments;
+  String jsonArguments;
 
-  const ResponseFrame({Key key, this.arguments}) : super(key: key);
+  ResponseFrame({Key key, this.arguments}) : super(key: key) {
+    jsonArguments = json.encode(arguments);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +40,14 @@ class ResponseFrame extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(Transl.of(context).screen_response_scan),
-          actions: [Menu.popupDescription()],
+          actions: [
+            IconButton(icon: Icon(Icons.share), onPressed: () => Share.share(jsonArguments)),
+            Menu.popupDescription(),
+          ],
         ),
         body: Stack(
           children: <Widget>[
-            Visibility(visible: false, child: TextWidget(json.encode(arguments), keyName: ItemName.responseJson)),
+            Visibility(visible: false, child: TextWidget(jsonArguments, keyName: ItemName.responseJson)),
             _createAppropriateResponseWidget(),
           ],
         ),
@@ -48,6 +56,8 @@ class ResponseFrame extends StatelessWidget {
   }
 
   Widget _createAppropriateResponseWidget() {
-    return ReadResponseBody(arguments);
+    if (arguments is CardResponse) return ReadResponseBody(arguments);
+
+    return Center(child: TextWidget("Not implemented yet"));
   }
 }
