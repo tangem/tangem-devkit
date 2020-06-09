@@ -4,7 +4,7 @@ part 'card_response.g.dart';
 
 @JsonSerializable(nullable: false)
 class CardResponse {
-  CardData cardData;
+  CardDataResponse cardData;
   String cardId;
   String cardPublicKey;
   String curve;
@@ -43,23 +43,37 @@ class CardResponse {
       this.walletRemainingSignatures,
       this.walletSignedHashes});
 
-  factory CardResponse.fromJson(Map<String, dynamic> json) => _$CardFromJson(json);
+  factory CardResponse.fromJson(Map<String, dynamic> json) => _$CardResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CardToJson(this);
+  Map<String, dynamic> toJson() => _$CardResponseToJson(this);
 }
 
 @JsonSerializable()
-class CardData {
-  String batchId;
-  String blockchainName;
-  String issuerName;
-  String manufactureDateTime;
-  String manufacturerSignature;
-  List<String> productMask;
+class CardDataResponse {
+  final String batchId;
+  final String blockchainName;
+  final String issuerName;
+  final String manufacturerSignature;
+  final List<String> productMask;
+  @JsonKey(includeIfNull: false)
+  final String tokenContractAddress;
+  @JsonKey(includeIfNull: false)
+  final String tokenSymbol;
+  @JsonKey(includeIfNull: false)
+  final int tokenDecimal;
 
-  CardData({this.batchId, this.blockchainName, this.issuerName, this.manufactureDateTime, this.manufacturerSignature, this.productMask});
+  CardDataResponse({
+    this.batchId,
+    this.blockchainName,
+    this.issuerName,
+    this.manufacturerSignature,
+    this.productMask,
+    this.tokenContractAddress,
+    this.tokenSymbol,
+    this.tokenDecimal,
+  });
 
-  factory CardData.fromJson(Map<String, dynamic> json) => _$CardDataFromJson(json);
+  factory CardDataResponse.fromJson(Map<String, dynamic> json) => _$CardDataResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CardDataToJson(this);
+  Map<String, dynamic> toJson() => _$CardDataResponseToJson(this);
 }

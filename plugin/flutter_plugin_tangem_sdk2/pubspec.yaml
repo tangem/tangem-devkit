@@ -20,7 +20,7 @@ dev_dependencies:
 
 # generate files for json - https://github.com/dart-lang/json_serializable/tree/master/example
 # command for generation
-# $ flutter packages pub run build_runner build
+# $ flutter pub get && flutter packages pub run build_runner build
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
