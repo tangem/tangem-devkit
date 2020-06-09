@@ -163,7 +163,7 @@ class SigningMethodsResponseWidget extends StatelessWidget {
 
     final transl = Transl.of(context);
     List<Widget> widgets =
-        _signingMethods.map((method) => ResponseCheckboxWidget(name: method, value: _card.signingMethods.contains(method))).toList();
+        _signingMethods.map<Widget>((method) => ResponseCheckboxWidget(name: method, value: _card.signingMethods.contains(method))).toList();
     widgets.insert(0, SegmentHeader(transl.response_card_signing_method, description: transl.desc_response_card_signing_method));
     return Column(children: widgets);
   }
@@ -188,7 +188,7 @@ class ProductMaskResponseWidget extends StatelessWidget {
 
     final transl = Transl.of(context);
     List<Widget> widgets = _productMaskList
-        .map((method) => ResponseCheckboxWidget(name: method, value: _cardData.productMask.contains(method), bgColor: _color))
+        .map<Widget>((method) => ResponseCheckboxWidget(name: method, value: _cardData.productMask.contains(method), bgColor: _color) as Widget)
         .toList();
     widgets.insert(0, SegmentHeader(transl.response_card_card_data_product_mask, description: transl.desc_response_card_card_data_product_mask));
     return Column(children: widgets);
@@ -234,7 +234,7 @@ class SettingsMaskResponseWidget extends StatelessWidget {
 
     final transl = Transl.of(context);
     List<Widget> widgets =
-        _settingsMaskList.map((method) => ResponseCheckboxWidget(name: method, value: _card.settingsMask.contains(method), bgColor: _color)).toList();
+        _settingsMaskList.map<Widget>((method) => ResponseCheckboxWidget(name: method, value: _card.settingsMask.contains(method), bgColor: _color)).toList();
     widgets.insert(0, SegmentHeader(transl.response_card_settings_mask, description: transl.desc_response_card_settings_mask));
     return Column(children: widgets);
   }
