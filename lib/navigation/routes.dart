@@ -3,7 +3,7 @@ import 'package:devkit/app/ui/screen/card_action/personalization/personalization
 import 'package:devkit/app/ui/screen/card_action/scan_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/sign_screen.dart';
 import 'package:devkit/app/ui/screen/main_screen.dart';
-import 'package:devkit/app/ui/screen/response/response_main.dart';
+import 'package:devkit/app/ui/screen/response/response_screen.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
