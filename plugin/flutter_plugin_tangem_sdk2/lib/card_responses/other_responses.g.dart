@@ -78,3 +78,35 @@ Map<String, dynamic> _$PurgeWalletResponseToJson(
       'cardId': instance.cardId,
       'status': instance.status,
     };
+
+ReadIssuerDataResponse _$ReadIssuerDataResponseFromJson(
+    Map<String, dynamic> json) {
+  return ReadIssuerDataResponse(
+    json['cardId'] as String,
+    json['issuerData'] as String,
+    json['issuerDataSignature'] as String,
+    json['issuerDataCounter'] as int,
+  );
+}
+
+Map<String, dynamic> _$ReadIssuerDataResponseToJson(
+        ReadIssuerDataResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+      'issuerData': instance.issuerData,
+      'issuerDataSignature': instance.issuerDataSignature,
+      'issuerDataCounter': instance.issuerDataCounter,
+    };
+
+WriteIssuerDataResponse _$WriteIssuerDataResponseFromJson(
+    Map<String, dynamic> json) {
+  return WriteIssuerDataResponse(
+    json['cardId'] as String,
+  );
+}
+
+Map<String, dynamic> _$WriteIssuerDataResponseToJson(
+        WriteIssuerDataResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+    };

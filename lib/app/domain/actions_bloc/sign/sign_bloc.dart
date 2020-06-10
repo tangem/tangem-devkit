@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/card_optional_values.dart';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_card_es.dart';
-import 'package:devkit/commons/extensions/export.dart';
+import 'package:tangem_sdk/extensions.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../base_events.dart';

@@ -3,23 +3,35 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
+import 'package:tangem_sdk/extensions.dart';
 
 import 'card_responses/other_responses.dart';
-import 'extentions.dart';
 
 /// Flutter TangemSdk is an interface which provides access to platform specific TangemSdk library.
 /// The response from the successfully completed execution of the 'channel method' is expected in the json.
 /// If an error occurs within the 'channel method', it is expected PlatformException converter to the json.
 class TangemSdk {
+  static const cScanCard = 'scanCard';
+  static const cSign = 'sign';
+  static const cPersonalize = 'personalize';
+  static const cDepersonalize = 'depersonalize';
+  static const cCreateWallet = 'createWallet';
+  static const cPurgeWallet = 'purgeWallet';
+  static const cReadIssuerData = 'readIssuerData';
+  static const cWriteIssuerData = 'writeIssuerData';
+
   static const cid = "cid";
   static const initialMessage = "initialMessage";
   static const initialMessageHeader = "header";
   static const initialMessageBody = "body";
-  static const hashes = "hashes";
+  static const hashesHex = "hashes";
   static const cardConfig = "cardConfig";
   static const issuer = "issuer";
   static const manufacturer = "manufacturer";
   static const acquirer = "acquirer";
+  static const issuerDataHex = "issuerData";
+  static const issuerDataCounter = "issuerDataCounter";
+  static const issuerPrivateKeyHex = "issuerPrivateKey";
 
   static const MethodChannel _channel = const MethodChannel('tangemSdk');
 
@@ -30,18 +42,18 @@ class TangemSdk {
 
   static Future scanCard(Callback callback, [Map<String, dynamic> optional]) async {
     _channel
-        .invokeMethod('scanCard', _createExportingValues(optional))
-        .then((result) => callback.onSuccess(CardResponse.fromJson(jsonDecode(result))))
+        .invokeMethod(cScanCard, _createExportingValues(optional))
+        .then((result) => callback.onSuccess(_createResponse(cScanCard, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
   static Future sign(Callback callback, List<String> listOfHexHashes, [Map<String, dynamic> optional]) async {
     final valuesToExport = _createExportingValues(optional);
-    valuesToExport[hashes] = listOfHexHashes;
+    valuesToExport[hashesHex] = listOfHexHashes;
 
     _channel
-        .invokeMethod('sign', valuesToExport)
-        .then((result) => callback.onSuccess(SignResponse.fromJson(jsonDecode(result))))
+        .invokeMethod(cSign, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cSign, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
@@ -53,48 +65,51 @@ class TangemSdk {
     valuesToExport[acquirer] = json.encode(attributes[acquirer]);
 
     _channel
-        .invokeMethod('personalize', valuesToExport)
-        .then((result) => callback.onSuccess(CardResponse.fromJson(jsonDecode(result))))
+        .invokeMethod(cPersonalize, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cPersonalize, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
   static Future depersonalize(Callback callback, [Map<String, dynamic> optional]) async {
     _channel
-        .invokeMethod('depersonalize', _createExportingValues(optional))
-        .then((result) => callback.onSuccess(DepersonalizeResponse.fromJson(jsonDecode(result))))
+        .invokeMethod(cDepersonalize, _createExportingValues(optional))
+        .then((result) => callback.onSuccess(_createResponse(cDepersonalize, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
   static Future createWallet(Callback callback, [Map<String, dynamic> optional]) async {
     _channel
-        .invokeMethod('createWallet', _createExportingValues(optional))
-        .then((result) => callback.onSuccess(CreateWalletResponse.fromJson(jsonDecode(result))))
+        .invokeMethod(cCreateWallet, _createExportingValues(optional))
+        .then((result) => callback.onSuccess(_createResponse(cCreateWallet, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
   static Future purgeWallet(Callback callback, [Map<String, dynamic> optional]) async {
     _channel
-        .invokeMethod('purgeWallet', _createExportingValues(optional))
-        .then((result) => callback.onSuccess(PurgeWalletResponse.fromJson(jsonDecode(result))))
+        .invokeMethod(cPurgeWallet, _createExportingValues(optional))
+        .then((result) => callback.onSuccess(_createResponse(cPurgeWallet, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future readIssuerData(Callback callback, [Map<String, dynamic> optional]) async {
+    _channel
+        .invokeMethod(cReadIssuerData, _createExportingValues(optional))
+        .then((result) => callback.onSuccess(_createResponse(cReadIssuerData, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future writeIssuerData(Callback callback, String hexIssuerData, String hexIssuerPrivateKey, [Map<String, dynamic> optional]) async {
+    final valuesToExport = _createExportingValues(optional);
+    valuesToExport[issuerDataHex] = hexIssuerData;
+    valuesToExport[issuerPrivateKeyHex] = hexIssuerPrivateKey;
+
+    _channel
+        .invokeMethod(cWriteIssuerData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cWriteIssuerData, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
   /*
-
-  readIssuerData: function (callback, cid, optional) {
-    var valuesToExport = createExportingValues(optional, cid)
-    exec(callback.success, callback.error, name, 'readIssuerData', [valuesToExport]);
-  },
-
-  writeIssuerData: function (callback, cid, issuerData, issuerDataSignature, optional) {
-    var valuesToExport = createExportingValues(optional, cid)
-    valuesToExport.issuerData = issuerData;
-    valuesToExport.issuerDataSignature = issuerDataSignature;
-    valuesToExport.issuerDataCounter = optional.issuerDataCounter;
-
-    exec(callback.success, callback.error, name, 'writeIssuerData', [valuesToExport]);
-  },
-
   readIssuerExtraData: function (callback, cid, optional) {
     var valuesToExport = createExportingValues(optional, cid)
     exec(callback.success, callback.error, name, 'readIssuerExtraData', [valuesToExport]);
@@ -142,16 +157,48 @@ class TangemSdk {
   }
    */
 
+  static dynamic _createResponse(String name, dynamic response) {
+    print("onSuccess: $name with response: $response");
+    final jsonResponse = jsonDecode(response);
+
+    switch (name) {
+      case cScanCard:
+        return CardResponse.fromJson(jsonResponse);
+      case cSign:
+        return SignResponse.fromJson(jsonResponse);
+      case cPersonalize:
+        return CardResponse.fromJson(jsonResponse);
+      case cDepersonalize:
+        return DepersonalizeResponse.fromJson(jsonResponse);
+      case cCreateWallet:
+        return CreateWalletResponse.fromJson(jsonResponse);
+      case cPurgeWallet:
+        return PurgeWalletResponse.fromJson(jsonResponse);
+      case cReadIssuerData:
+        return ReadIssuerDataResponse.fromJson(jsonResponse);
+      case cWriteIssuerData:
+        return WriteIssuerDataResponse.fromJson(jsonResponse);
+    }
+    return response;
+  }
+
   static _sendBackError(Callback callback, PlatformException ex) {
-    callback.onError(ErrorResponse.fromException(ex));
+    final error = ErrorResponse.fromException(ex);
+    print("onError: $error");
+    callback.onError(error);
   }
 
   static Map<String, dynamic> _createExportingValues(Map<String, dynamic> optional) {
     var valuesToExport = <String, dynamic>{};
     if (optional == null || optional.isEmpty) return valuesToExport;
 
-    valuesToExport[cid] = optional[cid];
-    valuesToExport[initialMessage] = optional[initialMessage];
+    addIfExist(String name, Map<String, dynamic> where, Map<String, dynamic> from) {
+      if (from.containsKey(name)) where[name] = from[name];
+    }
+
+    addIfExist(cid, valuesToExport, optional);
+    addIfExist(initialMessage, valuesToExport, optional);
+    addIfExist(issuerDataCounter, valuesToExport, optional);
     return valuesToExport;
   }
 }

@@ -1,4 +1,6 @@
 import 'package:devkit/app/ui/screen/card_action/depersonalization_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/issuer_read_data_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/issuer_write_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/personalization/personalization_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/scan_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/sign_screen.dart';
@@ -16,6 +18,8 @@ class Routes {
   static const DEPERSONALIZE = "/depersonalize";
   static const CREATE_WALLET = "/create_wallet";
   static const PURGE_WALLET = "/purge_wallet";
+  static const ISSUER_READ_DATA = "/issuer_read_data";
+  static const ISSUER_WRITE_DATA = "/issuer_write_data";
   static const RESPONSE = "/response";
 
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -34,6 +38,10 @@ class Routes {
         return MaterialPageRoute(builder: (_) => CreateWalletScreen());
       case PURGE_WALLET:
         return MaterialPageRoute(builder: (_) => PurgeWalletScreen());
+      case ISSUER_READ_DATA:
+        return MaterialPageRoute(builder: (_) => ReadIssuerDataScreen());
+      case ISSUER_WRITE_DATA:
+        return MaterialPageRoute(builder: (_) => WriteIssuerDataScreen());
       case RESPONSE:
         return PageRouteBuilder(pageBuilder: (_, _1, _2) => ResponseScreen(arguments: settings.arguments));
       default:

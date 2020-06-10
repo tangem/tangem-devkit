@@ -16,5 +16,10 @@ class CardOptionalValues {
     return this;
   }
 
+  CardOptionalValues issuerDataCounter(int counter) {
+    _values[TangemSdk.issuerDataCounter] = counter;
+    return this;
+  }
+
   Map<String, dynamic> get() => _values;
 }

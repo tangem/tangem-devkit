@@ -63,6 +63,8 @@ class ResponseFrame extends StatelessWidget {
     if (arguments is DepersonalizeResponse) return DepersonalizeResponseBody(arguments);
     if (arguments is CreateWalletResponse) return CreateWalletResponseBody(arguments);
     if (arguments is PurgeWalletResponse) return PurgeWalletResponseBody(arguments);
+    if (arguments is ReadIssuerDataResponse) return ReadIssuerDataResponseBody(arguments);
+    if (arguments is WriteIssuerDataResponse) return WriteIssuerDataResponseBody(arguments);
 
     return Center(child: TextWidget("Not implemented yet"));
   }
