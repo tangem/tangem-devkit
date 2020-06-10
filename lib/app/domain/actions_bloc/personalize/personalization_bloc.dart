@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
 import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
@@ -7,7 +8,6 @@ import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share/share.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import 'segments.dart';
@@ -21,7 +21,7 @@ class Done extends PersonalizationState {}
 
 class ShowLoadConfig extends PersonalizationState {}
 
-class PersonalizationBloc {
+class PersonalizationBloc extends ActionBloc<CardResponse> {
   final PersonalizationValues values = PersonalizationValues();
   final List<BaseSegment> _configSegments = [];
   final _scrollingState = PublishSubject<bool>();
@@ -40,16 +40,6 @@ class PersonalizationBloc {
   SettingMaskProtocolEncryptionSegment settingMaskProtocolEncryption;
   SettingsMaskNdefSegment settingsMaskNdef;
   PinsSegmentSegment pins;
-
-  PublishSubject _successResponse = PublishSubject<CardResponse>();
-  PublishSubject _errorResponse = PublishSubject<ErrorResponse>();
-  PublishSubject _snackbarMessageStream = PublishSubject<dynamic>();
-
-  Stream<CardResponse> get successResponseStream => _successResponse.stream;
-
-  Stream<ErrorResponse> get errorResponseStream => _errorResponse.stream;
-
-  Stream<dynamic> get snackbarMessageStream => _snackbarMessageStream.stream;
 
   Stream<bool> get scrollingStateStream => _scrollingState.stream;
 
@@ -130,7 +120,7 @@ class PersonalizationBloc {
       final configMap = json.decode(jsonConfig);
       _restoreConfig(PersonalizationConfig.fromJson(configMap));
     } catch (ex) {
-      _snackbarMessageStream.add(ex);
+      sendSnackbarMessage(ex);
     }
   }
 
@@ -139,7 +129,7 @@ class PersonalizationBloc {
       final jsonConfig = json.encode(_store.getCurrent());
       Share.share(jsonConfig);
     } catch (ex) {
-      _snackbarMessageStream.add(ex);
+      sendSnackbarMessage(ex);
     }
   }
 
@@ -149,16 +139,11 @@ class PersonalizationBloc {
 
   PersonalizationConfig _getDefaultConfig() => PersonalizationConfig.getDefault();
 
-  personalize() {
+  @override
+  invokeAction() {
     final issuer = Issuer.def();
     final acquirer = Acquirer.def();
     final manufacturer = Manufacturer.def();
-
-    final callback = Callback((result) {
-      _successResponse.add(result);
-    }, (error) {
-      _errorResponse.add(error);
-    });
 
     TangemSdk.personalize(callback, {
       TangemSdk.cardConfig: Utils.createCardConfig(_store.getCurrent(), issuer, acquirer),
@@ -168,10 +153,12 @@ class PersonalizationBloc {
     });
   }
 
+  bool isDefaultConfigName(String name) => StoreObject.defaultKey == name;
+
+  @override
   dispose() {
     _configSegments.forEach((element) => element.dispose());
     _store.save();
+    super.dispose();
   }
-
-  bool isDefaultConfigName(String name) => StoreObject.defaultKey == name;
 }

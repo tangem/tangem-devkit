@@ -3,7 +3,6 @@ package com.tangem.flutter.plugin.tangem_sdk
 import android.app.Activity
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.NonNull
 import androidx.lifecycle.Lifecycle
 import com.google.gson.Gson
@@ -79,6 +78,8 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "sign" -> sign(call, result)
       "personalize" -> personalize(call, result)
       "depersonalize" -> depersonalize(call, result)
+      "createWallet" -> createWallet(call, result)
+      "purgeWallet" -> purgeWallet(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
@@ -133,6 +134,22 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private fun depersonalize(call: MethodCall, result: Result) {
     try {
       sdk.depersonalize(cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun createWallet(call: MethodCall, result: Result) {
+    try {
+      sdk.createWallet(cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun purgeWallet(call: MethodCall, result: Result) {
+    try {
+      sdk.purgeWallet(cid(call), message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }

@@ -48,3 +48,33 @@ Map<String, dynamic> _$DepersonalizeResponseToJson(
     <String, dynamic>{
       'success': instance.success,
     };
+
+CreateWalletResponse _$CreateWalletResponseFromJson(Map<String, dynamic> json) {
+  return CreateWalletResponse(
+    json['cardId'] as String,
+    json['status'] as String,
+    json['walletPublicKey'] as String,
+  );
+}
+
+Map<String, dynamic> _$CreateWalletResponseToJson(
+        CreateWalletResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+      'status': instance.status,
+      'walletPublicKey': instance.walletPublicKey,
+    };
+
+PurgeWalletResponse _$PurgeWalletResponseFromJson(Map<String, dynamic> json) {
+  return PurgeWalletResponse(
+    json['cardId'] as String,
+    json['status'] as String,
+  );
+}
+
+Map<String, dynamic> _$PurgeWalletResponseToJson(
+        PurgeWalletResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+      'status': instance.status,
+    };

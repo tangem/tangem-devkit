@@ -41,7 +41,7 @@ class ResponseFrame extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(Transl.of(context).screen_response_scan),
+          title: Text(Transl.of(context).screen_response),
           actions: [
             IconButton(icon: Icon(Icons.share), onPressed: () => Share.share(jsonArguments)),
             Menu.popupDescription(),
@@ -61,6 +61,8 @@ class ResponseFrame extends StatelessWidget {
     if (arguments is CardResponse) return ReadResponseBody(arguments);
     if (arguments is SignResponse) return SignResponseBody(arguments);
     if (arguments is DepersonalizeResponse) return DepersonalizeResponseBody(arguments);
+    if (arguments is CreateWalletResponse) return CreateWalletResponseBody(arguments);
+    if (arguments is PurgeWalletResponse) return PurgeWalletResponseBody(arguments);
 
     return Center(child: TextWidget("Not implemented yet"));
   }
