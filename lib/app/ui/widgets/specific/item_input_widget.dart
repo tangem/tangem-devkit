@@ -104,7 +104,6 @@ class _InputCidWidgetState extends State<InputCidWidget> {
             ),
           ),
           Visibility(
-            visible: widget.controller.text.isEmpty,
             child: RaisedButton(
               key: ItemId.btnFrom(widget.keyName),
               child: TextWidget(Transl.of(context).action_scan),

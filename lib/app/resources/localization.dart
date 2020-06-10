@@ -98,6 +98,8 @@ class Transl {
 
   String get screen_user_write_protected_data => get("screen_user_write_protected_data");
 
+  String get screen_response => get("screen_response");
+
   String get screen_response_scan => get("screen_response_scan");
 
   String get screen_response_sign => get("screen_response_sign");
@@ -152,13 +154,13 @@ class Transl {
 
   String get desc_action_depersonalize => get("desc_action_depersonalize");
 
-  String get action_wallet_create => get("action_wallet_create");
+  String get action_create_wallet => get("action_create_wallet");
 
-  String get desc_action_wallet_create => get("desc_action_wallet_create");
+  String get desc_action_create_wallet => get("desc_action_create_wallet");
 
-  String get action_wallet_purge => get("action_wallet_purge");
+  String get action_purge_wallet => get("action_purge_wallet");
 
-  String get desc_action_wallet_purge => get("desc_action_wallet_purge");
+  String get desc_action_purge_wallet => get("desc_action_purge_wallet");
 
   String get action_issuer_read_data => get("action_issuer_read_data");
 

@@ -65,6 +65,20 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
+  static Future createWallet(Callback callback, [Map<String, dynamic> optional]) async {
+    _channel
+        .invokeMethod('createWallet', _createExportingValues(optional))
+        .then((result) => callback.onSuccess(CreateWalletResponse.fromJson(jsonDecode(result))))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future purgeWallet(Callback callback, [Map<String, dynamic> optional]) async {
+    _channel
+        .invokeMethod('purgeWallet', _createExportingValues(optional))
+        .then((result) => callback.onSuccess(PurgeWalletResponse.fromJson(jsonDecode(result))))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
   /*
 
   readIssuerData: function (callback, cid, optional) {

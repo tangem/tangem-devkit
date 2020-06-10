@@ -54,3 +54,58 @@ class DepersonalizeResponseBody extends StatelessWidget {
     );
   }
 }
+
+class CreateWalletResponseBody extends StatelessWidget {
+  final CreateWalletResponse _response;
+
+  const CreateWalletResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return Column(
+      children: <Widget>[
+        ResponseTextWidget(
+          name: transl.response_card_cid,
+          value: _response.cardId,
+          description: transl.desc_response_card_cid,
+        ),
+        ResponseTextWidget(
+          name: transl.response_card_status,
+          value: _response.status,
+          description: transl.desc_response_card_wallet_public_key,
+        ),
+        ResponseTextWidget(
+          name: transl.response_card_wallet_public_key,
+          value: _response.walletPublicKey,
+          description: transl.desc_response_card_wallet_public_key,
+        ),
+      ],
+    );
+  }
+}
+
+class PurgeWalletResponseBody extends StatelessWidget {
+  final PurgeWalletResponse _response;
+
+  const PurgeWalletResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return Column(
+      children: <Widget>[
+        ResponseTextWidget(
+          name: transl.response_card_cid,
+          value: _response.cardId,
+          description: transl.desc_response_card_cid,
+        ),
+        ResponseTextWidget(
+          name: transl.response_card_status,
+          value: _response.status,
+          description: transl.desc_response_card_wallet_public_key,
+        ),
+      ],
+    );
+  }
+}

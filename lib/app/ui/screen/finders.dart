@@ -1,5 +1,7 @@
 import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
+import 'package:devkit/app/ui/screen/card_action/wallet_create_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/wallet_purge_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BlocFinder {
@@ -12,4 +14,8 @@ class BlocFinder {
 
 class RepoFinder {
   static PersonalizationBloc personalizationBloc(context) => RepositoryProvider.of<PersonalizationBloc>(context);
+
+  static CreateWalletBloc createWalletBloc(context) => RepositoryProvider.of<CreateWalletBloc>(context);
+
+  static PurgeWalletBloc purgeWalletBloc(context) => RepositoryProvider.of<PurgeWalletBloc>(context);
 }

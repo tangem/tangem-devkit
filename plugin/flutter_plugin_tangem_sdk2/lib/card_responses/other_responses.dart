@@ -48,3 +48,30 @@ class DepersonalizeResponse {
 
   Map<String, dynamic> toJson() => _$DepersonalizeResponseToJson(this);
 }
+
+@JsonSerializable(nullable: false)
+class CreateWalletResponse {
+  final String cardId;
+  final String status;
+  final String walletPublicKey;
+
+  CreateWalletResponse(this.cardId, this.status, this.walletPublicKey);
+
+  factory CreateWalletResponse.fromJson(Map<String, dynamic> json) => _$CreateWalletResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CreateWalletResponseToJson(this);
+}
+
+@JsonSerializable(nullable: false)
+class PurgeWalletResponse {
+  final String cardId;
+  final String status;
+
+  PurgeWalletResponse(this.cardId, this.status);
+
+  factory PurgeWalletResponse.fromJson(Map<String, dynamic> json) => _$PurgeWalletResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PurgeWalletResponseToJson(this);
+}
+
+
