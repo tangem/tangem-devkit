@@ -6,7 +6,9 @@ import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
+import 'package:tangem_sdk/card_responses/other_responses.dart';
 
+import 'other_responses.dart';
 import 'scan_personalize_response.dart';
 
 class ResponseScreen extends StatelessWidget {
@@ -57,6 +59,8 @@ class ResponseFrame extends StatelessWidget {
 
   Widget _createAppropriateResponseWidget() {
     if (arguments is CardResponse) return ReadResponseBody(arguments);
+    if (arguments is SignResponse) return SignResponseBody(arguments);
+    if (arguments is DepersonalizeResponse) return DepersonalizeResponseBody(arguments);
 
     return Center(child: TextWidget("Not implemented yet"));
   }
