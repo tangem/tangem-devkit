@@ -1,7 +1,7 @@
 import 'package:devkit/app/resources/app_resources.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
-import 'package:tangem_sdk/extensions.dart';
 
 import 'base_widgets.dart';
 
