@@ -3,6 +3,7 @@ import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.
 import 'package:devkit/app/ui/screen/card_action/issuer_read_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_read_ex_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_write_data_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/issuer_write_ex_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/user_read_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/user_write_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/user_write_protected_data_screen.dart';
@@ -30,6 +31,8 @@ class RepoFinder {
   static WriteIssuerDataBloc writeIssuerDataBloc(context) => RepositoryProvider.of<WriteIssuerDataBloc>(context);
 
   static ReadIssuerExDataBloc readIssuerExDataBloc(context) => RepositoryProvider.of<ReadIssuerExDataBloc>(context);
+
+  static WriteIssuerExDataBloc writeIssuerExDataBloc(context) => RepositoryProvider.of<WriteIssuerExDataBloc>(context);
 
   static ReadUserDataBloc readUserDataBloc(context) => RepositoryProvider.of<ReadUserDataBloc>(context);
 

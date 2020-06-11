@@ -208,6 +208,22 @@ class ReadIssuerExDataResponseBody extends StatelessWidget {
   }
 }
 
+class WriteIssuerExDataResponseBody extends StatelessWidget {
+  final WriteIssuerExDataResponse _response;
+
+  const WriteIssuerExDataResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return ResponseTextWidget(
+      name: transl.card_id,
+      value: _response.cardId,
+      description: transl.desc_card_id,
+    );
+  }
+}
+
 class ReadUserDataResponseBody extends StatelessWidget {
   final ReadUserDataResponse _response;
 

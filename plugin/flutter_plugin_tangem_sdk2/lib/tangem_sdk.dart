@@ -133,50 +133,12 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  /*
-  readIssuerExtraData: function (callback, cid, optional) {
-    var valuesToExport = createExportingValues(optional, cid)
-    exec(callback.success, callback.error, name, 'readIssuerExtraData', [valuesToExport]);
-  },
-
-  writeIssuerExtraData: function (callback, cid, issuerData, startingSignature, finalizingSignature, optional) {
-    var valuesToExport = createExportingValues(optional, cid)
-    valuesToExport.issuerData = issuerData;
-    valuesToExport.startingSignature = startingSignature;
-    valuesToExport.finalizingSignature = finalizingSignature;
-    valuesToExport.issuerDataCounter = optional.issuerDataCounter;
-
-    exec(callback.success, callback.error, name, 'writeIssuerExtraData', [valuesToExport]);
-  },
-
-
-
-  writeUserData: function (callback, cid, userData, optional) {
-    var valuesToExport = createExportingValues(optional, cid)
-    valuesToExport.userData = userData;
-    valuesToExport.userCounter = optional.userCounter;
-
-    exec(callback.success, callback.error, name, 'writeUserData', [valuesToExport]);
-  },
-
-  writeUserProtectedData: function (callback, cid, userProtectedData, optional) {
-    var valuesToExport = createExportingValues(optional, cid)
-    valuesToExport.userProtectedData = userProtectedData;
-    valuesToExport.userProtectedCounter = optional.userProtectedCounter;
-
-    exec(callback.success, callback.error, name, 'writeUserProtectedData', [valuesToExport]);
-  },
-
-  createWallet: function (callback, cid, optional) {
-    var valuesToExport = createExportingValues(optional, cid)
-    exec(callback.success, callback.error, name, 'createWallet', [valuesToExport]);
-  },
-
-  purgeWallet: function (callback, cid, optional) {
-    var valuesToExport = createExportingValues(optional, cid)
-    exec(callback.success, callback.error, name, 'purgeWallet', [valuesToExport]);
+  static Future writeIssuerExData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    _channel
+        .invokeMethod(cWriteIssuerExData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cWriteIssuerExData, result)))
+        .catchError((error) => _sendBackError(callback, error));
   }
-   */
 
   static dynamic _createResponse(String name, dynamic response) {
     print("onSuccess: $name with response: $response");
@@ -201,8 +163,8 @@ class TangemSdk {
         return WriteIssuerDataResponse.fromJson(jsonResponse);
       case cReadIssuerExData:
         return ReadIssuerExDataResponse.fromJson(jsonResponse);
-
-
+      case cWriteIssuerExData:
+        return WriteIssuerExDataResponse.fromJson(jsonResponse);
       case cReadUserData:
         return ReadUserDataResponse.fromJson(jsonResponse);
       case cWriteUserData:

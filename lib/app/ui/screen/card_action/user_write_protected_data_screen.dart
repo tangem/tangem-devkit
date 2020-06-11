@@ -47,7 +47,7 @@ class WriteUserProtectedDataFrame extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Transl.of(context).screen_user_write_data),
+        title: Text(Transl.of(context).screen_user_write_protected_data),
         actions: [Menu.popupDescription()],
       ),
       body: WriteUserProtectedDataBody(),

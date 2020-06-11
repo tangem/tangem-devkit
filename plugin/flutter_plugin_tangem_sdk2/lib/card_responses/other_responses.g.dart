@@ -132,6 +132,19 @@ Map<String, dynamic> _$ReadIssuerExDataResponseToJson(
       'issuerDataCounter': instance.issuerDataCounter,
     };
 
+WriteIssuerExDataResponse _$WriteIssuerExDataResponseFromJson(
+    Map<String, dynamic> json) {
+  return WriteIssuerExDataResponse(
+    json['cardId'] as String,
+  );
+}
+
+Map<String, dynamic> _$WriteIssuerExDataResponseToJson(
+        WriteIssuerExDataResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+    };
+
 ReadUserDataResponse _$ReadUserDataResponseFromJson(Map<String, dynamic> json) {
   return ReadUserDataResponse(
     json['cardId'] as String,

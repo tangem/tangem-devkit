@@ -203,7 +203,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun writeIssuerExData(call: MethodCall, result: Result) {
     try {
-      // from card
+      // from app
       val cardId = cid(call) !!
       val dataCounter = issuerDataCounter(call) ?: 1
       val hexCardId = cardId.hexToBytes()

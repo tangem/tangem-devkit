@@ -1,0 +1,135 @@
+import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
+import 'package:devkit/app/resources/app_resources.dart';
+import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
+import 'package:devkit/commons/text_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:tangem_sdk/card_responses/other_responses.dart';
+import 'package:tangem_sdk/tangem_sdk.dart';
+
+import '../finders.dart';
+import 'helpers.dart';
+
+class WriteIssuerExDataScreen extends StatefulWidget {
+  @override
+  _WriteIssuerExDataScreenState createState() => _WriteIssuerExDataScreenState();
+}
+
+class _WriteIssuerExDataScreenState extends State<WriteIssuerExDataScreen> {
+  WriteIssuerExDataBloc _bloc;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(create: (context) {
+          _bloc = WriteIssuerExDataBloc();
+          return _bloc;
+        })
+      ],
+      child: WriteIssuerExDataFrame(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
+  }
+}
+
+class WriteIssuerExDataFrame extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final bloc = RepoFinder.writeIssuerExDataBloc(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(Transl.of(context).screen_issuer_write_ex_data),
+        actions: [Menu.popupDescription()],
+      ),
+      body: WriteIssuerExDataBody(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.nfc),
+        onPressed: bloc.invokeAction,
+      ),
+    );
+  }
+}
+
+class WriteIssuerExDataBody extends StatefulWidget {
+  @override
+  _WriteIssuerExDataBodyState createState() => _WriteIssuerExDataBodyState();
+}
+
+class _WriteIssuerExDataBodyState extends State<WriteIssuerExDataBody> {
+  WriteIssuerExDataBloc _bloc;
+  TextStreamController _cidController;
+  TextStreamController _counterController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _bloc = RepoFinder.writeIssuerExDataBloc(context);
+    _cidController = TextStreamController(_bloc.bsCid);
+    _counterController = TextStreamController(_bloc.bsIssuerDataCounter, [RegExp(r'\d+')]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return Column(
+      children: <Widget>[
+        HiddenResponseHandlerWidget(_bloc),
+        HiddenSnackbarHandlerWidget([_bloc.snackbarMessageStream]),
+        SizedBox(height: 8),
+        InputCidWidget(
+          ItemName.cid,
+          _cidController.controller,
+          _bloc.scanCard,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+        ),
+        InputWidget(
+          ItemName.issuerDataCounter,
+          _counterController.controller,
+          hint: transl.counter,
+          description: transl.desc_counter,
+          inputType: TextInputType.number,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _cidController.dispose();
+    _counterController.dispose();
+    super.dispose();
+  }
+}
+
+class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
+  final bsIssuerDataCounter = BehaviorSubject<String>();
+
+  String _cid;
+  int _issuerDataCounter;
+
+  WriteIssuerExDataBloc() {
+    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
+    subscriptions.add(bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
+    bsIssuerDataCounter.add("1");
+  }
+
+  @override
+  invokeAction() {
+    TangemSdk.writeIssuerExData(callback, {
+      TangemSdk.cid: _cid,
+      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey.toHexString(),
+      TangemSdk.issuerDataCounter: _issuerDataCounter,
+    });
+  }
+}
