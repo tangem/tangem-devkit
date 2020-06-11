@@ -17,7 +17,7 @@ void main() {
     });
 
     test("Test Personalize ",() async {
-      final config = await configForPersonalize.returnConfig('config1');
+      final config = await configForPersonalize.returnConfig('config3');
       String jsonString = jsonEncode(config);
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       print(config);
@@ -56,8 +56,13 @@ void main() {
       expect(personalize['cardData']['blockchainName'], config['cardData']['blockchain']);
 
       print("Reconciliation pauseBeforePIN2");
-      final pauseBeforePin2 = config['pauseBeforePIN2']/10;
-      expect(personalize['pauseBeforePin2'], pauseBeforePin2 );
+      if (config['pauseBeforePIN2']>0) {
+        final pauseBeforePin2 = config['pauseBeforePIN2']/10;
+        expect(personalize['pauseBeforePin2'], pauseBeforePin2 );
+      }
+      else{
+        expect(personalize['pauseBeforePin2'], null );
+      }
 
       print("Reconciliation productMask"); //Todo: make this check a loop
       List productMask = personalize['cardData']['productMask'];
@@ -149,7 +154,14 @@ void main() {
         expect(settingsMask.contains('ProhibitPurgeWallet'), true);
       }
 
-      //Todo: add expect for cardId, health, firmware, all keys, issuer name, manufact sign
+      print("Reconciliation cardId");
+      final startNumber = config['startNumber'].toString();
+      final cardId = config['series']+ startNumber;
+      print(cardId);
+      print(personalize['cardId']);
+      expect(personalize['cardId'].contains(cardId), true);
+
+      //Todo: add expect for , health, firmware, all keys, issuer name, manufact sign, msnum date
 
     });
 
