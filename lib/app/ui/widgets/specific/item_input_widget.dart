@@ -40,7 +40,7 @@ class InputWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           scrollStream == null
-              ? buildTextField(true)
+              ? buildTextField(false)
               : StreamBuilder(
                   stream: scrollStream,
                   initialData: true,

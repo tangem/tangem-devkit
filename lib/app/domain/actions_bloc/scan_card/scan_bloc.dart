@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:devkit/app/domain/actions_bloc/card_optional_values.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
@@ -36,10 +35,7 @@ class ScanBloc extends Bloc<Event, SScan> {
       bloc.add(ECardScanError(error));
       _scanHandler = null;
     });
-    TangemSdk.scanCard(
-      callback,
-      CardOptionalValues().get(),
-    );
+    TangemSdk.scanCard(callback, {});
   }
 }
 

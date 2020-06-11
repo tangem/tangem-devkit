@@ -110,3 +110,36 @@ Map<String, dynamic> _$WriteIssuerDataResponseToJson(
     <String, dynamic>{
       'cardId': instance.cardId,
     };
+
+ReadUserDataResponse _$ReadUserDataResponseFromJson(Map<String, dynamic> json) {
+  return ReadUserDataResponse(
+    json['cardId'] as String,
+    json['userData'] as String,
+    json['userProtectedData'] as String,
+    json['userCounter'] as int,
+    json['userProtectedCounter'] as int,
+  );
+}
+
+Map<String, dynamic> _$ReadUserDataResponseToJson(
+        ReadUserDataResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+      'userData': instance.userData,
+      'userProtectedData': instance.userProtectedData,
+      'userCounter': instance.userCounter,
+      'userProtectedCounter': instance.userProtectedCounter,
+    };
+
+WriteUserDataResponse _$WriteUserDataResponseFromJson(
+    Map<String, dynamic> json) {
+  return WriteUserDataResponse(
+    json['cardId'] as String,
+  );
+}
+
+Map<String, dynamic> _$WriteUserDataResponseToJson(
+        WriteUserDataResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+    };

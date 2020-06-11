@@ -19,6 +19,9 @@ class TangemSdk {
   static const cPurgeWallet = 'purgeWallet';
   static const cReadIssuerData = 'readIssuerData';
   static const cWriteIssuerData = 'writeIssuerData';
+  static const cReadUserData = 'readUserData';
+  static const cWriteUserData = 'writeUserData';
+  static const cWriteUserProtectedData = 'writeUserProtectedData';
 
   static const cid = "cid";
   static const initialMessage = "initialMessage";
@@ -32,6 +35,10 @@ class TangemSdk {
   static const issuerDataHex = "issuerData";
   static const issuerDataCounter = "issuerDataCounter";
   static const issuerPrivateKeyHex = "issuerPrivateKey";
+  static const userDataHex = "userData";
+  static const userCounter = "userCounter";
+  static const userProtectedDataHex = "userProtectedData";
+  static const userProtectedCounter = "userProtectedCounter";
 
   static const MethodChannel _channel = const MethodChannel('tangemSdk');
 
@@ -40,72 +47,80 @@ class TangemSdk {
     return version;
   }
 
-  static Future scanCard(Callback callback, [Map<String, dynamic> optional]) async {
+  static Future scanCard(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
-        .invokeMethod(cScanCard, _createExportingValues(optional))
+        .invokeMethod(cScanCard, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cScanCard, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future sign(Callback callback, List<String> listOfHexHashes, [Map<String, dynamic> optional]) async {
-    final valuesToExport = _createExportingValues(optional);
-    valuesToExport[hashesHex] = listOfHexHashes;
-
+  static Future sign(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
         .invokeMethod(cSign, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cSign, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future personalize(Callback callback, Map<String, dynamic> attributes, [Map<String, dynamic> optional]) async {
-    final valuesToExport = _createExportingValues(optional);
-    valuesToExport[cardConfig] = json.encode(attributes[cardConfig]);
-    valuesToExport[issuer] = json.encode(attributes[issuer]);
-    valuesToExport[manufacturer] = json.encode(attributes[manufacturer]);
-    valuesToExport[acquirer] = json.encode(attributes[acquirer]);
-
+  static Future personalize(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
         .invokeMethod(cPersonalize, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cPersonalize, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future depersonalize(Callback callback, [Map<String, dynamic> optional]) async {
+  static Future depersonalize(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
-        .invokeMethod(cDepersonalize, _createExportingValues(optional))
+        .invokeMethod(cDepersonalize, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cDepersonalize, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future createWallet(Callback callback, [Map<String, dynamic> optional]) async {
+  static Future createWallet(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
-        .invokeMethod(cCreateWallet, _createExportingValues(optional))
+        .invokeMethod(cCreateWallet, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cCreateWallet, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future purgeWallet(Callback callback, [Map<String, dynamic> optional]) async {
+  static Future purgeWallet(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
-        .invokeMethod(cPurgeWallet, _createExportingValues(optional))
+        .invokeMethod(cPurgeWallet, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cPurgeWallet, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future readIssuerData(Callback callback, [Map<String, dynamic> optional]) async {
+  static Future readIssuerData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
-        .invokeMethod(cReadIssuerData, _createExportingValues(optional))
+        .invokeMethod(cReadIssuerData, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cReadIssuerData, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future writeIssuerData(Callback callback, String hexIssuerData, String hexIssuerPrivateKey, [Map<String, dynamic> optional]) async {
-    final valuesToExport = _createExportingValues(optional);
-    valuesToExport[issuerDataHex] = hexIssuerData;
-    valuesToExport[issuerPrivateKeyHex] = hexIssuerPrivateKey;
-
+  static Future writeIssuerData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
         .invokeMethod(cWriteIssuerData, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cWriteIssuerData, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future readUserData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    _channel
+        .invokeMethod(cReadUserData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cReadUserData, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future writeUserData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    _channel
+        .invokeMethod(cWriteUserData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cWriteUserData, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future writeUserProtectedData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    _channel
+        .invokeMethod(cWriteUserProtectedData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cWriteUserData, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
@@ -125,10 +140,7 @@ class TangemSdk {
     exec(callback.success, callback.error, name, 'writeIssuerExtraData', [valuesToExport]);
   },
 
-  readUserData: function (callback, cid, optional) {
-    var valuesToExport = createExportingValues(optional, cid)
-    exec(callback.success, callback.error, name, 'readUserData', [valuesToExport]);
-  },
+
 
   writeUserData: function (callback, cid, userData, optional) {
     var valuesToExport = createExportingValues(optional, cid)
@@ -178,6 +190,12 @@ class TangemSdk {
         return ReadIssuerDataResponse.fromJson(jsonResponse);
       case cWriteIssuerData:
         return WriteIssuerDataResponse.fromJson(jsonResponse);
+      case cReadUserData:
+        return ReadUserDataResponse.fromJson(jsonResponse);
+      case cWriteUserData:
+        return WriteUserDataResponse.fromJson(jsonResponse);
+      case cWriteUserProtectedData:
+        return WriteUserDataResponse.fromJson(jsonResponse);
     }
     return response;
   }
@@ -186,20 +204,6 @@ class TangemSdk {
     final error = ErrorResponse.fromException(ex);
     print("onError: $error");
     callback.onError(error);
-  }
-
-  static Map<String, dynamic> _createExportingValues(Map<String, dynamic> optional) {
-    var valuesToExport = <String, dynamic>{};
-    if (optional == null || optional.isEmpty) return valuesToExport;
-
-    addIfExist(String name, Map<String, dynamic> where, Map<String, dynamic> from) {
-      if (from.containsKey(name)) where[name] = from[name];
-    }
-
-    addIfExist(cid, valuesToExport, optional);
-    addIfExist(initialMessage, valuesToExport, optional);
-    addIfExist(issuerDataCounter, valuesToExport, optional);
-    return valuesToExport;
   }
 }
 

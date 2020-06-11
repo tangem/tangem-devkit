@@ -98,3 +98,29 @@ class WriteIssuerDataResponse {
 
   Map<String, dynamic> toJson() => _$WriteIssuerDataResponseToJson(this);
 }
+
+@JsonSerializable()
+class ReadUserDataResponse {
+  final String cardId;
+  final String userData;
+  final int userCounter;
+  final String userProtectedData;
+  final int userProtectedCounter;
+
+  ReadUserDataResponse(this.cardId, this.userData, this.userProtectedData, this.userCounter, this.userProtectedCounter);
+
+  factory ReadUserDataResponse.fromJson(Map<String, dynamic> json) => _$ReadUserDataResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ReadUserDataResponseToJson(this);
+}
+
+@JsonSerializable()
+class WriteUserDataResponse {
+  final String cardId;
+
+  WriteUserDataResponse(this.cardId);
+
+  factory WriteUserDataResponse.fromJson(Map<String, dynamic> json) => _$WriteUserDataResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WriteUserDataResponseToJson(this);
+}

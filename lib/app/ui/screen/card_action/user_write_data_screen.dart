@@ -12,24 +12,24 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 import '../finders.dart';
 import 'helpers.dart';
 
-class WriteIssuerDataScreen extends StatefulWidget {
+class WriteUserDataScreen extends StatefulWidget {
   @override
-  _WriteIssuerDataScreenState createState() => _WriteIssuerDataScreenState();
+  _WriteUserDataScreenState createState() => _WriteUserDataScreenState();
 }
 
-class _WriteIssuerDataScreenState extends State<WriteIssuerDataScreen> {
-  WriteIssuerDataBloc _bloc;
+class _WriteUserDataScreenState extends State<WriteUserDataScreen> {
+  WriteUserDataBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) {
-          _bloc = WriteIssuerDataBloc();
+          _bloc = WriteUserDataBloc();
           return _bloc;
         })
       ],
-      child: WriteIssuerDataFrame(),
+      child: WriteUserDataFrame(),
     );
   }
 
@@ -40,17 +40,17 @@ class _WriteIssuerDataScreenState extends State<WriteIssuerDataScreen> {
   }
 }
 
-class WriteIssuerDataFrame extends StatelessWidget {
+class WriteUserDataFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = RepoFinder.writeIssuerDataBloc(context);
+    final bloc = RepoFinder.writeUserDataBloc(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Transl.of(context).screen_issuer_write_data),
+        title: Text(Transl.of(context).screen_user_write_data),
         actions: [Menu.popupDescription()],
       ),
-      body: WriteIssuerDataBody(),
+      body: WriteUserDataBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
         onPressed: bloc.invokeAction,
@@ -59,25 +59,25 @@ class WriteIssuerDataFrame extends StatelessWidget {
   }
 }
 
-class WriteIssuerDataBody extends StatefulWidget {
+class WriteUserDataBody extends StatefulWidget {
   @override
-  _WriteIssuerDataBodyState createState() => _WriteIssuerDataBodyState();
+  _WriteUserDataBodyState createState() => _WriteUserDataBodyState();
 }
 
-class _WriteIssuerDataBodyState extends State<WriteIssuerDataBody> {
-  WriteIssuerDataBloc _bloc;
+class _WriteUserDataBodyState extends State<WriteUserDataBody> {
   TextStreamController _cidController;
-  TextStreamController _issuerDataController;
-  TextStreamController _counterController;
+  TextStreamController _userDataController;
+  TextStreamController _userDataCounterController;
+  WriteUserDataBloc _bloc;
 
   @override
   void initState() {
     super.initState();
 
-    _bloc = RepoFinder.writeIssuerDataBloc(context);
+    _bloc = RepoFinder.writeUserDataBloc(context);
     _cidController = TextStreamController(_bloc.bsCid);
-    _issuerDataController = TextStreamController(_bloc.bsIssuerData);
-    _counterController = TextStreamController(_bloc.bsIssuerDataCounter, [RegExp(r'\d+')]);
+    _userDataController = TextStreamController(_bloc.bsUserData);
+    _userDataCounterController = TextStreamController(_bloc.bsUserCounter, [RegExp(r'\d+')]);
   }
 
   @override
@@ -95,15 +95,15 @@ class _WriteIssuerDataBodyState extends State<WriteIssuerDataBody> {
           padding: EdgeInsets.symmetric(horizontal: 16),
         ),
         InputWidget(
-          ItemName.issuerData,
-          _issuerDataController.controller,
-          hint: transl.issuer_data,
-          description: transl.desc_issuer_data,
+          ItemName.userData,
+          _userDataController.controller,
+          hint: transl.user_data,
+          description: transl.desc_user_data,
           padding: EdgeInsets.symmetric(horizontal: 16),
         ),
         InputWidget(
-          ItemName.issuerDataCounter,
-          _counterController.controller,
+          ItemName.userCounter,
+          _userDataCounterController.controller,
           hint: transl.counter,
           description: transl.desc_counter,
           inputType: TextInputType.number,
@@ -116,35 +116,34 @@ class _WriteIssuerDataBodyState extends State<WriteIssuerDataBody> {
   @override
   void dispose() {
     _cidController.dispose();
-    _issuerDataController.dispose();
-    _counterController.dispose();
+    _userDataController.dispose();
+    _userDataCounterController.dispose();
     super.dispose();
   }
 }
 
-class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
-  final bsIssuerData = BehaviorSubject<String>();
-  final bsIssuerDataCounter = BehaviorSubject<String>();
+class WriteUserDataBloc extends ActionBloc<WriteUserDataResponse> {
+  final bsUserData = BehaviorSubject<String>();
+  final bsUserCounter = BehaviorSubject<String>();
 
   String _cid;
-  String _issuerData;
-  int _issuerDataCounter;
+  String _userData;
+  int _userCounter;
 
-  WriteIssuerDataBloc() {
+  WriteUserDataBloc() {
     subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-    subscriptions.add(bsIssuerData.stream.listen((event) => _issuerData = event));
-    subscriptions.add(bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
-    bsIssuerData.add("Data to be written on a card as issuer data");
-    bsIssuerDataCounter.add("1");
+    subscriptions.add(bsUserData.stream.listen((event) => _userData = event));
+    subscriptions.add(bsUserCounter.stream.listen((event) => _userCounter = event.isEmpty ? null : int.parse(event)));
+    bsUserData.add("User data to be written on a card");
+    bsUserCounter.add("1");
   }
 
   @override
   invokeAction() {
-    TangemSdk.writeIssuerData(callback, {
+    TangemSdk.writeUserData(callback, {
       TangemSdk.cid: _cid,
-      TangemSdk.issuerDataHex: _issuerData.toHexString(),
-      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey.toHexString(),
-      TangemSdk.issuerDataCounter: _issuerDataCounter,
+      TangemSdk.userDataHex: _userData.toHexString(),
+      TangemSdk.userCounter: _userCounter,
     });
   }
 }

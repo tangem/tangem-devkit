@@ -4,6 +4,9 @@ import 'package:devkit/app/ui/screen/card_action/issuer_write_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/personalization/personalization_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/scan_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/sign_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/user_read_data_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/user_write_data_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/user_write_protected_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/wallet_create_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/wallet_purge_screen.dart';
 import 'package:devkit/app/ui/screen/main_screen.dart';
@@ -20,6 +23,9 @@ class Routes {
   static const PURGE_WALLET = "/purge_wallet";
   static const ISSUER_READ_DATA = "/issuer_read_data";
   static const ISSUER_WRITE_DATA = "/issuer_write_data";
+  static const USER_READ_DATA = "/user_read_data";
+  static const USER_WRITE_DATA = "/user_write_data";
+  static const USER_WRITE_PROTECTED_DATA = "/user_write_protected_data";
   static const RESPONSE = "/response";
 
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -42,6 +48,12 @@ class Routes {
         return MaterialPageRoute(builder: (_) => ReadIssuerDataScreen());
       case ISSUER_WRITE_DATA:
         return MaterialPageRoute(builder: (_) => WriteIssuerDataScreen());
+      case USER_READ_DATA:
+        return MaterialPageRoute(builder: (_) => ReadUserDataScreen());
+      case USER_WRITE_DATA:
+        return MaterialPageRoute(builder: (_) => WriteUserDataScreen());
+      case USER_WRITE_PROTECTED_DATA:
+        return MaterialPageRoute(builder: (_) => WriteUserProtectedDataScreen());
       case RESPONSE:
         return PageRouteBuilder(pageBuilder: (_, _1, _2) => ResponseScreen(arguments: settings.arguments));
       default:

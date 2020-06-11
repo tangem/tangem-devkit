@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:devkit/app/domain/actions_bloc/card_optional_values.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../base_events.dart';
@@ -26,9 +25,6 @@ class DepersonalizeBloc extends Bloc<Event, SDepersonalize> {
     }, (error) {
       add(ECardDepersonalizeError(error));
     });
-    TangemSdk.depersonalize(
-      callback,
-      CardOptionalValues().get(),
-    );
+    TangemSdk.depersonalize(callback, {});
   }
 }

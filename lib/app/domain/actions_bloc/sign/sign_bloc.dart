@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:devkit/app/domain/actions_bloc/card_optional_values.dart';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_card_es.dart';
 import 'package:devkit/commons/extensions/app_extensions.dart';
@@ -40,10 +39,9 @@ class SignBloc extends Bloc<Event, SSign> {
     }, (error) {
       add(ECardSignError(error));
     });
-    TangemSdk.sign(
-      callback,
-      [state.dataForHashing.toHexString()],
-      CardOptionalValues().cid(state.cid).get(),
-    );
+    TangemSdk.sign(callback, {
+      TangemSdk.cid: state.cid,
+      TangemSdk.hashesHex: [state.dataForHashing.toHexString()],
+    });
   }
 }
