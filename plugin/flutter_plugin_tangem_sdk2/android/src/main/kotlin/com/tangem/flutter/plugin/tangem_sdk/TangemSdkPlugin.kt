@@ -14,6 +14,8 @@ import com.tangem.commands.common.ResponseConverter
 import com.tangem.commands.personalization.entities.*
 import com.tangem.common.CompletionResult
 import com.tangem.common.extensions.hexToBytes
+import com.tangem.common.extensions.toByteArray
+import com.tangem.crypto.sign
 import com.tangem.tangem_sdk_new.DefaultSessionViewDelegate
 import com.tangem.tangem_sdk_new.NfcLifecycleObserver
 import com.tangem.tangem_sdk_new.TerminalKeysStorage
@@ -35,7 +37,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private val handler = Handler(Looper.getMainLooper())
   private val converter = ResponseConverter()
   private lateinit var sdk: TangemSdk
-  private var replyАlreadySubmitte = false;
+  private var replyАlreadySubmit = false;
 
   override fun onAttachedToActivity(pluginBinding: ActivityPluginBinding) {
     val activity = pluginBinding.activity
@@ -72,7 +74,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    replyАlreadySubmitte = false
+    replyАlreadySubmit = false
     when (call.method) {
       "scanCard" -> scanCard(call, result)
       "sign" -> sign(call, result)
@@ -80,6 +82,8 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "depersonalize" -> depersonalize(call, result)
       "createWallet" -> createWallet(call, result)
       "purgeWallet" -> purgeWallet(call, result)
+      "readIssuerData" -> readIssuerData(call, result)
+      "writeIssuerData" -> writeIssuerData(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
@@ -155,9 +159,36 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
   }
 
+  private fun readIssuerData(call: MethodCall, result: Result) {
+    try {
+      sdk.readIssuerData(cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun writeIssuerData(call: MethodCall, result: Result) {
+    try {
+      val cardId = cid(call) !!
+      val issuerData = issuerData(call)
+      val counter = issuerDataCounter(call)
+      val issuerPrivateKey = issuerPrivateKey(call)
+      val dataSignature = issuerDataSignature(cardId, issuerData, counter, issuerPrivateKey)
+
+      sdk.writeIssuerData(
+          cardId,
+          issuerData,
+          dataSignature,
+          counter,
+          message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
   private fun handleResult(result: Result, completionResult: CompletionResult<*>) {
-    if (replyАlreadySubmitte) return
-    replyАlreadySubmitte = true
+    if (replyАlreadySubmit) return
+    replyАlreadySubmit = true
 
     when (completionResult) {
       is CompletionResult.Success -> {
@@ -175,8 +206,8 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   private fun handleException(result: Result, ex: Exception) {
-    if (replyАlreadySubmitte) return
-    replyАlreadySubmitte = true
+    if (replyАlreadySubmit) return
+    replyАlreadySubmit = true
 
     handler.post {
       val code = 9999
@@ -216,32 +247,39 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
     @Throws(Exception::class)
     fun hashes(call: MethodCall): Array<ByteArray> {
-      if (! call.hasArgument("hashes")) throw NoSuchFieldException("hashes")
+      val name = "hashes"
+      assert(call, name)
 
-      val javaList = call.argument("hashes") as? ArrayList<String>?
-      if (javaList == null || javaList.isEmpty()) throw NoSuchFieldException("hashes")
+      val javaList = call.argument(name) as? ArrayList<String>?
+      if (javaList == null || javaList.isEmpty()) throw NoSuchFieldException(name)
 
       return javaList.map { it.hexToBytes() }.toTypedArray()
     }
 
     @Throws(Exception::class)
-    private fun <T> extractObject(name: String, call: MethodCall, gson: Gson, type: Class<T>): T {
-      if (! call.hasArgument(name)) throw NoSuchFieldException(name)
-
-      val jsonString = call.argument<String>(name)
-      return gson.fromJson(jsonString, type)
+    fun issuerData(call: MethodCall): ByteArray {
+      return fetchHexStringAndConvertToBytes(call, "issuerData")
     }
 
-    //    @Throws(Exception::class)
-    //    fun issuerData(jsO: JSONObject): ByteArray? {
-    //      return fetchHexStringAndConvertToBytes(jsO, "issuerData")
-    //    }
-    //
-    //    @Throws(Exception::class)
-    //    fun issuerDataSignatures(jsO: JSONObject): ByteArray? {
-    //      return fetchHexStringAndConvertToBytes(jsO, "issuerDataSignature")
-    //    }
-    //
+    @Throws(Exception::class)
+    fun issuerDataSignature(cardId: String, issuerData: ByteArray, counter: Int?, issuerPrivateKey: ByteArray): ByteArray {
+      var mergedData = cardId.hexToBytes() + issuerData
+      counter?.let { mergedData += it.toByteArray(4) }
+      return mergedData.sign(issuerPrivateKey)
+    }
+
+    @Throws(Exception::class)
+    fun issuerDataCounter(call: MethodCall): Int? {
+      if (! call.hasArgument("issuerDataCounter")) return null
+
+      return call.argument<Int>("issuerDataCounter")
+    }
+
+    @Throws(Exception::class)
+    fun issuerPrivateKey(call: MethodCall): ByteArray {
+      return fetchHexStringAndConvertToBytes(call, "issuerPrivateKey")
+    }
+
     //    @Throws(Exception::class)
     //    fun startingSignature(jsO: JSONObject): ByteArray? {
     //      return fetchHexStringAndConvertToBytes(jsO, "startingSignature")
@@ -252,10 +290,6 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     //      return fetchHexStringAndConvertToBytes(jsO, "finalizingSignature")
     //    }
     //
-    //    @Throws(Exception::class)
-    //    fun issuerDataCounter(jsO: JSONObject): Int? {
-    //      return if (jsO.has("issuerDataCounter")) jsO.getInt("issuerDataCounter") else null
-    //    }
     //
     //    @Throws(Exception::class)
     //    fun userData(jsO: JSONObject): ByteArray? {
@@ -277,12 +311,25 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     //      return if (jsO.has("userProtectedCounter")) jsO.getInt("userProtectedCounter") else null
     //    }
     //
-    //    @Throws(Exception::class)
-    //    private fun fetchHexStringAndConvertToBytes(jsO: JSONObject, name: String): ByteArray? {
-    //      val hexString = jsO.getString(name)
-    //      return hexString.hexToBytes()
-    //    }
-    //  }
+    @Throws(Exception::class)
+    private fun fetchHexStringAndConvertToBytes(call: MethodCall, name: String): ByteArray {
+      assert(call, name)
+      val hexString = call.argument<String>(name) !!
+      return hexString.hexToBytes()
+    }
+
+    @Throws(Exception::class)
+    private fun <T> extractObject(name: String, call: MethodCall, gson: Gson, type: Class<T>): T {
+      if (! call.hasArgument(name)) throw NoSuchFieldException(name)
+
+      val jsonString = call.argument<String>(name)
+      return gson.fromJson(jsonString, type)
+    }
+
+    @Throws(Exception::class)
+    private fun assert(call: MethodCall, name: String) {
+      if (! call.hasArgument(name)) throw NoSuchFieldException(name)
+    }
   }
 }
 

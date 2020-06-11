@@ -74,4 +74,27 @@ class PurgeWalletResponse {
   Map<String, dynamic> toJson() => _$PurgeWalletResponseToJson(this);
 }
 
+@JsonSerializable()
+class ReadIssuerDataResponse {
+  final String cardId;
+  final String issuerData;
+  final String issuerDataSignature;
+  final int issuerDataCounter;
 
+  ReadIssuerDataResponse(this.cardId, this.issuerData, this.issuerDataSignature, this.issuerDataCounter);
+
+  factory ReadIssuerDataResponse.fromJson(Map<String, dynamic> json) => _$ReadIssuerDataResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ReadIssuerDataResponseToJson(this);
+}
+
+@JsonSerializable()
+class WriteIssuerDataResponse {
+  final String cardId;
+
+  WriteIssuerDataResponse(this.cardId);
+
+  factory WriteIssuerDataResponse.fromJson(Map<String, dynamic> json) => _$WriteIssuerDataResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WriteIssuerDataResponseToJson(this);
+}

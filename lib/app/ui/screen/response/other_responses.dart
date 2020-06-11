@@ -1,6 +1,7 @@
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
+import 'package:tangem_sdk/extensions.dart';
 
 import 'base_widgets.dart';
 
@@ -104,6 +105,61 @@ class PurgeWalletResponseBody extends StatelessWidget {
           name: transl.response_card_status,
           value: _response.status,
           description: transl.desc_response_card_wallet_public_key,
+        ),
+      ],
+    );
+  }
+}
+
+class ReadIssuerDataResponseBody extends StatelessWidget {
+  final ReadIssuerDataResponse _response;
+
+  const ReadIssuerDataResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return Column(
+      children: <Widget>[
+        ResponseTextWidget(
+          name: transl.response_card_cid,
+          value: _response.cardId,
+          description: transl.desc_response_card_cid,
+        ),
+        ResponseTextWidget(
+          name: transl.response_issuer_data,
+          value: _response.issuerData.hexToString(),
+          description: transl.desc_response_issuer_data,
+        ),
+        ResponseTextWidget(
+          name: transl.response_issuer_data_signature,
+          value: _response.issuerDataSignature,
+          description: transl.desc_response_issuer_data_signature,
+        ),
+        ResponseTextWidget(
+          name: transl.response_issuer_data_counter,
+          value: _response.issuerDataCounter,
+          description: transl.desc_response_issuer_data_counter,
+        ),
+      ],
+    );
+  }
+}
+
+class WriteIssuerDataResponseBody extends StatelessWidget {
+  final WriteIssuerDataResponse _response;
+
+  const WriteIssuerDataResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return Column(
+      children: <Widget>[
+        ResponseTextWidget(
+          name: transl.response_card_cid,
+          value: _response.cardId,
+          description: transl.desc_response_card_cid,
         ),
       ],
     );
