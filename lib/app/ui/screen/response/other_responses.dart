@@ -166,6 +166,48 @@ class WriteIssuerDataResponseBody extends StatelessWidget {
   }
 }
 
+class ReadIssuerExDataResponseBody extends StatelessWidget {
+  final ReadIssuerExDataResponse _response;
+
+  const ReadIssuerExDataResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          ResponseTextWidget(
+            name: transl.response_card_cid,
+            value: _response.cardId,
+            description: transl.desc_response_card_cid,
+          ),
+          ResponseTextWidget(
+            name: transl.response_issuer_data_size,
+            value: _response.size,
+            description: transl.desc_response_issuer_data_size,
+          ),
+          ResponseTextWidget(
+            name: transl.response_issuer_data,
+            value: _response.issuerData,
+            description: transl.desc_response_issuer_data,
+          ),
+          ResponseTextWidget(
+            name: transl.response_issuer_data_signature,
+            value: _response.issuerDataSignature,
+            description: transl.desc_response_issuer_data_signature,
+          ),
+          ResponseTextWidget(
+            name: transl.response_issuer_data_counter,
+            value: _response.issuerDataCounter,
+            description: transl.desc_response_issuer_data_counter,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ReadUserDataResponseBody extends StatelessWidget {
   final ReadUserDataResponse _response;
 

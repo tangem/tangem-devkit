@@ -1,5 +1,6 @@
 import 'package:devkit/app/ui/screen/card_action/depersonalization_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_read_data_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/issuer_read_ex_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_write_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/personalization/personalization_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/scan_screen.dart';
@@ -23,6 +24,8 @@ class Routes {
   static const PURGE_WALLET = "/purge_wallet";
   static const ISSUER_READ_DATA = "/issuer_read_data";
   static const ISSUER_WRITE_DATA = "/issuer_write_data";
+  static const ISSUER_READ_EX_DATA = "/issuer_read_ex_data";
+
   static const USER_READ_DATA = "/user_read_data";
   static const USER_WRITE_DATA = "/user_write_data";
   static const USER_WRITE_PROTECTED_DATA = "/user_write_protected_data";
@@ -48,6 +51,10 @@ class Routes {
         return MaterialPageRoute(builder: (_) => ReadIssuerDataScreen());
       case ISSUER_WRITE_DATA:
         return MaterialPageRoute(builder: (_) => WriteIssuerDataScreen());
+      case ISSUER_READ_EX_DATA:
+        return MaterialPageRoute(builder: (_) => ReadIssuerExDataScreen());
+
+
       case USER_READ_DATA:
         return MaterialPageRoute(builder: (_) => ReadUserDataScreen());
       case USER_WRITE_DATA:

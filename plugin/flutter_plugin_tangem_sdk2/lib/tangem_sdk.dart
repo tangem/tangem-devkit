@@ -19,6 +19,8 @@ class TangemSdk {
   static const cPurgeWallet = 'purgeWallet';
   static const cReadIssuerData = 'readIssuerData';
   static const cWriteIssuerData = 'writeIssuerData';
+  static const cReadIssuerExData = 'readIssuerExData';
+  static const cWriteIssuerExData = 'writeIssuerExData';
   static const cReadUserData = 'readUserData';
   static const cWriteUserData = 'writeUserData';
   static const cWriteUserProtectedData = 'writeUserProtectedData';
@@ -124,6 +126,13 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
+  static Future readIssuerExData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    _channel
+        .invokeMethod(cReadIssuerExData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cReadIssuerExData, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
   /*
   readIssuerExtraData: function (callback, cid, optional) {
     var valuesToExport = createExportingValues(optional, cid)
@@ -190,6 +199,10 @@ class TangemSdk {
         return ReadIssuerDataResponse.fromJson(jsonResponse);
       case cWriteIssuerData:
         return WriteIssuerDataResponse.fromJson(jsonResponse);
+      case cReadIssuerExData:
+        return ReadIssuerExDataResponse.fromJson(jsonResponse);
+
+
       case cReadUserData:
         return ReadUserDataResponse.fromJson(jsonResponse);
       case cWriteUserData:

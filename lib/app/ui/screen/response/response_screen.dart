@@ -65,6 +65,8 @@ class ResponseFrame extends StatelessWidget {
     if (arguments is PurgeWalletResponse) return PurgeWalletResponseBody(arguments);
     if (arguments is ReadIssuerDataResponse) return ReadIssuerDataResponseBody(arguments);
     if (arguments is WriteIssuerDataResponse) return WriteIssuerDataResponseBody(arguments);
+    if (arguments is ReadIssuerExDataResponse) return ReadIssuerExDataResponseBody(arguments);
+
     if (arguments is ReadUserDataResponse) return ReadUserDataResponseBody(arguments);
     if (arguments is WriteUserDataResponse) return WriteUserDataResponseBody(arguments);
 

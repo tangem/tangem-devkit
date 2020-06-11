@@ -100,6 +100,21 @@ class WriteIssuerDataResponse {
 }
 
 @JsonSerializable()
+class ReadIssuerExDataResponse {
+  final String cardId;
+  final int size;
+  final String issuerData;
+  final String issuerDataSignature;
+  final int issuerDataCounter;
+
+  ReadIssuerExDataResponse(this.cardId, this.size, this.issuerData, this.issuerDataSignature, this.issuerDataCounter);
+
+  factory ReadIssuerExDataResponse.fromJson(Map<String, dynamic> json) => _$ReadIssuerExDataResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ReadIssuerExDataResponseToJson(this);
+}
+
+@JsonSerializable()
 class ReadUserDataResponse {
   final String cardId;
   final String userData;

@@ -33,6 +33,7 @@ class MainBody extends StatelessWidget {
     Pair("action_purge_wallet", "purge_wallet"),
     Pair("action_issuer_read_data", "issuer_read_data"),
     Pair("action_issuer_write_data", "issuer_write_data"),
+    Pair("action_issuer_read_ex_data", "issuer_read_ex_data"),
     Pair("action_user_read_data", "user_read_data"),
     Pair("action_user_write_data", "user_write_data"),
     Pair("action_user_write_protected_data", "user_write_protected_data"),
