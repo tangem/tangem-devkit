@@ -3,6 +3,7 @@ import 'package:test/test.dart';
 import 'ReadCard.dart';
 import 'PersonalizeCard.dart';
 import 'ConfigForPersonalize.dart';
+import 'dart:convert';
 
 void main() {
 
@@ -20,57 +21,77 @@ void main() {
 
     test("Read_Card test with config1",() async {
       final config = await configForPersonalize.returnConfig('config1');
-      final personalize = await personalizeCardMethod.personalizeCard(driver, config);
+      String jsonString = jsonEncode(config);
+      final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       await driver.tap(backButton);
-      final responce = await readCardMethod.readCard2(driver);
+      final readResponce = await readCardMethod.readCard2(driver);
+      print(personalize);
+      print(readResponce);
+
       print("Reconciliation cardId");
-      expect(responce['cardId'], personalize['cardId']);
+      expect(readResponce['cardId'], personalize['cardId']);
 
       print("Reconciliation cardPublicKey");
-      expect(responce['cardPublicKey'], personalize['cardPublicKey']);
+      expect(readResponce['cardPublicKey'], personalize['cardPublicKey']);
 
       print("Reconciliation curve");
-      expect(responce['curve'], personalize['curve']);
+      expect(readResponce['curve'], personalize['curve']);
 
       print("Reconciliation firmwareVersion");
-      expect(responce['firmwareVersion'], personalize['firmwareVersion']);
+      expect(readResponce['firmwareVersion'], personalize['firmwareVersion']);
 
       print("Reconciliation health");
-      expect(responce['health'], personalize['health']);
+      expect(readResponce['health'], personalize['health']);
 
       print("Reconciliation isActivated");
-      expect(responce['isActivated'], personalize['isActivated']);
+      expect(readResponce['isActivated'], personalize['isActivated']);
 
       print("Reconciliation issuerPublicKey");
-      expect(responce['issuerPublicKey'], personalize['issuerPublicKey']);
+      expect(readResponce['issuerPublicKey'], personalize['issuerPublicKey']);
 
       print("Reconciliation manufacturerName");
-      expect(responce['manufacturerName'], personalize['manufacturerName']);
+      expect(readResponce['manufacturerName'], personalize['manufacturerName']);
 
       print("Reconciliation maxSignatures");
-      expect(responce['maxSignatures'], personalize['maxSignatures']);
+      expect(readResponce['maxSignatures'], personalize['maxSignatures']);
 
       print("Reconciliation pauseBeforePin2");
-      expect(responce['pauseBeforePin2'], personalize['pauseBeforePin2']);
+      expect(readResponce['pauseBeforePin2'], personalize['pauseBeforePin2']);
 
       print("Reconciliation status");
-      expect(responce['status'], personalize['status']);
+      expect(readResponce['status'], personalize['status']);
 
       print("Reconciliation terminalIsLinked");
-      expect(responce['terminalIsLinked'], personalize['terminalIsLinked']);
+      expect(readResponce['terminalIsLinked'], personalize['terminalIsLinked']);
 
       print("Reconciliation walletPublicKey");
-      expect(responce['walletPublicKey'], personalize['walletPublicKey']);
+      expect(readResponce['walletPublicKey'], personalize['walletPublicKey']);
 
       print("Reconciliation walletRemainingSignatures");
-      expect(responce['walletRemainingSignatures'], personalize['walletRemainingSignatures']);
+      expect(readResponce['walletRemainingSignatures'], personalize['walletRemainingSignatures']);
 
       print("Reconciliation walletSignedHashes");
-      expect(responce['walletSignedHashes'], personalize['walletSignedHashes']);
+      expect(readResponce['walletSignedHashes'], personalize['walletSignedHashes']);
+
+      print("Reconciliation batchId");
+      expect(readResponce['cardData']['batchId'], personalize['cardData']['batchId']);
+
+      print("Reconciliation blockchainName");
+      expect(readResponce['cardData']['blockchainName'], personalize['cardData']['blockchainName']);
+
+      print("Reconciliation issuerName");
+      expect(readResponce['cardData']['issuerName'], personalize['cardData']['issuerName']);
+
+      print("Reconciliation manufacturerSignature");
+      expect(readResponce['cardData']['manufacturerSignature'], personalize['cardData']['manufacturerSignature']);
 
       print("Reconciliation productMask");
-      expect(responce['productMask'], personalize['productMask']);
-      //ToDo: cardData / settingsMask
+      expect(readResponce['cardData']['productMask'], personalize['cardData']['productMask']);
+
+      print("Reconciliation settingsMask");
+      expect(readResponce['settingsMask'], personalize['settingsMask']);
+
+      //ToDo: Token
     });
 
     tearDownAll(() async {
@@ -79,3 +100,6 @@ void main() {
     });
   });
 }
+
+
+

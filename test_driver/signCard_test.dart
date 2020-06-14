@@ -1,11 +1,14 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-import 'ReadCard.dart';
+import 'PersonalizeCard.dart';
+import 'ConfigForPersonalize.dart';
+import 'dart:convert';
 import 'SignCard.dart';
 
 void main() {
 
-  final readCardMethod = ReadCard();
+  final configForPersonalize = ConfigForPersonalize();
+  final personalizeCardMethod = PersonalizeCard();
   final signCardMethod = SignCard();
   final backButton = find.byTooltip('Back');
 
@@ -17,10 +20,13 @@ void main() {
     });
 
     test("Sign_Card test",() async {
-      final responceRead = await readCardMethod.readCard2(driver);
-      final cid = responceRead['cardId'];
-      final walletRemainingSignatures= responceRead['walletRemainingSignatures']-1;
-      final walletSignedHashes = responceRead['walletSignedHashes']+2;
+      final config = await configForPersonalize.returnConfig('config2');
+      String jsonString = jsonEncode(config);
+      final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
+      final cardId= personalize['cardId'];
+      final walletRemainingSignatures= personalize['walletRemainingSignatures']-1; //ToDO: hardcode
+      final walletSignedHashes = personalize['walletSignedHashes']+1; //ToDO: hardcode
+
 
       await driver.tap(backButton);
 
@@ -30,9 +36,8 @@ void main() {
       final walletSignedHashesSign = responceSign['walletSignedHashes'];
 
       print("Reconciliation of Results and Expected Result");
-      expect(cid, cidSign);
+      expect(cardId, cidSign);
       expect(walletRemainingSignatures, walletRemainingSignaturesSign);
-      //print('${responceRead['walletSignedHashes']}' + '$walletSignedHashes' +'$walletSignedHashesSign');
       expect(walletSignedHashes, walletSignedHashesSign);
     });
 
