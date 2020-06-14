@@ -4,6 +4,7 @@ import 'package:devkit/app/ui/screen/card_action/personalization/dialogs/import_
 import 'package:devkit/app/ui/screen/card_action/personalization/segment_widgets/sign_hash_ex_prop_segment_widget.dart';
 import 'package:devkit/app/ui/screen/finders.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -107,7 +108,7 @@ class PersonalizeBody extends StatelessWidget {
           SettingMaskSegmentWidget(),
           SettingMaskProtocolEncryptionSegmentWidget(),
           SettingsMaskNdefSegmentWidget(),
-          PinsSegmentWidget(),
+          PinsSegmentWidget().gone(),
         ],
       ),
     );

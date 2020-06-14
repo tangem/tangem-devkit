@@ -1,6 +1,7 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,31 +33,27 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
     return Column(
       children: <Widget>[
         SegmentHeader(transl.pers_segment_common, description: transl.desc_pers_segment_common),
-        HorizontalDelimiter(),
         SpinnerWidget(
           ItemName.blockchain,
           _bloc.values.blockchain,
           _bloc.common.bsBlockchain,
           transl.pers_item_blockchain,
           transl.desc_pers_item_blockchain,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.customBlockchain,
           _customBlockchainController.controller,
           hint: transl.pers_item_custom_blockchain,
           description: transl.desc_pers_item_custom_blockchain,
           scrollStream: _bloc.scrollingStateStream,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         SpinnerWidget(
           ItemName.curve,
           _bloc.values.curves,
           _bloc.common.bsCurve,
           transl.pers_item_curve,
           transl.desc_pers_item_curve,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.maxSignatures,
           _maxSignaturesController.controller,
@@ -64,16 +61,14 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
           description: transl.desc_pers_item_max_signatures,
           inputType: TextInputType.number,
           scrollStream: _bloc.scrollingStateStream,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         SwitchWidget(
           ItemName.createWallet,
           transl.pers_item_create_wallet,
           transl.desc_pers_item_create_wallet,
           _bloc.common.bsCreateWallet,
           initialData: false,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         SpinnerWidget(
           ItemName.pauseBeforePin2,
           _bloc.values.pauseBeforePin,
@@ -81,7 +76,6 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
           transl.pers_item_pause_before_pin2,
           transl.desc_pers_item_pause_before_pin2,
         ),
-        HorizontalDelimiter(),
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -36,30 +37,26 @@ class _PinsSegmentWidgetState extends State<PinsSegmentWidget> {
     return Column(
       children: <Widget>[
         SegmentHeader(transl.pers_segment_pins, description: transl.desc_pers_segment_pins),
-        HorizontalDelimiter(),
         InputWidget(
           ItemName.pin1,
           _pin1Controller.controller,
           hint: transl.pers_item_pin,
           description: transl.desc_pers_item_pin,
           scrollStream: _bloc.scrollingStateStream,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.pin2,
           _pin2Controller.controller,
           hint: transl.pers_item_pin2,
           description: transl.desc_pers_item_pin2,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.pin3,
           _pin3Controller.controller,
           hint: transl.pers_item_pin3,
           description: transl.desc_pers_item_pin3,
           scrollStream: _bloc.scrollingStateStream,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.cvc,
           _cvcController.controller,
@@ -67,7 +64,6 @@ class _PinsSegmentWidgetState extends State<PinsSegmentWidget> {
           description: transl.desc_pers_item_cvc,
           scrollStream: _bloc.scrollingStateStream,
         ),
-        HorizontalDelimiter(),
       ],
     );
   }

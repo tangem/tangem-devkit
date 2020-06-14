@@ -206,7 +206,7 @@ class Issuer {
   Issuer(this.name, this.id, this.dataKeyPair, this.transactionKeyPair);
 
   factory Issuer.def() {
-    final name = "Tangem SDK";
+    final name = "TANGEM SDK";
     return Issuer(
       name,
       name + "\u0000",
