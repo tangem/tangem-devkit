@@ -1,13 +1,9 @@
-import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
+import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
-import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
-import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../finders.dart';
 import 'helpers.dart';
@@ -65,10 +61,10 @@ class WriteUserDataBody extends StatefulWidget {
 }
 
 class _WriteUserDataBodyState extends State<WriteUserDataBody> {
+  WriteUserDataBloc _bloc;
   TextStreamController _cidController;
   TextStreamController _userDataController;
   TextStreamController _userDataCounterController;
-  WriteUserDataBloc _bloc;
 
   @override
   void initState() {
@@ -119,31 +115,5 @@ class _WriteUserDataBodyState extends State<WriteUserDataBody> {
     _userDataController.dispose();
     _userDataCounterController.dispose();
     super.dispose();
-  }
-}
-
-class WriteUserDataBloc extends ActionBloc<WriteUserDataResponse> {
-  final bsUserData = BehaviorSubject<String>();
-  final bsUserCounter = BehaviorSubject<String>();
-
-  String _cid;
-  String _userData;
-  int _userCounter;
-
-  WriteUserDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-    subscriptions.add(bsUserData.stream.listen((event) => _userData = event));
-    subscriptions.add(bsUserCounter.stream.listen((event) => _userCounter = event.isEmpty ? null : int.parse(event)));
-    bsUserData.add("User data to be written on a card");
-    bsUserCounter.add("1");
-  }
-
-  @override
-  invokeAction() {
-    TangemSdk.writeUserData(callback, {
-      TangemSdk.cid: _cid,
-      TangemSdk.userDataHex: _userData.toHexString(),
-      TangemSdk.userCounter: _userCounter,
-    });
   }
 }
