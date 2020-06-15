@@ -109,6 +109,17 @@ class PersonalizeBody extends StatelessWidget {
           SettingMaskProtocolEncryptionSegmentWidget(),
           SettingsMaskNdefSegmentWidget(),
           PinsSegmentWidget().gone(),
+          Container(
+            child: StreamBuilder<bool>(
+              stream: bloc.bsIsVisibleRarelyUsedFields.stream,
+              initialData: false,
+              builder: (context, snapshot) {
+                final transl = Transl.of(context);
+                final text = snapshot.data ? transl.hide_rare_fields: transl.show_rare_fields;
+                return  Button(text: text, onPressed: () => bloc.bsIsVisibleRarelyUsedFields.add(!snapshot.data)).padding16();
+              },
+            ),
+          )
         ],
       ),
     );

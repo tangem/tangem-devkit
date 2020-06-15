@@ -26,7 +26,6 @@ extension Wrapper on Widget {
       maintainState: true,
       maintainAnimation: true,
       maintainSize: true,
-      maintainInteractivity: true,
       child: this,
     );
   }
@@ -35,7 +34,7 @@ extension Wrapper on Widget {
     return StreamBuilder<bool>(
       stream: isVisibleStream,
       initialData: isGone,
-      builder: (context, snapshot) => this.visibility(snapshot.data),
+      builder: (context, snapshot) => snapshot.data ? this : this.gone(isGone: true),
     );
   }
 

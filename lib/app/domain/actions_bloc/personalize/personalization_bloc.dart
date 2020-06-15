@@ -13,20 +13,13 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 import 'segments.dart';
 import 'store.dart';
 
-abstract class PersonalizationState {}
-
-class Loading extends PersonalizationState {}
-
-class Done extends PersonalizationState {}
-
-class ShowLoadConfig extends PersonalizationState {}
-
 class PersonalizationBloc extends ActionBloc<CardResponse> {
   final PersonalizationValues values = PersonalizationValues();
   final List<BaseSegment> _configSegments = [];
   final _scrollingState = PublishSubject<bool>();
 
   final psSavedConfigNames = BehaviorSubject<List<String>>();
+  final bsIsVisibleRarelyUsedFields = BehaviorSubject<bool>.seeded(false);
 
   PersonalizationConfigStore _store;
 

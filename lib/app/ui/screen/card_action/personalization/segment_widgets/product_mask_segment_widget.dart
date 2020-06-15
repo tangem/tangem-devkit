@@ -9,6 +9,7 @@ class ProductMaskSegmentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
+    final bloc = RepoFinder.personalizationBloc(context);
     final productMask = RepoFinder.personalizationBloc(context).productMask;
 
     return Column(
@@ -43,6 +44,6 @@ class ProductMaskSegmentWidget extends StatelessWidget {
           initialData: false,
         ),
       ],
-    );
+    ).goneByStream(bloc.bsIsVisibleRarelyUsedFields);
   }
 }

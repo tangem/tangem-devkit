@@ -39,21 +39,21 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
           _bloc.common.bsBlockchain,
           transl.pers_item_blockchain,
           transl.desc_pers_item_blockchain,
-        ).withUnderline(),
+        ).withUnderline().goneByStream(_bloc.bsIsVisibleRarelyUsedFields),
         InputWidget(
           ItemName.customBlockchain,
           _customBlockchainController.controller,
           hint: transl.pers_item_custom_blockchain,
           description: transl.desc_pers_item_custom_blockchain,
           scrollStream: _bloc.scrollingStateStream,
-        ).withUnderline(),
+        ).withUnderline().goneByStream(_bloc.bsIsVisibleRarelyUsedFields),
         SpinnerWidget(
           ItemName.curve,
           _bloc.values.curves,
           _bloc.common.bsCurve,
           transl.pers_item_curve,
           transl.desc_pers_item_curve,
-        ).withUnderline(),
+        ).withUnderline().goneByStream(_bloc.bsIsVisibleRarelyUsedFields),
         InputWidget(
           ItemName.maxSignatures,
           _maxSignaturesController.controller,
@@ -68,14 +68,14 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
           transl.desc_pers_item_create_wallet,
           _bloc.common.bsCreateWallet,
           initialData: false,
-        ).withUnderline(),
+        ).withUnderline().goneByStream(_bloc.bsIsVisibleRarelyUsedFields),
         SpinnerWidget(
           ItemName.pauseBeforePin2,
           _bloc.values.pauseBeforePin,
           _bloc.common.bsPauseBeforePin,
           transl.pers_item_pause_before_pin2,
           transl.desc_pers_item_pause_before_pin2,
-        ),
+        ).goneByStream(_bloc.bsIsVisibleRarelyUsedFields),
       ],
     );
   }

@@ -56,26 +56,26 @@ class _SettingsMaskNdefSegmentWidgetState extends State<SettingsMaskNdefSegmentW
           initialData: false,
         ).withUnderline(),
         SpinnerWidget(
-          ItemName.idIssuer,
+          ItemName.aar,
           _bloc.values.aar,
           settingsMaskNdef.aar,
           transl.pers_item_aar,
           transl.desc_pers_item_aar,
-        ).withUnderline(),
+        ).withUnderline().goneByStream(_bloc.bsIsVisibleRarelyUsedFields),
         InputWidget(
           ItemName.customAar,
           customAarController.controller,
           hint: transl.pers_item_custom_aar_package_name,
           description: transl.desc_pers_item_custom_aar_package_name,
           scrollStream: _bloc.scrollingStateStream,
-        ).withUnderline(),
+        ).withUnderline().goneByStream(_bloc.bsIsVisibleRarelyUsedFields),
         InputWidget(
           ItemName.uri,
           uriController.controller,
           hint: transl.pers_item_uri,
           description: transl.desc_pers_item_uri,
           scrollStream: _bloc.scrollingStateStream,
-        ).withUnderline(),
+        ).withUnderline().goneByStream(_bloc.bsIsVisibleRarelyUsedFields),
       ],
     );
   }
