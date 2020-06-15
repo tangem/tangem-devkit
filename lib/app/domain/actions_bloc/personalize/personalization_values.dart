@@ -1,4 +1,5 @@
 import 'package:devkit/commons/common_abstracts.dart';
+import 'package:intl/intl.dart';
 
 class PersonalizationValues {
   static final String CUSTOM = "--- CUSTOM ---";
@@ -69,7 +70,10 @@ class PersonalizationValues {
 
   Pair<String, String> getBlockchain(dynamic value) => getOrNull(value, blockchain);
 
-  Pair<String, String> getCurve(dynamic value) => getOrNull(value, curves);
+  Pair<String, String> getCurve(String value) {
+    Pair curve = getOrNull(value, curves);
+    return curve ?? getOrNull(toBeginningOfSentenceCase(value), _curves);
+  }
 
   Pair<String, String> getAar(dynamic value) => getOrNull(value, aar);
 

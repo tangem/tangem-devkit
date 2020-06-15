@@ -33,8 +33,6 @@ class ResponseTextWidget extends BaseResponseWidget {
 
   @override
   Widget buildWidget(BuildContext context) {
-    if (value == null) return StubWidget();
-
     return Container(
       decoration: BoxDecoration(color: bgColor),
       child: ConstrainedBox(
@@ -49,7 +47,7 @@ class ResponseTextWidget extends BaseResponseWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   TextWidget(name, fontSize: 16),
-                  TextWidget(stringOf(value), fontSize: AppDimen.itemTitleTextSize, color: AppColor.itemDescription),
+                  TextWidget(stringOf(value, def: "null"), fontSize: AppDimen.itemTitleTextSize, color: AppColor.itemDescription),
                   DescriptionWidget(description, EdgeInsets.only(top: 5)),
                 ],
               ),
@@ -70,8 +68,6 @@ class ResponseCheckboxWidget extends BaseResponseWidget {
 
   @override
   Widget buildWidget(BuildContext context) {
-    if (value == null) return StubWidget();
-
     return Container(
       decoration: BoxDecoration(color: bgColor),
       child: Column(
@@ -79,7 +75,7 @@ class ResponseCheckboxWidget extends BaseResponseWidget {
           CheckboxListTile(
             value: value,
             onChanged: null,
-            title: TextWidget(stringOf(name), fontSize: AppDimen.itemTextSize, color: Colors.black),
+            title: TextWidget(stringOf(name, def: "null"), fontSize: AppDimen.itemTextSize, color: Colors.black),
           ),
           HorizontalDelimiter(),
         ],
