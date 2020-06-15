@@ -46,7 +46,7 @@ class InputWidget extends StatelessWidget {
                   initialData: true,
                   builder: (context, snapshot) => buildTextField(snapshot.data),
                 ),
-          DescriptionWidget(description, EdgeInsets.only(top: AppDimen.descPadding)),
+          DescriptionWidget(description, EdgeInsets.only(top: 10)),
         ],
       ),
     );

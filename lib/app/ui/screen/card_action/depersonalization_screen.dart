@@ -47,7 +47,7 @@ class DepersonalizeBody extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: EdgeInsets.all(16),
-          child: TextWidget.center(Transl.of(context).how_to_depersonalize),
+          child: TextWidget.howTo(Transl.of(context).how_to_depersonalize),
         ),
       ),
     );

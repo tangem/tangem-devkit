@@ -47,7 +47,7 @@ class ScanBody extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: EdgeInsets.all(16),
-          child: TextWidget.center(Transl.of(context).how_to_scan),
+          child: TextWidget.howTo(Transl.of(context).how_to_scan),
         ),
       ),
     );

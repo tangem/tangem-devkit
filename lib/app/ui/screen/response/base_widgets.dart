@@ -50,7 +50,7 @@ class ResponseTextWidget extends BaseResponseWidget {
                 children: <Widget>[
                   TextWidget(name, fontSize: 16),
                   TextWidget(stringOf(value), fontSize: AppDimen.itemTitleTextSize, color: AppColor.itemDescription),
-                  DescriptionWidget(description, EdgeInsets.only(top: AppDimen.descPadding)),
+                  DescriptionWidget(description, EdgeInsets.only(top: 5)),
                 ],
               ),
             ),

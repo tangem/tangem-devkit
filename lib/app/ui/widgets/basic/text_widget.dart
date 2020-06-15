@@ -1,4 +1,5 @@
 import 'package:devkit/app/resources/app_resources.dart';
+import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
 
 class TextWidget extends StatelessWidget {
@@ -12,7 +13,8 @@ class TextWidget extends StatelessWidget {
   const TextWidget(this.text, {this.keyName, this.fontSize, this.color, this.textAlign, this.maxLines});
 
   @override
-  Widget build(BuildContext context) => Text(
+  Widget build(BuildContext context) =>
+      Text(
         text,
         key: ItemId.from(keyName),
         textAlign: textAlign,
@@ -20,11 +22,14 @@ class TextWidget extends StatelessWidget {
         style: textStyle(color, fontSize),
       );
 
-  static TextStyle textStyle(Color color, double fontSize) => TextStyle(
+  static TextStyle textStyle(Color color, double fontSize) =>
+      TextStyle(
         color: color,
         fontSize: fontSize,
         fontStyle: FontStyle.normal,
       );
 
   factory TextWidget.center(String text) => TextWidget(text, textAlign: TextAlign.center);
+
+  factory TextWidget.howTo(String text) => TextWidget(text, fontSize: 18, textAlign: TextAlign.center, color: AppColor.howTo);
 }
