@@ -1,13 +1,10 @@
 import 'dart:async';
 
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_bloc.dart';
+import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
-
-abstract class Disposable {
-  dispose();
-}
 
 abstract class ActionBloc<T> extends Disposable {
   final bsCid = BehaviorSubject<String>();

@@ -95,32 +95,33 @@ class PersonalizeBody extends StatelessWidget {
         }
         return false;
       },
-      child: ListView(
-        children: <Widget>[
-          HiddenResponseHandlerWidget(bloc),
-          HiddenSnackbarHandlerWidget([bloc.snackbarMessageStream]),
-          CardNumberSegmentWidget(),
-          CommonSegmentWidget(),
-          SigningMethodSegmentWidget(),
-          SignHashExPropSegmentWidget(),
-          TokenSegmentWidget(),
-          ProductMaskSegmentWidget(),
-          SettingMaskSegmentWidget(),
-          SettingMaskProtocolEncryptionSegmentWidget(),
-          SettingsMaskNdefSegmentWidget(),
-          PinsSegmentWidget().gone(),
-          Container(
-            child: StreamBuilder<bool>(
-              stream: bloc.bsIsVisibleRarelyUsedFields.stream,
-              initialData: false,
-              builder: (context, snapshot) {
-                final transl = Transl.of(context);
-                final text = snapshot.data ? transl.hide_rare_fields: transl.show_rare_fields;
-                return  Button(text: text, onPressed: () => bloc.bsIsVisibleRarelyUsedFields.add(!snapshot.data)).padding16();
-              },
-            ),
-          )
-        ],
+      child: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            HiddenResponseHandlerWidget(bloc),
+            HiddenSnackbarHandlerWidget([bloc.snackbarMessageStream]),
+            CardNumberSegmentWidget(),
+            CommonSegmentWidget(),
+            SigningMethodSegmentWidget(),
+            SignHashExPropSegmentWidget(),
+            TokenSegmentWidget(),
+            ProductMaskSegmentWidget(),
+            SettingsMaskSegmentWidget().visibilityHandler(bloc.statedFieldsVisibility),
+            SettingsMaskProtocolEncryptionSegmentWidget().visibilityHandler(bloc.statedFieldsVisibility),
+            SettingsMaskNdefSegmentWidget(),
+            PinsSegmentWidget().gone(),
+            Container(
+              child: StreamBuilder<bool>(
+                stream: bloc.statedFieldsVisibility.stream,
+                initialData: false,
+                builder: (context, snapshot) {
+                  final text = snapshot.data ? Transl.of(context).hide_rare_fields : Transl.of(context).show_rare_fields;
+                  return Button(text: text, onPressed: () => bloc.statedFieldsVisibility.sink.add(!snapshot.data)).padding16();
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -9,7 +9,8 @@ class SigningMethodSegmentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
-    final signingMethod = RepoFinder.personalizationBloc(context).signingMethod;
+    final bloc = RepoFinder.personalizationBloc(context);
+    final signingMethod = bloc.signingMethod;
 
     return Column(
       children: <Widget>[
@@ -64,6 +65,6 @@ class SigningMethodSegmentWidget extends StatelessWidget {
           initialData: false,
         ).gone(),
       ],
-    );
+    ).visibilityHandler(bloc.statedFieldsVisibility);
   }
 }

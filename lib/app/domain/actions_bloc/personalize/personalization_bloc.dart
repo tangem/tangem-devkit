@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
 import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
+import 'package:devkit/commons/common_abstracts.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share/share.dart';
@@ -17,16 +19,15 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   final PersonalizationValues values = PersonalizationValues();
   final List<BaseSegment> _configSegments = [];
   final _scrollingState = PublishSubject<bool>();
-
-  final psSavedConfigNames = BehaviorSubject<List<String>>();
-  final bsIsVisibleRarelyUsedFields = BehaviorSubject<bool>.seeded(false);
+  final bsSavedConfigNames = BehaviorSubject<List<String>>();
+  final statedFieldsVisibility = StatedBehaviorSubject<bool>(false);
 
   PersonalizationConfigStore _store;
 
   CardNumberSegment cardNumber;
   CommonSegment common;
   SigningMethodSegment signingMethod;
-  SignHashExPropertiesSegment signHashExProperties;
+  SignHashExPropSegment signHashExProperties;
   TokenSegment token;
   ProductMaskSegment productMask;
   SettingsMaskSegment settingsMask;
@@ -52,7 +53,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     cardNumber = CardNumberSegment(this, currentConfig);
     common = CommonSegment(this, currentConfig);
     signingMethod = SigningMethodSegment(this, currentConfig);
-    signHashExProperties = SignHashExPropertiesSegment(this, currentConfig);
+    signHashExProperties = SignHashExPropSegment(this, currentConfig);
     token = TokenSegment(this, currentConfig);
     productMask = ProductMaskSegment(this, currentConfig);
     settingsMask = SettingsMaskSegment(this, currentConfig);
@@ -95,7 +96,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
 
   fetchSavedConfigNames() {
     List<String> listNames = _store.getNames();
-    psSavedConfigNames.add(listNames);
+    bsSavedConfigNames.add(listNames);
   }
 
   saveNewConfig(String name) {
@@ -150,6 +151,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
 
   @override
   dispose() {
+    statedFieldsVisibility.dispose();
     _configSegments.forEach((element) => element.dispose());
     _store.save();
     super.dispose();

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/signing_method_mask.dart';
+import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
@@ -169,14 +169,14 @@ class SigningMethodSegment extends BaseSegment {
   }
 }
 
-class SignHashExPropertiesSegment extends BaseSegment {
+class SignHashExPropSegment extends BaseSegment {
   final pinLessFloorLimit = BehaviorSubject<String>();
   final hexCrExKey = BehaviorSubject<String>();
   final requireTerminalCertSignature = BehaviorSubject<bool>();
   final requireTerminalTxSignature = BehaviorSubject<bool>();
   final checkPIN3onCard = BehaviorSubject<bool>();
 
-  SignHashExPropertiesSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  SignHashExPropSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {

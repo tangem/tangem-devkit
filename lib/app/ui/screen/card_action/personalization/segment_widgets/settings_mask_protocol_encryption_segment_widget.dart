@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../finders.dart';
 
-class SettingMaskProtocolEncryptionSegmentWidget extends StatelessWidget {
+class SettingsMaskProtocolEncryptionSegmentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transl = Transl.of(context);

@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:rxdart/rxdart.dart';
+
 abstract class Typed<T> {
   T getType();
 }
@@ -49,4 +53,31 @@ class Triple<A, B, C> {
   final C c;
 
   Triple(this.a, this.b, this.c);
+}
+
+abstract class Disposable {
+  dispose();
+}
+
+class StatedBehaviorSubject<T> extends Disposable {
+  final BehaviorSubject<T> _subject;
+  StreamSubscription _subscription;
+  T _state;
+
+  StatedBehaviorSubject([T initialState])
+      : this._subject = initialState == null ? BehaviorSubject<T>() : BehaviorSubject<T>.seeded(initialState),
+        this._state = initialState {
+    _subscription = _subject.stream.listen((event) => _state = event);
+  }
+
+  Stream<T> get stream => _subject.stream;
+
+  Sink<T> get sink => _subject.sink;
+
+  T get state => _state;
+
+  @override
+  dispose() {
+    _subscription.cancel();
+  }
 }

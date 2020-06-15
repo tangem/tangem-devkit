@@ -70,7 +70,7 @@ class _SignHashExPropSegmentWidgetState extends State<SignHashExPropSegmentWidge
           initialData: false,
         ).gone(),
       ],
-    );
+    ).visibilityHandler(_bloc.statedFieldsVisibility);
   }
 
   @override
