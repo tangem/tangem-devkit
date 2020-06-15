@@ -7,6 +7,7 @@ import androidx.annotation.NonNull
 import androidx.lifecycle.Lifecycle
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.tangem.CardFilter
 import com.tangem.Config
 import com.tangem.Message
 import com.tangem.TangemSdk
@@ -14,6 +15,7 @@ import com.tangem.commands.WriteIssuerExtraDataCommand
 import com.tangem.commands.common.ResponseConverter
 import com.tangem.commands.personalization.entities.*
 import com.tangem.common.CompletionResult
+import com.tangem.common.extensions.CardType
 import com.tangem.common.extensions.hexToBytes
 import com.tangem.common.extensions.toByteArray
 import com.tangem.crypto.CryptoUtils
@@ -32,6 +34,8 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import java.lang.ref.WeakReference
+import java.util.*
+import kotlin.collections.ArrayList
 
 /** TangemSdkPlugin */
 public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -54,7 +58,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager.reader)
     cardManagerDelegate.activity = activity
 
-    sdk = TangemSdk(nfcManager.reader, cardManagerDelegate, Config())
+    sdk = TangemSdk(nfcManager.reader, cardManagerDelegate, Config(cardFilter = CardFilter(EnumSet.of(CardType.Sdk))))
     sdk.setTerminalKeysService(TerminalKeysStorage(activity.application))
   }
 
