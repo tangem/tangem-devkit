@@ -2,7 +2,7 @@ import 'package:devkit/app/resources/keys.dart';
 import 'package:devkit/app/resources/localization.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
-import 'package:devkit/commons/extensions/export.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,7 +40,7 @@ class InputWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           scrollStream == null
-              ? buildTextField(true)
+              ? buildTextField(false)
               : StreamBuilder(
                   stream: scrollStream,
                   initialData: true,

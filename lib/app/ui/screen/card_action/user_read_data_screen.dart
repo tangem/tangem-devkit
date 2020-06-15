@@ -11,24 +11,24 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 import '../finders.dart';
 import 'helpers.dart';
 
-class PurgeWalletScreen extends StatefulWidget {
+class ReadUserDataScreen extends StatefulWidget {
   @override
-  _PurgeWalletScreenState createState() => _PurgeWalletScreenState();
+  _ReadUserDataScreenState createState() => _ReadUserDataScreenState();
 }
 
-class _PurgeWalletScreenState extends State<PurgeWalletScreen> {
-  PurgeWalletBloc _bloc;
+class _ReadUserDataScreenState extends State<ReadUserDataScreen> {
+  ReadUserDataBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) {
-          _bloc = PurgeWalletBloc();
+          _bloc = ReadUserDataBloc();
           return _bloc;
         })
       ],
-      child: PurgeWalletFrame(),
+      child: ReadUserDataFrame(),
     );
   }
 
@@ -39,17 +39,17 @@ class _PurgeWalletScreenState extends State<PurgeWalletScreen> {
   }
 }
 
-class PurgeWalletFrame extends StatelessWidget {
+class ReadUserDataFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = RepoFinder.purgeWalletBloc(context);
+    final bloc = RepoFinder.readUserDataBloc(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Transl.of(context).screen_wallet_purge),
+        title: Text(Transl.of(context).screen_issuer_read_data),
         actions: [Menu.popupDescription()],
       ),
-      body: PurgeWalletBody(),
+      body: ReadUserDataBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
         onPressed: bloc.invokeAction,
@@ -58,20 +58,20 @@ class PurgeWalletFrame extends StatelessWidget {
   }
 }
 
-class PurgeWalletBody extends StatefulWidget {
+class ReadUserDataBody extends StatefulWidget {
   @override
-  _PurgeWalletBodyState createState() => _PurgeWalletBodyState();
+  _ReadUserDataBodyState createState() => _ReadUserDataBodyState();
 }
 
-class _PurgeWalletBodyState extends State<PurgeWalletBody> {
+class _ReadUserDataBodyState extends State<ReadUserDataBody> {
   TextStreamController _cidController;
-  PurgeWalletBloc _bloc;
+  ReadUserDataBloc _bloc;
 
   @override
   void initState() {
     super.initState();
 
-    _bloc = RepoFinder.purgeWalletBloc(context);
+    _bloc = RepoFinder.readUserDataBloc(context);
     _cidController = TextStreamController(_bloc.bsCid);
   }
 
@@ -99,17 +99,17 @@ class _PurgeWalletBodyState extends State<PurgeWalletBody> {
   }
 }
 
-class PurgeWalletBloc extends ActionBloc<PurgeWalletResponse> {
+class ReadUserDataBloc extends ActionBloc<ReadUserDataResponse> {
   final bsCid = BehaviorSubject<String>();
 
   String _cid;
 
-  PurgeWalletBloc() {
+  ReadUserDataBloc() {
     subscriptions.add(bsCid.stream.listen((event) => _cid = event));
   }
 
   @override
   invokeAction() {
-    TangemSdk.purgeWallet(callback, {TangemSdk.cid: _cid});
+    TangemSdk.readUserData(callback, {TangemSdk.cid: _cid});
   }
 }

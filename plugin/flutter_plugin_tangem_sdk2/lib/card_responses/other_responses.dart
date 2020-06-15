@@ -98,3 +98,55 @@ class WriteIssuerDataResponse {
 
   Map<String, dynamic> toJson() => _$WriteIssuerDataResponseToJson(this);
 }
+
+@JsonSerializable()
+class ReadIssuerExDataResponse {
+  final String cardId;
+  final int size;
+  final String issuerData;
+  final String issuerDataSignature;
+  final int issuerDataCounter;
+
+  ReadIssuerExDataResponse(this.cardId, this.size, this.issuerData, this.issuerDataSignature, this.issuerDataCounter);
+
+  factory ReadIssuerExDataResponse.fromJson(Map<String, dynamic> json) => _$ReadIssuerExDataResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ReadIssuerExDataResponseToJson(this);
+}
+
+@JsonSerializable()
+class WriteIssuerExDataResponse {
+  final String cardId;
+
+  WriteIssuerExDataResponse(this.cardId);
+
+  factory WriteIssuerExDataResponse.fromJson(Map<String, dynamic> json) => _$WriteIssuerExDataResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WriteIssuerExDataResponseToJson(this);
+}
+
+@JsonSerializable()
+class ReadUserDataResponse {
+  final String cardId;
+  final String userData;
+  final int userCounter;
+  final String userProtectedData;
+  final int userProtectedCounter;
+
+  ReadUserDataResponse(this.cardId, this.userData, this.userProtectedData, this.userCounter, this.userProtectedCounter);
+
+  factory ReadUserDataResponse.fromJson(Map<String, dynamic> json) => _$ReadUserDataResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ReadUserDataResponseToJson(this);
+}
+
+@JsonSerializable()
+class WriteUserDataResponse {
+  final String cardId;
+
+  WriteUserDataResponse(this.cardId);
+
+  factory WriteUserDataResponse.fromJson(Map<String, dynamic> json) => _$WriteUserDataResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WriteUserDataResponseToJson(this);
+}

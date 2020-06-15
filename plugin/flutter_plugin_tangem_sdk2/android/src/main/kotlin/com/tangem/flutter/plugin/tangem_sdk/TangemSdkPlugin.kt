@@ -10,11 +10,13 @@ import com.google.gson.JsonSyntaxException
 import com.tangem.Config
 import com.tangem.Message
 import com.tangem.TangemSdk
+import com.tangem.commands.WriteIssuerExtraDataCommand
 import com.tangem.commands.common.ResponseConverter
 import com.tangem.commands.personalization.entities.*
 import com.tangem.common.CompletionResult
 import com.tangem.common.extensions.hexToBytes
 import com.tangem.common.extensions.toByteArray
+import com.tangem.crypto.CryptoUtils
 import com.tangem.crypto.sign
 import com.tangem.tangem_sdk_new.DefaultSessionViewDelegate
 import com.tangem.tangem_sdk_new.NfcLifecycleObserver
@@ -37,7 +39,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private val handler = Handler(Looper.getMainLooper())
   private val converter = ResponseConverter()
   private lateinit var sdk: TangemSdk
-  private var replyАlreadySubmit = false;
+  private var replyAlreadySubmit = false;
 
   override fun onAttachedToActivity(pluginBinding: ActivityPluginBinding) {
     val activity = pluginBinding.activity
@@ -74,7 +76,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    replyАlreadySubmit = false
+    replyAlreadySubmit = false
     when (call.method) {
       "scanCard" -> scanCard(call, result)
       "sign" -> sign(call, result)
@@ -84,6 +86,11 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "purgeWallet" -> purgeWallet(call, result)
       "readIssuerData" -> readIssuerData(call, result)
       "writeIssuerData" -> writeIssuerData(call, result)
+      "readIssuerExData" -> readIssuerExData(call, result)
+      "writeIssuerExData" -> writeIssuerExData(call, result)
+      "readUserData" -> readUserData(call, result)
+      "writeUserData" -> writeUserData(call, result)
+      "writeUserProtectedData" -> writeUserProtectedData(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
@@ -186,9 +193,68 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
   }
 
+  private fun readIssuerExData(call: MethodCall, result: Result) {
+    try {
+      sdk.readIssuerExtraData(cid(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun writeIssuerExData(call: MethodCall, result: Result) {
+    try {
+      // from app
+      val cardId = cid(call) !!
+      val dataCounter = issuerDataCounter(call) ?: 1
+      val hexCardId = cardId.hexToBytes()
+
+      val counter = dataCounter.toByteArray(4)
+      val issuerPrivateKey = issuerPrivateKey(call)
+      val issuerData = CryptoUtils.generateRandomBytes(WriteIssuerExtraDataCommand.SINGLE_WRITE_SIZE * 5)
+      val startingSignature = (hexCardId + counter + issuerData.size.toByteArray(2)).sign(issuerPrivateKey)
+      val finalizingSignature = (hexCardId + issuerData + counter).sign(issuerPrivateKey)
+
+      sdk.writeIssuerExtraData(
+          cardId,
+          issuerData,
+          startingSignature,
+          finalizingSignature,
+          dataCounter,
+          message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun readUserData(call: MethodCall, result: Result) {
+    try {
+      sdk.readUserData(cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun writeUserData(call: MethodCall, result: Result) {
+    try {
+      sdk.writeUserData(cid(call), userData(call), userCounter(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun writeUserProtectedData(call: MethodCall, result: Result) {
+    try {
+      sdk.writeProtectedUserData(cid(call), userProtectedData(call), userProtectedCounter(call), message(call)) {
+        handleResult(result, it)
+      }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
   private fun handleResult(result: Result, completionResult: CompletionResult<*>) {
-    if (replyАlreadySubmit) return
-    replyАlreadySubmit = true
+    if (replyAlreadySubmit) return
+    replyAlreadySubmit = true
 
     when (completionResult) {
       is CompletionResult.Success -> {
@@ -206,8 +272,8 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   private fun handleException(result: Result, ex: Exception) {
-    if (replyАlreadySubmit) return
-    replyАlreadySubmit = true
+    if (replyAlreadySubmit) return
+    replyAlreadySubmit = true
 
     handler.post {
       val code = 9999
@@ -258,7 +324,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
     @Throws(Exception::class)
     fun issuerData(call: MethodCall): ByteArray {
-      return fetchHexStringAndConvertToBytes(call, "issuerData")
+      return nullSafeFetchHexStringAndConvertToBytes(call, "issuerData")
     }
 
     @Throws(Exception::class)
@@ -277,7 +343,23 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
     @Throws(Exception::class)
     fun issuerPrivateKey(call: MethodCall): ByteArray {
-      return fetchHexStringAndConvertToBytes(call, "issuerPrivateKey")
+      return nullSafeFetchHexStringAndConvertToBytes(call, "issuerPrivateKey")
+    }
+
+    fun userData(call: MethodCall): ByteArray? {
+      return fetchHexStringAndConvertToBytes(call, "userData")
+    }
+
+    fun userCounter(call: MethodCall): Int? {
+      return call.argument<Int>("userCounter")
+    }
+
+    fun userProtectedData(call: MethodCall): ByteArray? {
+      return fetchHexStringAndConvertToBytes(call, "userProtectedData")
+    }
+
+    fun userProtectedCounter(call: MethodCall): Int? {
+      return call.argument<Int>("userProtectedCounter")
     }
 
     //    @Throws(Exception::class)
@@ -289,33 +371,19 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     //    fun finalizingSignature(jsO: JSONObject): ByteArray? {
     //      return fetchHexStringAndConvertToBytes(jsO, "finalizingSignature")
     //    }
-    //
-    //
-    //    @Throws(Exception::class)
-    //    fun userData(jsO: JSONObject): ByteArray? {
-    //      return fetchHexStringAndConvertToBytes(jsO, "userData")
-    //    }
-    //
-    //    @Throws(Exception::class)
-    //    fun userProtectedData(jsO: JSONObject): ByteArray? {
-    //      return fetchHexStringAndConvertToBytes(jsO, "userProtectedData")
-    //    }
-    //
-    //    @Throws(Exception::class)
-    //    fun userCounter(jsO: JSONObject): Int? {
-    //      return if (jsO.has("userCounter")) jsO.getInt("userCounter") else null
-    //    }
-    //
-    //    @Throws(Exception::class)
-    //    fun userProtectedCounter(jsO: JSONObject): Int? {
-    //      return if (jsO.has("userProtectedCounter")) jsO.getInt("userProtectedCounter") else null
-    //    }
-    //
+
     @Throws(Exception::class)
-    private fun fetchHexStringAndConvertToBytes(call: MethodCall, name: String): ByteArray {
+    private fun nullSafeFetchHexStringAndConvertToBytes(call: MethodCall, name: String): ByteArray {
       assert(call, name)
       val hexString = call.argument<String>(name) !!
       return hexString.hexToBytes()
+    }
+
+    @Throws(Exception::class)
+    private fun fetchHexStringAndConvertToBytes(call: MethodCall, name: String): ByteArray? {
+      assert(call, name)
+      val hexString = call.argument<String>(name)
+      return hexString?.hexToBytes()
     }
 
     @Throws(Exception::class)

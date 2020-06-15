@@ -1,7 +1,7 @@
 import 'package:devkit/app/resources/app_resources.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
-import 'package:tangem_sdk/extensions.dart';
 
 import 'base_widgets.dart';
 
@@ -162,6 +162,120 @@ class WriteIssuerDataResponseBody extends StatelessWidget {
           description: transl.desc_response_card_cid,
         ),
       ],
+    );
+  }
+}
+
+class ReadIssuerExDataResponseBody extends StatelessWidget {
+  final ReadIssuerExDataResponse _response;
+
+  const ReadIssuerExDataResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          ResponseTextWidget(
+            name: transl.response_card_cid,
+            value: _response.cardId,
+            description: transl.desc_response_card_cid,
+          ),
+          ResponseTextWidget(
+            name: transl.response_issuer_data_size,
+            value: _response.size,
+            description: transl.desc_response_issuer_data_size,
+          ),
+          ResponseTextWidget(
+            name: transl.response_issuer_data,
+            value: _response.issuerData,
+            description: transl.desc_response_issuer_data,
+          ),
+          ResponseTextWidget(
+            name: transl.response_issuer_data_signature,
+            value: _response.issuerDataSignature,
+            description: transl.desc_response_issuer_data_signature,
+          ),
+          ResponseTextWidget(
+            name: transl.response_issuer_data_counter,
+            value: _response.issuerDataCounter,
+            description: transl.desc_response_issuer_data_counter,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class WriteIssuerExDataResponseBody extends StatelessWidget {
+  final WriteIssuerExDataResponse _response;
+
+  const WriteIssuerExDataResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return ResponseTextWidget(
+      name: transl.card_id,
+      value: _response.cardId,
+      description: transl.desc_card_id,
+    );
+  }
+}
+
+class ReadUserDataResponseBody extends StatelessWidget {
+  final ReadUserDataResponse _response;
+
+  const ReadUserDataResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return Column(
+      children: <Widget>[
+        ResponseTextWidget(
+          name: transl.response_card_cid,
+          value: _response.cardId,
+          description: transl.desc_response_card_cid,
+        ),
+        ResponseTextWidget(
+          name: transl.response_user_data,
+          value: _response.userData.hexToString(),
+          description: transl.desc_response_user_data,
+        ),
+        ResponseTextWidget(
+          name: transl.response_user_data_counter,
+          value: _response.userCounter,
+          description: transl.desc_response_user_data_counter,
+        ),
+        ResponseTextWidget(
+          name: transl.response_user_protected_data,
+          value: _response.userProtectedData.hexToString(),
+          description: transl.desc_response_user_protected_data,
+        ),
+        ResponseTextWidget(
+          name: transl.response_user_data_protected_counter,
+          value: _response.userProtectedCounter,
+          description: transl.desc_response_user_data_protected_counter,
+        ),
+      ],
+    );
+  }
+}
+
+class WriteUserDataResponseBody extends StatelessWidget {
+  final WriteUserDataResponse _response;
+
+  const WriteUserDataResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return ResponseTextWidget(
+      name: transl.card_id,
+      value: _response.cardId,
+      description: transl.desc_card_id,
     );
   }
 }

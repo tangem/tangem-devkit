@@ -146,10 +146,10 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     final manufacturer = Manufacturer.def();
 
     TangemSdk.personalize(callback, {
-      TangemSdk.cardConfig: Utils.createCardConfig(_store.getCurrent(), issuer, acquirer),
-      TangemSdk.issuer: issuer,
-      TangemSdk.acquirer: acquirer,
-      TangemSdk.manufacturer: manufacturer,
+      TangemSdk.cardConfig: json.encode(Utils.createCardConfig(_store.getCurrent(), issuer, acquirer)),
+      TangemSdk.issuer: json.encode(issuer),
+      TangemSdk.acquirer: json.encode(acquirer),
+      TangemSdk.manufacturer: json.encode(manufacturer),
     });
   }
 

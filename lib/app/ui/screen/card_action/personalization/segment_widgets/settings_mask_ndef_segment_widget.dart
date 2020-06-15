@@ -1,6 +1,7 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -33,55 +34,48 @@ class _SettingsMaskNdefSegmentWidgetState extends State<SettingsMaskNdefSegmentW
     return Column(
       children: <Widget>[
         SegmentHeader(transl.pers_segment_settings_mask_ndef, description: transl.desc_pers_segment_settings_mask_ndef),
-        HorizontalDelimiter(),
         SwitchWidget(
           ItemName.useNdef,
           transl.pers_item_use_ndef,
           transl.desc_pers_item_use_ndef,
           settingsMaskNdef.useNdef,
           initialData: false,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         SwitchWidget(
           ItemName.dynamicNdef,
           transl.pers_item_dynamic_ndef,
           transl.desc_pers_item_dynamic_ndef,
           settingsMaskNdef.dynamicNdef,
           initialData: false,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         SwitchWidget(
           ItemName.disablePrecomputedNdef,
           transl.pers_item_disable_precomputed_ndef,
           transl.desc_pers_item_disable_precomputed_ndef,
           settingsMaskNdef.disablePrecomputedNdef,
           initialData: false,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         SpinnerWidget(
           ItemName.idIssuer,
           _bloc.values.aar,
           settingsMaskNdef.aar,
           transl.pers_item_aar,
           transl.desc_pers_item_aar,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.customAar,
           customAarController.controller,
           hint: transl.pers_item_custom_aar_package_name,
           description: transl.desc_pers_item_custom_aar_package_name,
           scrollStream: _bloc.scrollingStateStream,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.uri,
           uriController.controller,
           hint: transl.pers_item_uri,
           description: transl.desc_pers_item_uri,
           scrollStream: _bloc.scrollingStateStream,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
       ],
     );
   }

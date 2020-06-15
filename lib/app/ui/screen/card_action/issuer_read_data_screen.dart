@@ -1,6 +1,4 @@
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
-import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
-import 'package:devkit/app/domain/actions_bloc/card_optional_values.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/text_controller.dart';
@@ -104,26 +102,14 @@ class _ReadIssuerDataBodyState extends State<ReadIssuerDataBody> {
 class ReadIssuerDataBloc extends ActionBloc<ReadIssuerDataResponse> {
   final bsCid = BehaviorSubject<String>();
 
-  String _fCid;
+  String _cid;
 
   ReadIssuerDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _fCid = event));
+    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
   }
 
   @override
   invokeAction() {
-    TangemSdk.readIssuerData(callback, CardOptionalValues().cid(_fCid).get());
-  }
-
-  scanCard() {
-    final callback = Callback((result) {
-      bsCid.add(parseCidFromSuccessScan(result));
-    }, (error) {
-      sendError(error);
-    });
-    TangemSdk.scanCard(
-      callback,
-      CardOptionalValues().get(),
-    );
+    TangemSdk.readIssuerData(callback, {TangemSdk.cid: _cid});
   }
 }

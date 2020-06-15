@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:convert/convert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
@@ -46,54 +44,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-            child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(child: Text("Scan"), onPressed: _scan),
-                SizedBox(width: 10),
-                RaisedButton(child: Text("Sign"), onPressed: _sign),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(child: Text("Personalize"), onPressed: _personalize),
-                SizedBox(width: 10),
-                RaisedButton(child: Text("Depersonalize"), onPressed: _depersonalize)
-              ],
-            )
-          ],
-        )),
+        appBar: AppBar(title: const Text('Plugin example app')),
+        body: Center(child: Text("Yo")),
       ),
     );
-  }
-
-  final callback = Callback((result) {
-    print(result);
-    print(jsonEncode(result));
-  }, (error) {
-    print(error);
-    print(jsonEncode(error));
-  });
-
-  _scan() {
-    TangemSdk.scanCard(callback);
-  }
-
-  _sign() {
-    final hexData = hex.encode("some hex string".codeUnits);
-    TangemSdk.sign(callback, [hexData, hexData]);
-  }
-
-  _personalize() {}
-
-  _depersonalize() {
-    TangemSdk.depersonalize(callback, null);
   }
 }

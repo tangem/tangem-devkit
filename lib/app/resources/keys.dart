@@ -86,8 +86,13 @@ class ItemName {
   //personalization import config dialog
   static final personalizationImportInput = "personalizationImportInput";
 
-  // write issuer data
+  //write issuer data
   static final issuerData = "issuerData";
   static final issuerDataCounter = "issuerDataCounter";
 
+  //write user data
+  static final userData = "userData";
+  static final userCounter = "userCounter";
+  static final userProtectedData = "userProtectedData";
+  static final userProtectedCounter = "userProtectedCounter";
 }

@@ -1,6 +1,7 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -35,31 +36,27 @@ class _TokenSegmentWidgetState extends State<TokenSegmentWidget> {
     return Column(
       children: <Widget>[
         SegmentHeader(transl.pers_segment_token, description: transl.desc_pers_segment_token),
-        HorizontalDelimiter(),
         SwitchWidget(
           ItemName.itsToken,
           transl.pers_item_its_token,
           transl.desc_pers_item_its_token,
           token.itsToken,
           initialData: false,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.tokenSymbol,
           tokenSymbol.controller,
           hint: transl.pers_item_symbol,
           description: transl.desc_pers_item_symbol,
           scrollStream: _bloc.scrollingStateStream,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.tokenContractAddress,
           tokenContractAddress.controller,
           hint: transl.pers_item_contract_address,
           description: transl.desc_pers_item_contract_address,
           scrollStream: _bloc.scrollingStateStream,
-        ),
-        HorizontalDelimiter(),
+        ).withUnderline(),
         InputWidget(
           ItemName.tokenDecimal,
           tokenDecimal.controller,
@@ -68,7 +65,6 @@ class _TokenSegmentWidgetState extends State<TokenSegmentWidget> {
           scrollStream: _bloc.scrollingStateStream,
           inputType: TextInputType.number,
         ),
-        HorizontalDelimiter(),
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -49,7 +50,7 @@ class ResponseFrame extends StatelessWidget {
         ),
         body: Stack(
           children: <Widget>[
-            Opacity(opacity: 0.0, child: TextWidget(jsonArguments, keyName: ItemName.responseJson)),
+            TextWidget(jsonArguments, keyName: ItemName.responseJson).visibility(false),
             _createAppropriateResponseWidget(),
           ],
         ),
@@ -65,6 +66,10 @@ class ResponseFrame extends StatelessWidget {
     if (arguments is PurgeWalletResponse) return PurgeWalletResponseBody(arguments);
     if (arguments is ReadIssuerDataResponse) return ReadIssuerDataResponseBody(arguments);
     if (arguments is WriteIssuerDataResponse) return WriteIssuerDataResponseBody(arguments);
+    if (arguments is ReadIssuerExDataResponse) return ReadIssuerExDataResponseBody(arguments);
+    if (arguments is WriteIssuerExDataResponse) return WriteIssuerExDataResponseBody(arguments);
+    if (arguments is ReadUserDataResponse) return ReadUserDataResponseBody(arguments);
+    if (arguments is WriteUserDataResponse) return WriteUserDataResponseBody(arguments);
 
     return Center(child: TextWidget("Not implemented yet"));
   }

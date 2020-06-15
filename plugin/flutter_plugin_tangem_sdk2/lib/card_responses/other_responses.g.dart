@@ -110,3 +110,70 @@ Map<String, dynamic> _$WriteIssuerDataResponseToJson(
     <String, dynamic>{
       'cardId': instance.cardId,
     };
+
+ReadIssuerExDataResponse _$ReadIssuerExDataResponseFromJson(
+    Map<String, dynamic> json) {
+  return ReadIssuerExDataResponse(
+    json['cardId'] as String,
+    json['size'] as int,
+    json['issuerData'] as String,
+    json['issuerDataSignature'] as String,
+    json['issuerDataCounter'] as int,
+  );
+}
+
+Map<String, dynamic> _$ReadIssuerExDataResponseToJson(
+        ReadIssuerExDataResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+      'size': instance.size,
+      'issuerData': instance.issuerData,
+      'issuerDataSignature': instance.issuerDataSignature,
+      'issuerDataCounter': instance.issuerDataCounter,
+    };
+
+WriteIssuerExDataResponse _$WriteIssuerExDataResponseFromJson(
+    Map<String, dynamic> json) {
+  return WriteIssuerExDataResponse(
+    json['cardId'] as String,
+  );
+}
+
+Map<String, dynamic> _$WriteIssuerExDataResponseToJson(
+        WriteIssuerExDataResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+    };
+
+ReadUserDataResponse _$ReadUserDataResponseFromJson(Map<String, dynamic> json) {
+  return ReadUserDataResponse(
+    json['cardId'] as String,
+    json['userData'] as String,
+    json['userProtectedData'] as String,
+    json['userCounter'] as int,
+    json['userProtectedCounter'] as int,
+  );
+}
+
+Map<String, dynamic> _$ReadUserDataResponseToJson(
+        ReadUserDataResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+      'userData': instance.userData,
+      'userCounter': instance.userCounter,
+      'userProtectedData': instance.userProtectedData,
+      'userProtectedCounter': instance.userProtectedCounter,
+    };
+
+WriteUserDataResponse _$WriteUserDataResponseFromJson(
+    Map<String, dynamic> json) {
+  return WriteUserDataResponse(
+    json['cardId'] as String,
+  );
+}
+
+Map<String, dynamic> _$WriteUserDataResponseToJson(
+        WriteUserDataResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+    };

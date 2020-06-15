@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:devkit/app/domain/actions_bloc/scan_card/scan_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
@@ -9,6 +10,8 @@ abstract class Disposable {
 }
 
 abstract class ActionBloc<T> extends Disposable {
+  final bsCid = BehaviorSubject<String>();
+
   List<StreamSubscription> subscriptions = [];
 
   PublishSubject _successResponse = PublishSubject<T>();
@@ -35,10 +38,19 @@ abstract class ActionBloc<T> extends Disposable {
     _snackbarMessage.add(message);
   }
 
+  scanCard() {
+    final callback = Callback((result) {
+      bsCid.add(parseCidFromSuccessScan(result));
+    }, (error) {
+      sendError(error);
+    });
+    TangemSdk.scanCard(callback, {});
+  }
+
+  invokeAction();
+
   @override
   dispose() {
     subscriptions.forEach((element) => element.cancel());
   }
-
-  invokeAction();
 }

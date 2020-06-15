@@ -12,24 +12,24 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 import '../finders.dart';
 import 'helpers.dart';
 
-class WriteIssuerDataScreen extends StatefulWidget {
+class WriteUserProtectedDataScreen extends StatefulWidget {
   @override
-  _WriteIssuerDataScreenState createState() => _WriteIssuerDataScreenState();
+  _WriteUserProtectedDataScreenState createState() => _WriteUserProtectedDataScreenState();
 }
 
-class _WriteIssuerDataScreenState extends State<WriteIssuerDataScreen> {
-  WriteIssuerDataBloc _bloc;
+class _WriteUserProtectedDataScreenState extends State<WriteUserProtectedDataScreen> {
+  WriteUserProtectedDataBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) {
-          _bloc = WriteIssuerDataBloc();
+          _bloc = WriteUserProtectedDataBloc();
           return _bloc;
         })
       ],
-      child: WriteIssuerDataFrame(),
+      child: WriteUserProtectedDataFrame(),
     );
   }
 
@@ -40,17 +40,17 @@ class _WriteIssuerDataScreenState extends State<WriteIssuerDataScreen> {
   }
 }
 
-class WriteIssuerDataFrame extends StatelessWidget {
+class WriteUserProtectedDataFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = RepoFinder.writeIssuerDataBloc(context);
+    final bloc = RepoFinder.writeUserProtectedDataBloc(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Transl.of(context).screen_issuer_write_data),
+        title: Text(Transl.of(context).screen_user_write_protected_data),
         actions: [Menu.popupDescription()],
       ),
-      body: WriteIssuerDataBody(),
+      body: WriteUserProtectedDataBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
         onPressed: bloc.invokeAction,
@@ -59,25 +59,25 @@ class WriteIssuerDataFrame extends StatelessWidget {
   }
 }
 
-class WriteIssuerDataBody extends StatefulWidget {
+class WriteUserProtectedDataBody extends StatefulWidget {
   @override
-  _WriteIssuerDataBodyState createState() => _WriteIssuerDataBodyState();
+  _WriteUserProtectedDataBodyState createState() => _WriteUserProtectedDataBodyState();
 }
 
-class _WriteIssuerDataBodyState extends State<WriteIssuerDataBody> {
-  WriteIssuerDataBloc _bloc;
+class _WriteUserProtectedDataBodyState extends State<WriteUserProtectedDataBody> {
   TextStreamController _cidController;
-  TextStreamController _issuerDataController;
-  TextStreamController _counterController;
+  TextStreamController _userDataController;
+  TextStreamController _userDataCounterController;
+  WriteUserProtectedDataBloc _bloc;
 
   @override
   void initState() {
     super.initState();
 
-    _bloc = RepoFinder.writeIssuerDataBloc(context);
+    _bloc = RepoFinder.writeUserProtectedDataBloc(context);
     _cidController = TextStreamController(_bloc.bsCid);
-    _issuerDataController = TextStreamController(_bloc.bsIssuerData);
-    _counterController = TextStreamController(_bloc.bsIssuerDataCounter, [RegExp(r'\d+')]);
+    _userDataController = TextStreamController(_bloc.bsUserProtectedData);
+    _userDataCounterController = TextStreamController(_bloc.bsUserProtectedCounter, [RegExp(r'\d+')]);
   }
 
   @override
@@ -95,15 +95,15 @@ class _WriteIssuerDataBodyState extends State<WriteIssuerDataBody> {
           padding: EdgeInsets.symmetric(horizontal: 16),
         ),
         InputWidget(
-          ItemName.issuerData,
-          _issuerDataController.controller,
-          hint: transl.issuer_data,
-          description: transl.desc_issuer_data,
+          ItemName.userData,
+          _userDataController.controller,
+          hint: transl.user_data,
+          description: transl.desc_user_data,
           padding: EdgeInsets.symmetric(horizontal: 16),
         ),
         InputWidget(
-          ItemName.issuerDataCounter,
-          _counterController.controller,
+          ItemName.userCounter,
+          _userDataCounterController.controller,
           hint: transl.counter,
           description: transl.desc_counter,
           inputType: TextInputType.number,
@@ -116,35 +116,34 @@ class _WriteIssuerDataBodyState extends State<WriteIssuerDataBody> {
   @override
   void dispose() {
     _cidController.dispose();
-    _issuerDataController.dispose();
-    _counterController.dispose();
+    _userDataController.dispose();
+    _userDataCounterController.dispose();
     super.dispose();
   }
 }
 
-class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
-  final bsIssuerData = BehaviorSubject<String>();
-  final bsIssuerDataCounter = BehaviorSubject<String>();
+class WriteUserProtectedDataBloc extends ActionBloc<WriteUserDataResponse> {
+  final bsUserProtectedData = BehaviorSubject<String>();
+  final bsUserProtectedCounter = BehaviorSubject<String>();
 
   String _cid;
-  String _issuerData;
-  int _issuerDataCounter;
+  String _userProtectedData;
+  int _userProtectedCounter;
 
-  WriteIssuerDataBloc() {
+  WriteUserProtectedDataBloc() {
     subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-    subscriptions.add(bsIssuerData.stream.listen((event) => _issuerData = event));
-    subscriptions.add(bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
-    bsIssuerData.add("Data to be written on a card as issuer data");
-    bsIssuerDataCounter.add("1");
+    subscriptions.add(bsUserProtectedData.stream.listen((event) => _userProtectedData = event));
+    subscriptions.add(bsUserProtectedCounter.stream.listen((event) => _userProtectedCounter = event.isEmpty ? null : int.parse(event)));
+    bsUserProtectedData.add("Protected user data to be written on a card");
+    bsUserProtectedCounter.add("1");
   }
 
   @override
   invokeAction() {
-    TangemSdk.writeIssuerData(callback, {
+    TangemSdk.writeUserProtectedData(callback, {
       TangemSdk.cid: _cid,
-      TangemSdk.issuerDataHex: _issuerData.toHexString(),
-      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey.toHexString(),
-      TangemSdk.issuerDataCounter: _issuerDataCounter,
+      TangemSdk.userProtectedDataHex: _userProtectedData.toHexString(),
+      TangemSdk.userProtectedCounter: _userProtectedCounter,
     });
   }
 }
