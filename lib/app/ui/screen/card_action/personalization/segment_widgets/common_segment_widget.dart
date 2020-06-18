@@ -61,7 +61,7 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
           description: transl.desc_pers_item_max_signatures,
           inputType: TextInputType.number,
           scrollStream: _bloc.scrollingStateStream,
-        ).withUnderline(),
+        ).withUnderline().visibilityHandler(_bloc.statedFieldsVisibility),
         SwitchWidget(
           ItemName.createWallet,
           transl.pers_item_create_wallet,

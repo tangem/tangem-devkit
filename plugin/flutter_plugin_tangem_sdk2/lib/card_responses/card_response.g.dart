@@ -61,6 +61,7 @@ CardDataResponse _$CardDataResponseFromJson(Map<String, dynamic> json) {
     blockchainName: json['blockchainName'] as String,
     issuerName: json['issuerName'] as String,
     manufacturerSignature: json['manufacturerSignature'] as String,
+    manufactureDateTime: json['manufactureDateTime'] as String,
     productMask:
         (json['productMask'] as List)?.map((e) => e as String)?.toList(),
     tokenContractAddress: json['tokenContractAddress'] as String,
@@ -75,6 +76,7 @@ Map<String, dynamic> _$CardDataResponseToJson(CardDataResponse instance) {
     'blockchainName': instance.blockchainName,
     'issuerName': instance.issuerName,
     'manufacturerSignature': instance.manufacturerSignature,
+    'manufactureDateTime': instance.manufactureDateTime,
     'productMask': instance.productMask,
   };
 

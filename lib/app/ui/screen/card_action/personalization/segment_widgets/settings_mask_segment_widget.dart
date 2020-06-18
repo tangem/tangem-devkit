@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 
 import '../../../finders.dart';
 
-class SettingMaskSegmentWidget extends StatelessWidget {
+class SettingsMaskSegmentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
-    final settingMask = RepoFinder.personalizationBloc(context).settingsMask;
+    final bloc = RepoFinder.personalizationBloc(context);
+    final settingMask = bloc.settingsMask;
 
     return Column(
       children: <Widget>[
@@ -49,21 +50,21 @@ class SettingMaskSegmentWidget extends StatelessWidget {
           transl.desc_pers_item_use_block,
           settingMask.useBlock,
           initialData: false,
-        ).withUnderline(),
+        ).withUnderline().gone(),
         SwitchWidget(
           ItemName.useOneCommandAtTime,
           transl.pers_item_one_apdu_at_once,
           transl.desc_pers_item_one_apdu_at_once,
           settingMask.useOneCommandAtTime,
           initialData: false,
-        ).gone(),
+        ).withUnderline().gone(),
         SwitchWidget(
           ItemName.useCVC,
           transl.pers_item_use_cvc,
           transl.desc_pers_item_use_cvc,
           settingMask.useCVC,
           initialData: false,
-        ).gone(),
+        ).withUnderline(),
         SwitchWidget(
           ItemName.allowSwapPIN1,
           transl.pers_item_allow_swap_pin1,
@@ -98,7 +99,7 @@ class SettingMaskSegmentWidget extends StatelessWidget {
           transl.desc_pers_item_protect_issuer_data_against_replay,
           settingMask.protectIssuerDataAgainstReplay,
           initialData: false,
-        ).gone(),
+        ).withUnderline().gone(),
         SwitchWidget(
           ItemName.skipSecurityDelayIfValidatedByIssuer,
           transl.pers_item_skip_security_delay_if_validated,

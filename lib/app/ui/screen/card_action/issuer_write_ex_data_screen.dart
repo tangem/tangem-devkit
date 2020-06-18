@@ -1,13 +1,9 @@
-import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
+import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
-import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
-import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../finders.dart';
 import 'helpers.dart';
@@ -109,27 +105,5 @@ class _WriteIssuerExDataBodyState extends State<WriteIssuerExDataBody> {
     _cidController.dispose();
     _counterController.dispose();
     super.dispose();
-  }
-}
-
-class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
-  final bsIssuerDataCounter = BehaviorSubject<String>();
-
-  String _cid;
-  int _issuerDataCounter;
-
-  WriteIssuerExDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-    subscriptions.add(bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
-    bsIssuerDataCounter.add("1");
-  }
-
-  @override
-  invokeAction() {
-    TangemSdk.writeIssuerExData(callback, {
-      TangemSdk.cid: _cid,
-      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey.toHexString(),
-      TangemSdk.issuerDataCounter: _issuerDataCounter,
-    });
   }
 }

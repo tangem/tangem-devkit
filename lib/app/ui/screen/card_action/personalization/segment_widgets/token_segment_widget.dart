@@ -66,7 +66,7 @@ class _TokenSegmentWidgetState extends State<TokenSegmentWidget> {
           inputType: TextInputType.number,
         ),
       ],
-    );
+    ).visibilityHandler(_bloc.statedFieldsVisibility);
   }
 
   @override

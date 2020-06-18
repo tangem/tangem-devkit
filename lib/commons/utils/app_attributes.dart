@@ -17,14 +17,12 @@ class App {
 enum PlatformType { IOS, ANDROID, UNKNOWN }
 
 class AppDimen {
-  static const double toolbarHeight = 55;
-  static const double toolbarBorderRadius = 16;
-
-  static const itemMinHeight = 52.0;
-  static const itemTextSize = 16.0;
-  static const itemTitleTextSize = 12.0;
-  static const itemDescTextSize = 12.0;
-  static const descPadding = 5.0;
+  static const double itemMinHeight = 52.0;
+  
+  static const double itemHeaderTextSize = 18.0;
+  static const double itemTitleTextSize = 12.0;
+  static const double itemTextSize = 16.0;
+  static const double itemDescTextSize = 13.0;
 }
 
 class AppColor {
@@ -32,17 +30,15 @@ class AppColor {
   static final Color primaryDarkColor = Colors.blue[600];
   static final Color accentColor = Colors.blue[600];
 
-//  static final Color primaryColor = Colors.purpleAccent;
-//  static final Color primaryDarkColor = Colors.purpleAccent;
-//  static final Color accentColor = Colors.purpleAccent;
-
   static final listDelimiter = Colors.grey.withAlpha(70);
   static final border = Colors.blueGrey.withAlpha(70);
   static final dropDownUnderline = Colors.grey;
 
-  static final itemTitle = Colors.grey;
-  static final itemDescription = Colors.grey;
-  static final itemBgBlock = Colors.grey[350];
+  static final howTo = Colors.grey[600];
+  static final itemHeader = Colors.grey[700];
+  static final itemBgHeader = Colors.grey[400];
+  static final itemTitle = Colors.grey[600];
+  static final itemDescription = Colors.grey[600];
 
   static final responseCardData = HexColor("#D7E4F3");
   static final responseProductMask = HexColor("#D7E4F3");

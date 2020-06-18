@@ -1,5 +1,8 @@
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/material.dart';
+
+import '../common_abstracts.dart';
 
 extension Wrapper on Widget {
   Widget bg(Color color) => Container(decoration: BoxDecoration(color: color), child: this);
@@ -16,6 +19,8 @@ extension Wrapper on Widget {
     return Visibility(
       visible: !isGone,
       maintainState: true,
+      maintainAnimation: true,
+//      maintainSemantics: true,
       child: this,
     );
   }
@@ -26,20 +31,22 @@ extension Wrapper on Widget {
       maintainState: true,
       maintainAnimation: true,
       maintainSize: true,
-      maintainInteractivity: true,
       child: this,
-    );
-  }
-
-  Widget goneByStream(Stream<bool> isVisibleStream, [bool isGone = false]) {
-    return StreamBuilder<bool>(
-      stream: isVisibleStream,
-      initialData: isGone,
-      builder: (context, snapshot) => this.visibility(snapshot.data),
     );
   }
 
   Widget underline() => Column(children: <Widget>[this, HorizontalDelimiter()]);
 
   Widget withUnderline([bool withUnderline = true]) => withUnderline ? underline() : this;
+
+  Widget visibilityHandler(StatedBehaviorSubject<bool> bSubject) {
+    return StreamBuilder<bool>(
+      stream: bSubject.stream,
+      initialData: bSubject.state,
+      builder: (context, snapshot) {
+        logD(this, "state: ${snapshot.data}");
+        return snapshot.data ? this : this.gone();
+      },
+    );
+  }
 }

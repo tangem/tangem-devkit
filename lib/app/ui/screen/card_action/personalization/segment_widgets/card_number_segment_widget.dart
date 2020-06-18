@@ -34,7 +34,8 @@ class _CardNumberSegmentWidgetState extends State<CardNumberSegmentWidget> {
     final transl = Transl.of(context);
     return Column(
       children: <Widget>[
-        SegmentHeader(transl.pers_segment_card_number, description: transl.desc_pers_segment_card_number),
+        SegmentHeader(transl.pers_segment_card_number, description: transl.desc_pers_segment_card_number)
+            .visibilityHandler(_bloc.statedFieldsVisibility),
         InputWidget(
           ItemName.series,
           _seriesController.controller,
@@ -49,7 +50,7 @@ class _CardNumberSegmentWidgetState extends State<CardNumberSegmentWidget> {
           description: transl.desc_pers_item_number,
           inputType: TextInputType.number,
           scrollStream: _bloc.scrollingStateStream,
-        ).withUnderline(),
+        ).withUnderline().visibilityHandler(_bloc.statedFieldsVisibility),
         InputWidget(
           ItemName.batchId,
           _batchIdController.controller,

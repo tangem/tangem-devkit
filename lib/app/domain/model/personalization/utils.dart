@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:tangem_sdk/model/sdk.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
@@ -8,7 +9,7 @@ class Utils {
 
   static CardDataSdk createCardDataSdk(PersonalizationConfig config, Issuer issuer) {
     final cardData = config.cardData;
-    cardData.date = cardData.date != null && cardData.date.isEmpty ? null : cardData.date;
+    cardData.date = cardData.date != null && cardData.date.isEmpty ? _createCardDate() : cardData.date;
     return CardDataSdk(
       productMask: createProductMask(config),
       issuerName: issuer.name,
@@ -21,6 +22,8 @@ class Utils {
       manufacturerSignature: null,
     );
   }
+
+  static String _createCardDate()=> DateFormat("yyyy-MM-dd").format(DateTime.now());
 
   static CardConfigSdk createCardConfig(PersonalizationConfig config, Issuer issuer, Acquirer acquirer) {
     return CardConfigSdk(

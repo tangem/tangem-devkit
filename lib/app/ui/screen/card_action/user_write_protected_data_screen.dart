@@ -1,13 +1,9 @@
-import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
+import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
-import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
-import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../finders.dart';
 import 'helpers.dart';
@@ -65,10 +61,10 @@ class WriteUserProtectedDataBody extends StatefulWidget {
 }
 
 class _WriteUserProtectedDataBodyState extends State<WriteUserProtectedDataBody> {
+  WriteUserProtectedDataBloc _bloc;
   TextStreamController _cidController;
   TextStreamController _userDataController;
   TextStreamController _userDataCounterController;
-  WriteUserProtectedDataBloc _bloc;
 
   @override
   void initState() {
@@ -119,31 +115,5 @@ class _WriteUserProtectedDataBodyState extends State<WriteUserProtectedDataBody>
     _userDataController.dispose();
     _userDataCounterController.dispose();
     super.dispose();
-  }
-}
-
-class WriteUserProtectedDataBloc extends ActionBloc<WriteUserDataResponse> {
-  final bsUserProtectedData = BehaviorSubject<String>();
-  final bsUserProtectedCounter = BehaviorSubject<String>();
-
-  String _cid;
-  String _userProtectedData;
-  int _userProtectedCounter;
-
-  WriteUserProtectedDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-    subscriptions.add(bsUserProtectedData.stream.listen((event) => _userProtectedData = event));
-    subscriptions.add(bsUserProtectedCounter.stream.listen((event) => _userProtectedCounter = event.isEmpty ? null : int.parse(event)));
-    bsUserProtectedData.add("Protected user data to be written on a card");
-    bsUserProtectedCounter.add("1");
-  }
-
-  @override
-  invokeAction() {
-    TangemSdk.writeUserProtectedData(callback, {
-      TangemSdk.cid: _cid,
-      TangemSdk.userProtectedDataHex: _userProtectedData.toHexString(),
-      TangemSdk.userProtectedCounter: _userProtectedCounter,
-    });
   }
 }

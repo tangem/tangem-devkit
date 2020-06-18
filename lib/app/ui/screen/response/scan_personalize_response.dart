@@ -63,6 +63,21 @@ class ReadResponseBody extends StatelessWidget {
             description: transl.desc_response_card_pause_before_pin2,
           ),
           ResponseTextWidget(
+            name: transl.response_card_wallet_public_key,
+            value: _card.walletPublicKey,
+            description: transl.desc_response_card_wallet_public_key,
+          ),
+          ResponseTextWidget(
+            name: transl.response_card_wallet_remaining_signatures,
+            value: _card.walletRemainingSignatures,
+            description: transl.desc_response_card_wallet_remaining_signatures,
+          ),
+          ResponseTextWidget(
+            name: transl.response_card_wallet_signed_hashes,
+            value: _card.walletSignedHashes,
+            description: transl.desc_response_card_wallet_signed_hashes,
+          ),
+          ResponseTextWidget(
             name: transl.response_card_health,
             value: _card.health,
             description: transl.desc_response_card_health,
@@ -100,6 +115,12 @@ class CardDataResponseWidget extends StatelessWidget {
           name: transl.response_card_card_data_batch_id,
           value: _cardData.batchId,
           description: transl.desc_response_card_card_data_batch_id,
+          bgColor: _color,
+        ),
+        ResponseTextWidget(
+          name: transl.response_card_card_data_manufacture_date_time,
+          value: _cardData.manufactureDateTime,
+          description: transl.desc_response_card_card_data_manufacture_date_time,
           bgColor: _color,
         ),
         ResponseTextWidget(

@@ -54,6 +54,7 @@ class CardDataResponse {
   final String blockchainName;
   final String issuerName;
   final String manufacturerSignature;
+  final String manufactureDateTime;
   final List<String> productMask;
   @JsonKey(includeIfNull: false)
   final String tokenContractAddress;
@@ -67,6 +68,7 @@ class CardDataResponse {
     this.blockchainName,
     this.issuerName,
     this.manufacturerSignature,
+    this.manufactureDateTime,
     this.productMask,
     this.tokenContractAddress,
     this.tokenSymbol,

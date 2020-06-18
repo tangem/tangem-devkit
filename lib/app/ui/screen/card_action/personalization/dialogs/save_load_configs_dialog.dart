@@ -106,7 +106,7 @@ class ConfigListWidget extends StatelessWidget {
     return Flexible(
       child: SingleChildScrollView(
         child: StreamBuilder<List<String>>(
-          stream: _bloc.psSavedConfigNames.stream,
+          stream: _bloc.bsSavedConfigNames.stream,
           initialData: [],
           builder: (context, snapshot) {
             return Container(
