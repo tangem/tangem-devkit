@@ -38,6 +38,7 @@ void main() {
       }
       else {
         expect(personalize['status'], "Loaded");
+        //Todo: walletPublicKey, walletRemainingSignatures, walletSignedHashes not null
       }
 
       print("Reconciliation curve");
@@ -154,12 +155,20 @@ void main() {
         expect(settingsMask.contains('ProhibitPurgeWallet'), true);
       }
 
+      final tokenExzist = config['cardData'];
+      if (tokenExzist.contains('token_symbol')) {
+        expect(personalize['cardData']['tokenSymbol'], config['cardData']['token_symbol']);
+        expect(personalize['cardData']['tokenContractAddress'], config['cardData']['token_contract_address']);
+        expect(personalize['cardData']['tokenDecimal'], config['cardData']['token_decimal']);
+      }
+
       print("Reconciliation cardId");
       final startNumber = config['startNumber'].toString();
       final cardId = config['series']+ startNumber;
       print(cardId);
       print(personalize['cardId']);
       expect(personalize['cardId'].contains(cardId), true);
+
 
       //Todo: add expect for , health, firmware, all keys, issuer name, manufact sign, msnum date
 
