@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
-import 'package:tangem_sdk/extensions.dart';
 
 import 'card_responses/other_responses.dart';
 
@@ -200,8 +199,8 @@ class Issuer {
 
   final String name;
   final String id;
-  final KeyPair dataKeyPair;
-  final KeyPair transactionKeyPair;
+  final KeyPairHex dataKeyPair;
+  final KeyPairHex transactionKeyPair;
 
   Issuer(this.name, this.id, this.dataKeyPair, this.transactionKeyPair);
 
@@ -210,8 +209,8 @@ class Issuer {
     return Issuer(
       name,
       name + "\u0000",
-      KeyPair(dataPublic.hexToBytes(), dataPrivate.hexToBytes()),
-      KeyPair(transPublic.hexToBytes(), transPrivate.hexToBytes()),
+      KeyPairHex(dataPublic, dataPrivate),
+      KeyPairHex(transPublic, transPrivate),
     );
   }
 
@@ -219,8 +218,8 @@ class Issuer {
     return Issuer(
       json["name"],
       json["id"],
-      KeyPair.fromJson(json["dataKeyPair"]),
-      KeyPair.fromJson(json["transactionKeyPair"]),
+      KeyPairHex.fromJson(json["dataKeyPair"]),
+      KeyPairHex.fromJson(json["transactionKeyPair"]),
     );
   }
 
@@ -236,7 +235,7 @@ class Acquirer {
 
   final String name;
   final String id;
-  final KeyPair keyPair;
+  final KeyPairHex keyPair;
 
   Acquirer(this.name, this.id, this.keyPair);
 
@@ -245,12 +244,12 @@ class Acquirer {
     return Acquirer(
       name,
       name + "\u0000",
-      KeyPair(publicKey.hexToBytes(), privateKey.hexToBytes()),
+      KeyPairHex(publicKey, privateKey),
     );
   }
 
   factory Acquirer.fromJson(Map<String, dynamic> json) {
-    return Acquirer(json["name"], json["id"], KeyPair.fromJson(json["keyPair"]));
+    return Acquirer(json["name"], json["id"], KeyPairHex.fromJson(json["keyPair"]));
   }
 
   Map<String, dynamic> toJson() {
@@ -268,16 +267,16 @@ class Manufacturer {
   static final privateKey = "1b48cfd24bbb5b394771ed81f2bacf57479e4735eb1405083927372d40da9e92";
 
   final String name;
-  final KeyPair keyPair;
+  final KeyPairHex keyPair;
 
   Manufacturer(this.name, this.keyPair);
 
-  factory Manufacturer.def() => Manufacturer("Tangem", KeyPair(publicKey.hexToBytes(), privateKey.hexToBytes()));
+  factory Manufacturer.def() => Manufacturer("Tangem", KeyPairHex(publicKey, privateKey));
 
   factory Manufacturer.fromJson(Map<String, dynamic> json) {
     return Manufacturer(
       json["name"],
-      KeyPair.fromJson(json["keyPair"]),
+      KeyPairHex.fromJson(json["keyPair"]),
     );
   }
 
@@ -289,14 +288,14 @@ class Manufacturer {
   }
 }
 
-class KeyPair {
-  final List<int> publicKey;
-  final List<int> privateKey;
+class KeyPairHex {
+  final String publicKey;
+  final String privateKey;
 
-  KeyPair(this.publicKey, this.privateKey);
+  KeyPairHex(this.publicKey, this.privateKey);
 
-  factory KeyPair.fromJson(Map<String, dynamic> json) {
-    return KeyPair(
+  factory KeyPairHex.fromJson(Map<String, dynamic> json) {
+    return KeyPairHex(
       json["publicKey"],
       json["privateKey"],
     );
