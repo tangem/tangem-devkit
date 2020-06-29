@@ -7,10 +7,8 @@ import androidx.annotation.NonNull
 import androidx.lifecycle.Lifecycle
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.tangem.CardFilter
-import com.tangem.Config
-import com.tangem.Message
-import com.tangem.TangemSdk
+import com.google.gson.reflect.TypeToken
+import com.tangem.*
 import com.tangem.commands.WriteIssuerExtraDataCommand
 import com.tangem.commands.common.ResponseConverter
 import com.tangem.commands.personalization.entities.*
@@ -35,7 +33,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import java.lang.ref.WeakReference
 import java.util.*
-import kotlin.collections.ArrayList
 
 /** TangemSdkPlugin */
 public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -119,9 +116,10 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private fun personalize(call: MethodCall, result: Result) {
     try {
       val cardConfig = extractCardConfig(call);
-      val issuer = extractObject("issuer", call, converter.gson, Issuer::class.java)
-      val manufacturer = extractObject("manufacturer", call, converter.gson, Manufacturer::class.java)
-      val acquirer = extractObject("acquirer", call, converter.gson, Acquirer::class.java)
+      val issuer = extractPersonalizeObject("issuer", call, Issuer::class.java)
+      val manufacturer = extractPersonalizeObject("manufacturer", call, Manufacturer::class.java)
+      val acquirer = extractPersonalizeObject("acquirer", call, Acquirer::class.java)
+
       sdk.personalize(cardConfig, issuer, manufacturer, acquirer, message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
@@ -399,6 +397,36 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     @Throws(Exception::class)
+    private fun <T> extractPersonalizeObject(name: String, call: MethodCall, type: Class<T>): T {
+      if (! call.hasArgument(name)) throw NoSuchFieldException(name)
+
+      val gson = Gson()
+      val mapType = object : TypeToken<MutableMap<String, Any?>>() {}.type
+      val argMap: MutableMap<String, Any?> = gson.fromJson(call.argument<String>(name), mapType)
+      val jsonString = when (name) {
+        "issuer" -> {
+          val dataKeyPair = gson.fromJson(argMap["dataKeyPair"].toString(), KeyPairHex::class.java)
+          val transactionKeyPair = gson.fromJson(argMap["transactionKeyPair"].toString(), KeyPairHex::class.java)
+          argMap["dataKeyPair"] = dataKeyPair.convert()
+          argMap["transactionKeyPair"] = transactionKeyPair.convert()
+          gson.toJson(argMap)
+        }
+        "manufacturer" -> {
+          val keyPair = gson.fromJson(argMap["keyPair"].toString(), KeyPairHex::class.java)
+          argMap["keyPair"] = keyPair.convert()
+          gson.toJson(argMap)
+        }
+        "acquirer" -> {
+          val keyPair = gson.fromJson(argMap["keyPair"].toString(), KeyPairHex::class.java)
+          argMap["keyPair"] = keyPair.convert()
+          gson.toJson(argMap)
+        }
+        else -> throw NoSuchFieldException(name)
+      }
+      return gson.fromJson(jsonString, type)
+    }
+
+    @Throws(Exception::class)
     private fun assert(call: MethodCall, name: String) {
       if (! call.hasArgument(name)) throw NoSuchFieldException(name)
     }
@@ -406,3 +434,6 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 }
 
 data class PluginError(val code: Int, val localizedDescription: String)
+data class KeyPairHex(val publicKey: String, val privateKey: String) {
+  fun convert(): KeyPair = KeyPair(publicKey.hexToBytes(), privateKey.hexToBytes())
+}
