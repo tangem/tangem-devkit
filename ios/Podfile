@@ -76,6 +76,8 @@ target 'Runner' do
     File.symlink(path, symlink)
     pod name, :path => File.join(symlink, 'ios')
   end
+  
+  pod 'TangemSdk', :path => "../../card-sdk-swift/"
 end
 
 # Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.
@@ -88,3 +90,4 @@ post_install do |installer|
     end
   end
 end
+
