@@ -38,6 +38,9 @@ void main() {
       }
       else {
         expect(personalize['status'], "Loaded");
+        expect(personalize['walletPublicKey'], isNotNull);
+        expect(personalize['walletRemainingSignatures'], isNotNull);
+        expect(personalize['walletSignedHashes'], isNotNull);
         //Todo: walletPublicKey, walletRemainingSignatures, walletSignedHashes not null
       }
 
@@ -67,9 +70,11 @@ void main() {
 
       print("Reconciliation productMask"); //Todo: make this check a loop
       List productMask = personalize['cardData']['productMask'];
+
       if (config['cardData']['product_note']==true) {
         expect(productMask.contains('Note'), true);
       }
+
       if (config['cardData']['product_id_card']==true) {
         expect(productMask.contains('IdCard'), true);
       }
@@ -160,6 +165,11 @@ void main() {
         expect(personalize['cardData']['tokenSymbol'], config['cardData']['token_symbol']);
         expect(personalize['cardData']['tokenContractAddress'], config['cardData']['token_contract_address']);
         expect(personalize['cardData']['tokenDecimal'], config['cardData']['token_decimal']);
+      }
+      else {
+        expect(personalize['cardData']['tokenSymbol'], null);
+        expect(personalize['cardData']['tokenContractAddress'], null);
+        expect(personalize['cardData']['tokenDecimal'], null);
       }
 
       print("Reconciliation cardId");
