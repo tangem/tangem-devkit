@@ -20,7 +20,7 @@ void main() {
     });
 
     test("Read_Card test with config1",() async {
-      final config = await configForPersonalize.returnConfig('config1');
+      final config = await configForPersonalize.returnConfig('config3');
       String jsonString = jsonEncode(config);
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       await driver.tap(backButton);
