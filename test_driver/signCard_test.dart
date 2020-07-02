@@ -27,7 +27,6 @@ void main() {
       final walletRemainingSignatures= personalize['walletRemainingSignatures']-1; //ToDO: hardcode
       final walletSignedHashes = personalize['walletSignedHashes']+1; //ToDO: hardcode
 
-
       await driver.tap(backButton);
 
       final responceSign = await signCardMethod.signCard(driver, 'bb03000000000004', '123qwertyq');
