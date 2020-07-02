@@ -3,7 +3,7 @@ class ConfigForPersonalize{
   returnConfig(configName) async {
 
     Map mapper = {
-      //Personalize(all settingMask =true, Note)
+      //Personalize (all settingMask =true, Note)
       //Read card (all settingMask =true, Note)
       "config1": {
         "CVC": "000",
@@ -132,7 +132,7 @@ class ConfigForPersonalize{
         "useOneCommandAtTime": false
       },
 
-      //Personalize(Token)
+      //Personalize (Token)
       //Read card (Token)
       //PurgeWallet (createWallet=1, isReusable=true)
       "config3": {
@@ -263,8 +263,72 @@ class ConfigForPersonalize{
         "useOneCommandAtTime": false
       },
 
-      //you can edit
+      //Personalize (ID-card)
+      //Read card (ID-card)
       "config5": {
+        "CVC": "000",
+        "MaxSignatures": 999999,
+        "PIN": "000000",
+        "PIN2": "000",
+        "PIN3": "",
+        "SigningMethod": 0,
+        "allowSelectBlockchain": false,
+        "allowSwapPIN": false,
+        "allowSwapPIN2": false,
+        "cardData": {
+          "batch": "ffff",
+          "blockchain": "ETH",
+          "date": "",
+          "product_id_card": true,
+          "product_id_issuer": false,
+          "product_note": false,
+          "product_tag": false
+        },
+        "checkPIN3onCard": false,
+        "count": 0,
+        "createWallet": 1,
+        "curveID": "Secp256k1",
+        "disablePrecomputedNDEF": false,
+        "forbidDefaultPIN": false,
+        "forbidPurgeWallet": false,
+        "hexCrExKey": "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA998877665544332211000000111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFF",
+        "isReusable": true,
+        "issuerName": "",
+        "ndef": [
+          {
+            "type": "AAR",
+            "value": "com.tangem.wallet"
+          },
+          {
+            "type": "URI",
+            "value": "https://tangem.com"
+          }
+        ],
+        "numberFormat": "",
+        "pauseBeforePIN2": 5000,
+        "protectIssuerDataAgainstReplay": true,
+        "protocolAllowStaticEncryption": true,
+        "protocolAllowUnencrypted": true,
+        "releaseVersion": false,
+        "requireTerminalCertSignature": false,
+        "requireTerminalTxSignature": false,
+        "restrictOverwriteIssuerDataEx": true,
+        "series": "BB",
+        "skipCheckPIN2andCVCIfValidatedByIssuer": false,
+        "skipSecurityDelayIfValidatedByIssuer": false,
+        "skipSecurityDelayIfValidatedByLinkedTerminal": false,
+        "smartSecurityDelay": false,
+        "startNumber": 03000000000004,
+        "useActivation": false,
+        "useBlock": false,
+        "useCVC": false,
+        "useDynamicNDEF": true,
+        "useNDEF": true,
+        "useOneCommandAtTime": false
+      },
+
+      //you can edit
+      "config6": {
         "CVC": "000",
         "MaxSignatures": 999999,
         "PIN": "000000",

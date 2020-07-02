@@ -17,7 +17,7 @@ void main() {
     });
 
     test("Test Personalize ",() async {
-      final config = await configForPersonalize.returnConfig('config3');
+      final config = await configForPersonalize.returnConfig('config5');
       String jsonString = jsonEncode(config);
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       print(config);
@@ -160,16 +160,11 @@ void main() {
         expect(settingsMask.contains('ProhibitPurgeWallet'), true);
       }
 
-      final tokenExzist = config['cardData'];
-      if (tokenExzist.contains('token_symbol')) {
+      if (jsonString.contains('token_symbol')) {
+        print("Reconciliation token info");
         expect(personalize['cardData']['tokenSymbol'], config['cardData']['token_symbol']);
         expect(personalize['cardData']['tokenContractAddress'], config['cardData']['token_contract_address']);
         expect(personalize['cardData']['tokenDecimal'], config['cardData']['token_decimal']);
-      }
-      else {
-        expect(personalize['cardData']['tokenSymbol'], null);
-        expect(personalize['cardData']['tokenContractAddress'], null);
-        expect(personalize['cardData']['tokenDecimal'], null);
       }
 
       print("Reconciliation cardId");
