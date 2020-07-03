@@ -17,6 +17,7 @@ void main() {
   group('Sign_Card test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
+      await driver.requestData('restart');
     });
 
     test("Sign_Card test",() async {

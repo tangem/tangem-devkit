@@ -16,6 +16,7 @@ void main() {
   group('Purge_Wallet1 test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
+      await driver.requestData('restart');
     });
 
     test("Purge_Wallet if isReusable=false",() async {
@@ -44,6 +45,7 @@ void main() {
   group('Purge_Wallet2 test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
+      await driver.requestData('restart');
     });
 
     test("Purge_Wallet if isReusable=true",() async {

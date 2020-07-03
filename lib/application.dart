@@ -1,3 +1,5 @@
+import 'package:devkit/app/resources/keys.dart';
+import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/material.dart';
 
 import 'app/resources/localization.dart';
@@ -6,6 +8,7 @@ import 'commons/utils/app_attributes.dart';
 import 'navigation/routes.dart';
 
 class DevKitApp extends StatelessWidget {
+  DevKitApp(): super(key:ItemId.from(randomRange(0, 10000).toString()));
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
