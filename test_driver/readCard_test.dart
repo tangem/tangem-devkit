@@ -21,7 +21,7 @@ void main() {
     });
 
     test("Read_Card test with config1",() async {
-      final config = await configForPersonalize.returnConfig('config5');
+      final config = await configForPersonalize.returnConfig('config6');
       String jsonString = jsonEncode(config);
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       await driver.tap(backButton);
@@ -104,11 +104,6 @@ void main() {
 
       print("Reconciliation terminalIsLinked");
       expect(readResponce['terminalIsLinked'], personalize['terminalIsLinked']);
-
-
-
-
-
 
     });
 

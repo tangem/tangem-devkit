@@ -18,7 +18,7 @@ void main() {
     });
 
     test("Test Personalize ",() async {
-      final config = await configForPersonalize.returnConfig('config5');
+      final config = await configForPersonalize.returnConfig('config6');
       String jsonString = jsonEncode(config);
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       print(config);
