@@ -16,6 +16,7 @@ void main() {
   group('Create_Wallet test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
+      await driver.requestData('restart');
     });
 
     test("Create_Wallet test",() async {

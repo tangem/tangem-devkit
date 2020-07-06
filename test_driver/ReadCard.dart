@@ -9,7 +9,7 @@ class ReadCard {
   final methods = Methods();
 
 
-  readCard2(driver) async {
+  readCard(driver) async {
     print("Search for the Read Card element in the menu");
     await methods.isExist(readItem, driver);
     print("Click Read Card element in menu");

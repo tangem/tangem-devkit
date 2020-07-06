@@ -17,6 +17,7 @@ void main() {
   group('Read_Card test with config1', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
+      await driver.requestData('restart');
     });
 
     test("Read_Card test with config1",() async {
@@ -24,7 +25,7 @@ void main() {
       String jsonString = jsonEncode(config);
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       await driver.tap(backButton);
-      final readResponce = await readCardMethod.readCard2(driver);
+      final readResponce = await readCardMethod.readCard(driver);
       print(personalize);
       print(readResponce);
 

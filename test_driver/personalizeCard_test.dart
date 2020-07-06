@@ -14,6 +14,7 @@ void main() {
   group('Sign_Card test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
+      await driver.requestData('restart');
     });
 
     test("Test Personalize ",() async {
@@ -41,7 +42,6 @@ void main() {
         expect(personalize['walletPublicKey'], isNotNull);
         expect(personalize['walletRemainingSignatures'], isNotNull);
         expect(personalize['walletSignedHashes'], isNotNull);
-        //Todo: walletPublicKey, walletRemainingSignatures, walletSignedHashes not null
       }
 
       print("Reconciliation curve");

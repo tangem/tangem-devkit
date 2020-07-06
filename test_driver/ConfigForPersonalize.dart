@@ -201,6 +201,7 @@ class ConfigForPersonalize{
       },
 
       //Create wallet (createWallet= 0)
+      //Depersonalize
       "config4": {
         "CVC": "000",
         "MaxSignatures": 999999,
