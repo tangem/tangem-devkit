@@ -69,6 +69,7 @@ class ConfigForPersonalize{
 
       //Personalize(all settingMask =false)
       //Read card (all settingMask =false)
+      //Read card (status=Purged)
       //PurgeWallet (createWallet=1, isReusable=false)
       "config2": {
         "CVC": "000",
