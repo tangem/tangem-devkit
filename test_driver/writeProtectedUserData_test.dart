@@ -18,13 +18,13 @@ void main() {
 
   FlutterDriver driver;
 
-  group('Write_Protected_User_Data test', () {
+  group('Write Protected User Data test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
       await driver.requestData('restart');
     });
 
-    test("Write_Protected_User_Data test",() async {
+    test("Write Protected User Data test",() async {
       print("Data preparation");
       final config = await configForPersonalize.returnConfig('config7');
       String jsonString = jsonEncode(config);
@@ -35,6 +35,7 @@ void main() {
       final responsePersonalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       final cid = responsePersonalize['cardId'];
 
+      print("Return to menu");
       await driver.tap(backButton);
 
       print("Write user protected data");
@@ -42,9 +43,10 @@ void main() {
       print("Check responce after writing protected user data");
       expect(responceWriteProtectedUserData['cardId'], responsePersonalize['cardId']);
 
+      print("Return to menu");
       await driver.tap(backButton);
 
-      print("Read user data after writing");
+      print("Read User Data after writing");
       final responseReadUserData = await readUserDataMethod.readUserData(driver, cid);
       print("checking the Result and Expected result of the cardId field");
       expect(responseReadUserData['cardId'], responsePersonalize['cardId']);

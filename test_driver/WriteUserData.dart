@@ -32,25 +32,31 @@ class WriteUserData {
     } else {
       print("Search CID input field");
       await methods.isExist(cidTextEdit, driver);
+      print("Click CID input field");
       await driver.tap(cidTextEdit);
+      print("Enter CID in the input field");
       await driver.enterText(cid);
       final cidInput = find.text(cid);
       await methods.isExist(cidInput, driver);
     }
 
-      print("Search User data input field");
-      await methods.isExist(userDataTextEdit, driver);
-      await driver.tap(userDataTextEdit);
-      await driver.enterText(userData);
-      final userDataInput = find.text(userData);
-      await methods.isExist(userDataInput, driver);
+    print("Search User data input field");
+    await methods.isExist(userDataTextEdit, driver);
+    print("Click userData input field");
+    await driver.tap(userDataTextEdit);
+    print("Enter userData in the input field");
+    await driver.enterText(userData);
+    final userDataInput = find.text(userData);
+    await methods.isExist(userDataInput, driver);
 
-      print("Search User Counter input field");
-      await methods.isExist(userCounterTextEdit, driver);
-      await driver.tap(userCounterTextEdit);
-      await driver.enterText(userCounter);
-      final userCounterInput = find.text(userCounter);
-      await methods.isExist(userCounterInput, driver);
+    print("Search User Counter input field");
+    await methods.isExist(userCounterTextEdit, driver);
+    print("Click userCounter input field");
+    await driver.tap(userCounterTextEdit);
+    print("Enter userCounter in the input field");
+    await driver.enterText(userCounter);
+    final userCounterInput = find.text(userCounter);
+    await methods.isExist(userCounterInput, driver);
 
     print("Search action button element");
     await methods.isExist(floatingActionButton, driver);

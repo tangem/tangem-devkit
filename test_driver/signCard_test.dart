@@ -14,30 +14,37 @@ void main() {
 
   FlutterDriver driver;
 
-  group('Sign_Card test', () {
+  group('Sign card test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
       await driver.requestData('restart');
     });
 
-    test("Sign_Card test",() async {
+    test("Sign card test",() async {
+      print("Preparing the data");
       final config = await configForPersonalize.returnConfig('config2');
       String jsonString = jsonEncode(config);
+
+      print("Personalization card");
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       final cardId= personalize['cardId'];
       final walletRemainingSignatures= personalize['walletRemainingSignatures']-1; //ToDO: hardcode
       final walletSignedHashes = personalize['walletSignedHashes']+1; //ToDO: hardcode
 
+      print("Return to menu");
       await driver.tap(backButton);
 
-      final responceSign = await signCardMethod.signCard(driver, 'bb03000000000004', '123qwertyq');
+      print("Sign card");
+      final responceSign = await signCardMethod.signCard(driver, cardId, '123qwertyq');
       final cidSign = responceSign['cardId'];
       final walletRemainingSignaturesSign = responceSign['walletRemainingSignatures'];
       final walletSignedHashesSign = responceSign['walletSignedHashes'];
 
-      print("Reconciliation of Results and Expected Result");
+      print("checking the Result and Expected result of the cardId field");
       expect(cardId, cidSign);
+      print("checking the Result and Expected result of the walletRemainingSignatures field");
       expect(walletRemainingSignatures, walletRemainingSignaturesSign);
+      print("checking the Result and Expected result of the walletSignedHashesSign field");
       expect(walletSignedHashes, walletSignedHashesSign);
     });
 

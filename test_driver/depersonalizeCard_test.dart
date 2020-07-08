@@ -15,13 +15,13 @@ void main() {
 
   FlutterDriver driver;
 
-  group('Depersonalize_Card test', () {
+  group('Depersonalize card test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
       await driver.requestData('restart');
     });
 
-    test("Depersonalize_Card test",() async {
+    test("Depersonalize card test",() async {
       print("Preparing the config");
       final config = await configForPersonalize.returnConfig('config4');
       String jsonString = jsonEncode(config);
@@ -35,6 +35,7 @@ void main() {
       print("Reconciliation of Results and Expected Result");
       expect(responceDepersonalizeCard['success'], true);
 
+      print("Return to menu");
       await driver.tap(backButton);
 
       print("Read a depersonalized card");

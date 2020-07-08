@@ -19,6 +19,7 @@ class ReadCard {
     print("Click action button");
     await driver.tap(floatingActionButton);
     //ToDo: Robot. A code to rotate the robot.
+    print("Wait responce");
     String getResponse = await methods.getResponce(responseTextWidget, driver);
     Map<String, dynamic> responce = jsonDecode(getResponse);
     //print('${responce['cardId']}');

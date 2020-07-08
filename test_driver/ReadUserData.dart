@@ -19,18 +19,20 @@ class ReadUserData {
     await driver.tap(readUserDataItem);
 
     if (cid == null) {
-      print("Search Read Card button");
+      print("Search Read card button");
       await methods.isExist(readCardButton, driver);
       print("Click Read card button");
       await driver.tap(readCardButton);
       sleep(const Duration(seconds: 7));
-
+      print("Scan card");
       //ToDo: Robot. A code to rotate the robot.
 
     } else {
       print("Search CID input field");
       await methods.isExist(cidTextEdit, driver);
+      print("Click CID input field");
       await driver.tap(cidTextEdit);
+      print("Enter CID in the input field");
       await driver.enterText(cid);
       final cidInput = find.text(cid);
       await methods.isExist(cidInput, driver);

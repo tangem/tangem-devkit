@@ -18,6 +18,7 @@ class DepersonalizeCard {
     await methods.isExist(floatingActionButton, driver);
     print("Click action button");
     await driver.tap(floatingActionButton);
+    print("Scan card");
     //ToDo: Robot. A code to rotate the robot.
     print("Wait responce");
     sleep(const Duration(seconds: 7));

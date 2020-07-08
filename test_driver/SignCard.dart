@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:flutter_driver/flutter_driver.dart';
-import 'package:test/test.dart';
 import 'dart:convert';
 import 'Methods.dart';
 
@@ -33,7 +31,9 @@ class SignCard {
     } else {
       print("Search CID input field");
       await methods.isExist(cidTextEdit, driver);
+      print("Click CID input field");
       await driver.tap(cidTextEdit);
+      print("Entering CID in the input field");
       await driver.enterText(cid);
       final cidInput = find.text(cid);
       await methods.isExist(cidInput, driver);
@@ -42,7 +42,9 @@ class SignCard {
     if (dataForHashing !=null) {
       print("Search Data dof hashing input field");
       await methods.isExist(dataForHashingTextEdit, driver);
+      print("Click dataForHashing input field");
       await driver.tap(dataForHashingTextEdit);
+      print("Entering dataForHashing in the input field");
       await driver.enterText(dataForHashing);
       final dataForHashingInput = find.text(dataForHashing);
       await methods.isExist(dataForHashingInput, driver);
@@ -57,7 +59,6 @@ class SignCard {
     sleep(const Duration(seconds: 7));
     String getResponse = await methods.getResponce(responseTextWidget, driver);
     Map<String, dynamic> responce = jsonDecode(getResponse);
-    //print('${responce['cardId']}');
     return responce;
   }
 

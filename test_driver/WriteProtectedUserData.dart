@@ -26,13 +26,14 @@ class WriteProtectedUserData {
       print("Click Read card button");
       await driver.tap(readCardButton);
       sleep(const Duration(seconds: 7));
-
+      print("Scan card");
       //ToDo: Robot. A code to rotate the robot.
-
     } else {
       print("Search CID input field");
       await methods.isExist(cidTextEdit, driver);
+      print("Click CID input field");
       await driver.tap(cidTextEdit);
+      print("Enter CID in the input field");
       await driver.enterText(cid);
       final cidInput = find.text(cid);
       await methods.isExist(cidInput, driver);
@@ -40,14 +41,18 @@ class WriteProtectedUserData {
 
     print("Search User Protected Data input field");
     await methods.isExist(userProtectedDataTextEdit, driver);
+    print("Click userProtectedData input field");
     await driver.tap(userProtectedDataTextEdit);
+    print("Enter userProtectedData in the input field");
     await driver.enterText(userProtectedData);
     final userProtectedDataInput = find.text(userProtectedData);
     await methods.isExist(userProtectedDataInput, driver);
 
     print("Search User Protected Counter input field");
     await methods.isExist(userProtectedCounterTextEdit, driver);
+    print("Click userProtectedCounter input field");
     await driver.tap(userProtectedCounterTextEdit);
+    print("Enter userProtectedCounter in the input field");
     await driver.enterText(userProtectedCounter);
     final userProtectedCounterInput = find.text(userProtectedCounter);
     await methods.isExist(userProtectedCounterInput, driver);

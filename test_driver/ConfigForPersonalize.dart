@@ -71,6 +71,8 @@ class ConfigForPersonalize{
       //Read card (all settingMask =false)
       //Read card (status=Purged)
       //PurgeWallet (createWallet=1, isReusable=false)
+      //Read UserData
+      //Sign carf
       "config2": {
         "CVC": "000",
         "MaxSignatures": 999999,
@@ -393,7 +395,8 @@ class ConfigForPersonalize{
         "useOneCommandAtTime": false
       },
 
-      //Write and ReadUserData
+      //Write and Read UserData
+      //Write and Read ProtectedUserData
       "config7": {
         "CVC": "000",
         "MaxSignatures": 999999,

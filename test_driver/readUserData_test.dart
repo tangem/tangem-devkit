@@ -14,19 +14,24 @@ void main() {
 
   FlutterDriver driver;
 
-  group('Read_User_Data test if no data', () {
+  group('Read User Data test when there is no data', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
       await driver.requestData('restart');
     });
 
-    test("Read_User_Data if no data",() async {
+    test("Read User Data test when there is no data",() async {
+      print("Preparing the data");
       final config = await configForPersonalize.returnConfig('config2');
       String jsonString = jsonEncode(config);
+      print("Personalization card");
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       final cardId= personalize['cardId'];
+
+      print("Return to menu");
       await driver.tap(backButton);
 
+      print("Read User Data");
       final responceReadUserData = await readUserDataMethod.readUserData(driver, cardId);
 
       print("checking the Result and Expected result of the cardId field");
