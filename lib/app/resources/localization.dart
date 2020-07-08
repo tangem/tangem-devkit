@@ -778,7 +778,7 @@ class Transl {
 
   String get user_protected_data => get("user_protected_data");
 
-  String get desc_protected_user_data => get("desc_protected_user_data");
+  String get desc_user_protected_data => get("desc_protected_user_data");
 
   String get counter => get("counter");
 

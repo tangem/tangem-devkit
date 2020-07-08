@@ -91,14 +91,14 @@ class _WriteUserProtectedDataBodyState extends State<WriteUserProtectedDataBody>
           padding: EdgeInsets.symmetric(horizontal: 16),
         ),
         InputWidget(
-          ItemName.userData,
+          ItemName.userProtectedData,
           _userDataController.controller,
-          hint: transl.user_data,
-          description: transl.desc_user_data,
+          hint: transl.user_protected_data,
+          description: transl.desc_user_protected_data,
           padding: EdgeInsets.symmetric(horizontal: 16),
         ),
         InputWidget(
-          ItemName.userCounter,
+          ItemName.userProtectedCounter,
           _userDataCounterController.controller,
           hint: transl.counter,
           description: transl.desc_counter,
