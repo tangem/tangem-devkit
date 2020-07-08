@@ -728,6 +728,22 @@ class Transl {
 
   String get desc_response_issuer_data_counter => get("desc_response_issuer_data_counter");
 
+  String get response_issuer_ex_data_size => get("response_issuer_ex_data_size");
+
+  String get desc_response_issuer_ex_data_size => get("desc_response_issuer_ex_data_size");
+
+  String get response_issuer_ex_data => get("response_issuer_ex_data");
+
+  String get desc_response_issuer_ex_data => get("desc_response_issuer_ex_data");
+
+  String get response_issuer_ex_data_signature => get("response_issuer_ex_data_signature");
+
+  String get desc_response_issuer_ex_data_signature => get("desc_response_issuer_ex_data_signature");
+
+  String get response_issuer_ex_data_counter => get("response_issuer_ex_data_counter");
+
+  String get desc_response_issuer_ex_data_counter => get("desc_response_issuer_ex_data_counter");
+
   String get response_user_data => get("response_user_data");
 
   String get desc_response_user_data => get("desc_response_user_data");
