@@ -13,26 +13,30 @@ void main() {
 
   FlutterDriver driver;
 
-  group('Create_Wallet test', () {
+  group('Create wallet test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
       await driver.requestData('restart');
     });
 
-    test("Create_Wallet test",() async {
-      print("Preparing the config");
+    test("Create wallet test",() async {
+      print("Preparing the data");
       final config = await configForPersonalize.returnConfig('config4');
       String jsonString = jsonEncode(config);
       print("Personalization card");
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       final cid = personalize['cardId'];
 
+      print("Return to menu");
       await driver.tap(backButton);
 
+      print("Create wallet");
       final responceCreateWallet = await createWalletMethod.createWallet(driver, cid);
-      print("Reconciliation of Results and Expected Result");
+      print("Reconciliation of Results and Expected Result cardId field");
       expect(cid, responceCreateWallet['cardId']);
+      print("Reconciliation of Results and Expected Result status field");
       expect(responceCreateWallet['status'], "Loaded");
+      print("Reconciliation of Results and Expected Result walletPublicKey field");
       expect(responceCreateWallet['walletPublicKey'], isNotNull);
     });
 

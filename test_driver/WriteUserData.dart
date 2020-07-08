@@ -3,21 +3,22 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'dart:convert';
 import 'Methods.dart';
 
-class SignCard {
-  final signItem = find.byValueKey("sign");
+class WriteUserData {
+  final writeUserDataItem = find.byValueKey("user_write_data");
   final readCardButton =find.byValueKey('cid.btn');
   final cidTextEdit =find.byValueKey('cid');
-  final dataForHashingTextEdit =find.byValueKey('dataForHashing');
+  final userDataTextEdit =find.byValueKey('userData');
+  final userCounterTextEdit =find.byValueKey('userCounter');
   final floatingActionButton = find.byType("FloatingActionButton");
   final responseTextWidget = find.byValueKey('responseJson');
   final methods = Methods();
 
 
-  signCard(driver, cid, dataForHashing) async {
-    print("Search for the Sign element in the menu");
-    await methods.isExist(signItem, driver);
-    print("Click Sign element in menu");
-    await driver.tap(signItem);
+  writeUserData(driver, cid, userData, userCounter) async {
+    print("Search for the WriteUserData element in the menu");
+    await methods.isExist(writeUserDataItem, driver);
+    print("Click WriteUserData element in menu");
+    await driver.tap(writeUserDataItem);
 
     if (cid ==null) {
       print("Search Read Card button");
@@ -25,31 +26,38 @@ class SignCard {
       print("Click Read card button");
       await driver.tap(readCardButton);
       sleep(const Duration(seconds: 7));
-      
+
       //ToDo: Robot. A code to rotate the robot.
-      
+
     } else {
       print("Search CID input field");
       await methods.isExist(cidTextEdit, driver);
       print("Click CID input field");
       await driver.tap(cidTextEdit);
-      print("Entering CID in the input field");
+      print("Enter CID in the input field");
       await driver.enterText(cid);
       final cidInput = find.text(cid);
       await methods.isExist(cidInput, driver);
     }
 
-    if (dataForHashing !=null) {
-      print("Search Data dof hashing input field");
-      await methods.isExist(dataForHashingTextEdit, driver);
-      print("Click dataForHashing input field");
-      await driver.tap(dataForHashingTextEdit);
-      print("Entering dataForHashing in the input field");
-      await driver.enterText(dataForHashing);
-      final dataForHashingInput = find.text(dataForHashing);
-      await methods.isExist(dataForHashingInput, driver);
+    print("Search User data input field");
+    await methods.isExist(userDataTextEdit, driver);
+    print("Click userData input field");
+    await driver.tap(userDataTextEdit);
+    print("Enter userData in the input field");
+    await driver.enterText(userData);
+    final userDataInput = find.text(userData);
+    await methods.isExist(userDataInput, driver);
 
-    }
+    print("Search User Counter input field");
+    await methods.isExist(userCounterTextEdit, driver);
+    print("Click userCounter input field");
+    await driver.tap(userCounterTextEdit);
+    print("Enter userCounter in the input field");
+    await driver.enterText(userCounter);
+    final userCounterInput = find.text(userCounter);
+    await methods.isExist(userCounterInput, driver);
+
     print("Search action button element");
     await methods.isExist(floatingActionButton, driver);
     print("Click action button");
@@ -61,5 +69,4 @@ class SignCard {
     Map<String, dynamic> responce = jsonDecode(getResponse);
     return responce;
   }
-
 }

@@ -13,13 +13,13 @@ void main() {
 
   FlutterDriver driver;
 
-  group('Purge_Wallet1 test', () {
+  group('Purge Wallet test when isReusable=false', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
       await driver.requestData('restart');
     });
 
-    test("Purge_Wallet if isReusable=false",() async {
+    test("Purge Wallet test when isReusable=false",() async {
       print("Preparing the config");
       final config = await configForPersonalize.returnConfig('config2');
       String jsonString = jsonEncode(config);
@@ -27,11 +27,14 @@ void main() {
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       final cid = personalize['cardId'];
 
+      print("Return to menu");
       await driver.tap(backButton);
 
+      print("Purge wallet");
       final responcePurgeWallet = await purgeWalletMethod.purgeWallet(driver, cid);
-      print("Reconciliation of Results and Expected Result");
+      print("Reconciliation of Results and Expected Result cardId field");
       expect(cid, responcePurgeWallet['cardId']);
+      print("Reconciliation of Results and Expected Result status field");
       expect(responcePurgeWallet['status'], "Purged");
     });
 
@@ -42,13 +45,13 @@ void main() {
 
   });
 
-  group('Purge_Wallet2 test', () {
+  group('Purge Wallet test when isReusable=true', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
       await driver.requestData('restart');
     });
 
-    test("Purge_Wallet if isReusable=true",() async {
+    test("Purge Wallet test when isReusable=true",() async {
       print("Preparing the config");
       final config = await configForPersonalize.returnConfig('config3');
       String jsonString = jsonEncode(config);
@@ -56,11 +59,14 @@ void main() {
       final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
       final cid = personalize['cardId'];
 
+      print("Return to menu");
       await driver.tap(backButton);
 
+      print("Purge wallet");
       final responcePurgeWallet = await purgeWalletMethod.purgeWallet(driver, cid);
-      print("Reconciliation of Results and Expected Result");
+      print("Reconciliation of Results and Expected Result cardId field");
       expect(cid, responcePurgeWallet['cardId']);
+      print("Reconciliation of Results and Expected Result status field");
       expect(responcePurgeWallet['status'], "Empty");
     });
 

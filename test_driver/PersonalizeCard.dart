@@ -32,6 +32,7 @@ class PersonalizeCard {
     await methods.isExist(personalizationImportInput, driver);
     print("Click text input for config");
     await driver.tap(personalizationImportInput);
+    print("Entering config");
     await driver.enterText(config);
     print("Search Import button");
     await methods.isExist(importButton, driver);
