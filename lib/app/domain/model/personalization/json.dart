@@ -41,7 +41,7 @@ class DefaultPersonalizationJson {
   ],
   "numberFormat": "",
   "pauseBeforePIN2": 5000,
-  "protectIssuerDataAgainstReplay": true,
+  "protectIssuerDataAgainstReplay": false,
   "protocolAllowStaticEncryption": true,
   "protocolAllowUnencrypted": true,
   "releaseVersion": false,
@@ -86,7 +86,7 @@ class DefaultPersonalizationJson {
     "token_decimal": 8,
     "token_symbol": "BUSD"
   },
-  "checkPIN3onCard": true,
+  "checkPIN3onCard": false,
   "count": 0,
   "createWallet": 1,
   "curveID": "secp256k1",
