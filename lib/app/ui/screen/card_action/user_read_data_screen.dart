@@ -43,7 +43,7 @@ class ReadUserDataFrame extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(Transl.of(context).screen_issuer_read_data),
+        title: Text(Transl.of(context).screen_user_read_data),
         actions: [Menu.popupDescription()],
       ),
       body: ReadUserDataBody(),

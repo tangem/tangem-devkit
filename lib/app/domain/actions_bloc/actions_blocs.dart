@@ -55,7 +55,7 @@ class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
     TangemSdk.writeIssuerData(callback, {
       TangemSdk.cid: _cid,
       TangemSdk.issuerDataHex: _issuerData.toHexString(),
-      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey.toHexString(),
+      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey,
       TangemSdk.issuerDataCounter: _issuerDataCounter,
     });
   }
@@ -77,7 +77,7 @@ class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
   invokeAction() {
     TangemSdk.writeIssuerExData(callback, {
       TangemSdk.cid: _cid,
-      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey.toHexString(),
+      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey,
       TangemSdk.issuerDataCounter: _issuerDataCounter,
     });
   }

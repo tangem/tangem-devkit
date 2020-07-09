@@ -334,13 +334,22 @@ class Languages {
   "desc_response_depersonalize_is_success": "Success",
 
   "response_issuer_data_size": "Size of Issuer Data",
-  "desc_response_issuer_data_size": "A size of issuer extra data written on a card.",
+  "desc_response_issuer_data_size": "A size of issuer data written on a card.",
   "response_issuer_data": "Issuer Data",
   "desc_response_issuer_data": "Data defined by the issuer.",
   "response_issuer_data_signature": "Issuer Data Signature",
   "desc_response_issuer_data_signature": "Issuer data, signed by the issuer with issuer data private key.",
   "response_issuer_data_counter": "Issuer Data Counter",
   "desc_response_issuer_data_counter": "An optional counter that protects issuer data against replay attack.",
+  
+  "response_issuer_ex_data_size": "Size of Issuer Extra Data",
+  "desc_response_issuer_ex_data_size": "A size of issuer extra data written on a card.",
+  "response_issuer_ex_data": "Issuer Extra Data",
+  "desc_response_issuer_ex_data": "Extra data defined by the issuer.",
+  "response_issuer_ex_data_signature": "Issuer Extra Data Signature",
+  "desc_response_issuer_ex_data_signature": "Issuer extra data, signed by the issuer with issuer data private key.",
+  "response_issuer_ex_data_counter": "Issuer Extra Data Counter",
+  "desc_response_issuer_ex_data_counter": "An optional counter that protects issuer extra data against replay attack.",
 
   "response_user_data": "User Data",
   "desc_response_user_data": "Data defined by user's App",
