@@ -41,7 +41,17 @@ class SignBloc extends Bloc<Event, SSign> {
     });
     TangemSdk.sign(callback, {
       TangemSdk.cid: state.cid,
-      TangemSdk.hashesHex: [state.dataForHashing.toHexString()],
+      TangemSdk.hashesHex: _prepareHashes(state.dataForHashing),
     });
+  }
+  
+  List<String> _prepareHashes(String dataForHashing) {
+    final splitPattern = ",";
+    if (dataForHashing.contains(splitPattern)) {
+      final rawHashes = dataForHashing.split(splitPattern);
+      return rawHashes.map((element) => element.trim().toHexString()).toList();
+    } else {
+      return [dataForHashing.toHexString()];
+    }
   }
 }
