@@ -6,8 +6,8 @@ class PersonalizationValues {
   static final Pair<String, String> _customPair = Pair(CUSTOM, CUSTOM);
 
   List<Pair<String, String>> _curves = [
-    Pair("Secp256k1", "Secp256k1"),
-    Pair("Ed25519", "Ed25519"),
+    Pair("secp256k1", "secp256k1"),
+    Pair("ed25519", "ed25519"),
   ];
 
   List<Pair<String, String>> _blockchain = [

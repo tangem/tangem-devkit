@@ -49,7 +49,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
     val nfcManager = NfcManager()
     nfcManager.setCurrentActivity(activity)
-    val lifecycle: Lifecycle = hiddenLifecycleReference.getLifecycle() as Lifecycle
+    val lifecycle: Lifecycle = hiddenLifecycleReference.lifecycle as Lifecycle
     lifecycle.addObserver(NfcLifecycleObserver(nfcManager))
 
     val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager.reader)
