@@ -4,14 +4,15 @@ import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.NonNull
-import androidx.lifecycle.Lifecycle
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.tangem.*
 import com.tangem.commands.WriteIssuerExtraDataCommand
 import com.tangem.commands.common.ResponseConverter
 import com.tangem.commands.personalization.entities.*
+import com.tangem.common.CardValuesDbStorage
 import com.tangem.common.CompletionResult
 import com.tangem.common.extensions.CardType
 import com.tangem.common.extensions.hexToBytes
@@ -47,16 +48,15 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     wActivity = WeakReference(activity)
     val hiddenLifecycleReference: HiddenLifecycleReference = pluginBinding.lifecycle as HiddenLifecycleReference
 
-    val nfcManager = NfcManager()
-    nfcManager.setCurrentActivity(activity)
-    val lifecycle: Lifecycle = hiddenLifecycleReference.lifecycle as Lifecycle
-    lifecycle.addObserver(NfcLifecycleObserver(nfcManager))
-
-    val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager.reader)
-    cardManagerDelegate.activity = activity
-
-    sdk = TangemSdk(nfcManager.reader, cardManagerDelegate, Config(cardFilter = CardFilter(EnumSet.of(CardType.Sdk))))
-    sdk.setTerminalKeysService(TerminalKeysStorage(activity.application))
+    val nfcManager = NfcManager().apply {
+      setCurrentActivity(activity)
+      hiddenLifecycleReference.lifecycle.addObserver(NfcLifecycleObserver(this))
+    }
+    val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager.reader).apply { this.activity = activity }
+    val config = Config(cardFilter = CardFilter(EnumSet.of(CardType.Sdk)))
+    val valueStorage = CardValuesDbStorage(AndroidSqliteDriver(Database.Schema, activity.applicationContext, "cards.db"))
+    val keyStorage = TerminalKeysStorage(activity.application)
+    sdk = TangemSdk(nfcManager.reader, cardManagerDelegate, config, valueStorage, keyStorage)
   }
 
   override fun onDetachedFromActivity() {
@@ -401,7 +401,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       if (! call.hasArgument(name)) throw NoSuchFieldException(name)
 
       val gson = Gson()
-      val mapType = object : TypeToken<MutableMap<String, Any?>>() {}.type
+      val mapType = object: TypeToken<MutableMap<String, Any?>>() {}.type
       val argMap: MutableMap<String, Any?> = gson.fromJson(call.argument<String>(name), mapType)
       val jsonString = when (name) {
         "issuer" -> {
