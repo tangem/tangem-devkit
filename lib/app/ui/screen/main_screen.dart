@@ -1,8 +1,11 @@
+import 'package:devkit/app/domain/sdk/sdk_card_filter_switcher.dart';
 import 'package:devkit/app/resources/keys.dart';
 import 'package:devkit/app/resources/localization.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/app/ui/widgets/specific/tap_encounter_widget.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
+import 'package:tangem_sdk/tangem_sdk.dart';
 
 class MainScreen extends StatelessWidget {
   @override
@@ -14,11 +17,43 @@ class MainFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Transl.of(context).app_name),
+        title: TapEncounterWidget(
+          maxTapCount: 7,
+          child: Text(Transl.of(context).app_name),
+          onSuccess: () {
+            final switcher = TangemSdkCardFilterSwitcher()..toggle();
+            final isAllowedOnlyDebug = switcher.isAllowedOnlyDebugCards();
+            TangemSdk.allowsOnlyDebugCards(isAllowedOnlyDebug);
+            _showDialog(context, isAllowedOnlyDebug ? "Allowed only debug cards" : "Allowed all cards");
+          },
+        ),
         actions: [Menu.popupDescription()],
       ),
       body: MainBody(),
     );
+  }
+
+  Future<void> _showDialog(BuildContext context, String message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Card filter"),
+          content: SingleChildScrollView(child: ListBody(children: <Widget>[TextWidget(message)])),
+          actions: <Widget>[
+            FlatButton(child: Text("Ok"), onPressed: () => Navigator.of(context).pop()),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class ToolbarTextWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
 

@@ -24,6 +24,7 @@ class TangemSdk {
   static const cWriteUserData = 'writeUserData';
   static const cWriteUserProtectedData = 'writeUserProtectedData';
 
+  static const isAllowedOnlyDebugCards = "isAllowedOnlyDebugCards";
   static const cid = "cid";
   static const initialMessage = "initialMessage";
   static const initialMessageHeader = "header";
@@ -46,6 +47,10 @@ class TangemSdk {
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
+  }
+
+  static Future allowsOnlyDebugCards(bool isAllowed) {
+    return _channel.invokeMethod("allowsOnlyDebugCards", {isAllowedOnlyDebugCards: isAllowed});
   }
 
   static Future scanCard(Callback callback, [Map<String, dynamic> valuesToExport]) async {

@@ -79,6 +79,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     replyAlreadySubmit = false
     when (call.method) {
+      "allowsOnlyDebugCards" -> allowsOnlyDebugCards(call, result)
       "scanCard" -> scanCard(call, result)
       "sign" -> sign(call, result)
       "personalize" -> personalize(call, result)
@@ -249,6 +250,18 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       sdk.writeProtectedUserData(cid(call), userProtectedData(call), userProtectedCounter(call), message(call)) {
         handleResult(result, it)
       }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun allowsOnlyDebugCards(call: MethodCall, result: Result) {
+    try {
+      val name = "isAllowedOnlyDebugCards"
+      assert(call, name)
+      val allowedOnlyDebug = call.argument<Boolean>(name)!!
+      val allowedCardTypes = if (allowedOnlyDebug) EnumSet.of(CardType.Sdk) else EnumSet.allOf(CardType::class.java)
+      sdk.config.cardFilter.allowedCardTypes = allowedCardTypes
     } catch (ex: Exception) {
       handleException(result, ex)
     }
