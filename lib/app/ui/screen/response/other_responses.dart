@@ -279,3 +279,28 @@ class WriteUserDataResponseBody extends StatelessWidget {
     );
   }
 }
+
+class SetPinResponseBody extends StatelessWidget {
+  final SetPinResponse _response;
+
+  const SetPinResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return Column(
+      children: <Widget>[
+        ResponseTextWidget(
+          name: transl.response_card_cid,
+          value: _response.cardId,
+          description: transl.desc_response_card_cid,
+        ),
+        ResponseTextWidget(
+          name: transl.response_set_pin_status,
+          value: _response.status,
+          description: transl.desc_response_set_pin_status,
+        ),
+      ],
+    );
+  }
+}

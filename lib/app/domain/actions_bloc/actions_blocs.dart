@@ -181,7 +181,7 @@ class PurgeWalletBloc extends ActionBloc<PurgeWalletResponse> {
   }
 }
 
-class SetPinBlock extends ActionBloc<PurgeWalletResponse> {
+class SetPinBlock extends ActionBloc<SetPinResponse> {
   final PinType pinType;
   final bsPinCode = BehaviorSubject<String>();
 

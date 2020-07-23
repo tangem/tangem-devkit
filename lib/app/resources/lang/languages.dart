@@ -365,6 +365,8 @@ class Languages {
   "desc_response_user_data_counter": "Counter initialized by user’s App and increased on every signing of new transaction",
   "response_user_data_protected_counter": "Protected User Data Counter",
   "desc_response_user_data_protected_counter": "Counter initialized by user’s App (confirmed by PIN2) and increased on every signing of new transaction",
+  "response_set_pin_status": "Status",
+  "desc_response_set_pin_status": "Status",
 
   "card_id": "Card Id (CID)",
   "desc_card_id": "Unique Tangem card ID number",

@@ -51,7 +51,7 @@ class SetPinFrame extends StatelessWidget {
         title: Text(_getScreenTitle(Transl.of(context), bloc.pinType)),
         actions: [Menu.popupDescription()],
       ),
-      body: PurgeWalletBody(),
+      body: SetPinBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
         onPressed: bloc.invokeAction,
@@ -71,12 +71,12 @@ class SetPinFrame extends StatelessWidget {
   }
 }
 
-class PurgeWalletBody extends StatefulWidget {
+class SetPinBody extends StatefulWidget {
   @override
-  _PurgeWalletBodyState createState() => _PurgeWalletBodyState();
+  _SetPinBodyState createState() => _SetPinBodyState();
 }
 
-class _PurgeWalletBodyState extends State<PurgeWalletBody> {
+class _SetPinBodyState extends State<SetPinBody> {
   SetPinBlock _bloc;
   TextStreamController _cidController;
   TextStreamController _pinCodeController;

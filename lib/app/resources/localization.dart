@@ -764,6 +764,10 @@ class Transl {
 
   String get desc_response_user_data_protected_counter => get("desc_response_user_data_protected_counter");
 
+  String get response_set_pin_status => get("response_set_pin_status");
+
+  String get desc_response_set_pin_status => get("desc_response_set_pin_status");
+
   String get card_id => get("card_id");
 
   String get desc_card_id => get("desc_card_id");

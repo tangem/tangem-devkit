@@ -1,4 +1,3 @@
-import 'package:devkit/app/ui/screen/card_action/change_pin_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/depersonalization_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_read_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_read_ex_data_screen.dart';
@@ -6,6 +5,7 @@ import 'package:devkit/app/ui/screen/card_action/issuer_write_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_write_ex_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/personalization/personalization_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/scan_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/set_pin_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/sign_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/user_read_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/user_write_data_screen.dart';
