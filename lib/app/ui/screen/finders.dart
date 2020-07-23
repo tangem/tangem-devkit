@@ -30,4 +30,6 @@ class RepoFinder {
   static WriteUserDataBloc writeUserDataBloc(context) => RepositoryProvider.of<WriteUserDataBloc>(context);
 
   static WriteUserProtectedDataBloc writeUserProtectedDataBloc(context) => RepositoryProvider.of<WriteUserProtectedDataBloc>(context);
+
+  static SetPinBlock setPinBloc(context) => RepositoryProvider.of<SetPinBlock>(context);
 }

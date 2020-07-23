@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
 import 'package:tangem_sdk/model/sdk.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
@@ -6,7 +9,6 @@ import 'product_mask.dart';
 import 'support_classes.dart';
 
 class Utils {
-
   static CardDataSdk createCardDataSdk(PersonalizationConfig config, Issuer issuer) {
     final cardData = config.cardData;
     cardData.date = cardData.date != null && cardData.date.isEmpty ? _createCardDate() : cardData.date;
@@ -23,18 +25,22 @@ class Utils {
     );
   }
 
-  static String _createCardDate()=> DateFormat("yyyy-MM-dd").format(DateTime.now());
+  static String _createCardDate() => DateFormat("yyyy-MM-dd").format(DateTime.now());
 
   static CardConfigSdk createCardConfig(PersonalizationConfig config, Issuer issuer, Acquirer acquirer) {
+    List<int> convertToSha256(String code) {
+      return sha256.convert(utf8.encode(code)).bytes;
+    }
+
     return CardConfigSdk(
       issuerName: issuer.name,
       acquirerName: acquirer.name,
       series: config.series,
       startNumber: config.startNumber,
       count: config.count,
-      pin: config.PIN,
-      pin2: config.PIN2,
-      pin3: config.PIN3,
+      pin: convertToSha256(config.PIN),
+      pin2: convertToSha256(config.PIN2),
+      pin3: convertToSha256(config.PIN3),
       hexCrExKey: config.hexCrExKey,
       cvc: config.CVC,
       pauseBeforePin2: config.pauseBeforePIN2,
@@ -85,3 +91,4 @@ class Utils {
     return productMaskBuilder.build();
   }
 }
+

@@ -1,3 +1,4 @@
+import 'package:devkit/app/ui/screen/card_action/change_pin_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/depersonalization_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_read_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_read_ex_data_screen.dart';
@@ -14,6 +15,7 @@ import 'package:devkit/app/ui/screen/card_action/wallet_purge_screen.dart';
 import 'package:devkit/app/ui/screen/main_screen.dart';
 import 'package:devkit/app/ui/screen/response/response_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:tangem_sdk/model/sdk.dart';
 
 class Routes {
   static const MAIN = "/";
@@ -30,6 +32,8 @@ class Routes {
   static const USER_READ_DATA = "/user_read_data";
   static const USER_WRITE_DATA = "/user_write_data";
   static const USER_WRITE_PROTECTED_DATA = "/user_write_protected_data";
+  static const SET_PIN1 = "/set_pin_1";
+  static const SET_PIN2 = "/set_pin_2";
   static const RESPONSE = "/response";
 
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -62,6 +66,10 @@ class Routes {
         return MaterialPageRoute(builder: (_) => WriteUserDataScreen());
       case USER_WRITE_PROTECTED_DATA:
         return MaterialPageRoute(builder: (_) => WriteUserProtectedDataScreen());
+      case SET_PIN1:
+        return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.PIN1));
+      case SET_PIN2:
+        return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.PIN2));
       case RESPONSE:
         return PageRouteBuilder(pageBuilder: (_, _1, _2) => ResponseScreen(arguments: settings.arguments));
       default:

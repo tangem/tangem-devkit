@@ -42,6 +42,7 @@ dependencies:
   flutter_launcher_icons: ^0.7.5
   share: ^0.6.4+1
   recase: ^2.0.1
+  crypto: ^2.1.4
 
 
 flutter_icons:

@@ -122,6 +122,10 @@ class Transl {
 
   String get screen_response_write_user_data => get("screen_response_write_user_data");
 
+  String get screen_set_pin1 => get("screen_set_pin1");
+
+  String get screen_set_pin2 => get("screen_set_pin2");
+
   String get menu_share => get("menu_share");
 
   String get menu_enable_description => get("menu_enable_description");
@@ -783,6 +787,14 @@ class Transl {
   String get counter => get("counter");
 
   String get desc_counter => get("desc_counter");
+
+  String get pin1 => get("pin1");
+
+  String get desc_pin1 => get("desc_pin1");
+
+  String get pin2 => get("pin2");
+
+  String get desc_pin2 => get("desc_pin2");
 
   String get hint_enter_config_name => get("hint_enter_config_name");
 

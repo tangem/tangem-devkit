@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
 
 import 'card_responses/other_responses.dart';
+import 'model/sdk.dart';
 
 /// Flutter TangemSdk is an interface which provides access to platform specific TangemSdk library.
 /// The response from the successfully completed execution of the 'channel method' is expected in the json.
@@ -23,6 +24,8 @@ class TangemSdk {
   static const cReadUserData = 'readUserData';
   static const cWriteUserData = 'writeUserData';
   static const cWriteUserProtectedData = 'writeUserProtectedData';
+  static const cSetPin1 = 'setPin1';
+  static const cSetPin2 = 'setPin2';
 
   static const isAllowedOnlyDebugCards = "isAllowedOnlyDebugCards";
   static const cid = "cid";
@@ -41,6 +44,7 @@ class TangemSdk {
   static const userCounter = "userCounter";
   static const userProtectedDataHex = "userProtectedData";
   static const userProtectedCounter = "userProtectedCounter";
+  static const pinCode = "pinCode";
 
   static const MethodChannel _channel = const MethodChannel('tangemSdk');
 
@@ -144,6 +148,14 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
+  static Future setPinCode(PinType pinType, Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    final cPinMethod = pinType == PinType.PIN1 ? cSetPin1 : cSetPin2;
+    _channel
+        .invokeMethod(cPinMethod, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cPinMethod, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
   static dynamic _createResponse(String name, dynamic response) {
     print("onSuccess: $name with response: $response");
     final jsonResponse = jsonDecode(response);
@@ -175,6 +187,10 @@ class TangemSdk {
         return WriteUserDataResponse.fromJson(jsonResponse);
       case cWriteUserProtectedData:
         return WriteUserDataResponse.fromJson(jsonResponse);
+      case cSetPin1:
+        return SetPinResponse.fromJson(jsonResponse);
+      case cSetPin2:
+        return SetPinResponse.fromJson(jsonResponse);
     }
     return response;
   }
