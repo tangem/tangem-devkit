@@ -177,3 +177,16 @@ Map<String, dynamic> _$WriteUserDataResponseToJson(
     <String, dynamic>{
       'cardId': instance.cardId,
     };
+
+SetPinResponse _$SetPinResponseFromJson(Map<String, dynamic> json) {
+  return SetPinResponse(
+    json['cardId'] as String,
+    json['status'] as String,
+  );
+}
+
+Map<String, dynamic> _$SetPinResponseToJson(SetPinResponse instance) =>
+    <String, dynamic>{
+      'cardId': instance.cardId,
+      'status': instance.status,
+    };

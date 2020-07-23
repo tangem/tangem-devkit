@@ -9,9 +9,9 @@ class CardConfigSdk {
   final String series;
   final int startNumber;
   final int count;
-  final String pin;
-  final String pin2;
-  final String pin3;
+  final List<int> pin;
+  final List<int> pin2;
+  final List<int> pin3;
   final String hexCrExKey;
   final String cvc;
   final int pauseBeforePin2;
@@ -162,3 +162,5 @@ class NdefRecordSdk {
 
   Map<String, dynamic> toJson() => _$NdefRecordSdkToJson(this);
 }
+
+enum PinType { PIN1, PIN2, PIN3 }

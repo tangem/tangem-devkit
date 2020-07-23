@@ -5,16 +5,19 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.NonNull
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.tangem.*
 import com.tangem.commands.WriteIssuerExtraDataCommand
 import com.tangem.commands.common.ResponseConverter
-import com.tangem.commands.personalization.entities.*
+import com.tangem.commands.personalization.entities.Acquirer
+import com.tangem.commands.personalization.entities.CardConfig
+import com.tangem.commands.personalization.entities.Issuer
+import com.tangem.commands.personalization.entities.Manufacturer
 import com.tangem.common.CardValuesDbStorage
 import com.tangem.common.CompletionResult
 import com.tangem.common.extensions.CardType
+import com.tangem.common.extensions.calculateSha256
 import com.tangem.common.extensions.hexToBytes
 import com.tangem.common.extensions.toByteArray
 import com.tangem.crypto.CryptoUtils
@@ -54,7 +57,8 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
     val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager.reader).apply { this.activity = activity }
     val config = Config(cardFilter = CardFilter(EnumSet.of(CardType.Sdk)))
-    val valueStorage = CardValuesDbStorage(AndroidSqliteDriver(Database.Schema, activity.applicationContext, "cards.db"))
+    val valueStorage = CardValuesDbStorage(AndroidSqliteDriver(Database.Schema, activity.applicationContext,
+        "flutter_cards.db"))
     val keyStorage = TerminalKeysStorage(activity.application)
     sdk = TangemSdk(nfcManager.reader, cardManagerDelegate, config, valueStorage, keyStorage)
   }
@@ -92,7 +96,8 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "writeIssuerExData" -> writeIssuerExData(call, result)
       "readUserData" -> readUserData(call, result)
       "writeUserData" -> writeUserData(call, result)
-      "writeUserProtectedData" -> writeUserProtectedData(call, result)
+      "setPin1" -> setPin1(call, result)
+      "setPin2" -> setPin2(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
@@ -100,7 +105,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun scanCard(call: MethodCall, result: Result) {
     try {
-      sdk.scanCard(message(call)) { handleResult(result, it) }
+      sdk.scanCard { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -116,7 +121,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun personalize(call: MethodCall, result: Result) {
     try {
-      val cardConfig = extractCardConfig(call);
+      val cardConfig = extractObject("cardConfig", call, converter.gson, CardConfig::class.java)
       val issuer = extractPersonalizeObject("issuer", call, Issuer::class.java)
       val manufacturer = extractPersonalizeObject("manufacturer", call, Manufacturer::class.java)
       val acquirer = extractPersonalizeObject("acquirer", call, Acquirer::class.java)
@@ -125,24 +130,6 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     } catch (ex: Exception) {
       handleException(result, ex)
     }
-  }
-
-  private fun extractCardConfig(call: MethodCall): CardConfig {
-    val broken = extractObject("cardConfig", call, converter.gson, CardConfig::class.java)
-    val repairedNdefRecords = mutableListOf<NdefRecord>()
-    broken.ndefRecords.forEach { repairedNdefRecords.add(NdefRecord(it.type, it.value)) }
-    val config = CardConfig(
-        broken.issuerName, broken.acquirerName, broken.series, broken.startNumber, broken.count, broken.pin, broken.pin2,
-        broken.pin3, broken.hexCrExKey, broken.cvc, broken.pauseBeforePin2, broken.smartSecurityDelay, broken.curveID,
-        broken.signingMethods, broken.maxSignatures, broken.isReusable, broken.allowSwapPin, broken.allowSwapPin2,
-        broken.useActivation, broken.useCvc, broken.useNdef, broken.useDynamicNdef, broken.useOneCommandAtTime, broken
-        .useBlock, broken.allowSelectBlockchain, broken.forbidPurgeWallet, broken.protocolAllowUnencrypted,
-        broken.protocolAllowStaticEncryption, broken.protectIssuerDataAgainstReplay, broken.forbidDefaultPin,
-        broken.disablePrecomputedNdef, broken.skipSecurityDelayIfValidatedByIssuer,
-        broken.skipCheckPIN2andCVCIfValidatedByIssuer, broken.skipSecurityDelayIfValidatedByLinkedTerminal,
-        broken.restrictOverwriteIssuerDataEx, broken.requireTerminalTxSignature, broken.requireTerminalCertSignature,
-        broken.checkPin3onCard, broken.createWallet, broken.cardData, repairedNdefRecords)
-    return config
   }
 
   private fun depersonalize(call: MethodCall, result: Result) {
@@ -245,6 +232,22 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
   }
 
+  private fun setPin1(call: MethodCall, result: Result) {
+    try {
+      sdk.changePin1(cid(call), pinCode(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun setPin2(call: MethodCall, result: Result) {
+    try {
+      sdk.changePin2(cid(call), pinCode(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
   private fun writeUserProtectedData(call: MethodCall, result: Result) {
     try {
       sdk.writeProtectedUserData(cid(call), userProtectedData(call), userProtectedCounter(call), message(call)) {
@@ -259,7 +262,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     try {
       val name = "isAllowedOnlyDebugCards"
       assert(call, name)
-      val allowedOnlyDebug = call.argument<Boolean>(name)!!
+      val allowedOnlyDebug = call.argument<Boolean>(name) !!
       val allowedCardTypes = if (allowedOnlyDebug) EnumSet.of(CardType.Sdk) else EnumSet.allOf(CardType::class.java)
       sdk.config.cardFilter.allowedCardTypes = allowedCardTypes
     } catch (ex: Exception) {
@@ -277,10 +280,14 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       }
       is CompletionResult.Failure -> {
         val error = completionResult.error
-        val localizedDescription = wActivity.get()?.getString(error.localizedDescription()) ?: error.code.toString()
-        val pluginError = PluginError(error.code, localizedDescription)
+        val errorMessage = if (error is TangemSdkError) {
+          wActivity.get()?.getString(error.localizedDescription()) ?: error.customMessage
+        } else {
+          error.customMessage
+        }
+        val pluginError = PluginError(error.code, errorMessage)
         handler.post {
-          result.error("${error.code}", localizedDescription, converter.gson.toJson(pluginError))
+          result.error("${error.code}", errorMessage, converter.gson.toJson(pluginError))
         }
       }
     }
@@ -292,11 +299,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
     handler.post {
       val code = 9999
-      val localizedDescription: String = if (ex is JsonSyntaxException) {
-        ex.cause.toString()
-      } else {
-        ex.localizedMessage ?: ex.message ?: ex.toString()
-      }
+      val localizedDescription: String = ex.cause.toString()
       result.error("$code", localizedDescription, converter.gson.toJson(PluginError(code, localizedDescription)))
     }
   }
@@ -375,6 +378,12 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
     fun userProtectedCounter(call: MethodCall): Int? {
       return call.argument<Int>("userProtectedCounter")
+    }
+
+    fun pinCode(call: MethodCall): ByteArray? {
+      if (! call.hasArgument("pinCode")) return null
+
+      return call.argument<String>("pinCode")?.calculateSha256()
     }
 
     //    @Throws(Exception::class)

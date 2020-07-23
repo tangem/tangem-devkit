@@ -95,4 +95,7 @@ class ItemName {
   static final userCounter = "userCounter";
   static final userProtectedData = "userProtectedData";
   static final userProtectedCounter = "userProtectedCounter";
+
+  //set pin code
+  static final pinCode = "pinCode";
 }

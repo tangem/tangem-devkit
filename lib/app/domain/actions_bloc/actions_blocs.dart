@@ -2,6 +2,7 @@ import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
 import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
+import 'package:tangem_sdk/model/sdk.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class ReadIssuerDataBloc extends ActionBloc<ReadIssuerDataResponse> {
@@ -177,5 +178,27 @@ class PurgeWalletBloc extends ActionBloc<PurgeWalletResponse> {
   @override
   invokeAction() {
     TangemSdk.purgeWallet(callback, {TangemSdk.cid: _cid});
+  }
+}
+
+class SetPinBlock extends ActionBloc<SetPinResponse> {
+  final PinType pinType;
+  final bsPinCode = BehaviorSubject<String>();
+
+  String _cid;
+  String _pinCode;
+
+  SetPinBlock(this.pinType) {
+    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
+    subscriptions.add(bsPinCode.stream.listen((event) => _pinCode = event));
+  }
+
+  @override
+  invokeAction() {
+    final code = _pinCode == null || _pinCode.isEmpty ? null : _pinCode;
+    TangemSdk.setPinCode(pinType, callback, {
+      TangemSdk.cid: _cid,
+      TangemSdk.pinCode: code,
+    });
   }
 }

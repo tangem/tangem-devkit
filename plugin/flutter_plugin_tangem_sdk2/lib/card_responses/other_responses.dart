@@ -150,3 +150,15 @@ class WriteUserDataResponse {
 
   Map<String, dynamic> toJson() => _$WriteUserDataResponseToJson(this);
 }
+
+@JsonSerializable()
+class SetPinResponse {
+  final String cardId;
+  final String status;
+
+  SetPinResponse(this.cardId, this.status);
+
+  factory SetPinResponse.fromJson(Map<String, dynamic> json) => _$SetPinResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SetPinResponseToJson(this);
+}
