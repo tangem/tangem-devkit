@@ -58,10 +58,10 @@ void main() {
       expect(readResponce['issuerPublicKey'], personalize['issuerPublicKey']);
 
       print("Reconciliation curve");
-      expect(readResponce['curve'], personalize['curve']);
+      expect(readResponce['curve'], null);
 
       print("Reconciliation maxSignatures");
-      expect(readResponce['maxSignatures'], personalize['maxSignatures']);
+      expect(readResponce['maxSignatures'], null);
 
       print("Reconciliation pauseBeforePin2");
       expect(readResponce['pauseBeforePin2'], personalize['pauseBeforePin2']);
