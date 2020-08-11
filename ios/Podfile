@@ -77,7 +77,8 @@ target 'Runner' do
     pod name, :path => File.join(symlink, 'ios')
   end
   
-  pod 'TangemSdk', :path => "../../card-sdk-swift/"
+  #pod 'TangemSdk', :path => "../../card-sdk-swift/"
+  pod 'TangemSdk', :git => 'git@bitbucket.org:tangem/card-sdk-swift.git', :tag => 'build-39'
 end
 
 # Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.

@@ -42,13 +42,17 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
             writeUserData(call.arguments, result)
         case "writeUserProtectedData":
             writeUserProtectedData(call.arguments, result)
+        case "setPin1":
+            setPin1(call.arguments, result)
+        case "setPin2":
+            setPin2(call.arguments, result)
         default:
             result(FlutterMethodNotImplemented)
         }
     }
     
     private func scanCard(_ args: Any?, _ completion: @escaping FlutterResult) {
-        sdk.scanCard (pin1: getArg(.pin1, from: args)) { [weak self] result in
+        sdk.scanCard (initialMessage: getArg(.initialMessage, from: args), pin1: getArg(.pin1, from: args)) { [weak self] result in
             self?.handleCompletion(result, completion)
         }
     }
@@ -60,7 +64,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
         }
         
         let hashes = hexHashes.compactMap({Data(hexString: $0)})
-        sdk.sign(hashes: hashes) { [weak self] result in
+        sdk.sign(hashes: hashes, initialMessage: getArg(.initialMessage, from: args)) { [weak self] result in
             self?.handleCompletion(result, completion)
         }
     }
@@ -76,19 +80,21 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
         sdk.personalize(config: config,
                         issuer: issuer,
                         manufacturer: manufacturer,
-                        acquirer: getArg(.acquirer, from: args)) { [weak self] result in
+                        acquirer: getArg(.acquirer, from: args),
+                        initialMessage: getArg(.initialMessage, from: args)) { [weak self] result in
                             self?.handleCompletion(result, completion)
         }
     }
     
     private func depersonalize(_ args: Any?, _ completion: @escaping FlutterResult) {
-        sdk.depersonalize(cardId: getArg(.cid, from: args)) { [weak self] result in
+        sdk.depersonalize(cardId: getArg(.cid, from: args), initialMessage: getArg(.initialMessage, from: args)) { [weak self] result in
             self?.handleCompletion(result, completion)
         }
     }
     
     private func createWallet(_ args: Any?, _ completion: @escaping FlutterResult) {
         sdk.createWallet(cardId: getArg(.cid, from: args),
+                         initialMessage: getArg(.initialMessage, from: args),
                          pin1: getArg(.pin1, from: args),
                          pin2: getArg(.pin2, from: args)) { [weak self] result in
                             self?.handleCompletion(result, completion)
@@ -97,6 +103,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
     
     private func purgeWallet(_ args: Any?, _ completion: @escaping FlutterResult) {
         sdk.purgeWallet(cardId: getArg(.cid, from: args),
+                        initialMessage: getArg(.initialMessage, from: args),
                         pin1: getArg(.pin1, from: args),
                         pin2: getArg(.pin2, from: args)) { [weak self] result in
                             self?.handleCompletion(result, completion)
@@ -105,6 +112,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
     
     private func readIssuerData(_ args: Any?, _ completion: @escaping FlutterResult) {
         sdk.readIssuerData(cardId: getArg(.cid, from: args),
+                           initialMessage: getArg(.initialMessage, from: args),
                            pin1: getArg(.pin1, from: args)) { [weak self] result in
                             self?.handleCompletion(result, completion)
         }
@@ -133,6 +141,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
                             issuerData: issuerData,
                             issuerDataSignature: sig,
                             issuerDataCounter: counter,
+                            initialMessage: getArg(.initialMessage, from: args),
                             pin1: getArg(.pin1, from: args)) { [weak self] result in
                                 self?.handleCompletion(result, completion)
         }
@@ -140,6 +149,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
     
     private func readIssuerExData(_ args: Any?, _ completion: @escaping FlutterResult) {
         sdk.readIssuerExtraData(cardId: getArg(.cid, from: args),
+                                initialMessage: getArg(.initialMessage, from: args),
                                 pin1: getArg(.pin1, from: args)) { [weak self] result in
                                     self?.handleCompletion(result, completion)
         }
@@ -175,6 +185,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
                                  startingSignature: startSig,
                                  finalizingSignature: finalSig,
                                  issuerDataCounter: counter,
+                                 initialMessage: getArg(.initialMessage, from: args),
                                  pin1: getArg(.pin1, from: args)){ [weak self] result in
                                     self?.handleCompletion(result, completion)
         }
@@ -182,6 +193,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
     
     private func readUserData(_ args: Any?, _ completion: @escaping FlutterResult) {
         sdk.readUserData(cardId: getArg(.cid, from: args),
+                         initialMessage: getArg(.initialMessage, from: args),
                          pin1: getArg(.pin1, from: args)) { [weak self] result in
                             self?.handleCompletion(result, completion)
         }
@@ -196,6 +208,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
         sdk.writeUserData(cardId: getArg(.cid, from: args),
                           userData: userData,
                           userCounter: getArg(.userCounter, from: args),
+                          initialMessage: getArg(.initialMessage, from: args),
                           pin1: getArg(.pin1, from: args)){ [weak self] result in
                             self?.handleCompletion(result, completion)
         }
@@ -210,11 +223,31 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
         sdk.writeUserProtectedData(cardId: getArg(.cid, from: args),
                                    userProtectedData: userProtectedData,
                                    userProtectedCounter: getArg(.userProtectedCounter, from: args),
+                                   initialMessage: getArg(.initialMessage, from: args),
                                    pin1: getArg(.pin1, from: args)) { [weak self] result in
                                     self?.handleCompletion(result, completion)
         }
     }
     
+    private func setPin1(_ args: Any?, _ completion: @escaping FlutterResult) {
+        let pin: String? = getArg(.pinCode, from: args)
+        
+        sdk.changePin1(cardId: getArg(.cid, from: args),
+                       pin: pin?.sha256(),
+                       initialMessage: getArg(.initialMessage, from: args)) { [weak self] result in
+                        self?.handleCompletion(result, completion)
+        }
+    }
+    
+    private func setPin2(_ args: Any?, _ completion: @escaping FlutterResult) {
+        let pin: String? = getArg(.pinCode, from: args)
+        
+        sdk.changePin2(cardId: getArg(.cid, from: args),
+                       pin: pin?.sha256(),
+                       initialMessage: getArg(.initialMessage, from: args)) { [weak self] result in
+                        self?.handleCompletion(result, completion)
+        }
+    }
     
     private func handleCompletion<TResult: ResponseCodable>(_ sdkResult: Result<TResult, TangemSdkError>, _ completion: @escaping FlutterResult) {
         switch sdkResult {
@@ -285,6 +318,8 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
         case manufacturer
         case acquirer
         case cardConfig
+        case pinCode
+        case initialMessage
     }
     
 
