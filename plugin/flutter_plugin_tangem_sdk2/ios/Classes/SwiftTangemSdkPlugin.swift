@@ -87,7 +87,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
     }
     
     private func depersonalize(_ args: Any?, _ completion: @escaping FlutterResult) {
-        sdk.depersonalize(cardId: getArg(.cid, from: args), initialMessage: getArg(.initialMessage, from: args)) { [weak self] result in
+        sdk.depersonalize(initialMessage: getArg(.initialMessage, from: args)) { [weak self] result in
             self?.handleCompletion(result, completion)
         }
     }
