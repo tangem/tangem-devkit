@@ -22,7 +22,7 @@ class PersonalizationValues {
     Pair("XLM", "XLM"),
     Pair("XLM/test", "XLM/test"),
     Pair("RSK", "RSK"),
-    Pair("XPR", "XPR"),
+    Pair("XRP", "XRP"),
     Pair("CARDANO", "CARDANO"),
     Pair("BNB", "BINANCE"),
     Pair("XTZ", "TEZOS"),

@@ -32,5 +32,5 @@ class AppTheme {
 }
 
 class AppNavigatorObservers {
-  static get() => [AnalyticsRouteObserver()];
+  static get() => List<NavigatorObserver>.from([AnalyticsRouteObserver()]);
 }

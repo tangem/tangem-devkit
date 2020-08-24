@@ -64,7 +64,7 @@ class SetPinFrame extends StatelessWidget {
       case PinType.PIN1:
         return transl.screen_set_pin1;
       case PinType.PIN2:
-        return transl.screen_set_pin1;
+        return transl.screen_set_pin2;
       default:
         throw Exception("Unsupported PinType");
     }

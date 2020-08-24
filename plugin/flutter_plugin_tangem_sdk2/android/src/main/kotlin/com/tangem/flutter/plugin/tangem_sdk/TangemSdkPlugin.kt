@@ -96,6 +96,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "writeIssuerExData" -> writeIssuerExData(call, result)
       "readUserData" -> readUserData(call, result)
       "writeUserData" -> writeUserData(call, result)
+      "writeUserProtectedData" -> writeUserProtectedData(call, result)
       "setPin1" -> setPin1(call, result)
       "setPin2" -> setPin2(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
