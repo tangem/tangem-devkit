@@ -51,8 +51,8 @@ SPEC CHECKSUMS:
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   tangem_sdk: 7b408587538481d7a1e6b3deb95cd27db75a923a
-  TangemSdk: fef461a0fd7047743c4bbe8a9738e3cb38cd1548
+  TangemSdk: 2c0260f85c41711af449f8901f698c12b6e45673
 
-PODFILE CHECKSUM: 865cba7d42c1286ff86f1c8ebccd8b582e5499d7
+PODFILE CHECKSUM: 457404d1462d8c46a5f999c54aa886ce572849c9
 
 COCOAPODS: 1.9.3
