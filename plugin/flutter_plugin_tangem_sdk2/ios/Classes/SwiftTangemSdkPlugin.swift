@@ -156,13 +156,13 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
     }
     
     private func writeIssuerExData(_ args: Any?, _ completion: @escaping FlutterResult) {
-        guard let issuerData: Data = getArg(.issuerData, from: args),
+        guard /*let issuerData: Data = getArg(.issuerData, from: args),*/ //TODO: From app
             let issuerKey: Data = getArg(.issuerPrivateKey, from: args),
             let cid: String = getArg(.cid, from: args) else {
                 handleMissingArgs(completion)
                 return
         }
-        
+        let issuerData = try! CryptoUtils.generateRandomBytes(count: 7620) //Single write size * 5
         let counter: Int? = getArg(.issuerDataCounter, from: args)
         
         var startDataToSign = Data(hexString: cid)
