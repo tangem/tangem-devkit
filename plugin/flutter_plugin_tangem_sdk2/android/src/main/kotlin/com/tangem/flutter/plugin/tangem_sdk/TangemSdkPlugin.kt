@@ -135,7 +135,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun depersonalize(call: MethodCall, result: Result) {
     try {
-      sdk.depersonalize(cid(call), message(call)) { handleResult(result, it) }
+      sdk.depersonalize(message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -251,7 +251,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun writeUserProtectedData(call: MethodCall, result: Result) {
     try {
-      sdk.writeProtectedUserData(cid(call), userProtectedData(call), userProtectedCounter(call), message(call)) {
+      sdk.writeUserProtectedData(cid(call), userProtectedData(call), userProtectedCounter(call), message(call)) {
         handleResult(result, it)
       }
     } catch (ex: Exception) {
@@ -365,16 +365,16 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       return nullSafeFetchHexStringAndConvertToBytes(call, "issuerPrivateKey")
     }
 
-    fun userData(call: MethodCall): ByteArray? {
-      return fetchHexStringAndConvertToBytes(call, "userData")
+    fun userData(call: MethodCall): ByteArray {
+      return nullSafeFetchHexStringAndConvertToBytes(call, "userData")
     }
 
     fun userCounter(call: MethodCall): Int? {
       return call.argument<Int>("userCounter")
     }
 
-    fun userProtectedData(call: MethodCall): ByteArray? {
-      return fetchHexStringAndConvertToBytes(call, "userProtectedData")
+    fun userProtectedData(call: MethodCall): ByteArray {
+      return nullSafeFetchHexStringAndConvertToBytes(call, "userProtectedData")
     }
 
     fun userProtectedCounter(call: MethodCall): Int? {
