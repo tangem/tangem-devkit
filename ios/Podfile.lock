@@ -2,9 +2,13 @@ PODS:
   - Flutter (1.0.0)
   - fluttertoast (0.0.2):
     - Flutter
+  - path_provider_linux (0.0.1):
+    - Flutter
   - share (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
+    - Flutter
+  - shared_preferences_linux (0.0.1):
     - Flutter
   - shared_preferences_macos (0.0.1):
     - Flutter
@@ -18,22 +22,28 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - path_provider_linux (from `.symlinks/plugins/path_provider_linux/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - shared_preferences_linux (from `.symlinks/plugins/shared_preferences_linux/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
   - tangem_sdk (from `.symlinks/plugins/tangem_sdk/ios`)
-  - TangemSdk (from `../../card-sdk-swift/`)
+  - "TangemSdk (from `git@bitbucket.org:tangem/card-sdk-swift.git`, tag `build-46`)"
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  path_provider_linux:
+    :path: ".symlinks/plugins/path_provider_linux/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  shared_preferences_linux:
+    :path: ".symlinks/plugins/shared_preferences_linux/ios"
   shared_preferences_macos:
     :path: ".symlinks/plugins/shared_preferences_macos/ios"
   shared_preferences_web:
@@ -41,18 +51,26 @@ EXTERNAL SOURCES:
   tangem_sdk:
     :path: ".symlinks/plugins/tangem_sdk/ios"
   TangemSdk:
-    :path: "../../card-sdk-swift/"
+    :git: "git@bitbucket.org:tangem/card-sdk-swift.git"
+    :tag: build-46
+
+CHECKOUT OPTIONS:
+  TangemSdk:
+    :git: "git@bitbucket.org:tangem/card-sdk-swift.git"
+    :tag: build-46
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
+  path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  shared_preferences_linux: afefbfe8d921e207f01ede8b60373d9e3b566b78
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   tangem_sdk: 7b408587538481d7a1e6b3deb95cd27db75a923a
   TangemSdk: 2c0260f85c41711af449f8901f698c12b6e45673
 
-PODFILE CHECKSUM: 457404d1462d8c46a5f999c54aa886ce572849c9
+PODFILE CHECKSUM: d35293bc3069d7b0b7a6f523f0da0544a6028292
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.9.0
