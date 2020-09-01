@@ -174,7 +174,7 @@ class SignHashExPropSegment extends BaseSegment {
   final hexCrExKey = BehaviorSubject<String>();
   final requireTerminalCertSignature = BehaviorSubject<bool>();
   final requireTerminalTxSignature = BehaviorSubject<bool>();
-  final checkPIN3onCard = BehaviorSubject<bool>();
+  final checkPIN3OnCard = BehaviorSubject<bool>();
 
   SignHashExPropSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
@@ -184,7 +184,7 @@ class SignHashExPropSegment extends BaseSegment {
     hexCrExKey.add(_config.hexCrExKey);
     requireTerminalCertSignature.add(_config.requireTerminalCertSignature);
     requireTerminalTxSignature.add(_config.requireTerminalTxSignature);
-    checkPIN3onCard.add(_config.checkPIN3onCard);
+    checkPIN3OnCard.add(_config.checkPIN3OnCard);
   }
 
   @override
@@ -193,7 +193,7 @@ class SignHashExPropSegment extends BaseSegment {
     _subscriptions.add(hexCrExKey.listen((value) => _config.hexCrExKey = value));
     _subscriptions.add(requireTerminalCertSignature.listen((value) => _config.requireTerminalCertSignature = value));
     _subscriptions.add(requireTerminalTxSignature.listen((value) => _config.requireTerminalTxSignature = value));
-    _subscriptions.add(checkPIN3onCard.listen((value) => _config.checkPIN3onCard = value));
+    _subscriptions.add(checkPIN3OnCard.listen((value) => _config.checkPIN3OnCard = value));
   }
 }
 
@@ -281,20 +281,20 @@ class ProductMaskSegment extends BaseSegment {
 class SettingsMaskSegment extends BaseSegment {
   final isReusable = BehaviorSubject<bool>();
   final useActivation = BehaviorSubject<bool>();
-  final forbidPurgeWallet = BehaviorSubject<bool>();
+  final prohibitPurgeWallet = BehaviorSubject<bool>();
   final allowSelectBlockchain = BehaviorSubject<bool>();
   final useBlock = BehaviorSubject<bool>();
   final useOneCommandAtTime = BehaviorSubject<bool>();
-  final useCVC = BehaviorSubject<bool>();
-  final allowSwapPIN1 = BehaviorSubject<bool>();
-  final allowSwapPIN2 = BehaviorSubject<bool>();
-  final forbidDefaultPIN = BehaviorSubject<bool>();
+  final useCvc = BehaviorSubject<bool>();
+  final allowSetPIN1 = BehaviorSubject<bool>();
+  final allowSetPIN2 = BehaviorSubject<bool>();
+  final prohibitDefaultPIN1 = BehaviorSubject<bool>();
   final smartSecurityDelay = BehaviorSubject<bool>();
   final protectIssuerDataAgainstReplay = BehaviorSubject<bool>();
   final skipSecurityDelayIfValidatedByIssuer = BehaviorSubject<bool>();
-  final skipCheckPIN2andCVCIfValidatedByIssuer = BehaviorSubject<bool>();
+  final skipCheckPIN2CVCIfValidatedByIssuer = BehaviorSubject<bool>();
   final skipSecurityDelayIfValidatedByLinkedTerminal = BehaviorSubject<bool>();
-  final restrictOverwriteIssuerDataEx = BehaviorSubject<bool>();
+  final restrictOverwriteIssuerExtraData = BehaviorSubject<bool>();
 
   SettingsMaskSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
@@ -302,41 +302,42 @@ class SettingsMaskSegment extends BaseSegment {
   _configWasUpdated() {
     isReusable.add(_config.isReusable);
     useActivation.add(_config.useActivation);
-    forbidPurgeWallet.add(_config.forbidPurgeWallet);
+    prohibitPurgeWallet.add(_config.prohibitPurgeWallet);
     allowSelectBlockchain.add(_config.allowSelectBlockchain);
     useBlock.add(_config.useBlock);
     useOneCommandAtTime.add(_config.useOneCommandAtTime);
-    useCVC.add(_config.useCVC);
-    allowSwapPIN1.add(_config.allowSwapPIN);
-    allowSwapPIN2.add(_config.allowSwapPIN2);
-    forbidDefaultPIN.add(_config.forbidDefaultPIN);
+    useCvc.add(_config.useCvc);
+    allowSetPIN1.add(_config.allowSetPIN1);
+    allowSetPIN2.add(_config.allowSetPIN2);
+    prohibitDefaultPIN1.add(_config.prohibitDefaultPIN1);
     smartSecurityDelay.add(_config.smartSecurityDelay);
     protectIssuerDataAgainstReplay.add(_config.protectIssuerDataAgainstReplay);
     skipSecurityDelayIfValidatedByIssuer.add(_config.skipSecurityDelayIfValidatedByIssuer);
-    skipCheckPIN2andCVCIfValidatedByIssuer.add(_config.skipCheckPIN2andCVCIfValidatedByIssuer);
+    skipCheckPIN2CVCIfValidatedByIssuer.add(_config.skipCheckPIN2CVCIfValidatedByIssuer);
     skipSecurityDelayIfValidatedByLinkedTerminal.add(_config.skipSecurityDelayIfValidatedByLinkedTerminal);
-    restrictOverwriteIssuerDataEx.add(_config.restrictOverwriteIssuerDataEx);
+    restrictOverwriteIssuerExtraData.add(_config.restrictOverwriteIssuerExtraData);
   }
 
   @override
   _initSubscriptions() {
     _subscriptions.add(isReusable.listen((isChecked) => _config.isReusable = isChecked));
     _subscriptions.add(useActivation.listen((isChecked) => _config.useActivation = isChecked));
-    _subscriptions.add(forbidPurgeWallet.listen((isChecked) => _config.forbidPurgeWallet = isChecked));
+    _subscriptions.add(prohibitPurgeWallet.listen((isChecked) => _config.prohibitPurgeWallet = isChecked));
     _subscriptions.add(allowSelectBlockchain.listen((isChecked) => _config.allowSelectBlockchain = isChecked));
     _subscriptions.add(useBlock.listen((isChecked) => _config.useBlock = isChecked));
     _subscriptions.add(useOneCommandAtTime.listen((isChecked) => _config.useOneCommandAtTime = isChecked));
-    _subscriptions.add(useCVC.listen((isChecked) => _config.useCVC = isChecked));
-    _subscriptions.add(allowSwapPIN1.listen((isChecked) => _config.allowSwapPIN = isChecked));
-    _subscriptions.add(allowSwapPIN2.listen((isChecked) => _config.allowSwapPIN2 = isChecked));
-    _subscriptions.add(forbidDefaultPIN.listen((isChecked) => _config.forbidDefaultPIN = isChecked));
+    _subscriptions.add(useCvc.listen((isChecked) => _config.useCvc = isChecked));
+    _subscriptions.add(allowSetPIN1.listen((isChecked) => _config.allowSetPIN1 = isChecked));
+    _subscriptions.add(allowSetPIN2.listen((isChecked) => _config.allowSetPIN2 = isChecked));
+    _subscriptions.add(prohibitDefaultPIN1.listen((isChecked) => _config.prohibitDefaultPIN1 = isChecked));
     _subscriptions.add(smartSecurityDelay.listen((isChecked) => _config.smartSecurityDelay = isChecked));
     _subscriptions.add(protectIssuerDataAgainstReplay.listen((isChecked) => _config.protectIssuerDataAgainstReplay = isChecked));
     _subscriptions.add(skipSecurityDelayIfValidatedByIssuer.listen((isChecked) => _config.skipSecurityDelayIfValidatedByIssuer = isChecked));
-    _subscriptions.add(skipCheckPIN2andCVCIfValidatedByIssuer.listen((isChecked) => _config.skipCheckPIN2andCVCIfValidatedByIssuer = isChecked));
+    _subscriptions.add(skipCheckPIN2CVCIfValidatedByIssuer.listen((isChecked) => _config.skipCheckPIN2CVCIfValidatedByIssuer = isChecked));
     _subscriptions
         .add(skipSecurityDelayIfValidatedByLinkedTerminal.listen((isChecked) => _config.skipSecurityDelayIfValidatedByLinkedTerminal = isChecked));
-    _subscriptions.add(restrictOverwriteIssuerDataEx.listen((isChecked) => _config.restrictOverwriteIssuerDataEx = isChecked));
+    _subscriptions.add(restrictOverwriteIssuerExtraData.listen((isChecked) => _config.restrictOverwriteIssuerExtraData =
+        isChecked));
   }
 }
 
@@ -348,21 +349,21 @@ class SettingMaskProtocolEncryptionSegment extends BaseSegment {
 
   @override
   _configWasUpdated() {
-    allowUnencrypted.add(_config.protocolAllowUnencrypted);
-    allowFastEncryption.add(_config.protocolAllowStaticEncryption);
+    allowUnencrypted.add(_config.allowUnencrypted);
+    allowFastEncryption.add(_config.allowFastEncryption);
   }
 
   @override
   _initSubscriptions() {
-    _subscriptions.add(allowUnencrypted.listen((isChecked) => _config.protocolAllowUnencrypted = isChecked));
-    _subscriptions.add(allowFastEncryption.listen((isChecked) => _config.protocolAllowStaticEncryption = isChecked));
+    _subscriptions.add(allowUnencrypted.listen((isChecked) => _config.allowUnencrypted = isChecked));
+    _subscriptions.add(allowFastEncryption.listen((isChecked) => _config.allowFastEncryption = isChecked));
   }
 }
 
 class SettingsMaskNdefSegment extends BaseSegment {
-  final useNdef = BehaviorSubject<bool>();
-  final dynamicNdef = BehaviorSubject<bool>();
-  final disablePrecomputedNdef = BehaviorSubject<bool>();
+  final useNDEF = BehaviorSubject<bool>();
+  final useDynamicNDEF = BehaviorSubject<bool>();
+  final disablePrecomputedNDEF = BehaviorSubject<bool>();
   final aar = BehaviorSubject<Pair<String, String>>();
   final customAar = BehaviorSubject<String>();
   final uri = BehaviorSubject<String>();
@@ -374,9 +375,9 @@ class SettingsMaskNdefSegment extends BaseSegment {
 
   @override
   _configWasUpdated() {
-    useNdef.add(_config.useNDEF);
-    dynamicNdef.add(_config.useDynamicNDEF);
-    disablePrecomputedNdef.add(_config.disablePrecomputedNDEF);
+    useNDEF.add(_config.useNDEF);
+    useDynamicNDEF.add(_config.useDynamicNDEF);
+    disablePrecomputedNDEF.add(_config.disablePrecomputedNDEF);
     _updateNdefRecords();
   }
 
@@ -402,9 +403,9 @@ class SettingsMaskNdefSegment extends BaseSegment {
 
   @override
   _initSubscriptions() {
-    _subscriptions.add(useNdef.listen((value) => _config.useNDEF = value));
-    _subscriptions.add(dynamicNdef.listen((value) => _config.useDynamicNDEF = value));
-    _subscriptions.add(disablePrecomputedNdef.listen((value) => _config.disablePrecomputedNDEF = value));
+    _subscriptions.add(useNDEF.listen((value) => _config.useNDEF = value));
+    _subscriptions.add(useDynamicNDEF.listen((value) => _config.useDynamicNDEF = value));
+    _subscriptions.add(disablePrecomputedNDEF.listen((value) => _config.disablePrecomputedNDEF = value));
     _initNdefSubscriptions();
   }
 

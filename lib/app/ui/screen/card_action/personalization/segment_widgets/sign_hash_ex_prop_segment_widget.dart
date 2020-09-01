@@ -63,10 +63,10 @@ class _SignHashExPropSegmentWidgetState extends State<SignHashExPropSegmentWidge
           initialData: false,
         ).gone(),
         SwitchWidget(
-          ItemName.checkPIN3onCard,
+          ItemName.checkPIN3OnCard,
           transl.pers_item_check_pin3_on_card,
           transl.desc_pers_item_check_pin3_on_card,
-          signHashExProperties.checkPIN3onCard,
+          signHashExProperties.checkPIN3OnCard,
           initialData: false,
         ).gone(),
       ],

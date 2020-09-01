@@ -1,8 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-import 'PersonalizeCard.dart';
+
 import 'ConfigForPersonalize.dart';
-import 'dart:convert';
+import 'PersonalizeCard.dart';
 
 void main() {
 
@@ -98,53 +100,53 @@ void main() {
       if (config['useBlock']==true) {
         expect(settingsMask.contains('UseBlock'), true);
       }
-      if (config['allowSwapPIN']==true) {
-        expect(settingsMask.contains('AllowSwapPIN'), true);
+      if (config['allowSetPIN1']==true) {
+        expect(settingsMask.contains('AllowSetPIN1'), true);
       }
-      if (config['allowSwapPIN2']==true) {
-        expect(settingsMask.contains('AllowSwapPIN2'), true);
+      if (config['allowSetPIN2']==true) {
+        expect(settingsMask.contains('AllowSetPIN2'), true);
       }
-      if (config['useCVC']==true) {
-        expect(settingsMask.contains('UseCVC'), true);
+      if (config['useCvc']==true) {
+        expect(settingsMask.contains('UseCvc'), true);
       }
-      if (config['forbidDefaultPIN']==true) {
-        expect(settingsMask.contains('ForbidDefaultPIN'), true);
+      if (config['prohibitDefaultPIN1']==true) {
+        expect(settingsMask.contains('ProhibitDefaultPIN1'), true);
       }
       if (config['useOneCommandAtTime']==true) {
         expect(settingsMask.contains('UseOneCommandAtTime'), true);
       }
       if (config['useNDEF']==true) {
-        expect(settingsMask.contains('UseNdef'), true);
+        expect(settingsMask.contains('UseNDEF'), true);
       }
       if (config['useDynamicNDEF']==true) {
-        expect(settingsMask.contains('UseDynamicNdef'), true);
+        expect(settingsMask.contains('UseDynamicNDEF'), true);
       }
       if (config['smartSecurityDelay']==true) {
         expect(settingsMask.contains('SmartSecurityDelay'), true);
       }
-      if (config['protocolAllowUnencrypted']==true) {
-        expect(settingsMask.contains('ProtocolAllowUnencrypted'), true);
+      if (config['allowUnencrypted']==true) {
+        expect(settingsMask.contains('AllowUnencrypted'), true);
       }
-      if (config['protocolAllowStaticEncryption']==true) {
-        expect(settingsMask.contains('ProtocolAllowStaticEncryption'), true);
+      if (config['allowFastEncryption']==true) {
+        expect(settingsMask.contains('AllowFastEncryption'), true);
       }
       if (config['protectIssuerDataAgainstReplay']==true) {
         expect(settingsMask.contains('ProtectIssuerDataAgainstReplay'), true);
       }
-      if (config['restrictOverwriteIssuerDataEx']==true) {
-        expect(settingsMask.contains('RestrictOverwriteIssuerDataEx'), true);
+      if (config['restrictOverwriteIssuerExtraData']==true) {
+        expect(settingsMask.contains('RestrictOverwriteIssuerExtraData'), true);
       }
       if (config['allowSelectBlockchain']==true) {
         expect(settingsMask.contains('AllowSelectBlockchain'), true);
       }
       if (config['disablePrecomputedNDEF']==true) {
-        expect(settingsMask.contains('DisablePrecomputedNdef'), true);
+        expect(settingsMask.contains('DisablePrecomputedNDEF'), true);
       }
       if (config['skipSecurityDelayIfValidatedByLinkedTerminal']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByLinkedTerminal'), true);
       }
-      if (config['skipCheckPIN2andCVCIfValidatedByIssuer']==true) {
-        expect(settingsMask.contains('SkipCheckPin2andCvcIfValidatedByIssuer'), true);
+      if (config['skipCheckPIN2CVCIfValidatedByIssuer']==true) {
+        expect(settingsMask.contains('SkipCheckPIN2CVCIfValidatedByIssuer'), true);
       }
       if (config['skipSecurityDelayIfValidatedByIssuer']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByIssuer'), true);
@@ -155,10 +157,10 @@ void main() {
       if (config['requireTerminalCertSignature']==true) {
         expect(settingsMask.contains('RequireTermCertSignature'), true);
       }
-      if (config['checkPIN3onCard']==true) {
-        expect(settingsMask.contains('CheckPIN3onCard'), true);
+      if (config['checkPIN3OnCard']==true) {
+        expect(settingsMask.contains('CheckPIN3OnCard'), true);
       }
-      if (config['forbidPurgeWallet']==true) {
+      if (config['prohibitPurgeWallet']==true) {
         expect(settingsMask.contains('ProhibitPurgeWallet'), true);
       }
 
@@ -271,53 +273,53 @@ void main() {
       if (config['useBlock']==true) {
         expect(settingsMask.contains('UseBlock'), true);
       }
-      if (config['allowSwapPIN']==true) {
-        expect(settingsMask.contains('AllowSwapPIN'), true);
+      if (config['allowSetPIN1']==true) {
+        expect(settingsMask.contains('AllowSetPIN1'), true);
       }
-      if (config['allowSwapPIN2']==true) {
-        expect(settingsMask.contains('AllowSwapPIN2'), true);
+      if (config['allowSetPIN2']==true) {
+        expect(settingsMask.contains('AllowSetPIN2'), true);
       }
-      if (config['useCVC']==true) {
-        expect(settingsMask.contains('UseCVC'), true);
+      if (config['useCvc']==true) {
+        expect(settingsMask.contains('UseCvc'), true);
       }
-      if (config['forbidDefaultPIN']==true) {
-        expect(settingsMask.contains('ForbidDefaultPIN'), true);
+      if (config['prohibitDefaultPIN1']==true) {
+        expect(settingsMask.contains('ProhibitDefaultPIN1'), true);
       }
       if (config['useOneCommandAtTime']==true) {
         expect(settingsMask.contains('UseOneCommandAtTime'), true);
       }
       if (config['useNDEF']==true) {
-        expect(settingsMask.contains('UseNdef'), true);
+        expect(settingsMask.contains('UseNDEF'), true);
       }
       if (config['useDynamicNDEF']==true) {
-        expect(settingsMask.contains('UseDynamicNdef'), true);
+        expect(settingsMask.contains('UseDynamicNDEF'), true);
       }
       if (config['smartSecurityDelay']==true) {
         expect(settingsMask.contains('SmartSecurityDelay'), true);
       }
-      if (config['protocolAllowUnencrypted']==true) {
-        expect(settingsMask.contains('ProtocolAllowUnencrypted'), true);
+      if (config['allowUnencrypted']==true) {
+        expect(settingsMask.contains('AllowUnencrypted'), true);
       }
-      if (config['protocolAllowStaticEncryption']==true) {
-        expect(settingsMask.contains('ProtocolAllowStaticEncryption'), true);
+      if (config['allowFastEncryption']==true) {
+        expect(settingsMask.contains('AllowFastEncryption'), true);
       }
       if (config['protectIssuerDataAgainstReplay']==true) {
         expect(settingsMask.contains('ProtectIssuerDataAgainstReplay'), true);
       }
-      if (config['restrictOverwriteIssuerDataEx']==true) {
-        expect(settingsMask.contains('RestrictOverwriteIssuerDataEx'), true);
+      if (config['restrictOverwriteIssuerExtraData']==true) {
+        expect(settingsMask.contains('RestrictOverwriteIssuerExtraData'), true);
       }
       if (config['allowSelectBlockchain']==true) {
         expect(settingsMask.contains('AllowSelectBlockchain'), true);
       }
       if (config['disablePrecomputedNDEF']==true) {
-        expect(settingsMask.contains('DisablePrecomputedNdef'), true);
+        expect(settingsMask.contains('DisablePrecomputedNDEF'), true);
       }
       if (config['skipSecurityDelayIfValidatedByLinkedTerminal']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByLinkedTerminal'), true);
       }
-      if (config['skipCheckPIN2andCVCIfValidatedByIssuer']==true) {
-        expect(settingsMask.contains('SkipCheckPin2andCvcIfValidatedByIssuer'), true);
+      if (config['skipCheckPIN2CVCIfValidatedByIssuer']==true) {
+        expect(settingsMask.contains('SkipCheckPIN2CVCIfValidatedByIssuer'), true);
       }
       if (config['skipSecurityDelayIfValidatedByIssuer']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByIssuer'), true);
@@ -328,10 +330,10 @@ void main() {
       if (config['requireTerminalCertSignature']==true) {
         expect(settingsMask.contains('RequireTermCertSignature'), true);
       }
-      if (config['checkPIN3onCard']==true) {
-        expect(settingsMask.contains('CheckPIN3onCard'), true);
+      if (config['checkPIN3OnCard']==true) {
+        expect(settingsMask.contains('CheckPIN3OnCard'), true);
       }
-      if (config['forbidPurgeWallet']==true) {
+      if (config['prohibitPurgeWallet']==true) {
         expect(settingsMask.contains('ProhibitPurgeWallet'), true);
       }
 
@@ -447,53 +449,53 @@ void main() {
       if (config['useBlock']==true) {
         expect(settingsMask.contains('UseBlock'), true);
       }
-      if (config['allowSwapPIN']==true) {
-        expect(settingsMask.contains('AllowSwapPIN'), true);
+      if (config['allowSetPIN1']==true) {
+        expect(settingsMask.contains('AllowSetPIN1'), true);
       }
-      if (config['allowSwapPIN2']==true) {
-        expect(settingsMask.contains('AllowSwapPIN2'), true);
+      if (config['allowSetPIN2']==true) {
+        expect(settingsMask.contains('AllowSetPIN2'), true);
       }
-      if (config['useCVC']==true) {
-        expect(settingsMask.contains('UseCVC'), true);
+      if (config['useCvc']==true) {
+        expect(settingsMask.contains('UseCvc'), true);
       }
-      if (config['forbidDefaultPIN']==true) {
-        expect(settingsMask.contains('ForbidDefaultPIN'), true);
+      if (config['prohibitDefaultPIN1']==true) {
+        expect(settingsMask.contains('ProhibitDefaultPIN1'), true);
       }
       if (config['useOneCommandAtTime']==true) {
         expect(settingsMask.contains('UseOneCommandAtTime'), true);
       }
       if (config['useNDEF']==true) {
-        expect(settingsMask.contains('UseNdef'), true);
+        expect(settingsMask.contains('UseNDEF'), true);
       }
       if (config['useDynamicNDEF']==true) {
-        expect(settingsMask.contains('UseDynamicNdef'), true);
+        expect(settingsMask.contains('UseDynamicNDEF'), true);
       }
       if (config['smartSecurityDelay']==true) {
         expect(settingsMask.contains('SmartSecurityDelay'), true);
       }
-      if (config['protocolAllowUnencrypted']==true) {
-        expect(settingsMask.contains('ProtocolAllowUnencrypted'), true);
+      if (config['allowUnencrypted']==true) {
+        expect(settingsMask.contains('AllowUnencrypted'), true);
       }
-      if (config['protocolAllowStaticEncryption']==true) {
-        expect(settingsMask.contains('ProtocolAllowStaticEncryption'), true);
+      if (config['allowFastEncryption']==true) {
+        expect(settingsMask.contains('AllowFastEncryption'), true);
       }
       if (config['protectIssuerDataAgainstReplay']==true) {
         expect(settingsMask.contains('ProtectIssuerDataAgainstReplay'), true);
       }
-      if (config['restrictOverwriteIssuerDataEx']==true) {
-        expect(settingsMask.contains('RestrictOverwriteIssuerDataEx'), true);
+      if (config['restrictOverwriteIssuerExtraData']==true) {
+        expect(settingsMask.contains('RestrictOverwriteIssuerExtraData'), true);
       }
       if (config['allowSelectBlockchain']==true) {
         expect(settingsMask.contains('AllowSelectBlockchain'), true);
       }
       if (config['disablePrecomputedNDEF']==true) {
-        expect(settingsMask.contains('DisablePrecomputedNdef'), true);
+        expect(settingsMask.contains('DisablePrecomputedNDEF'), true);
       }
       if (config['skipSecurityDelayIfValidatedByLinkedTerminal']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByLinkedTerminal'), true);
       }
-      if (config['skipCheckPIN2andCVCIfValidatedByIssuer']==true) {
-        expect(settingsMask.contains('SkipCheckPin2andCvcIfValidatedByIssuer'), true);
+      if (config['skipCheckPIN2CVCIfValidatedByIssuer']==true) {
+        expect(settingsMask.contains('SkipCheckPIN2CVCIfValidatedByIssuer'), true);
       }
       if (config['skipSecurityDelayIfValidatedByIssuer']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByIssuer'), true);
@@ -504,10 +506,10 @@ void main() {
       if (config['requireTerminalCertSignature']==true) {
         expect(settingsMask.contains('RequireTermCertSignature'), true);
       }
-      if (config['checkPIN3onCard']==true) {
-        expect(settingsMask.contains('CheckPIN3onCard'), true);
+      if (config['checkPIN3OnCard']==true) {
+        expect(settingsMask.contains('CheckPIN3OnCard'), true);
       }
-      if (config['forbidPurgeWallet']==true) {
+      if (config['prohibitPurgeWallet']==true) {
         expect(settingsMask.contains('ProhibitPurgeWallet'), true);
       }
 
@@ -623,53 +625,53 @@ void main() {
       if (config['useBlock']==true) {
         expect(settingsMask.contains('UseBlock'), true);
       }
-      if (config['allowSwapPIN']==true) {
-        expect(settingsMask.contains('AllowSwapPIN'), true);
+      if (config['allowSetPIN1']==true) {
+        expect(settingsMask.contains('AllowSetPIN1'), true);
       }
-      if (config['allowSwapPIN2']==true) {
-        expect(settingsMask.contains('AllowSwapPIN2'), true);
+      if (config['allowSetPIN2']==true) {
+        expect(settingsMask.contains('AllowSetPIN2'), true);
       }
-      if (config['useCVC']==true) {
-        expect(settingsMask.contains('UseCVC'), true);
+      if (config['useCvc']==true) {
+        expect(settingsMask.contains('UseCvc'), true);
       }
-      if (config['forbidDefaultPIN']==true) {
-        expect(settingsMask.contains('ForbidDefaultPIN'), true);
+      if (config['prohibitDefaultPIN1']==true) {
+        expect(settingsMask.contains('ProhibitDefaultPIN1'), true);
       }
       if (config['useOneCommandAtTime']==true) {
         expect(settingsMask.contains('UseOneCommandAtTime'), true);
       }
       if (config['useNDEF']==true) {
-        expect(settingsMask.contains('UseNdef'), true);
+        expect(settingsMask.contains('UseNDEF'), true);
       }
       if (config['useDynamicNDEF']==true) {
-        expect(settingsMask.contains('UseDynamicNdef'), true);
+        expect(settingsMask.contains('UseDynamicNDEF'), true);
       }
       if (config['smartSecurityDelay']==true) {
         expect(settingsMask.contains('SmartSecurityDelay'), true);
       }
-      if (config['protocolAllowUnencrypted']==true) {
-        expect(settingsMask.contains('ProtocolAllowUnencrypted'), true);
+      if (config['allowUnencrypted']==true) {
+        expect(settingsMask.contains('AllowUnencrypted'), true);
       }
-      if (config['protocolAllowStaticEncryption']==true) {
-        expect(settingsMask.contains('ProtocolAllowStaticEncryption'), true);
+      if (config['allowFastEncryption']==true) {
+        expect(settingsMask.contains('AllowFastEncryption'), true);
       }
       if (config['protectIssuerDataAgainstReplay']==true) {
         expect(settingsMask.contains('ProtectIssuerDataAgainstReplay'), true);
       }
-      if (config['restrictOverwriteIssuerDataEx']==true) {
-        expect(settingsMask.contains('RestrictOverwriteIssuerDataEx'), true);
+      if (config['restrictOverwriteIssuerExtraData']==true) {
+        expect(settingsMask.contains('RestrictOverwriteIssuerExtraData'), true);
       }
       if (config['allowSelectBlockchain']==true) {
         expect(settingsMask.contains('AllowSelectBlockchain'), true);
       }
       if (config['disablePrecomputedNDEF']==true) {
-        expect(settingsMask.contains('DisablePrecomputedNdef'), true);
+        expect(settingsMask.contains('DisablePrecomputedNDEF'), true);
       }
       if (config['skipSecurityDelayIfValidatedByLinkedTerminal']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByLinkedTerminal'), true);
       }
-      if (config['skipCheckPIN2andCVCIfValidatedByIssuer']==true) {
-        expect(settingsMask.contains('SkipCheckPin2andCvcIfValidatedByIssuer'), true);
+      if (config['skipCheckPIN2CVCIfValidatedByIssuer']==true) {
+        expect(settingsMask.contains('SkipCheckPIN2CVCIfValidatedByIssuer'), true);
       }
       if (config['skipSecurityDelayIfValidatedByIssuer']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByIssuer'), true);
@@ -680,10 +682,10 @@ void main() {
       if (config['requireTerminalCertSignature']==true) {
         expect(settingsMask.contains('RequireTermCertSignature'), true);
       }
-      if (config['checkPIN3onCard']==true) {
-        expect(settingsMask.contains('CheckPIN3onCard'), true);
+      if (config['checkPIN3OnCard']==true) {
+        expect(settingsMask.contains('CheckPIN3OnCard'), true);
       }
-      if (config['forbidPurgeWallet']==true) {
+      if (config['prohibitPurgeWallet']==true) {
         expect(settingsMask.contains('ProhibitPurgeWallet'), true);
       }
 
@@ -799,53 +801,53 @@ void main() {
       if (config['useBlock']==true) {
         expect(settingsMask.contains('UseBlock'), true);
       }
-      if (config['allowSwapPIN']==true) {
-        expect(settingsMask.contains('AllowSwapPIN'), true);
+      if (config['allowSetPIN1']==true) {
+        expect(settingsMask.contains('AllowSetPIN1'), true);
       }
-      if (config['allowSwapPIN2']==true) {
-        expect(settingsMask.contains('AllowSwapPIN2'), true);
+      if (config['allowSetPIN2']==true) {
+        expect(settingsMask.contains('AllowSetPIN2'), true);
       }
-      if (config['useCVC']==true) {
-        expect(settingsMask.contains('UseCVC'), true);
+      if (config['useCvc']==true) {
+        expect(settingsMask.contains('UseCvc'), true);
       }
-      if (config['forbidDefaultPIN']==true) {
-        expect(settingsMask.contains('ForbidDefaultPIN'), true);
+      if (config['prohibitDefaultPIN1']==true) {
+        expect(settingsMask.contains('ProhibitDefaultPIN1'), true);
       }
       if (config['useOneCommandAtTime']==true) {
         expect(settingsMask.contains('UseOneCommandAtTime'), true);
       }
       if (config['useNDEF']==true) {
-        expect(settingsMask.contains('UseNdef'), true);
+        expect(settingsMask.contains('UseNDEF'), true);
       }
       if (config['useDynamicNDEF']==true) {
-        expect(settingsMask.contains('UseDynamicNdef'), true);
+        expect(settingsMask.contains('UseDynamicNDEF'), true);
       }
       if (config['smartSecurityDelay']==true) {
         expect(settingsMask.contains('SmartSecurityDelay'), true);
       }
-      if (config['protocolAllowUnencrypted']==true) {
-        expect(settingsMask.contains('ProtocolAllowUnencrypted'), true);
+      if (config['allowUnencrypted']==true) {
+        expect(settingsMask.contains('AllowUnencrypted'), true);
       }
-      if (config['protocolAllowStaticEncryption']==true) {
-        expect(settingsMask.contains('ProtocolAllowStaticEncryption'), true);
+      if (config['allowFastEncryption']==true) {
+        expect(settingsMask.contains('AllowFastEncryption'), true);
       }
       if (config['protectIssuerDataAgainstReplay']==true) {
         expect(settingsMask.contains('ProtectIssuerDataAgainstReplay'), true);
       }
-      if (config['restrictOverwriteIssuerDataEx']==true) {
-        expect(settingsMask.contains('RestrictOverwriteIssuerDataEx'), true);
+      if (config['restrictOverwriteIssuerExtraData']==true) {
+        expect(settingsMask.contains('RestrictOverwriteIssuerExtraData'), true);
       }
       if (config['allowSelectBlockchain']==true) {
         expect(settingsMask.contains('AllowSelectBlockchain'), true);
       }
       if (config['disablePrecomputedNDEF']==true) {
-        expect(settingsMask.contains('DisablePrecomputedNdef'), true);
+        expect(settingsMask.contains('DisablePrecomputedNDEF'), true);
       }
       if (config['skipSecurityDelayIfValidatedByLinkedTerminal']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByLinkedTerminal'), true);
       }
-      if (config['skipCheckPIN2andCVCIfValidatedByIssuer']==true) {
-        expect(settingsMask.contains('SkipCheckPin2andCvcIfValidatedByIssuer'), true);
+      if (config['skipCheckPIN2CVCIfValidatedByIssuer']==true) {
+        expect(settingsMask.contains('SkipCheckPIN2CVCIfValidatedByIssuer'), true);
       }
       if (config['skipSecurityDelayIfValidatedByIssuer']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByIssuer'), true);
@@ -856,10 +858,10 @@ void main() {
       if (config['requireTerminalCertSignature']==true) {
         expect(settingsMask.contains('RequireTermCertSignature'), true);
       }
-      if (config['checkPIN3onCard']==true) {
-        expect(settingsMask.contains('CheckPIN3onCard'), true);
+      if (config['checkPIN3OnCard']==true) {
+        expect(settingsMask.contains('CheckPIN3OnCard'), true);
       }
-      if (config['forbidPurgeWallet']==true) {
+      if (config['prohibitPurgeWallet']==true) {
         expect(settingsMask.contains('ProhibitPurgeWallet'), true);
       }
 
@@ -975,53 +977,53 @@ void main() {
       if (config['useBlock']==true) {
         expect(settingsMask.contains('UseBlock'), true);
       }
-      if (config['allowSwapPIN']==true) {
-        expect(settingsMask.contains('AllowSwapPIN'), true);
+      if (config['allowSetPIN1']==true) {
+        expect(settingsMask.contains('AllowSetPIN1'), true);
       }
-      if (config['allowSwapPIN2']==true) {
-        expect(settingsMask.contains('AllowSwapPIN2'), true);
+      if (config['allowSetPIN2']==true) {
+        expect(settingsMask.contains('AllowSetPIN2'), true);
       }
-      if (config['useCVC']==true) {
-        expect(settingsMask.contains('UseCVC'), true);
+      if (config['useCvc']==true) {
+        expect(settingsMask.contains('UseCvc'), true);
       }
-      if (config['forbidDefaultPIN']==true) {
-        expect(settingsMask.contains('ForbidDefaultPIN'), true);
+      if (config['prohibitDefaultPIN1']==true) {
+        expect(settingsMask.contains('ProhibitDefaultPIN1'), true);
       }
       if (config['useOneCommandAtTime']==true) {
         expect(settingsMask.contains('UseOneCommandAtTime'), true);
       }
       if (config['useNDEF']==true) {
-        expect(settingsMask.contains('UseNdef'), true);
+        expect(settingsMask.contains('UseNDEF'), true);
       }
       if (config['useDynamicNDEF']==true) {
-        expect(settingsMask.contains('UseDynamicNdef'), true);
+        expect(settingsMask.contains('UseDynamicNDEF'), true);
       }
       if (config['smartSecurityDelay']==true) {
         expect(settingsMask.contains('SmartSecurityDelay'), true);
       }
-      if (config['protocolAllowUnencrypted']==true) {
-        expect(settingsMask.contains('ProtocolAllowUnencrypted'), true);
+      if (config['allowUnencrypted']==true) {
+        expect(settingsMask.contains('AllowUnencrypted'), true);
       }
-      if (config['protocolAllowStaticEncryption']==true) {
-        expect(settingsMask.contains('ProtocolAllowStaticEncryption'), true);
+      if (config['allowFastEncryption']==true) {
+        expect(settingsMask.contains('AllowFastEncryption'), true);
       }
       if (config['protectIssuerDataAgainstReplay']==true) {
         expect(settingsMask.contains('ProtectIssuerDataAgainstReplay'), true);
       }
-      if (config['restrictOverwriteIssuerDataEx']==true) {
-        expect(settingsMask.contains('RestrictOverwriteIssuerDataEx'), true);
+      if (config['restrictOverwriteIssuerExtraData']==true) {
+        expect(settingsMask.contains('RestrictOverwriteIssuerExtraData'), true);
       }
       if (config['allowSelectBlockchain']==true) {
         expect(settingsMask.contains('AllowSelectBlockchain'), true);
       }
       if (config['disablePrecomputedNDEF']==true) {
-        expect(settingsMask.contains('DisablePrecomputedNdef'), true);
+        expect(settingsMask.contains('DisablePrecomputedNDEF'), true);
       }
       if (config['skipSecurityDelayIfValidatedByLinkedTerminal']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByLinkedTerminal'), true);
       }
-      if (config['skipCheckPIN2andCVCIfValidatedByIssuer']==true) {
-        expect(settingsMask.contains('SkipCheckPin2andCvcIfValidatedByIssuer'), true);
+      if (config['skipCheckPIN2CVCIfValidatedByIssuer']==true) {
+        expect(settingsMask.contains('SkipCheckPIN2CVCIfValidatedByIssuer'), true);
       }
       if (config['skipSecurityDelayIfValidatedByIssuer']==true) {
         expect(settingsMask.contains('SkipSecurityDelayIfValidatedByIssuer'), true);
@@ -1032,10 +1034,10 @@ void main() {
       if (config['requireTerminalCertSignature']==true) {
         expect(settingsMask.contains('RequireTermCertSignature'), true);
       }
-      if (config['checkPIN3onCard']==true) {
-        expect(settingsMask.contains('CheckPIN3onCard'), true);
+      if (config['checkPIN3OnCard']==true) {
+        expect(settingsMask.contains('CheckPIN3OnCard'), true);
       }
-      if (config['forbidPurgeWallet']==true) {
+      if (config['prohibitPurgeWallet']==true) {
         expect(settingsMask.contains('ProhibitPurgeWallet'), true);
       }
 

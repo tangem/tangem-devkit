@@ -16,16 +16,16 @@ class PersonalizationConfig {
   String PIN3;
   int SigningMethod;
   bool allowSelectBlockchain;
-  bool allowSwapPIN;
-  bool allowSwapPIN2;
+  bool allowSetPIN1;
+  bool allowSetPIN2;
   PersonalizationCardData cardData;
-  bool checkPIN3onCard;
+  bool checkPIN3OnCard;
   int count;
   int createWallet;
   String curveID;
   bool disablePrecomputedNDEF;
-  bool forbidDefaultPIN;
-  bool forbidPurgeWallet;
+  bool prohibitDefaultPIN1;
+  bool prohibitPurgeWallet;
   String hexCrExKey;
   bool isReusable;
   String issuerName;
@@ -33,24 +33,27 @@ class PersonalizationConfig {
   String numberFormat;
   int pauseBeforePIN2;
   bool protectIssuerDataAgainstReplay;
-  bool protocolAllowStaticEncryption;
-  bool protocolAllowUnencrypted;
+  bool allowFastEncryption;
+  bool allowUnencrypted;
   bool releaseVersion;
   bool requireTerminalCertSignature;
   bool requireTerminalTxSignature;
-  bool restrictOverwriteIssuerDataEx;
+  bool restrictOverwriteIssuerExtraData;
   String series;
-  bool skipCheckPIN2andCVCIfValidatedByIssuer;
+  bool skipCheckPIN2CVCIfValidatedByIssuer;
   bool skipSecurityDelayIfValidatedByIssuer;
   bool skipSecurityDelayIfValidatedByLinkedTerminal;
   bool smartSecurityDelay;
   int startNumber;
   bool useActivation;
   bool useBlock;
-  bool useCVC;
+  bool useCvc;
   bool useDynamicNDEF;
   bool useNDEF;
   bool useOneCommandAtTime;
+
+  // "RequireTermTxSignature",
+  // "RequireTermCertSignature",
 
   PersonalizationConfig(
       {this.CVC,
@@ -60,16 +63,16 @@ class PersonalizationConfig {
       this.PIN3,
       this.SigningMethod,
       this.allowSelectBlockchain,
-      this.allowSwapPIN,
-      this.allowSwapPIN2,
+      this.allowSetPIN1,
+      this.allowSetPIN2,
       this.cardData,
-      this.checkPIN3onCard,
+      this.checkPIN3OnCard,
       this.count,
       this.createWallet,
       this.curveID,
       this.disablePrecomputedNDEF,
-      this.forbidDefaultPIN,
-      this.forbidPurgeWallet,
+      this.prohibitDefaultPIN1,
+      this.prohibitPurgeWallet,
       this.hexCrExKey,
       this.isReusable,
       this.issuerName,
@@ -77,21 +80,21 @@ class PersonalizationConfig {
       this.numberFormat,
       this.pauseBeforePIN2,
       this.protectIssuerDataAgainstReplay,
-      this.protocolAllowStaticEncryption,
-      this.protocolAllowUnencrypted,
+      this.allowFastEncryption,
+      this.allowUnencrypted,
       this.releaseVersion,
       this.requireTerminalCertSignature,
       this.requireTerminalTxSignature,
-      this.restrictOverwriteIssuerDataEx,
+      this.restrictOverwriteIssuerExtraData,
       this.series,
-      this.skipCheckPIN2andCVCIfValidatedByIssuer,
+      this.skipCheckPIN2CVCIfValidatedByIssuer,
       this.skipSecurityDelayIfValidatedByIssuer,
       this.skipSecurityDelayIfValidatedByLinkedTerminal,
       this.smartSecurityDelay,
       this.startNumber,
       this.useActivation,
       this.useBlock,
-      this.useCVC,
+      this.useCvc,
       this.useDynamicNDEF,
       this.useNDEF,
       this.useOneCommandAtTime});
