@@ -16,19 +16,19 @@ PersonalizationConfig _$PersonalizationConfigFromJson(
     PIN3: json['PIN3'] as String,
     SigningMethod: json['SigningMethod'] as int,
     allowSelectBlockchain: json['allowSelectBlockchain'] as bool,
-    allowSwapPIN: json['allowSwapPIN'] as bool,
-    allowSwapPIN2: json['allowSwapPIN2'] as bool,
+    allowSetPIN1: json['allowSetPIN1'] as bool,
+    allowSetPIN2: json['allowSetPIN2'] as bool,
     cardData: json['cardData'] == null
         ? null
         : PersonalizationCardData.fromJson(
             json['cardData'] as Map<String, dynamic>),
-    checkPIN3onCard: json['checkPIN3onCard'] as bool,
+    checkPIN3OnCard: json['checkPIN3OnCard'] as bool,
     count: json['count'] as int,
     createWallet: json['createWallet'] as int,
     curveID: json['curveID'] as String,
     disablePrecomputedNDEF: json['disablePrecomputedNDEF'] as bool,
-    forbidDefaultPIN: json['forbidDefaultPIN'] as bool,
-    forbidPurgeWallet: json['forbidPurgeWallet'] as bool,
+    prohibitDefaultPIN1: json['prohibitDefaultPIN1'] as bool,
+    prohibitPurgeWallet: json['prohibitPurgeWallet'] as bool,
     hexCrExKey: json['hexCrExKey'] as String,
     isReusable: json['isReusable'] as bool,
     issuerName: json['issuerName'] as String,
@@ -41,17 +41,17 @@ PersonalizationConfig _$PersonalizationConfigFromJson(
     pauseBeforePIN2: json['pauseBeforePIN2'] as int,
     protectIssuerDataAgainstReplay:
         json['protectIssuerDataAgainstReplay'] as bool,
-    protocolAllowStaticEncryption:
-        json['protocolAllowStaticEncryption'] as bool,
-    protocolAllowUnencrypted: json['protocolAllowUnencrypted'] as bool,
+    allowFastEncryption:
+        json['allowFastEncryption'] as bool,
+    allowUnencrypted: json['allowUnencrypted'] as bool,
     releaseVersion: json['releaseVersion'] as bool,
     requireTerminalCertSignature: json['requireTerminalCertSignature'] as bool,
     requireTerminalTxSignature: json['requireTerminalTxSignature'] as bool,
-    restrictOverwriteIssuerDataEx:
-        json['restrictOverwriteIssuerDataEx'] as bool,
+    restrictOverwriteIssuerExtraData:
+        json['restrictOverwriteIssuerExtraData'] as bool,
     series: json['series'] as String,
-    skipCheckPIN2andCVCIfValidatedByIssuer:
-        json['skipCheckPIN2andCVCIfValidatedByIssuer'] as bool,
+    skipCheckPIN2CVCIfValidatedByIssuer:
+        json['skipCheckPIN2CVCIfValidatedByIssuer'] as bool,
     skipSecurityDelayIfValidatedByIssuer:
         json['skipSecurityDelayIfValidatedByIssuer'] as bool,
     skipSecurityDelayIfValidatedByLinkedTerminal:
@@ -60,7 +60,7 @@ PersonalizationConfig _$PersonalizationConfigFromJson(
     startNumber: json['startNumber'] as int,
     useActivation: json['useActivation'] as bool,
     useBlock: json['useBlock'] as bool,
-    useCVC: json['useCVC'] as bool,
+    useCvc: json['useCvc'] as bool,
     useDynamicNDEF: json['useDynamicNDEF'] as bool,
     useNDEF: json['useNDEF'] as bool,
     useOneCommandAtTime: json['useOneCommandAtTime'] as bool,
@@ -77,16 +77,16 @@ Map<String, dynamic> _$PersonalizationConfigToJson(
       'PIN3': instance.PIN3,
       'SigningMethod': instance.SigningMethod,
       'allowSelectBlockchain': instance.allowSelectBlockchain,
-      'allowSwapPIN': instance.allowSwapPIN,
-      'allowSwapPIN2': instance.allowSwapPIN2,
+      'allowSetPIN1': instance.allowSetPIN1,
+      'allowSetPIN2': instance.allowSetPIN2,
       'cardData': instance.cardData,
-      'checkPIN3onCard': instance.checkPIN3onCard,
+      'checkPIN3OnCard': instance.checkPIN3OnCard,
       'count': instance.count,
       'createWallet': instance.createWallet,
       'curveID': instance.curveID,
       'disablePrecomputedNDEF': instance.disablePrecomputedNDEF,
-      'forbidDefaultPIN': instance.forbidDefaultPIN,
-      'forbidPurgeWallet': instance.forbidPurgeWallet,
+      'prohibitDefaultPIN1': instance.prohibitDefaultPIN1,
+      'prohibitPurgeWallet': instance.prohibitPurgeWallet,
       'hexCrExKey': instance.hexCrExKey,
       'isReusable': instance.isReusable,
       'issuerName': instance.issuerName,
@@ -94,15 +94,15 @@ Map<String, dynamic> _$PersonalizationConfigToJson(
       'numberFormat': instance.numberFormat,
       'pauseBeforePIN2': instance.pauseBeforePIN2,
       'protectIssuerDataAgainstReplay': instance.protectIssuerDataAgainstReplay,
-      'protocolAllowStaticEncryption': instance.protocolAllowStaticEncryption,
-      'protocolAllowUnencrypted': instance.protocolAllowUnencrypted,
+      'allowFastEncryption': instance.allowFastEncryption,
+      'allowUnencrypted': instance.allowUnencrypted,
       'releaseVersion': instance.releaseVersion,
       'requireTerminalCertSignature': instance.requireTerminalCertSignature,
       'requireTerminalTxSignature': instance.requireTerminalTxSignature,
-      'restrictOverwriteIssuerDataEx': instance.restrictOverwriteIssuerDataEx,
+      'restrictOverwriteIssuerExtraData': instance.restrictOverwriteIssuerExtraData,
       'series': instance.series,
-      'skipCheckPIN2andCVCIfValidatedByIssuer':
-          instance.skipCheckPIN2andCVCIfValidatedByIssuer,
+      'skipCheckPIN2CVCIfValidatedByIssuer':
+          instance.skipCheckPIN2CVCIfValidatedByIssuer,
       'skipSecurityDelayIfValidatedByIssuer':
           instance.skipSecurityDelayIfValidatedByIssuer,
       'skipSecurityDelayIfValidatedByLinkedTerminal':
@@ -111,7 +111,7 @@ Map<String, dynamic> _$PersonalizationConfigToJson(
       'startNumber': instance.startNumber,
       'useActivation': instance.useActivation,
       'useBlock': instance.useBlock,
-      'useCVC': instance.useCVC,
+      'useCvc': instance.useCvc,
       'useDynamicNDEF': instance.useDynamicNDEF,
       'useNDEF': instance.useNDEF,
       'useOneCommandAtTime': instance.useOneCommandAtTime,

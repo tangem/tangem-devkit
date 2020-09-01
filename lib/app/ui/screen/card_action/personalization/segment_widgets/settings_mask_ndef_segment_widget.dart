@@ -35,24 +35,24 @@ class _SettingsMaskNdefSegmentWidgetState extends State<SettingsMaskNdefSegmentW
       children: <Widget>[
         SegmentHeader(transl.pers_segment_settings_mask_ndef, description: transl.desc_pers_segment_settings_mask_ndef),
         SwitchWidget(
-          ItemName.useNdef,
+          ItemName.useNDEF,
           transl.pers_item_use_ndef,
           transl.desc_pers_item_use_ndef,
-          settingsMaskNdef.useNdef,
+          settingsMaskNdef.useNDEF,
           initialData: false,
         ).withUnderline().visibilityHandler(_bloc.statedFieldsVisibility),
         SwitchWidget(
-          ItemName.dynamicNdef,
+          ItemName.useDynamicNDEF,
           transl.pers_item_dynamic_ndef,
           transl.desc_pers_item_dynamic_ndef,
-          settingsMaskNdef.dynamicNdef,
+          settingsMaskNdef.useDynamicNDEF,
           initialData: false,
         ).withUnderline().visibilityHandler(_bloc.statedFieldsVisibility),
         SwitchWidget(
-          ItemName.disablePrecomputedNdef,
+          ItemName.disablePrecomputedNDEF,
           transl.pers_item_disable_precomputed_ndef,
           transl.desc_pers_item_disable_precomputed_ndef,
-          settingsMaskNdef.disablePrecomputedNdef,
+          settingsMaskNdef.disablePrecomputedNDEF,
           initialData: false,
         ).withUnderline().visibilityHandler(_bloc.statedFieldsVisibility),
         SpinnerWidget(

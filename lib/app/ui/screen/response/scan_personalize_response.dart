@@ -236,7 +236,7 @@ class SettingsMaskResponseWidget extends StatelessWidget {
     "AllowUnencrypted",
     "AllowFastEncryption",
     "ProtectIssuerDataAgainstReplay",
-    "RestrictOverwriteIssuerExtraDara",
+    "RestrictOverwriteIssuerExtraData",
     "AllowSelectBlockchain",
     "DisablePrecomputedNDEF",
     "SkipSecurityDelayIfValidatedByLinkedTerminal",

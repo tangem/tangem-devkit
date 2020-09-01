@@ -20,28 +20,28 @@ class CardConfigSdk {
   final SigningMethodMaskSdk signingMethods;
   final int maxSignatures;
   final bool isReusable;
-  final bool allowSwapPin;
-  final bool allowSwapPin2;
+  final bool allowSetPIN1;
+  final bool allowSetPIN2;
   final bool useActivation;
   final bool useCvc;
-  final bool useNdef;
-  final bool useDynamicNdef;
+  final bool useNDEF;
+  final bool useDynamicNDEF;
   final bool useOneCommandAtTime;
   final bool useBlock;
   final bool allowSelectBlockchain;
-  final bool forbidPurgeWallet;
-  final bool protocolAllowUnencrypted;
-  final bool protocolAllowStaticEncryption;
+  final bool prohibitPurgeWallet;
+  final bool allowUnencrypted;
+  final bool allowFastEncryption;
   final bool protectIssuerDataAgainstReplay;
-  final bool forbidDefaultPin;
-  final bool disablePrecomputedNdef;
+  final bool prohibitDefaultPIN1;
+  final bool disablePrecomputedNDEF;
   final bool skipSecurityDelayIfValidatedByIssuer;
-  final bool skipCheckPIN2andCVCIfValidatedByIssuer;
+  final bool skipCheckPIN2CVCIfValidatedByIssuer;
   final bool skipSecurityDelayIfValidatedByLinkedTerminal;
-  final bool restrictOverwriteIssuerDataEx;
+  final bool restrictOverwriteIssuerExtraData;
   final bool requireTerminalTxSignature;
   final bool requireTerminalCertSignature;
-  final bool checkPin3onCard;
+  final bool checkPIN3OnCard;
   final bool createWallet;
   final CardDataSdk cardData;
   final List<NdefRecordSdk> ndefRecords;
@@ -63,28 +63,28 @@ class CardConfigSdk {
     this.signingMethods,
     this.maxSignatures,
     this.isReusable,
-    this.allowSwapPin,
-    this.allowSwapPin2,
+    this.allowSetPIN1,
+    this.allowSetPIN2,
     this.useActivation,
     this.useCvc,
-    this.useNdef,
-    this.useDynamicNdef,
+    this.useNDEF,
+    this.useDynamicNDEF,
     this.useOneCommandAtTime,
     this.useBlock,
     this.allowSelectBlockchain,
-    this.forbidPurgeWallet,
-    this.protocolAllowUnencrypted,
-    this.protocolAllowStaticEncryption,
+    this.prohibitPurgeWallet,
+    this.allowUnencrypted,
+    this.allowFastEncryption,
     this.protectIssuerDataAgainstReplay,
-    this.forbidDefaultPin,
-    this.disablePrecomputedNdef,
+    this.prohibitDefaultPIN1,
+    this.disablePrecomputedNDEF,
     this.skipSecurityDelayIfValidatedByIssuer,
-    this.skipCheckPIN2andCVCIfValidatedByIssuer,
+    this.skipCheckPIN2CVCIfValidatedByIssuer,
     this.skipSecurityDelayIfValidatedByLinkedTerminal,
-    this.restrictOverwriteIssuerDataEx,
+    this.restrictOverwriteIssuerExtraData,
     this.requireTerminalTxSignature,
     this.requireTerminalCertSignature,
-    this.checkPin3onCard,
+    this.checkPIN3OnCard,
     this.createWallet,
     this.cardData,
     this.ndefRecords,
