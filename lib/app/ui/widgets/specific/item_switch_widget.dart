@@ -59,7 +59,7 @@ class _ExSwitchState extends State<ExSwitch> {
     super.initState();
     _isChecked = widget.initialData ?? false;
     subscription = widget.bSubject.listen((value) {
-      if (this.mounted) setState(() => _isChecked = value);
+      if (this.mounted) setState(() => _isChecked = value ?? false);
     });
   }
 
@@ -81,7 +81,7 @@ class _ExSwitchState extends State<ExSwitch> {
                 child: TextWidget(widget.title, fontSize: AppDimen.itemTextSize, maxLines: 2),
               ),
             ),
-            Switch(value: _isChecked ?? false, onChanged: _onWidgetTap),
+            Switch(value: _isChecked, onChanged: _onWidgetTap),
           ],
         ),
       ),
