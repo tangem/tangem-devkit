@@ -81,7 +81,7 @@ class _ExSwitchState extends State<ExSwitch> {
                 child: TextWidget(widget.title, fontSize: AppDimen.itemTextSize, maxLines: 2),
               ),
             ),
-            Switch(value: _isChecked, onChanged: _onWidgetTap),
+            Switch(value: _isChecked ?? false, onChanged: _onWidgetTap),
           ],
         ),
       ),
