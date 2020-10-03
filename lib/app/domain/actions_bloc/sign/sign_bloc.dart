@@ -39,12 +39,9 @@ class SignBloc extends Bloc<Event, SSign> {
     }, (error) {
       add(ECardSignError(error));
     });
-    TangemSdk.sign(callback, {
-      TangemSdk.cid: state.cid,
-      TangemSdk.hashesHex: _prepareHashes(state.dataForHashing),
-    });
+    TangemSdk.sign(callback, _prepareHashes(state.dataForHashing), {TangemSdk.cid: state.cid});
   }
-  
+
   List<String> _prepareHashes(String dataForHashing) {
     final splitPattern = ",";
     if (dataForHashing.contains(splitPattern)) {
