@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
+import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:tangem_sdk/model/sdk.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
@@ -91,4 +92,3 @@ class Utils {
     return productMaskBuilder.build();
   }
 }
-
