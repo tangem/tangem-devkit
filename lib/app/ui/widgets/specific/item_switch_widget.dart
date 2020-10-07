@@ -59,7 +59,7 @@ class _ExSwitchState extends State<ExSwitch> {
     super.initState();
     _isChecked = widget.initialData ?? false;
     subscription = widget.bSubject.listen((value) {
-      if (this.mounted) setState(() => _isChecked = value);
+      if (this.mounted) setState(() => _isChecked = value ?? false);
     });
   }
 

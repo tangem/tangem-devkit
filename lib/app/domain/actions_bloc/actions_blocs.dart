@@ -31,7 +31,7 @@ class ReadIssuerExDataBloc extends ActionBloc<ReadIssuerExDataResponse> {
 
   @override
   invokeAction() {
-    TangemSdk.readIssuerExData(callback, {TangemSdk.cid: _cid});
+    TangemSdk.readIssuerExtraData(callback, {TangemSdk.cid: _cid});
   }
 }
 
@@ -46,17 +46,17 @@ class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
   WriteIssuerDataBloc() {
     subscriptions.add(bsCid.stream.listen((event) => _cid = event));
     subscriptions.add(bsIssuerData.stream.listen((event) => _issuerData = event));
-    subscriptions.add(bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
+    subscriptions.add(
+        bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
     bsIssuerData.add("Data to be written on a card as issuer data");
     bsIssuerDataCounter.add("1");
   }
 
   @override
   invokeAction() {
-    TangemSdk.writeIssuerData(callback, {
+    //TODO: create signature
+    TangemSdk.writeIssuerData(callback, _issuerData.toHexString(), "signature".toHexString(), {
       TangemSdk.cid: _cid,
-      TangemSdk.issuerDataHex: _issuerData.toHexString(),
-      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey,
       TangemSdk.issuerDataCounter: _issuerDataCounter,
     });
   }
@@ -70,15 +70,17 @@ class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
 
   WriteIssuerExDataBloc() {
     subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-    subscriptions.add(bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
+    subscriptions.add(
+        bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
     bsIssuerDataCounter.add("1");
   }
 
   @override
   invokeAction() {
-    TangemSdk.writeIssuerExData(callback, {
+    //TODO: create startingSig, finalizingSig
+    TangemSdk.writeIssuerExtraData(
+        callback, "issuerData".toHexString(), "startingSig".toHexString(), "finalizingSig".toHexString(), {
       TangemSdk.cid: _cid,
-      TangemSdk.issuerPrivateKeyHex: Issuer.def().dataKeyPair.privateKey,
       TangemSdk.issuerDataCounter: _issuerDataCounter,
     });
   }
@@ -117,9 +119,8 @@ class WriteUserDataBloc extends ActionBloc<WriteUserDataResponse> {
 
   @override
   invokeAction() {
-    TangemSdk.writeUserData(callback, {
+    TangemSdk.writeUserData(callback, _userData.toHexString(), {
       TangemSdk.cid: _cid,
-      TangemSdk.userDataHex: _userData.toHexString(),
       TangemSdk.userCounter: _userCounter,
     });
   }
@@ -136,16 +137,16 @@ class WriteUserProtectedDataBloc extends ActionBloc<WriteUserDataResponse> {
   WriteUserProtectedDataBloc() {
     subscriptions.add(bsCid.stream.listen((event) => _cid = event));
     subscriptions.add(bsUserProtectedData.stream.listen((event) => _userProtectedData = event));
-    subscriptions.add(bsUserProtectedCounter.stream.listen((event) => _userProtectedCounter = event.isEmpty ? null : int.parse(event)));
+    subscriptions.add(bsUserProtectedCounter.stream
+        .listen((event) => _userProtectedCounter = event.isEmpty ? null : int.parse(event)));
     bsUserProtectedData.add("Protected user data to be written on a card");
     bsUserProtectedCounter.add("1");
   }
 
   @override
   invokeAction() {
-    TangemSdk.writeUserProtectedData(callback, {
+    TangemSdk.writeUserProtectedData(callback, _userProtectedData.toHexString(), {
       TangemSdk.cid: _cid,
-      TangemSdk.userProtectedDataHex: _userProtectedData.toHexString(),
       TangemSdk.userProtectedCounter: _userProtectedCounter,
     });
   }
