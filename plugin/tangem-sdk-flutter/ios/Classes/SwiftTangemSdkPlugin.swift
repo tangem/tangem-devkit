@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 import TangemSdk
 
-public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
+public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
     private lazy var sdk: TangemSdk = {
         return TangemSdk()
     }()
@@ -10,7 +10,7 @@ public class SwiftTangemsdkPlugin: NSObject, FlutterPlugin {
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "tangemSdk", binaryMessenger: registrar.messenger())
-        let instance = SwiftTangemsdkPlugin()
+        let instance = SwiftTangemSdkPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     

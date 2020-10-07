@@ -4,6 +4,8 @@ PODS:
     - Flutter
   - path_provider_linux (0.0.1):
     - Flutter
+  - path_provider_windows (0.0.1):
+    - Flutter
   - share (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
@@ -14,22 +16,30 @@ PODS:
     - Flutter
   - shared_preferences_web (0.0.1):
     - Flutter
+  - shared_preferences_windows (0.0.1):
+    - Flutter
   - tangem_sdk (0.0.1):
     - Flutter
-    - TangemSdk
-  - TangemSdk (2.0.2)
+    - TangemSdk (~> 2.2.0)
+  - TangemSdk (2.2.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - path_provider_linux (from `.symlinks/plugins/path_provider_linux/ios`)
+  - path_provider_windows (from `.symlinks/plugins/path_provider_windows/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - shared_preferences_linux (from `.symlinks/plugins/shared_preferences_linux/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
+  - shared_preferences_windows (from `.symlinks/plugins/shared_preferences_windows/ios`)
   - tangem_sdk (from `.symlinks/plugins/tangem_sdk/ios`)
-  - "TangemSdk (from `git@bitbucket.org:tangem/card-sdk-swift.git`, tag `build-46`)"
+  - TangemSdk
+
+SPEC REPOS:
+  trunk:
+    - TangemSdk
 
 EXTERNAL SOURCES:
   Flutter:
@@ -38,6 +48,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   path_provider_linux:
     :path: ".symlinks/plugins/path_provider_linux/ios"
+  path_provider_windows:
+    :path: ".symlinks/plugins/path_provider_windows/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
@@ -48,29 +60,25 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_macos/ios"
   shared_preferences_web:
     :path: ".symlinks/plugins/shared_preferences_web/ios"
+  shared_preferences_windows:
+    :path: ".symlinks/plugins/shared_preferences_windows/ios"
   tangem_sdk:
     :path: ".symlinks/plugins/tangem_sdk/ios"
-  TangemSdk:
-    :git: "git@bitbucket.org:tangem/card-sdk-swift.git"
-    :tag: build-46
-
-CHECKOUT OPTIONS:
-  TangemSdk:
-    :git: "git@bitbucket.org:tangem/card-sdk-swift.git"
-    :tag: build-46
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
   path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
+  path_provider_windows: a2b81600c677ac1959367280991971cb9a1edb3b
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   shared_preferences_linux: afefbfe8d921e207f01ede8b60373d9e3b566b78
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
-  tangem_sdk: 7b408587538481d7a1e6b3deb95cd27db75a923a
-  TangemSdk: 2c0260f85c41711af449f8901f698c12b6e45673
+  shared_preferences_windows: 36b76d6f54e76ead957e60b49e2f124b4cd3e6ae
+  tangem_sdk: ba74c6441a264c2fe519902c3243d24cc66d4b83
+  TangemSdk: 5ccb934490db3e1abc8ec770e26701e472e6fef7
 
-PODFILE CHECKSUM: d35293bc3069d7b0b7a6f523f0da0544a6028292
+PODFILE CHECKSUM: c0be7c9fe2f036d0634e167b3b53199c57ebb43d
 
-COCOAPODS: 1.9.0
+COCOAPODS: 1.9.3
