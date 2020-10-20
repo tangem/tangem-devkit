@@ -4,12 +4,14 @@ import 'PersonalizeCard.dart';
 import 'ConfigForPersonalize.dart';
 import 'PurgeWallet.dart';
 import 'dart:convert';
+import 'DepersonalizeCard.dart';
 
 void main() {
   final configForPersonalize = ConfigForPersonalize();
   final personalizeCardMethod = PersonalizeCard();
   final purgeWalletMethod = PurgeWallet();
   final backButton = find.byTooltip('Back');
+  final depersonalize = DepersonalizeCard();
 
   FlutterDriver driver;
 
@@ -39,6 +41,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });
@@ -71,6 +75,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });

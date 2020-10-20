@@ -1,15 +1,16 @@
 import 'dart:convert';
-
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-
 import 'ConfigForPersonalize.dart';
 import 'PersonalizeCard.dart';
+import 'DepersonalizeCard.dart';
 
 void main() {
 
   final configForPersonalize = ConfigForPersonalize();
   final personalizeCardMethod = PersonalizeCard();
+  final depersonalize = DepersonalizeCard();
+  final backButton = find.byTooltip('Back');
 
   FlutterDriver driver;
 
@@ -181,6 +182,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });
@@ -357,6 +360,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });
@@ -533,6 +538,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });
@@ -709,6 +716,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });
@@ -885,6 +894,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });
@@ -1061,6 +1072,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });
