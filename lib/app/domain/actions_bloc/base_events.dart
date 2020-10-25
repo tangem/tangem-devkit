@@ -1,4 +1,4 @@
-import 'package:tangem_sdk/card_responses/other_responses.dart';
+import 'package:tangem_sdk/tangem_sdk.dart';
 
 abstract class Event {
   const Event();
@@ -11,7 +11,7 @@ class ECardActionSuccess extends Event {
 }
 
 class ECardActionError extends Event {
-  final ErrorResponse error;
+  final TangemSdkPluginError error;
 
   ECardActionError(this.error);
 }

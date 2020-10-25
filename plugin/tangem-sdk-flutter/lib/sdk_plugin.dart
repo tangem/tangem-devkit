@@ -119,6 +119,25 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
+  static Future readIssuerExtraData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    _channel
+        .invokeMethod(cReadIssuerExData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cReadIssuerExData, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future writeIssuerExtraData(
+      Callback callback, String issuerDataHex, String startingSignatureHex, String finalizingSignatureHex,
+      [Map<String, dynamic> valuesToExport]) async {
+    valuesToExport[issuerData] = issuerDataHex;
+    valuesToExport[startingSignature] = startingSignatureHex;
+    valuesToExport[finalizingSignature] = finalizingSignatureHex;
+    _channel
+        .invokeMethod(cWriteIssuerExData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cWriteIssuerExData, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
   static Future readUserData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
         .invokeMethod(cReadUserData, valuesToExport)
@@ -140,25 +159,6 @@ class TangemSdk {
     _channel
         .invokeMethod(cWriteUserProtectedData, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cWriteUserData, result)))
-        .catchError((error) => _sendBackError(callback, error));
-  }
-
-  static Future readIssuerExtraData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
-    _channel
-        .invokeMethod(cReadIssuerExData, valuesToExport)
-        .then((result) => callback.onSuccess(_createResponse(cReadIssuerExData, result)))
-        .catchError((error) => _sendBackError(callback, error));
-  }
-
-  static Future writeIssuerExtraData(
-      Callback callback, String issuerDataHex, String startingSignatureHex, String finalizingSignatureHex,
-      [Map<String, dynamic> valuesToExport]) async {
-    valuesToExport[issuerData] = issuerDataHex;
-    valuesToExport[startingSignature] = startingSignatureHex;
-    valuesToExport[finalizingSignature] = finalizingSignatureHex;
-    _channel
-        .invokeMethod(cWriteIssuerExData, valuesToExport)
-        .then((result) => callback.onSuccess(_createResponse(cWriteIssuerExData, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
@@ -208,10 +208,25 @@ class TangemSdk {
     return response;
   }
 
-  static _sendBackError(Callback callback, PlatformException ex) {
-    final error = ErrorResponse.fromException(ex);
-    callback.onError(error);
+  static _sendBackError(Callback callback, dynamic error) {
+    if (error is TangemSdkPluginError) {
+      callback.onError(error);
+    } else if (error is PlatformException) {
+      final jsonString = error.details;
+      final map = json.decode(jsonString);
+      callback.onError(TangemSdkPluginError(map['localizedDescription']));
+    } else {
+      print("Unknown plugin error: $error");
+    }
   }
+}
+
+class TangemSdkPluginError implements Exception {
+  final String message;
+
+  TangemSdkPluginError(this.message);
+
+  String toString() => message;
 }
 
 class Callback {

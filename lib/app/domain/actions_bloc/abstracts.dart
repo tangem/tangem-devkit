@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_bloc.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 abstract class ActionBloc<T> extends Disposable {
@@ -12,12 +11,12 @@ abstract class ActionBloc<T> extends Disposable {
   List<StreamSubscription> subscriptions = [];
 
   PublishSubject _successResponse = PublishSubject<T>();
-  PublishSubject _errorResponse = PublishSubject<ErrorResponse>();
+  PublishSubject _errorResponse = PublishSubject<TangemSdkPluginError>();
   PublishSubject _snackbarMessage = PublishSubject<dynamic>();
 
   Stream<T> get successResponseStream => _successResponse.stream;
 
-  Stream<ErrorResponse> get errorResponseStream => _errorResponse.stream;
+  Stream<TangemSdkPluginError> get errorResponseStream => _errorResponse.stream;
 
   Stream<dynamic> get snackbarMessageStream => _snackbarMessage.stream;
 
@@ -27,7 +26,7 @@ abstract class ActionBloc<T> extends Disposable {
     _successResponse.add(success);
   }
 
-  sendError(ErrorResponse error) {
+  sendError(TangemSdkPluginError error) {
     _errorResponse.add(error);
   }
 
