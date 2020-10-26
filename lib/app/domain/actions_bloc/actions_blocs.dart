@@ -1,37 +1,18 @@
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
-import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
-import 'package:tangem_sdk/model/sdk.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class ReadIssuerDataBloc extends ActionBloc<ReadIssuerDataResponse> {
-  final bsCid = BehaviorSubject<String>();
-
-  String _cid;
-
-  ReadIssuerDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-  }
-
   @override
-  invokeAction() {
-    TangemSdk.readIssuerData(callback, {TangemSdk.cid: _cid});
+  CommandSignatureData createCommandData() {
+    return ReadIssuerDataModel();
   }
 }
 
 class ReadIssuerExDataBloc extends ActionBloc<ReadIssuerExDataResponse> {
-  final bsCid = BehaviorSubject<String>();
-
-  String _cid;
-
-  ReadIssuerExDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-  }
-
   @override
-  invokeAction() {
-    TangemSdk.readIssuerExtraData(callback, {TangemSdk.cid: _cid});
+  CommandSignatureData createCommandData() {
+    return ReadIssuerExDataModel();
   }
 }
 
@@ -39,12 +20,10 @@ class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
   final bsIssuerData = BehaviorSubject<String>();
   final bsIssuerDataCounter = BehaviorSubject<String>();
 
-  String _cid;
   String _issuerData;
   int _issuerDataCounter;
 
   WriteIssuerDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
     subscriptions.add(bsIssuerData.stream.listen((event) => _issuerData = event));
     subscriptions.add(
         bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
@@ -53,51 +32,32 @@ class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
   }
 
   @override
-  invokeAction() {
-    //TODO: create signature
-    TangemSdk.writeIssuerData(callback, _issuerData.toHexString(), "signature".toHexString(), {
-      TangemSdk.cid: _cid,
-      TangemSdk.issuerDataCounter: _issuerDataCounter,
-    });
+  CommandSignatureData createCommandData() {
+    return WriteIssuerDataModel(_issuerData, _issuerDataCounter);
   }
 }
 
 class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
   final bsIssuerDataCounter = BehaviorSubject<String>();
 
-  String _cid;
   int _issuerDataCounter;
 
   WriteIssuerExDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
     subscriptions.add(
         bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = event.isEmpty ? null : int.parse(event)));
     bsIssuerDataCounter.add("1");
   }
 
   @override
-  invokeAction() {
-    //TODO: create startingSig, finalizingSig
-    TangemSdk.writeIssuerExtraData(
-        callback, "issuerData".toHexString(), "startingSig".toHexString(), "finalizingSig".toHexString(), {
-      TangemSdk.cid: _cid,
-      TangemSdk.issuerDataCounter: _issuerDataCounter,
-    });
+  CommandSignatureData createCommandData() {
+    return WriteIssuerExDataModel("issuerData", _issuerDataCounter);
   }
 }
 
 class ReadUserDataBloc extends ActionBloc<ReadUserDataResponse> {
-  final bsCid = BehaviorSubject<String>();
-
-  String _cid;
-
-  ReadUserDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-  }
-
   @override
-  invokeAction() {
-    TangemSdk.readUserData(callback, {TangemSdk.cid: _cid});
+  CommandSignatureData createCommandData() {
+    return ReadUserDataModel();
   }
 }
 
@@ -105,12 +65,10 @@ class WriteUserDataBloc extends ActionBloc<WriteUserDataResponse> {
   final bsUserData = BehaviorSubject<String>();
   final bsUserCounter = BehaviorSubject<String>();
 
-  String _cid;
   String _userData;
   int _userCounter;
 
   WriteUserDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
     subscriptions.add(bsUserData.stream.listen((event) => _userData = event));
     subscriptions.add(bsUserCounter.stream.listen((event) => _userCounter = event.isEmpty ? null : int.parse(event)));
     bsUserData.add("User data to be written on a card");
@@ -118,11 +76,8 @@ class WriteUserDataBloc extends ActionBloc<WriteUserDataResponse> {
   }
 
   @override
-  invokeAction() {
-    TangemSdk.writeUserData(callback, _userData.toHexString(), {
-      TangemSdk.cid: _cid,
-      TangemSdk.userCounter: _userCounter,
-    });
+  CommandSignatureData createCommandData() {
+    return WriteUserDataModel(_userData, _userCounter);
   }
 }
 
@@ -130,12 +85,10 @@ class WriteUserProtectedDataBloc extends ActionBloc<WriteUserDataResponse> {
   final bsUserProtectedData = BehaviorSubject<String>();
   final bsUserProtectedCounter = BehaviorSubject<String>();
 
-  String _cid;
   String _userProtectedData;
   int _userProtectedCounter;
 
   WriteUserProtectedDataBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
     subscriptions.add(bsUserProtectedData.stream.listen((event) => _userProtectedData = event));
     subscriptions.add(bsUserProtectedCounter.stream
         .listen((event) => _userProtectedCounter = event.isEmpty ? null : int.parse(event)));
@@ -144,41 +97,22 @@ class WriteUserProtectedDataBloc extends ActionBloc<WriteUserDataResponse> {
   }
 
   @override
-  invokeAction() {
-    TangemSdk.writeUserProtectedData(callback, _userProtectedData.toHexString(), {
-      TangemSdk.cid: _cid,
-      TangemSdk.userProtectedCounter: _userProtectedCounter,
-    });
+  CommandSignatureData createCommandData() {
+    return WriteUserProtectedDataModel(_userProtectedData, _userProtectedCounter);
   }
 }
 
 class CreateWalletBloc extends ActionBloc<CreateWalletResponse> {
-  final bsCid = BehaviorSubject<String>();
-
-  String _cid;
-
-  CreateWalletBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-  }
-
   @override
-  invokeAction() {
-    TangemSdk.createWallet(callback, {TangemSdk.cid: _cid});
+  CommandSignatureData createCommandData() {
+    return CreateWalletModel();
   }
 }
 
 class PurgeWalletBloc extends ActionBloc<PurgeWalletResponse> {
-  final bsCid = BehaviorSubject<String>();
-
-  String _cid;
-
-  PurgeWalletBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
-  }
-
   @override
-  invokeAction() {
-    TangemSdk.purgeWallet(callback, {TangemSdk.cid: _cid});
+  CommandSignatureData createCommandData() {
+    return PurgeWalletModel();
   }
 }
 
@@ -186,20 +120,15 @@ class SetPinBlock extends ActionBloc<SetPinResponse> {
   final PinType pinType;
   final bsPinCode = BehaviorSubject<String>();
 
-  String _cid;
   String _pinCode;
 
   SetPinBlock(this.pinType) {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
     subscriptions.add(bsPinCode.stream.listen((event) => _pinCode = event));
   }
 
   @override
-  invokeAction() {
+  CommandSignatureData createCommandData() {
     final code = _pinCode == null || _pinCode.isEmpty ? null : _pinCode;
-    TangemSdk.setPinCode(pinType, callback, {
-      TangemSdk.cid: _cid,
-      TangemSdk.pinCode: code,
-    });
+    return pinType == PinType.PIN1 ? PinCode1Model(code) : PinCode2Model(code);
   }
 }

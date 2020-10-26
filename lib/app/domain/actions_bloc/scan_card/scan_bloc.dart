@@ -35,7 +35,7 @@ class ScanBloc extends Bloc<Event, SScan> {
       bloc.add(ECardScanError(error));
       _scanHandler = null;
     });
-    TangemSdk.scanCard(callback, {});
+    TangemSdk.runCommand(callback, ScanModel());
   }
 }
 

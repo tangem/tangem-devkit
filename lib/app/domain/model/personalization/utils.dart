@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
-import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:tangem_sdk/model/sdk.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import 'product_mask.dart';
@@ -24,6 +22,20 @@ class Utils {
       tokenDecimal: cardData.tokenDecimal,
       manufacturerSignature: null,
     );
+  }
+
+  static ProductMaskSdk createProductMask(PersonalizationConfig config) {
+    final isNote = config.cardData.productNote;
+    final isTag = config.cardData.productTag;
+    final isIdCard = config.cardData.productIdCard;
+    final isIdIssuer = config.cardData.productIdIssuer;
+
+    final productMaskBuilder = ProductMaskBuilder();
+    if (isNote) productMaskBuilder.add(Product.Note);
+    if (isTag) productMaskBuilder.add(Product.Tag);
+    if (isIdCard) productMaskBuilder.add(Product.IdCard);
+    if (isIdIssuer) productMaskBuilder.add(Product.IdIssuer);
+    return productMaskBuilder.build();
   }
 
   static String _createCardDate() => DateFormat("yyyy-MM-dd").format(DateTime.now());
@@ -78,17 +90,41 @@ class Utils {
     );
   }
 
-  static ProductMaskSdk createProductMask(PersonalizationConfig config) {
-    final isNote = config.cardData.productNote;
-    final isTag = config.cardData.productTag;
-    final isIdCard = config.cardData.productIdCard;
-    final isIdIssuer = config.cardData.productIdIssuer;
 
-    final productMaskBuilder = ProductMaskBuilder();
-    if (isNote) productMaskBuilder.add(Product.Note);
-    if (isTag) productMaskBuilder.add(Product.Tag);
-    if (isIdCard) productMaskBuilder.add(Product.IdCard);
-    if (isIdIssuer) productMaskBuilder.add(Product.IdIssuer);
-    return productMaskBuilder.build();
+
+  static Issuer createDefaultIssuer() {
+    final name = "TANGEM SDK";
+    final dataPublic =
+        "045f16bd1d2eafe463e62a335a09e6b2bbcbd04452526885cb679fc4d27af1bd22f553c7deefb54fd3d4f361d14e6dc3f11b7d4ea183250a60720ebdf9e110cd26";
+    final dataPrivate = "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92";
+
+    final transPublic =
+        "0484c5192e9bfa6c528a344f442137a92b89ea835bfef1d04cb4362eb906b508c5889846cfea71ba6dc7b3120c2208df9c46127d3d85cb5cfbd1479e97133a39d8";
+    final transPrivate = "11121314151617184771ED81F2BACF57479E4735EB1405081918171615141312";
+    return Issuer(
+      name,
+      name + "\u0000",
+      KeyPairHex(dataPublic, dataPrivate),
+      KeyPairHex(transPublic, transPrivate),
+    );
+  }
+
+  static Acquirer createDefaultAcquirer() {
+    final name = "Smart Cash";
+    final publicKey =
+        "0456ad1a82b22bcb40c38fd08939f87e6b80e40dec5b3bdb351c55fcd709e47f9fb2ed00c2304d3a986f79c5ae0ac3c84e88da46dc8f513b7542c716af8c9a2daf";
+    final privateKey = "21222324252627284771ED81F2BACF57479E4735EB1405083927372D40DA9E92";
+    return Acquirer(
+      name,
+      name + "\u0000",
+      KeyPairHex(publicKey, privateKey),
+    );
+  }
+
+  static Manufacturer createDefaultManufacturer() {
+    final publicKey =
+        "04bab86d56298c996f564a84fc88e28aed38184b12f07e519113bef48c76f3df3adc303599b08ac05b55ec3df98d9338573a6242f76f5d28f4f0f364e87e8fca2f";
+    final privateKey = "1b48cfd24bbb5b394771ed81f2bacf57479e4735eb1405083927372d40da9e92";
+    return Manufacturer("Tangem", KeyPairHex(publicKey, privateKey));
   }
 }

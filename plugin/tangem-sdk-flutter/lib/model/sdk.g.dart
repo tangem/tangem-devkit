@@ -13,9 +13,9 @@ CardConfigSdk _$CardConfigSdkFromJson(Map<String, dynamic> json) {
     series: json['series'] as String,
     startNumber: json['startNumber'] as int,
     count: json['count'] as int,
-    pin: json['pin'] as List<int>,
-    pin2: json['pin2'] as List<int>,
-    pin3: json['pin3'] as List<int>,
+    pin: (json['pin'] as List)?.map((e) => e as int)?.toList(),
+    pin2: (json['pin2'] as List)?.map((e) => e as int)?.toList(),
+    pin3: (json['pin3'] as List)?.map((e) => e as int)?.toList(),
     hexCrExKey: json['hexCrExKey'] as String,
     cvc: json['cvc'] as String,
     pauseBeforePin2: json['pauseBeforePin2'] as int,
@@ -38,8 +38,7 @@ CardConfigSdk _$CardConfigSdkFromJson(Map<String, dynamic> json) {
     allowSelectBlockchain: json['allowSelectBlockchain'] as bool,
     prohibitPurgeWallet: json['prohibitPurgeWallet'] as bool,
     allowUnencrypted: json['allowUnencrypted'] as bool,
-    allowFastEncryption:
-        json['allowFastEncryption'] as bool,
+    allowFastEncryption: json['allowFastEncryption'] as bool,
     protectIssuerDataAgainstReplay:
         json['protectIssuerDataAgainstReplay'] as bool,
     prohibitDefaultPIN1: json['prohibitDefaultPIN1'] as bool,
@@ -106,13 +105,79 @@ Map<String, dynamic> _$CardConfigSdkToJson(CardConfigSdk instance) =>
           instance.skipCheckPIN2CVCIfValidatedByIssuer,
       'skipSecurityDelayIfValidatedByLinkedTerminal':
           instance.skipSecurityDelayIfValidatedByLinkedTerminal,
-      'restrictOverwriteIssuerExtraData': instance.restrictOverwriteIssuerExtraData,
+      'restrictOverwriteIssuerExtraData':
+          instance.restrictOverwriteIssuerExtraData,
       'requireTerminalTxSignature': instance.requireTerminalTxSignature,
       'requireTerminalCertSignature': instance.requireTerminalCertSignature,
       'checkPIN3OnCard': instance.checkPIN3OnCard,
       'createWallet': instance.createWallet,
       'cardData': instance.cardData,
       'ndefRecords': instance.ndefRecords,
+    };
+
+Issuer _$IssuerFromJson(Map<String, dynamic> json) {
+  return Issuer(
+    json['name'] as String,
+    json['id'] as String,
+    json['dataKeyPair'] == null
+        ? null
+        : KeyPairHex.fromJson(json['dataKeyPair'] as Map<String, dynamic>),
+    json['transactionKeyPair'] == null
+        ? null
+        : KeyPairHex.fromJson(
+            json['transactionKeyPair'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$IssuerToJson(Issuer instance) => <String, dynamic>{
+      'name': instance.name,
+      'id': instance.id,
+      'dataKeyPair': instance.dataKeyPair,
+      'transactionKeyPair': instance.transactionKeyPair,
+    };
+
+Acquirer _$AcquirerFromJson(Map<String, dynamic> json) {
+  return Acquirer(
+    json['name'] as String,
+    json['id'] as String,
+    json['keyPair'] == null
+        ? null
+        : KeyPairHex.fromJson(json['keyPair'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$AcquirerToJson(Acquirer instance) => <String, dynamic>{
+      'name': instance.name,
+      'id': instance.id,
+      'keyPair': instance.keyPair,
+    };
+
+Manufacturer _$ManufacturerFromJson(Map<String, dynamic> json) {
+  return Manufacturer(
+    json['name'] as String,
+    json['keyPair'] == null
+        ? null
+        : KeyPairHex.fromJson(json['keyPair'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$ManufacturerToJson(Manufacturer instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'keyPair': instance.keyPair,
+    };
+
+KeyPairHex _$KeyPairHexFromJson(Map<String, dynamic> json) {
+  return KeyPairHex(
+    json['publicKey'] as String,
+    json['privateKey'] as String,
+  );
+}
+
+Map<String, dynamic> _$KeyPairHexToJson(KeyPairHex instance) =>
+    <String, dynamic>{
+      'publicKey': instance.publicKey,
+      'privateKey': instance.privateKey,
     };
 
 CardDataSdk _$CardDataSdkFromJson(Map<String, dynamic> json) {

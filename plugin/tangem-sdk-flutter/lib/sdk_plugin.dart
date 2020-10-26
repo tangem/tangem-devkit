@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
+import 'package:tangem_sdk/model/signature_data_models.dart';
 
 import 'card_responses/other_responses.dart';
 import 'model/sdk.dart';
@@ -11,6 +12,8 @@ import 'model/sdk.dart';
 /// The response from the successfully completed execution of the 'channel method' is expected in the json.
 /// If an error occurs within the 'channel method', it is expected PlatformException converter to the json.
 class TangemSdk {
+  static const commandType = "commandType";
+
   static const cScanCard = 'scanCard';
   static const cSign = 'sign';
   static const cPersonalize = 'personalize';
@@ -59,6 +62,22 @@ class TangemSdk {
     return _channel.invokeMethod("allowsOnlyDebugCards", {isAllowedOnlyDebugCards: isAllowed});
   }
 
+  static Future runCommand(Callback callback, CommandSignatureData commandSignatureData) async {
+    final signatureData = commandSignatureData.toSignatureData();
+    final type = signatureData[commandType];
+
+    if (type == null) {
+      final pluginError = TangemSdkPluginError("Can't execute the task. Missing the '$type' field");
+      _sendBackError(callback, pluginError);
+      return;
+    }
+
+    _channel
+        .invokeMethod(type, signatureData)
+        .then((result) => callback.onSuccess(_createResponse(type, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
   static Future scanCard(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
         .invokeMethod(cScanCard, valuesToExport)
@@ -102,13 +121,6 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future readIssuerData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
-    _channel
-        .invokeMethod(cReadIssuerData, valuesToExport)
-        .then((result) => callback.onSuccess(_createResponse(cReadIssuerData, result)))
-        .catchError((error) => _sendBackError(callback, error));
-  }
-
   static Future writeIssuerData(Callback callback, String issuerDataHex, String issuerDataSignatureHex,
       [Map<String, dynamic> valuesToExport]) async {
     valuesToExport[issuerData] = issuerDataHex;
@@ -119,10 +131,10 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future readIssuerExtraData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+  static Future readIssuerData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
-        .invokeMethod(cReadIssuerExData, valuesToExport)
-        .then((result) => callback.onSuccess(_createResponse(cReadIssuerExData, result)))
+        .invokeMethod(cReadIssuerData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cReadIssuerData, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
@@ -138,10 +150,10 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future readUserData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+  static Future readIssuerExtraData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
     _channel
-        .invokeMethod(cReadUserData, valuesToExport)
-        .then((result) => callback.onSuccess(_createResponse(cReadUserData, result)))
+        .invokeMethod(cReadIssuerExData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cReadIssuerExData, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
@@ -150,6 +162,13 @@ class TangemSdk {
     _channel
         .invokeMethod(cWriteUserData, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cWriteUserData, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future readUserData(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    _channel
+        .invokeMethod(cReadUserData, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cReadUserData, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
@@ -216,7 +235,7 @@ class TangemSdk {
       final map = json.decode(jsonString);
       callback.onError(TangemSdkPluginError(map['localizedDescription']));
     } else {
-      print("Unknown plugin error: $error");
+      callback.onError(TangemSdkPluginError("Unknown plugin error: ${error.toString()}"));
     }
   }
 }

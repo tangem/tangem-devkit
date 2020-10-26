@@ -25,6 +25,6 @@ class DepersonalizeBloc extends Bloc<Event, SDepersonalize> {
     }, (error) {
       add(ECardDepersonalizeError(error));
     });
-    TangemSdk.depersonalize(callback, {});
+    TangemSdk.runCommand(callback, DepersonalizeModel());
   }
 }

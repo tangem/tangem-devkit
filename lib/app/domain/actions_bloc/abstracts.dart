@@ -8,6 +8,13 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 abstract class ActionBloc<T> extends Disposable {
   final bsCid = BehaviorSubject<String>();
 
+  String _cid;
+  Message _initialMessage;
+
+  ActionBloc() {
+    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
+  }
+
   List<StreamSubscription> subscriptions = [];
 
   PublishSubject _successResponse = PublishSubject<T>();
@@ -40,10 +47,17 @@ abstract class ActionBloc<T> extends Disposable {
     }, (error) {
       sendError(error);
     });
-    TangemSdk.scanCard(callback, {});
+    TangemSdk.runCommand(callback, ScanModel());
   }
 
-  invokeAction();
+  invokeAction() {
+    final commandData = createCommandData();
+    commandData.cardId = _cid;
+    commandData.initialMessage = _initialMessage;
+    TangemSdk.runCommand(callback, commandData);
+  }
+
+  CommandSignatureData createCommandData();
 
   @override
   dispose() {

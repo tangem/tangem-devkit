@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_card_es.dart';
-import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../base_events.dart';
@@ -39,16 +38,6 @@ class SignBloc extends Bloc<Event, SSign> {
     }, (error) {
       add(ECardSignError(error));
     });
-    TangemSdk.sign(callback, _prepareHashes(state.dataForHashing), {TangemSdk.cid: state.cid});
-  }
-
-  List<String> _prepareHashes(String dataForHashing) {
-    final splitPattern = ",";
-    if (dataForHashing.contains(splitPattern)) {
-      final rawHashes = dataForHashing.split(splitPattern);
-      return rawHashes.map((element) => element.trim().toHexString()).toList();
-    } else {
-      return [dataForHashing.toHexString()];
-    }
+    TangemSdk.runCommand(callback, SignModel(state.dataForHashing)..cardId = state.cid);
   }
 }
