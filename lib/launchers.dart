@@ -4,7 +4,9 @@ import 'package:devkit/commons/global/show_description.dart';
 import 'package:devkit/commons/global/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tangem_sdk/sdk_plugin.dart';
 
+import 'app/domain/sdk/sdk_card_filter_switcher.dart';
 import 'application.dart';
 import 'commons/utils/app_attributes.dart';
 import 'commons/utils/logger.dart';
@@ -21,6 +23,8 @@ class AppLauncher {
   }
 
   _launchApplication(AppLauncher initializer) {
+    final isAllowedOnlyDebug = TangemSdkCardFilterSwitcher().isAllowedOnlyDebugCards();
+    TangemSdk.allowsOnlyDebugCards(isAllowedOnlyDebug);
     runApp(DevKitApp());
   }
 }
