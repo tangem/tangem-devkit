@@ -140,3 +140,17 @@ class SetPinResponse {
 
   Map<String, dynamic> toJson() => _$SetPinResponseToJson(this);
 }
+
+@JsonSerializable()
+class FileHashData {
+  final String startingHash;
+  final String finalizingHash;
+  final String startingSignature;
+  final String finalizingSignature;
+
+  FileHashData(this.startingHash, this.finalizingHash, [this.startingSignature, this.finalizingSignature]);
+
+  factory FileHashData.fromJson(Map<String, dynamic> json) => _$FileHashDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FileHashDataToJson(this);
+}

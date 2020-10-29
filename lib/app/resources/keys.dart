@@ -78,6 +78,9 @@ class ItemName {
   static final tokenDecimal = "tokenDecimal";
 
   //response screen
+  static final commandJson = "commandJson";
+  static final responseSuccessJson = "responseSuccessJson";
+  static final responseErrorJson = "responseErrorJson";
   static final responseJson = "responseJson";
 
   //personalization save\restore config dialog

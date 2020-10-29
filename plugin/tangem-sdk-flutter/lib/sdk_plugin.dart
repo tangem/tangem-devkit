@@ -29,6 +29,7 @@ class TangemSdk {
   static const cWriteUserProtectedData = 'writeUserProtectedData';
   static const cSetPin1 = 'setPin1';
   static const cSetPin2 = 'setPin2';
+  static const cPrepareHashes = "prepareHashes";
 
   static const isAllowedOnlyDebugCards = "isAllowedOnlyDebugCards";
   static const cid = "cid";
@@ -50,6 +51,9 @@ class TangemSdk {
   static const userProtectedData = "userProtectedData";
   static const userProtectedCounter = "userProtectedCounter";
   static const pinCode = "pinCode";
+  static const fileData = "fileData";
+  static const fileCounter = "fileCounter";
+  static const privateKey = "privateKey";
 
   static const MethodChannel _channel = const MethodChannel('tangemSdk');
 
@@ -63,12 +67,18 @@ class TangemSdk {
   }
 
   static Future runCommand(Callback callback, CommandSignatureData commandSignatureData) async {
-    final signatureData = commandSignatureData.toSignatureData();
-    final type = signatureData[commandType];
+    Map<String, dynamic> signatureData = {};
+    try {
+      signatureData = await commandSignatureData.toSignatureData((error) => _sendBackError(callback, error));
+      if (signatureData == null) return;
+    } catch (exception) {
+      _sendBackError(callback, TangemSdkError("Can't get signature data. Error: ${exception.toString()}"));
+      return;
+    }
 
+    final type = signatureData[commandType];
     if (type == null) {
-      final pluginError = TangemSdkPluginError("Can't execute the task. Missing the '$type' field");
-      _sendBackError(callback, pluginError);
+      _sendBackError(callback, TangemSdkError("Can't execute the task. Missing the '$type' field"));
       return;
     }
 
@@ -189,6 +199,20 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
+  static Future prepareHashes(Callback callback, String cardId, String fileDataHex, int fileCounter,
+      [String privateKeyHex]) async {
+    final valuesToExport = <String, dynamic>{
+      cid: cardId,
+      fileData: fileDataHex,
+      TangemSdk.fileCounter: fileCounter,
+      privateKey: privateKeyHex,
+    };
+    _channel
+        .invokeMethod(cPrepareHashes, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cPrepareHashes, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
   static dynamic _createResponse(String name, dynamic response) {
     final jsonResponse = jsonDecode(response);
 
@@ -223,29 +247,51 @@ class TangemSdk {
         return SetPinResponse.fromJson(jsonResponse);
       case cSetPin2:
         return SetPinResponse.fromJson(jsonResponse);
+      case cPrepareHashes:
+        return FileHashData.fromJson(jsonResponse);
     }
     return response;
   }
 
   static _sendBackError(Callback callback, dynamic error) {
-    if (error is TangemSdkPluginError) {
+    if (error is TangemSdkBaseError) {
       callback.onError(error);
     } else if (error is PlatformException) {
       final jsonString = error.details;
       final map = json.decode(jsonString);
-      callback.onError(TangemSdkPluginError(map['localizedDescription']));
+      if (map["code"] == 50002) {
+        callback.onError(UserCancelledError(map['localizedDescription']));
+      } else {
+        callback.onError(SdkPluginError(map['localizedDescription']));
+      }
+    } else if (error is Exception) {
+      callback.onError(SdkPluginError(error.toString()));
     } else {
-      callback.onError(TangemSdkPluginError("Unknown plugin error: ${error.toString()}"));
+      callback.onError(SdkPluginError("Unknown plugin error: ${error.toString()}"));
     }
   }
 }
 
-class TangemSdkPluginError implements Exception {
+abstract class TangemSdkBaseError implements Exception {}
+
+class SdkPluginError extends TangemSdkBaseError {
   final String message;
 
-  TangemSdkPluginError(this.message);
+  SdkPluginError(this.message);
 
   String toString() => message;
+}
+
+class TangemSdkError extends TangemSdkBaseError {
+  final String message;
+
+  TangemSdkError(this.message);
+
+  String toString() => message;
+}
+
+class UserCancelledError extends SdkPluginError {
+  UserCancelledError(String message) : super(message);
 }
 
 class Callback {

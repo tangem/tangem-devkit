@@ -8,6 +8,8 @@ import 'product_mask.dart';
 import 'support_classes.dart';
 
 class Utils {
+  static String cardId = "BB03000000000004";
+
   static CardDataSdk createCardDataSdk(PersonalizationConfig config, Issuer issuer) {
     final cardData = config.cardData;
     cardData.date = cardData.date != null && cardData.date.isEmpty ? _createCardDate() : cardData.date;
@@ -127,4 +129,40 @@ class Utils {
     final privateKey = "1b48cfd24bbb5b394771ed81f2bacf57479e4735eb1405083927372d40da9e92";
     return Manufacturer("Tangem", KeyPairHex(publicKey, privateKey));
   }
+}
+
+class CommandJsonTest {
+  static String scan = "{\"commandType\":\"scanCard\"}";
+
+  static String sign =
+      "{\"commandType\":\"sign\",\"dataForHashing\":\"some,data\",\"cid\":\"BB03000000000004\",\"initialMessage\":{"
+      "\"body\":\"Body message\",\"header\":\"Header Message\"}}";
+
+  static String depersonalize = "{\"commandType\":\"depersonalize\"}";
+  static String createWallet = "{\"commandType\":\"createWallet\"}";
+  static String purgeWallet = "{\"commandType\":\"purgeWallet\"}";
+
+  static String readIssuerData = "{\"commandType\":\"readIssuerData\"}";
+  static String writeIssuerData = "{"
+      "\"cid\":\"${Utils.cardId}\","
+      "\"issuerData\":\"Some issuer data\","
+      "\"issuerDataCounter\":1,"
+      "\"privateKey\":\"${Utils.createDefaultIssuer().dataKeyPair.privateKey}\","
+      "\"commandType\":\"writeIssuerData\""
+      "}";
+
+  static String readIssuerExData = "{\"commandType\":\"readIssuerExData\"}";
+  static String writeIssuerExData = "{"
+      "\"cid\":\"${Utils.cardId}\","
+      "\"issuerData\":\"Some issuer extra data\","
+      "\"issuerDataCounter\":1,"
+      "\"privateKey\":\"${Utils.createDefaultIssuer().dataKeyPair.privateKey}\","
+      "\"commandType\":\"writeIssuerExData\""
+      "}";
+
+
+  static String readUserData = "{\"commandType\":\"readUserData\"}";
+  static String writeUserData = "{\"userData\":\"Some user data\",\"userCounter\":3,\"commandType\":\"writeUserData\"}";
+  static String writeUserProtectedData =
+      "{\"userProtectedData\":\"Some protected data\",\"userProtectedCounter\":3,\"commandType\":\"writeUserProtectedData\"}";
 }

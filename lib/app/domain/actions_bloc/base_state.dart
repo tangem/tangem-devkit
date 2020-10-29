@@ -7,5 +7,5 @@ class SCardActionSuccess {
 }
 
 class SCardActionError {
-  TangemSdkPluginError error;
+  SdkPluginError error;
 }

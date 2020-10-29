@@ -81,19 +81,30 @@ class MainBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final trans = Transl.of(context);
 
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        final pair = _transKeys[index];
+    return Stack(
+      children: [
+        ListItemWidget(
+          key: ItemId.from("test"),
+          item: TextWidget(trans.get("test"), fontSize: 18),
+          description: StubWidget(),
+          onTap: () => Navigator.of(context).pushNamed("/test"),
+        ),
+        Container(decoration: BoxDecoration(color: Colors.white),),
+        ListView.separated(
+          itemBuilder: (context, index) {
+            final pair = _transKeys[index];
 
-        return ListItemWidget(
-          key: ItemId.from(pair.b),
-          item: TextWidget(trans.get(pair.a), fontSize: 18),
-          description: DescriptionWidget(trans.getDesc(pair.a)),
-          onTap: () => Navigator.of(context).pushNamed("/${pair.b.toLowerCase()}"),
-        );
-      },
-      itemCount: _transKeys.length,
-      separatorBuilder: (context, index) => HorizontalDelimiter(),
+            return ListItemWidget(
+              key: ItemId.from(pair.b),
+              item: TextWidget(trans.get(pair.a), fontSize: 18),
+              description: DescriptionWidget(trans.getDesc(pair.a)),
+              onTap: () => Navigator.of(context).pushNamed("/${pair.b.toLowerCase()}"),
+            );
+          },
+          itemCount: _transKeys.length,
+          separatorBuilder: (context, index) => HorizontalDelimiter(),
+        ),
+      ],
     );
   }
 }

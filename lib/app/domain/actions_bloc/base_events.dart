@@ -11,7 +11,7 @@ class ECardActionSuccess extends Event {
 }
 
 class ECardActionError extends Event {
-  final TangemSdkPluginError error;
+  final SdkPluginError error;
 
   ECardActionError(this.error);
 }

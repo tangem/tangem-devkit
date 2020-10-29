@@ -151,3 +151,19 @@ Map<String, dynamic> _$SetPinResponseToJson(SetPinResponse instance) => <String,
       'cardId': instance.cardId,
       'status': instance.status,
     };
+
+FileHashData _$FileHashDataFromJson(Map<String, dynamic> json) {
+  return FileHashData(
+    json['startingHash'] as String,
+    json['finalizingHash'] as String,
+    json['startingSignature'] as String,
+    json['finalizingSignature'] as String,
+  );
+}
+
+Map<String, dynamic> _$FileHashDataToJson(FileHashData instance) => <String, dynamic>{
+      'startingHash': instance.startingHash,
+      'finalizingHash': instance.finalizingHash,
+      'startingSignature': instance.startingSignature,
+      'finalizingSignature': instance.finalizingSignature,
+    };

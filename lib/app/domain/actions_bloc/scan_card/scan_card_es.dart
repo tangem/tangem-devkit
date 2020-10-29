@@ -10,7 +10,7 @@ class ECardScanSuccess extends ECardActionSuccess {
 }
 
 class ECardScanError extends ECardActionError {
-  ECardScanError(TangemSdkPluginError error) : super(error);
+  ECardScanError(SdkPluginError error) : super(error);
 }
 
 class SScan extends SState {}
@@ -22,7 +22,7 @@ class SCardScanSuccess extends SScan with SCardActionSuccess {
 }
 
 class SCardScanError extends SScan with SCardActionError {
-  SCardScanError(TangemSdkPluginError error) {
+  SCardScanError(SdkPluginError error) {
     this.error = error;
   }
 }

@@ -1,14 +1,19 @@
+import 'dart:async';
+
 import 'package:tangem_sdk/tangem_sdk.dart';
+
+typedef ConversionError = Function(dynamic);
 
 abstract class CommandSignatureData {
   String cardId;
   Message initialMessage;
 
-  Map<String, dynamic> toSignatureData();
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]);
 
   static CommandSignatureData attachBaseData(CommandSignatureData taskData, Map<String, dynamic> json) {
     taskData.cardId = json[TangemSdk.cid];
-    taskData.initialMessage = Message.fromJson(json[TangemSdk.initialMessage]);
+    if (json[TangemSdk.initialMessage] != null)
+      taskData.initialMessage = Message.fromJson(json[TangemSdk.initialMessage]);
     return taskData;
   }
 }
@@ -32,9 +37,7 @@ abstract class SignatureDataModel extends CommandSignatureData {
 
   SignatureDataModel(this.type);
 
-  Map<String, dynamic> toSignatureData() => toJson();
-
-  Map<String, dynamic> toJson() => getBaseData();
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) => Future.value(getBaseData());
 
   Map<String, dynamic> getBaseData() {
     final map = <String, dynamic>{TangemSdk.commandType: type};
@@ -55,6 +58,10 @@ class SignModel extends SignatureDataModel {
 
   SignModel(this.dataForHashing) : super(TangemSdk.cSign);
 
+  factory SignModel.fromJson(Map<String, dynamic> json) {
+    return CommandSignatureData.attachBaseData(SignModel(json["dataForHashing"]), json);
+  }
+
   static List<String> getHashesFromString(String dataForHashing) {
     final splitPattern = ",";
     if (dataForHashing.contains(splitPattern)) {
@@ -66,9 +73,8 @@ class SignModel extends SignatureDataModel {
   }
 
   @override
-  Map<String, dynamic> toJson() => {
-        TangemSdk.hashes: getHashesFromString(dataForHashing),
-      }..addAll(getBaseData());
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async =>
+      {TangemSdk.hashes: getHashesFromString(dataForHashing)}..addAll(getBaseData());
 }
 
 class DepersonalizeModel extends SignatureDataModel {
@@ -94,16 +100,56 @@ class PurgeWalletModel extends SignatureDataModel {
 
 class WriteIssuerDataModel extends SignatureDataModel {
   final String issuerData;
+  final String issuerPrivateKeyHex;
   final int issuerDataCounter;
 
-  WriteIssuerDataModel(this.issuerData, [this.issuerDataCounter]) : super(TangemSdk.cWriteIssuerData);
+  WriteIssuerDataModel(
+    String cardId,
+    this.issuerData,
+    this.issuerPrivateKeyHex, [
+    this.issuerDataCounter,
+  ]) : super(TangemSdk.cWriteIssuerData) {
+    this.cardId = cardId;
+  }
+
+  factory WriteIssuerDataModel.fromJson(Map<String, dynamic> json) {
+    final model = WriteIssuerDataModel(
+      json[TangemSdk.cid],
+      json[TangemSdk.issuerData],
+      json[TangemSdk.privateKey],
+      json[TangemSdk.issuerDataCounter],
+    );
+    return CommandSignatureData.attachBaseData(model, json);
+  }
 
   @override
-  Map<String, dynamic> toJson() => {
-        TangemSdk.issuerData: issuerData.toHexString(),
-        TangemSdk.issuerDataSignature: "issuerDataSignature".toHexString(),
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    final issuerDataHex = issuerData.toHexString();
+    final completer = Completer<Map<String, dynamic>>();
+
+    final callback = Callback((success) {
+      if (success is! FileHashData) {
+        onError(Exception("PrepareHashes success, but type of result isn't the FileHashData"));
+        completer.complete(null);
+        return;
+      }
+
+      final finalizingSignature = (success as FileHashData).finalizingSignature;
+      final signatureData = {
+        TangemSdk.issuerData: issuerDataHex,
+        TangemSdk.issuerDataSignature: finalizingSignature,
         TangemSdk.issuerDataCounter: issuerDataCounter,
       }..addAll(getBaseData());
+      completer.complete(signatureData);
+    }, (error) {
+      onError(error);
+      completer.complete(null);
+    });
+
+    TangemSdk.prepareHashes(callback, cardId, issuerDataHex, issuerDataCounter, issuerPrivateKeyHex);
+
+    return completer.future;
+  }
 }
 
 class ReadIssuerDataModel extends SignatureDataModel {
@@ -115,17 +161,57 @@ class ReadIssuerDataModel extends SignatureDataModel {
 
 class WriteIssuerExDataModel extends SignatureDataModel {
   final String issuerExData;
+  final String issuerPrivateKeyHex;
   final int issuerDataCounter;
 
-  WriteIssuerExDataModel(this.issuerExData, [this.issuerDataCounter]) : super(TangemSdk.cWriteIssuerExData);
+  WriteIssuerExDataModel(
+    String cardId,
+    this.issuerExData,
+    this.issuerPrivateKeyHex, [
+    this.issuerDataCounter,
+  ]) : super(TangemSdk.cWriteIssuerExData) {
+    this.cardId = cardId;
+  }
+
+  factory WriteIssuerExDataModel.fromJson(Map<String, dynamic> json) {
+    final model = WriteIssuerExDataModel(
+      json[TangemSdk.cid],
+      json[TangemSdk.issuerData],
+      json[TangemSdk.privateKey],
+      json[TangemSdk.issuerDataCounter],
+    );
+    return CommandSignatureData.attachBaseData(model, json);
+  }
 
   @override
-  Map<String, dynamic> toJson() => {
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    final issuerDataHex = issuerExData.toHexString();
+    final completer = Completer<Map<String, dynamic>>();
+
+    final callback = Callback((success) {
+      if (success is! FileHashData) {
+        onError(Exception("PrepareHashes success, but type of result isn't the FileHashData"));
+        completer.complete(null);
+        return;
+      }
+
+      final fileHasData = success as FileHashData;
+      final signatureData = {
         TangemSdk.issuerData: issuerExData.toHexString(),
-        TangemSdk.startingSignature: "startingSignature".toHexString(),
-        TangemSdk.finalizingSignature: "finalizingSignature".toHexString(),
+        TangemSdk.startingSignature: fileHasData.startingSignature,
+        TangemSdk.finalizingSignature: fileHasData.finalizingSignature,
         TangemSdk.issuerDataCounter: issuerDataCounter,
       }..addAll(getBaseData());
+      completer.complete(signatureData);
+    }, (error) {
+      onError(error);
+      completer.complete(null);
+    });
+
+    TangemSdk.prepareHashes(callback, cardId, issuerDataHex, issuerDataCounter, issuerPrivateKeyHex);
+
+    return completer.future;
+  }
 }
 
 class ReadIssuerExDataModel extends SignatureDataModel {
@@ -141,11 +227,18 @@ class WriteUserDataModel extends SignatureDataModel {
 
   WriteUserDataModel(this.userData, [this.userCounter]) : super(TangemSdk.cWriteUserData);
 
+  factory WriteUserDataModel.fromJson(Map<String, dynamic> json) {
+    final model = WriteUserDataModel(json[TangemSdk.userData], json[TangemSdk.userCounter]);
+    return CommandSignatureData.attachBaseData(model, json);
+  }
+
   @override
-  Map<String, dynamic> toJson() => {
-        TangemSdk.userData: userData.toHexString(),
-        TangemSdk.userCounter: userCounter,
-      }..addAll(getBaseData());
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    return {
+      TangemSdk.userData: userData.toHexString(),
+      TangemSdk.userCounter: userCounter,
+    }..addAll(getBaseData());
+  }
 }
 
 class ReadUserDataModel extends SignatureDataModel {
@@ -162,31 +255,52 @@ class WriteUserProtectedDataModel extends SignatureDataModel {
   WriteUserProtectedDataModel(this.userProtectedData, [this.userProtectedCounter])
       : super(TangemSdk.cWriteUserProtectedData);
 
+  factory WriteUserProtectedDataModel.fromJson(Map<String, dynamic> json) {
+    final model = WriteUserProtectedDataModel(json[TangemSdk.userProtectedData], json[TangemSdk.userProtectedCounter]);
+    return CommandSignatureData.attachBaseData(model, json);
+  }
+
   @override
-  Map<String, dynamic> toJson() => {
-        TangemSdk.userProtectedData: userProtectedData.toHexString(),
-        TangemSdk.userProtectedCounter: userProtectedCounter,
-      }..addAll(getBaseData());
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    return {
+      TangemSdk.userProtectedData: userProtectedData.toHexString(),
+      TangemSdk.userProtectedCounter: userProtectedCounter,
+    }..addAll(getBaseData());
+  }
 }
 
-class PinCode1Model extends SignatureDataModel {
+class SetPin1Model extends SignatureDataModel {
   final String pinCode;
 
-  PinCode1Model(this.pinCode) : super(TangemSdk.cSetPin1);
+  SetPin1Model(this.pinCode) : super(TangemSdk.cSetPin1);
+
+  factory SetPin1Model.fromJson(Map<String, dynamic> json) {
+    final model = SetPin1Model(json[TangemSdk.pinCode]);
+    return CommandSignatureData.attachBaseData(model, json);
+  }
 
   @override
-  Map<String, dynamic> toJson() => {
-        TangemSdk.pinCode: pinCode,
-      }..addAll(getBaseData());
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    return {
+      TangemSdk.pinCode: pinCode,
+    }..addAll(getBaseData());
+  }
 }
 
-class PinCode2Model extends SignatureDataModel {
+class SetPin2Model extends SignatureDataModel {
   final String pinCode;
 
-  PinCode2Model(this.pinCode) : super(TangemSdk.cSetPin2);
+  SetPin2Model(this.pinCode) : super(TangemSdk.cSetPin2);
+
+  factory SetPin2Model.fromJson(Map<String, dynamic> json) {
+    final model = SetPin2Model(json[TangemSdk.pinCode]);
+    return CommandSignatureData.attachBaseData(model, json);
+  }
 
   @override
-  Map<String, dynamic> toJson() => {
-        TangemSdk.pinCode: pinCode,
-      }..addAll(getBaseData());
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    return {
+      TangemSdk.pinCode: pinCode,
+    }..addAll(getBaseData());
+  }
 }

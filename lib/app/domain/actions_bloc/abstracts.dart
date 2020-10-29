@@ -18,12 +18,12 @@ abstract class ActionBloc<T> extends Disposable {
   List<StreamSubscription> subscriptions = [];
 
   PublishSubject _successResponse = PublishSubject<T>();
-  PublishSubject _errorResponse = PublishSubject<TangemSdkPluginError>();
+  PublishSubject _errorResponse = PublishSubject<TangemSdkBaseError>();
   PublishSubject _snackbarMessage = PublishSubject<dynamic>();
 
   Stream<T> get successResponseStream => _successResponse.stream;
 
-  Stream<TangemSdkPluginError> get errorResponseStream => _errorResponse.stream;
+  Stream<TangemSdkBaseError> get errorResponseStream => _errorResponse.stream;
 
   Stream<dynamic> get snackbarMessageStream => _snackbarMessage.stream;
 
@@ -33,7 +33,7 @@ abstract class ActionBloc<T> extends Disposable {
     _successResponse.add(success);
   }
 
-  sendError(TangemSdkPluginError error) {
+  sendError(TangemSdkBaseError error) {
     _errorResponse.add(error);
   }
 
@@ -52,6 +52,8 @@ abstract class ActionBloc<T> extends Disposable {
 
   invokeAction() {
     final commandData = createCommandData();
+    if (commandData == null) return;
+
     commandData.cardId = _cid;
     commandData.initialMessage = _initialMessage;
     TangemSdk.runCommand(callback, commandData);

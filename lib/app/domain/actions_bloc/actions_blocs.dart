@@ -1,4 +1,5 @@
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
+import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
@@ -33,7 +34,8 @@ class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
 
   @override
   CommandSignatureData createCommandData() {
-    return WriteIssuerDataModel(_issuerData, _issuerDataCounter);
+    final issuerPrivateKey = Utils.createDefaultIssuer().dataKeyPair.privateKey;
+    return WriteIssuerDataModel(Utils.cardId, _issuerData, issuerPrivateKey, _issuerDataCounter);
   }
 }
 
@@ -50,7 +52,8 @@ class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
 
   @override
   CommandSignatureData createCommandData() {
-    return WriteIssuerExDataModel("issuerData", _issuerDataCounter);
+    final issuerPrivateKey = Utils.createDefaultIssuer().dataKeyPair.privateKey;
+    return WriteIssuerExDataModel(Utils.cardId, "issuerData", issuerPrivateKey, _issuerDataCounter);
   }
 }
 
@@ -129,6 +132,6 @@ class SetPinBlock extends ActionBloc<SetPinResponse> {
   @override
   CommandSignatureData createCommandData() {
     final code = _pinCode == null || _pinCode.isEmpty ? null : _pinCode;
-    return pinType == PinType.PIN1 ? PinCode1Model(code) : PinCode2Model(code);
+    return pinType == PinType.PIN1 ? SetPin1Model(code) : SetPin2Model(code);
   }
 }

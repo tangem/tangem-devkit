@@ -46,7 +46,7 @@ class _CommandListWidgetState extends State<CommandListWidget> {
       final prettyJson = _jsonEncoder.convert(success.toJson());
       prettyJson.split("\n").forEach((element) => print(element));
     }, (error) {
-      if (error is TangemSdkPluginError) {
+      if (error is SdkPluginError) {
         print(error.message);
       } else {
         print(error);
