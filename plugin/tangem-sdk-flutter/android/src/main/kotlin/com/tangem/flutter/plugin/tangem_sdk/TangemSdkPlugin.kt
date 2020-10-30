@@ -19,6 +19,8 @@ import com.tangem.common.CompletionResult
 import com.tangem.common.extensions.CardType
 import com.tangem.common.extensions.calculateSha256
 import com.tangem.common.extensions.hexToBytes
+import com.tangem.common.extensions.toByteArray
+import com.tangem.crypto.sign
 import com.tangem.tangem_sdk_new.DefaultSessionViewDelegate
 import com.tangem.tangem_sdk_new.NfcLifecycleObserver
 import com.tangem.tangem_sdk_new.TerminalKeysStorage
@@ -52,7 +54,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       setCurrentActivity(activity)
       hiddenLifecycleReference.lifecycle.addObserver(NfcLifecycleObserver(this))
     }
-    val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager.reader).apply { this.activity = activity }
+    val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager).apply { this.activity = activity }
     val config = Config(cardFilter = CardFilter(EnumSet.of(CardType.Sdk)))
     val valueStorage = CardValuesDbStorage(AndroidSqliteDriver(Database.Schema, activity.applicationContext,
         "flutter_cards.db"))
@@ -96,6 +98,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "purgeWallet" -> purgeWallet(call, result)
       "setPin1" -> setPin1(call, result)
       "setPin2" -> setPin2(call, result)
+      "prepareHashes" -> prepareHashes(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
@@ -249,6 +252,19 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       sdk.writeUserProtectedData(cid(call), userProtectedData, userProtectedCounter(call), message(call)) {
         handleResult(result, it)
       }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun prepareHashes(call: MethodCall, result: Result) {
+    try {
+      val cid = cid(call) !!
+      val data = hexDataToBytes(call, "fileData")
+      val counter = call.argument<Int>("fileCounter") !!
+      val privateKey = hexDataToBytes(call, "privateKey")
+      val fileHasData = FileHashHelper.prepareHashes(cid, data, counter, privateKey)
+      handleResult(result, CompletionResult.Success(fileHasData))
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -410,4 +426,53 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 data class PluginError(val code: Int, val localizedDescription: String)
 data class KeyPairHex(val publicKey: String, val privateKey: String) {
   fun convert(): KeyPair = KeyPair(publicKey.hexToBytes(), privateKey.hexToBytes())
+}
+
+class FileHashHelper {
+
+  companion object {
+    fun prepareHashes(cardId: String, fileData: ByteArray, fileCounter: Int, privateKey: ByteArray? = null): FileHashData {
+      val startingHash =
+          cardId.hexToBytes() + fileCounter.toByteArray(4) + fileData.size.toByteArray(2)
+      val finalizingHash = cardId.hexToBytes() + fileData + fileCounter.toByteArray(4)
+      val startingSignature = privateKey?.let { startingHash.sign(it) }
+      val finalizingSignature = privateKey?.let { finalizingHash.sign(it) }
+      return FileHashData(startingHash, finalizingHash, startingSignature, finalizingSignature)
+    }
+  }
+}
+
+data class FileHashData(
+    val startingHash: ByteArray,
+    val finalizingHash: ByteArray,
+    val startingSignature: ByteArray? = null,
+    val finalizingSignature: ByteArray? = null
+) {
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as FileHashData
+    if (! startingHash.contentEquals(other.startingHash)) return false
+    if (! finalizingHash.contentEquals(other.finalizingHash)) return false
+    if (startingSignature != null) {
+      if (other.startingSignature == null) return false
+      if (! startingSignature.contentEquals(other.startingSignature)) return false
+    } else if (other.startingSignature != null) return false
+    if (finalizingSignature != null) {
+      if (other.finalizingSignature == null) return false
+      if (! finalizingSignature.contentEquals(other.finalizingSignature)) return false
+    } else if (other.finalizingSignature != null) return false
+    return true
+  }
+
+
+  override fun hashCode(): Int {
+    var result = startingHash.contentHashCode()
+    result = 31 * result + finalizingHash.contentHashCode()
+    result = 31 * result + (startingSignature?.contentHashCode() ?: 0)
+    result = 31 * result + (finalizingSignature?.contentHashCode() ?: 0)
+    return result
+  }
 }

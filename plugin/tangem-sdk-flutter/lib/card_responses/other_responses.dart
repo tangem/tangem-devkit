@@ -1,28 +1,6 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'other_responses.g.dart';
-
-@JsonSerializable(nullable: false)
-class ErrorResponse {
-  int code;
-  String localizedDescription;
-
-  ErrorResponse({this.code, this.localizedDescription});
-
-  factory ErrorResponse.fromJson(Map<String, dynamic> json) => _$ErrorResponseFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ErrorResponseToJson(this);
-
-  ErrorResponse.fromException(PlatformException ex) {
-    final jsonString = ex.details;
-    final map = json.decode(jsonString);
-    this.code = map['code'];
-    this.localizedDescription = map['localizedDescription'];
-  }
-}
 
 @JsonSerializable(nullable: false)
 class SignResponse {
@@ -161,4 +139,18 @@ class SetPinResponse {
   factory SetPinResponse.fromJson(Map<String, dynamic> json) => _$SetPinResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$SetPinResponseToJson(this);
+}
+
+@JsonSerializable()
+class FileHashData {
+  final String startingHash;
+  final String finalizingHash;
+  final String startingSignature;
+  final String finalizingSignature;
+
+  FileHashData(this.startingHash, this.finalizingHash, [this.startingSignature, this.finalizingSignature]);
+
+  factory FileHashData.fromJson(Map<String, dynamic> json) => _$FileHashDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FileHashDataToJson(this);
 }

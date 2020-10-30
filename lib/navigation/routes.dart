@@ -7,6 +7,7 @@ import 'package:devkit/app/ui/screen/card_action/personalization/personalization
 import 'package:devkit/app/ui/screen/card_action/scan_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/set_pin_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/sign_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/test_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/user_read_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/user_write_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/user_write_protected_data_screen.dart';
@@ -19,6 +20,7 @@ import 'package:tangem_sdk/model/sdk.dart';
 
 class Routes {
   static const MAIN = "/";
+  static const TEST = "/test";
   static const SCAN = "/scan";
   static const SIGN = "/sign";
   static const PERSONALIZE = "/personalize";
@@ -40,6 +42,8 @@ class Routes {
     switch (settings.name) {
       case MAIN:
         return MaterialPageRoute(builder: (_) => MainScreen());
+      case TEST:
+        return MaterialPageRoute(builder: (_) => TestScreen());
       case SCAN:
         return MaterialPageRoute(builder: (_) => ScanScreen());
       case SIGN:

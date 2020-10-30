@@ -96,6 +96,57 @@ class CardConfigSdk {
 }
 
 @JsonSerializable()
+class Issuer {
+  final String name;
+  final String id;
+  final KeyPairHex dataKeyPair;
+  final KeyPairHex transactionKeyPair;
+
+  Issuer(this.name, this.id, this.dataKeyPair, this.transactionKeyPair);
+
+  factory Issuer.fromJson(Map<String, dynamic> json) => _$IssuerFromJson(json);
+
+  Map<String, dynamic> toJson() => _$IssuerToJson(this);
+}
+
+@JsonSerializable()
+class Acquirer {
+  final String name;
+  final String id;
+  final KeyPairHex keyPair;
+
+  Acquirer(this.name, this.id, this.keyPair);
+
+  factory Acquirer.fromJson(Map<String, dynamic> json) => _$AcquirerFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AcquirerToJson(this);
+}
+
+@JsonSerializable()
+class Manufacturer {
+  final String name;
+  final KeyPairHex keyPair;
+
+  Manufacturer(this.name, this.keyPair);
+
+  factory Manufacturer.fromJson(Map<String, dynamic> json) => _$ManufacturerFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ManufacturerToJson(this);
+}
+
+@JsonSerializable()
+class KeyPairHex {
+  final String publicKey;
+  final String privateKey;
+
+  KeyPairHex(this.publicKey, this.privateKey);
+
+  factory KeyPairHex.fromJson(Map<String, dynamic> json) => _$KeyPairHexFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KeyPairHexToJson(this);
+}
+
+@JsonSerializable()
 class CardDataSdk {
   final String issuerName;
   final String batchId;

@@ -1,5 +1,6 @@
 import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
+import 'package:devkit/app/domain/actions_bloc/test_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BlocFinder {
@@ -11,6 +12,8 @@ class BlocFinder {
 }
 
 class RepoFinder {
+  static TestBlock createTestBloc(context) => RepositoryProvider.of<TestBlock>(context);
+
   static PersonalizationBloc personalizationBloc(context) => RepositoryProvider.of<PersonalizationBloc>(context);
 
   static CreateWalletBloc createWalletBloc(context) => RepositoryProvider.of<CreateWalletBloc>(context);

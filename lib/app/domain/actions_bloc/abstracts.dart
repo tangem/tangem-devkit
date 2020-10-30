@@ -3,21 +3,27 @@ import 'dart:async';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_bloc.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 abstract class ActionBloc<T> extends Disposable {
   final bsCid = BehaviorSubject<String>();
 
+  String _cid;
+  Message _initialMessage;
+
+  ActionBloc() {
+    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
+  }
+
   List<StreamSubscription> subscriptions = [];
 
   PublishSubject _successResponse = PublishSubject<T>();
-  PublishSubject _errorResponse = PublishSubject<ErrorResponse>();
+  PublishSubject _errorResponse = PublishSubject<TangemSdkBaseError>();
   PublishSubject _snackbarMessage = PublishSubject<dynamic>();
 
   Stream<T> get successResponseStream => _successResponse.stream;
 
-  Stream<ErrorResponse> get errorResponseStream => _errorResponse.stream;
+  Stream<TangemSdkBaseError> get errorResponseStream => _errorResponse.stream;
 
   Stream<dynamic> get snackbarMessageStream => _snackbarMessage.stream;
 
@@ -27,7 +33,7 @@ abstract class ActionBloc<T> extends Disposable {
     _successResponse.add(success);
   }
 
-  sendError(ErrorResponse error) {
+  sendError(TangemSdkBaseError error) {
     _errorResponse.add(error);
   }
 
@@ -41,10 +47,19 @@ abstract class ActionBloc<T> extends Disposable {
     }, (error) {
       sendError(error);
     });
-    TangemSdk.scanCard(callback, {});
+    TangemSdk.runCommand(callback, ScanModel());
   }
 
-  invokeAction();
+  invokeAction() {
+    final commandData = createCommandData();
+    if (commandData == null) return;
+
+    commandData.cardId = _cid;
+    commandData.initialMessage = _initialMessage;
+    TangemSdk.runCommand(callback, commandData);
+  }
+
+  CommandSignatureData createCommandData();
 
   @override
   dispose() {
