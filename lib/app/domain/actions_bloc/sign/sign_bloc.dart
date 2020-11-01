@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_card_es.dart';
+import 'package:devkit/app/domain/model/signature_data_models.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../base_events.dart';

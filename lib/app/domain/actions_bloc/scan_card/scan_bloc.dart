@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:devkit/app/domain/model/signature_data_models.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
