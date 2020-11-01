@@ -74,7 +74,7 @@ class _TestBodyState extends State<TestBody> {
 
     _bloc = RepoFinder.createTestBloc(context);
     _inputCommandController = TextStreamController(_bloc.inputCommandSubject);
-    _inputCommandController.controller.text = CommandJsonTest.personalize;
+    // _inputCommandController.controller.text = CommandJsonTest.personalize;
   }
 
   @override
