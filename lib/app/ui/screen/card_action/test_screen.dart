@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:devkit/app/domain/actions_bloc/test_bloc.dart';
+import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/text_controller.dart';
@@ -73,7 +74,7 @@ class _TestBodyState extends State<TestBody> {
 
     _bloc = RepoFinder.createTestBloc(context);
     _inputCommandController = TextStreamController(_bloc.inputCommandSubject);
-    // _inputCommandController.controller.text = TestJson.writeIssuerExData;
+    // _inputCommandController.controller.text = CommandJsonTest.personalize;
   }
 
   @override

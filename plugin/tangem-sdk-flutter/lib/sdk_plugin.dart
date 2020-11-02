@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
-import 'package:tangem_sdk/model/signature_data_models.dart';
+import 'package:tangem_sdk/model/command_signature_data.dart';
 
 import 'card_responses/other_responses.dart';
 import 'model/sdk.dart';

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
+import 'package:devkit/app/domain/model/personalization/json.dart';
 import 'package:intl/intl.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
@@ -92,8 +93,6 @@ class Utils {
     );
   }
 
-
-
   static Issuer createDefaultIssuer() {
     final name = "TANGEM SDK";
     final dataPublic =
@@ -143,26 +142,31 @@ class CommandJsonTest {
   static String purgeWallet = "{\"commandType\":\"purgeWallet\"}";
 
   static String readIssuerData = "{\"commandType\":\"readIssuerData\"}";
-  static String writeIssuerData = "{"
-      "\"cid\":\"${Utils.cardId}\","
-      "\"issuerData\":\"Some issuer data\","
-      "\"issuerDataCounter\":1,"
-      "\"privateKey\":\"${Utils.createDefaultIssuer().dataKeyPair.privateKey}\","
-      "\"commandType\":\"writeIssuerData\""
-      "}";
+  static String writeIssuerData = '''{
+      "cid":"${Utils.cardId}",
+      "issuerData":"Some issuer data",
+      "issuerDataCounter:1,
+      "privateKey":"${Utils.createDefaultIssuer().dataKeyPair.privateKey}",
+      "commandType":"writeIssuerData"
+      }''';
 
   static String readIssuerExData = "{\"commandType\":\"readIssuerExData\"}";
-  static String writeIssuerExData = "{"
-      "\"cid\":\"${Utils.cardId}\","
-      "\"issuerData\":\"Some issuer extra data\","
-      "\"issuerDataCounter\":1,"
-      "\"privateKey\":\"${Utils.createDefaultIssuer().dataKeyPair.privateKey}\","
-      "\"commandType\":\"writeIssuerExData\""
-      "}";
-
+  static String writeIssuerExData = '''{
+      "cid":"${Utils.cardId}",
+      "issuerData":"Some issuer extra data",
+      "issuerDataCounter":1,"
+      "privateKey":"${Utils.createDefaultIssuer().dataKeyPair.privateKey}",
+      "commandType":"writeIssuerExData"
+      }''';
 
   static String readUserData = "{\"commandType\":\"readUserData\"}";
   static String writeUserData = "{\"userData\":\"Some user data\",\"userCounter\":3,\"commandType\":\"writeUserData\"}";
   static String writeUserProtectedData =
       "{\"userProtectedData\":\"Some protected data\",\"userProtectedCounter\":3,\"commandType\":\"writeUserProtectedData\"}";
+
+  static String personalize = '''{
+    "config": ${DefaultPersonalizationJson.jsonString},
+    "issuer":${jsonEncode(Utils.createDefaultIssuer().toJson())},
+    "commandType":"${TangemSdk.cPersonalize}"
+  }''';
 }

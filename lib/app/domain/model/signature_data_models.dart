@@ -1,51 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:devkit/app/domain/model/personalization/support_classes.dart';
+import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
-
-typedef ConversionError = Function(dynamic);
-
-abstract class CommandSignatureData {
-  String cardId;
-  Message initialMessage;
-
-  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]);
-
-  static CommandSignatureData attachBaseData(CommandSignatureData taskData, Map<String, dynamic> json) {
-    taskData.cardId = json[TangemSdk.cid];
-    if (json[TangemSdk.initialMessage] != null)
-      taskData.initialMessage = Message.fromJson(json[TangemSdk.initialMessage]);
-    return taskData;
-  }
-}
-
-class Message {
-  final String body;
-  final String header;
-
-  Message(this.body, this.header);
-
-  factory Message.fromJson(Map<String, dynamic> json) => Message(json["body"], json["header"]);
-
-  Map<String, dynamic> toJson() => {
-        "body": body,
-        "header": header,
-      };
-}
-
-abstract class SignatureDataModel extends CommandSignatureData {
-  final String type;
-
-  SignatureDataModel(this.type);
-
-  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) => Future.value(getBaseData());
-
-  Map<String, dynamic> getBaseData() {
-    final map = <String, dynamic>{TangemSdk.commandType: type};
-    if (cardId != null) map[TangemSdk.cid] = cardId;
-    if (initialMessage != null) map[TangemSdk.initialMessage] = initialMessage.toJson();
-    return map;
-  }
-}
 
 class ScanModel extends SignatureDataModel {
   ScanModel() : super(TangemSdk.cScanCard);
@@ -75,6 +33,34 @@ class SignModel extends SignatureDataModel {
   @override
   Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async =>
       {TangemSdk.hashes: getHashesFromString(dataForHashing)}..addAll(getBaseData());
+}
+
+class PersonalizationModel extends SignatureDataModel {
+  final PersonalizationConfig config;
+  final Issuer issuer;
+
+  PersonalizationModel(this.config, this.issuer) : super(TangemSdk.cPersonalize);
+
+  factory PersonalizationModel.fromJson(Map<String, dynamic> json) {
+    final model = PersonalizationModel(
+      PersonalizationConfig.fromJson(json["config"]),
+      Issuer.fromJson(json["issuer"]),
+    );
+    return CommandSignatureData.attachBaseData(model, json);
+  }
+
+  @override
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) {
+    final acquirer = Utils.createDefaultAcquirer();
+    final manufacturer = Utils.createDefaultManufacturer();
+    final data = {
+      TangemSdk.cardConfig: json.encode(Utils.createCardConfig(config, issuer, acquirer)),
+      TangemSdk.issuer: json.encode(issuer),
+      TangemSdk.acquirer: json.encode(acquirer),
+      TangemSdk.manufacturer: json.encode(manufacturer),
+    };
+    return Future.value(getBaseData()..addAll(data));
+  }
 }
 
 class DepersonalizeModel extends SignatureDataModel {

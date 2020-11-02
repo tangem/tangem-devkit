@@ -1,5 +1,6 @@
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
+import 'package:devkit/app/domain/model/signature_data_models.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 

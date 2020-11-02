@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
+import 'package:devkit/app/domain/model/signature_data_models.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/model/signature_data_models.dart';
+import 'package:tangem_sdk/model/command_signature_data.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class TestBlock extends ActionBloc<dynamic> {
@@ -40,7 +41,7 @@ class TestBlock extends ActionBloc<dynamic> {
 
     final commandData = createCommandData();
     if (commandData == null) {
-      sendError(TangemSdkError("Command doesn't exist"));
+      sendError(TangemSdkError("Command data signature not created"));
       return;
     }
 
@@ -56,7 +57,8 @@ class TestBlock extends ActionBloc<dynamic> {
         return ScanModel();
       case TangemSdk.cSign:
         return SignModel.fromJson(_command);
-      // case TangemSdk.cPersonalize: { return ;}
+      case TangemSdk.cPersonalize:
+        return PersonalizationModel.fromJson(_command);
       case TangemSdk.cDepersonalize:
         return DepersonalizeModel.fromJson(_command);
       case TangemSdk.cCreateWallet:

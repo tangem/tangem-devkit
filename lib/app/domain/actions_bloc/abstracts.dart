@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:devkit/app/domain/actions_bloc/scan_card/scan_bloc.dart';
+import 'package:devkit/app/domain/model/signature_data_models.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
