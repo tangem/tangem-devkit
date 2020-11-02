@@ -5,6 +5,7 @@ import 'ConfigForPersonalize.dart';
 import 'dart:convert';
 import 'WriteProtectedUserData.dart';
 import 'ReadUserData.dart';
+import 'DepersonalizeCard.dart';
 
 
 void main() {
@@ -13,7 +14,7 @@ void main() {
   final personalizeCardMethod = PersonalizeCard();
   final writeProtectedUserDataMethod = WriteProtectedUserData();
   final readUserDataMethod = ReadUserData();
-
+  final depersonalize = DepersonalizeCard();
   final backButton = find.byTooltip('Back');
 
   FlutterDriver driver;
@@ -57,6 +58,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });

@@ -4,6 +4,8 @@ import 'PersonalizeCard.dart';
 import 'ConfigForPersonalize.dart';
 import 'dart:convert';
 import 'SignCard.dart';
+import 'DepersonalizeCard.dart';
+
 
 void main() {
 
@@ -11,6 +13,7 @@ void main() {
   final personalizeCardMethod = PersonalizeCard();
   final signCardMethod = SignCard();
   final backButton = find.byTooltip('Back');
+  final depersonalize = DepersonalizeCard();
 
   FlutterDriver driver;
 
@@ -49,6 +52,8 @@ void main() {
     });
 
     tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
       driver?.close();
     });

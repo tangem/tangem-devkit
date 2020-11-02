@@ -63,7 +63,7 @@ class WriteProtectedUserData {
     await driver.tap(floatingActionButton);
     //ToDo: Robot. A code to rotate the robot.
     print("Wait responce");
-    sleep(const Duration(seconds: 7));
+    sleep(const Duration(seconds: 10));
     String getResponse = await methods.getResponce(responseTextWidget, driver);
     Map<String, dynamic> responce = jsonDecode(getResponse);
     return responce;
