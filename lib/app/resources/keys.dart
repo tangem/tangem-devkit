@@ -78,9 +78,6 @@ class ItemName {
   static final tokenDecimal = "tokenDecimal";
 
   //response screen
-  static final commandJson = "commandJson";
-  static final responseSuccessJson = "responseSuccessJson";
-  static final responseErrorJson = "responseErrorJson";
   static final responseJson = "responseJson";
 
   //personalization save\restore config dialog
@@ -101,4 +98,10 @@ class ItemName {
 
   //set pin code
   static final pinCode = "pinCode";
+
+  //hidden
+  static final navigateToTestScreen = "navigateToTestScreen";
+  static final commandJson = "commandJson";
+  static final responseSuccessJson = "responseSuccessJson";
+  static final responseErrorJson = "responseErrorJson";
 }

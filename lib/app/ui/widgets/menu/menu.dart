@@ -1,7 +1,9 @@
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/resources/localization.dart';
+import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 import 'package:devkit/commons/global/show_description.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 enum MenuItem {
@@ -10,15 +12,36 @@ enum MenuItem {
   personalizationConfigs,
   personalizationImport,
   personalizationExport,
+  navigateToTestScreen,
 }
 
 class Menu {
   static PopupMenuButton popupDescription() {
+    BuildContext temporaryContext;
     return PopupMenuButton<MenuItem>(
-      onSelected: (MenuItem item) => DescriptionState.toggle(),
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
-        Menu.descriptionItem(),
-      ],
+      onSelected: (MenuItem item) {
+        switch (item) {
+          case MenuItem.switchDescription:
+            DescriptionState.toggle();
+            break;
+          case MenuItem.navigateToTestScreen:
+            Navigator.of(temporaryContext).pushNamed("/test");
+            break;
+        }
+      },
+      itemBuilder: (BuildContext context) {
+        temporaryContext = context;
+        return [
+          Menu.descriptionItem(),
+          kReleaseMode
+              ? null
+              : PopupMenuItem(
+                  key: ItemId.btnFrom(ItemName.navigateToTestScreen),
+                  value: MenuItem.navigateToTestScreen,
+                  child: TextWidget("Test screen"),
+                ),
+        ];
+      },
     );
   }
 
