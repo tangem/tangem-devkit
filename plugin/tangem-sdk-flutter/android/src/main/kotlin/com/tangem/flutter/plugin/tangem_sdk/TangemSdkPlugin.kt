@@ -10,6 +10,8 @@ import com.google.gson.reflect.TypeToken
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.tangem.*
 import com.tangem.commands.common.ResponseConverter
+import com.tangem.commands.file.FileData
+import com.tangem.commands.file.FileDataSignature
 import com.tangem.commands.personalization.entities.Acquirer
 import com.tangem.commands.personalization.entities.CardConfig
 import com.tangem.commands.personalization.entities.Issuer
@@ -96,9 +98,19 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "purgeWallet" -> purgeWallet(call, result)
       "setPin1" -> setPin1(call, result)
       "setPin2" -> setPin2(call, result)
+      "writeFiles" -> writeFiles(call, result)
       "prepareHashes" -> prepareHashes(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
+    }
+  }
+
+  private fun writeFiles(call: MethodCall, result: Result) {
+    try {
+      val filesList = extractFilesToWrite(call, result)
+      sdk.writeFiles(filesList, cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
     }
   }
 
@@ -414,6 +426,21 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       return gson.fromJson(jsonString, type)
     }
 
+    private fun extractFilesToWrite(call: MethodCall, result: Result): List<FileData> {
+      val gson = Gson()
+      val mapType = object: TypeToken<MutableList<MutableMap<String, Any>>>() {}.type
+      val json = call.argument<String>("files")
+      val rawList = gson.fromJson<MutableList<MutableMap<String, Any>>>(json, mapType)
+      if (rawList.isEmpty()) return mutableListOf()
+
+      val jsonList = rawList.map { gson.toJson(it) }
+      return if (rawList[0].containsKey("signature")) {
+        jsonList.map { gson.fromJson(it, FileDataHex.DataProtectedBySignatureHex::class.java) }.map { it.convert() }
+      } else {
+        jsonList.map { gson.fromJson(it, FileDataHex.DataProtectedByPasscodeHex::class.java) }.map { it.convert() }
+      }
+    }
+
     @Throws(Exception::class)
     private fun assert(call: MethodCall, name: String) {
       if (! call.hasArgument(name)) throw NoSuchFieldException(name)
@@ -421,7 +448,33 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 }
 
+typealias HexString = String
+
 data class PluginError(val code: Int, val localizedDescription: String)
-data class KeyPairHex(val publicKey: String, val privateKey: String) {
+data class KeyPairHex(val publicKey: HexString, val privateKey: HexString) {
   fun convert(): KeyPair = KeyPair(publicKey.hexToBytes(), privateKey.hexToBytes())
+}
+
+sealed class FileDataHex(val data: HexString) {
+  class DataProtectedBySignatureHex(
+      data: HexString,
+      val counter: Int,
+      val signature: FileDataSignatureHex,
+      val issuerPublicKey: HexString? = null
+  ): FileDataHex(data) {
+    fun convert(): FileData.DataProtectedBySignature {
+      return FileData.DataProtectedBySignature(data.hexToBytes(), counter, signature.convert(), issuerPublicKey?.hexToBytes())
+    }
+  }
+
+  class DataProtectedByPasscodeHex(data: HexString): FileDataHex(data) {
+    fun convert(): FileData.DataProtectedByPasscode = FileData.DataProtectedByPasscode(data.hexToBytes())
+  }
+}
+
+class FileDataSignatureHex(
+    val startingSignature: HexString,
+    val finalizingSignature: HexString,
+) {
+  fun convert(): FileDataSignature = FileDataSignature(startingSignature.hexToBytes(), finalizingSignature.hexToBytes())
 }

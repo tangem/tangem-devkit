@@ -169,4 +169,35 @@ class CommandJsonTest {
     "issuer":${jsonEncode(Utils.createDefaultIssuer().toJson())},
     "commandType":"${TangemSdk.cPersonalize}"
   }''';
+
+  static String writeFilesPassCode = '''{
+    "files": [
+      {"fileData": "some file data 1"},
+      {"fileData": "some file data 2"},
+      {"fileData": "some file data 3"}
+    ],
+    "commandType":"writeFiles"
+  }''';
+
+
+  // if no counter is specified, it will be set to the number of minutes since the beginning of 2020
+  static String writeFilesIssuer = '''{
+    "cid":"${Utils.cardId}",
+    "issuer":${jsonEncode(Utils.createDefaultIssuer().toJson())},
+    "files": [
+      {
+        "fileData": "some file data 1",
+        "counter": 1
+      },
+      {
+        "fileData": "some file data 2",
+        "counter": 2
+      },
+      {
+        "fileData": "some file data 3",
+        "counter": 3
+      }
+    ],
+    "commandType":"writeFiles"
+  }''';
 }
