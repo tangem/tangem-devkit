@@ -180,7 +180,6 @@ class CommandJsonTest {
   }''';
 
 
-  // if no counter is specified, it will be set to the number of minutes since the beginning of 2020
   static String writeFilesIssuer = '''{
     "cid":"${Utils.cardId}",
     "issuer":${jsonEncode(Utils.createDefaultIssuer().toJson())},
