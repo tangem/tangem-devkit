@@ -19,6 +19,7 @@ class Menu {
   static PopupMenuButton popupDescription() {
     BuildContext temporaryContext;
     return PopupMenuButton<MenuItem>(
+      key: ItemId.btnFrom(ItemName.menu),
       onSelected: (MenuItem item) {
         switch (item) {
           case MenuItem.switchDescription:
