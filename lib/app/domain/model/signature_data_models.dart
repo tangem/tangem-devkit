@@ -328,7 +328,7 @@ class WriteFilesModel extends SignatureDataModel {
 
     final isProtectedByIssuer = issuer != null || cardId != null;
     if (isProtectedByIssuer && (issuer == null || cardId == null)) {
-      onError(Exception("Can't write files protected by issuer without issuerData or counter or cardId"));
+      onError(Exception("Can't write files protected by issuer without issuerData or cardId"));
       mainCompleter.complete(null);
       return mainCompleter.future;
     }
