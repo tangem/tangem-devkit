@@ -142,15 +142,27 @@ class SetPinResponse {
 }
 
 @JsonSerializable()
-class FileHashData {
+class FileHashDataHex {
   final String startingHash;
   final String finalizingHash;
   final String startingSignature;
   final String finalizingSignature;
 
-  FileHashData(this.startingHash, this.finalizingHash, [this.startingSignature, this.finalizingSignature]);
+  FileHashDataHex(this.startingHash, this.finalizingHash, [this.startingSignature, this.finalizingSignature]);
 
-  factory FileHashData.fromJson(Map<String, dynamic> json) => _$FileHashDataFromJson(json);
+  factory FileHashDataHex.fromJson(Map<String, dynamic> json) => _$FileHashDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$FileHashDataToJson(this);
+}
+
+@JsonSerializable()
+class WriteFilesResponse {
+  final String cardId;
+  final int index;
+
+  WriteFilesResponse(this.cardId, [this.index]);
+
+  factory WriteFilesResponse.fromJson(Map<String, dynamic> json) => _$WriteFileResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WriteFileResponseToJson(this);
 }

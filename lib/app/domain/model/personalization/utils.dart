@@ -169,4 +169,34 @@ class CommandJsonTest {
     "issuer":${jsonEncode(Utils.createDefaultIssuer().toJson())},
     "commandType":"${TangemSdk.cPersonalize}"
   }''';
+
+  static String writeFilesPassCode = '''{
+    "files": [
+      {"fileData": "some file data 1"},
+      {"fileData": "some file data 2"},
+      {"fileData": "some file data 3"}
+    ],
+    "commandType":"writeFiles"
+  }''';
+
+
+  static String writeFilesIssuer = '''{
+    "cid":"${Utils.cardId}",
+    "issuer":${jsonEncode(Utils.createDefaultIssuer().toJson())},
+    "files": [
+      {
+        "fileData": "some file data 1",
+        "counter": 1
+      },
+      {
+        "fileData": "some file data 2",
+        "counter": 2
+      },
+      {
+        "fileData": "some file data 3",
+        "counter": 3
+      }
+    ],
+    "commandType":"writeFiles"
+  }''';
 }

@@ -10,6 +10,8 @@ import com.google.gson.reflect.TypeToken
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.tangem.*
 import com.tangem.commands.common.ResponseConverter
+import com.tangem.commands.file.FileData
+import com.tangem.commands.file.FileDataSignature
 import com.tangem.commands.personalization.entities.Acquirer
 import com.tangem.commands.personalization.entities.CardConfig
 import com.tangem.commands.personalization.entities.Issuer
@@ -19,8 +21,6 @@ import com.tangem.common.CompletionResult
 import com.tangem.common.extensions.CardType
 import com.tangem.common.extensions.calculateSha256
 import com.tangem.common.extensions.hexToBytes
-import com.tangem.common.extensions.toByteArray
-import com.tangem.crypto.sign
 import com.tangem.tangem_sdk_new.DefaultSessionViewDelegate
 import com.tangem.tangem_sdk_new.NfcLifecycleObserver
 import com.tangem.tangem_sdk_new.TerminalKeysStorage
@@ -98,9 +98,19 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "purgeWallet" -> purgeWallet(call, result)
       "setPin1" -> setPin1(call, result)
       "setPin2" -> setPin2(call, result)
+      "writeFiles" -> writeFiles(call, result)
       "prepareHashes" -> prepareHashes(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
+    }
+  }
+
+  private fun writeFiles(call: MethodCall, result: Result) {
+    try {
+      val filesList = extractFilesToWrite(call, result)
+      sdk.writeFiles(filesList, cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
     }
   }
 
@@ -263,7 +273,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       val data = hexDataToBytes(call, "fileData")
       val counter = call.argument<Int>("fileCounter") !!
       val privateKey = hexDataToBytes(call, "privateKey")
-      val fileHasData = FileHashHelper.prepareHashes(cid, data, counter, privateKey)
+      val fileHasData = sdk.prepareHashes(cid, data, counter, privateKey)
       handleResult(result, CompletionResult.Success(fileHasData))
     } catch (ex: Exception) {
       handleException(result, ex)
@@ -416,6 +426,21 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       return gson.fromJson(jsonString, type)
     }
 
+    private fun extractFilesToWrite(call: MethodCall, result: Result): List<FileData> {
+      val gson = Gson()
+      val mapType = object: TypeToken<MutableList<MutableMap<String, Any>>>() {}.type
+      val json = call.argument<String>("files")
+      val rawList = gson.fromJson<MutableList<MutableMap<String, Any>>>(json, mapType)
+      if (rawList.isEmpty()) return mutableListOf()
+
+      val jsonList = rawList.map { gson.toJson(it) }
+      return if (rawList[0].containsKey("signature")) {
+        jsonList.map { gson.fromJson(it, FileDataHex.DataProtectedBySignatureHex::class.java) }.map { it.convert() }
+      } else {
+        jsonList.map { gson.fromJson(it, FileDataHex.DataProtectedByPasscodeHex::class.java) }.map { it.convert() }
+      }
+    }
+
     @Throws(Exception::class)
     private fun assert(call: MethodCall, name: String) {
       if (! call.hasArgument(name)) throw NoSuchFieldException(name)
@@ -423,56 +448,33 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 }
 
+typealias HexString = String
+
 data class PluginError(val code: Int, val localizedDescription: String)
-data class KeyPairHex(val publicKey: String, val privateKey: String) {
+data class KeyPairHex(val publicKey: HexString, val privateKey: HexString) {
   fun convert(): KeyPair = KeyPair(publicKey.hexToBytes(), privateKey.hexToBytes())
 }
 
-class FileHashHelper {
-
-  companion object {
-    fun prepareHashes(cardId: String, fileData: ByteArray, fileCounter: Int, privateKey: ByteArray? = null): FileHashData {
-      val startingHash =
-          cardId.hexToBytes() + fileCounter.toByteArray(4) + fileData.size.toByteArray(2)
-      val finalizingHash = cardId.hexToBytes() + fileData + fileCounter.toByteArray(4)
-      val startingSignature = privateKey?.let { startingHash.sign(it) }
-      val finalizingSignature = privateKey?.let { finalizingHash.sign(it) }
-      return FileHashData(startingHash, finalizingHash, startingSignature, finalizingSignature)
+sealed class FileDataHex(val data: HexString) {
+  class DataProtectedBySignatureHex(
+      data: HexString,
+      val counter: Int,
+      val signature: FileDataSignatureHex,
+      val issuerPublicKey: HexString? = null
+  ): FileDataHex(data) {
+    fun convert(): FileData.DataProtectedBySignature {
+      return FileData.DataProtectedBySignature(data.hexToBytes(), counter, signature.convert(), issuerPublicKey?.hexToBytes())
     }
+  }
+
+  class DataProtectedByPasscodeHex(data: HexString): FileDataHex(data) {
+    fun convert(): FileData.DataProtectedByPasscode = FileData.DataProtectedByPasscode(data.hexToBytes())
   }
 }
 
-data class FileHashData(
-    val startingHash: ByteArray,
-    val finalizingHash: ByteArray,
-    val startingSignature: ByteArray? = null,
-    val finalizingSignature: ByteArray? = null
+class FileDataSignatureHex(
+    val startingSignature: HexString,
+    val finalizingSignature: HexString,
 ) {
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-
-    other as FileHashData
-    if (! startingHash.contentEquals(other.startingHash)) return false
-    if (! finalizingHash.contentEquals(other.finalizingHash)) return false
-    if (startingSignature != null) {
-      if (other.startingSignature == null) return false
-      if (! startingSignature.contentEquals(other.startingSignature)) return false
-    } else if (other.startingSignature != null) return false
-    if (finalizingSignature != null) {
-      if (other.finalizingSignature == null) return false
-      if (! finalizingSignature.contentEquals(other.finalizingSignature)) return false
-    } else if (other.finalizingSignature != null) return false
-    return true
-  }
-
-
-  override fun hashCode(): Int {
-    var result = startingHash.contentHashCode()
-    result = 31 * result + finalizingHash.contentHashCode()
-    result = 31 * result + (startingSignature?.contentHashCode() ?: 0)
-    result = 31 * result + (finalizingSignature?.contentHashCode() ?: 0)
-    return result
-  }
+  fun convert(): FileDataSignature = FileDataSignature(startingSignature.hexToBytes(), finalizingSignature.hexToBytes())
 }
