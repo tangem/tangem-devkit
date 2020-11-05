@@ -85,6 +85,8 @@ class TestBlock extends ActionBloc<dynamic> {
         return SetPin2Model.fromJson(_command);
       case TangemSdk.cWriteFiles:
         return WriteFilesModel.fromJson(_command);
+      case TangemSdk.cReadFiles:
+        return ReadFilesModel.fromJson(_command);
       default:
         return null;
     }

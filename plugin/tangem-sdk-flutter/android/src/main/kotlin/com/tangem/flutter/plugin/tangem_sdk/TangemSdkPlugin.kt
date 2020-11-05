@@ -99,6 +99,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "setPin1" -> setPin1(call, result)
       "setPin2" -> setPin2(call, result)
       "writeFiles" -> writeFiles(call, result)
+      "readFiles" -> readFiles(call, result)
       "prepareHashes" -> prepareHashes(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
@@ -109,6 +110,16 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     try {
       val filesList = extractFilesToWrite(call, result)
       sdk.writeFiles(filesList, cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun readFiles(call: MethodCall, result: Result) {
+    try {
+      val readPrivateFiles = call.argument<Boolean>("readPrivateFiles") ?: false
+      val indices = call.argument<List<Int>>("indices")?.toList()
+      sdk.readFiles(readPrivateFiles, indices, cid(call), message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }

@@ -371,3 +371,24 @@ class WriteFilesModel extends SignatureDataModel {
     return mainCompleter.future;
   }
 }
+
+class ReadFilesModel extends SignatureDataModel {
+  final bool readPrivateFiles;
+  final List<int> indices;
+
+  ReadFilesModel([this.readPrivateFiles = false, this.indices]) : super(TangemSdk.cReadFiles);
+
+  factory ReadFilesModel.fromJson(Map<String, dynamic> json) {
+    List<int> indices = (json[TangemSdk.indices] as List).toIntList();
+    final model = ReadFilesModel(json[TangemSdk.readPrivateFiles], indices);
+    return CommandSignatureData.attachBaseData(model, json);
+  }
+
+  @override
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    return {
+      TangemSdk.readPrivateFiles: readPrivateFiles,
+      TangemSdk.indices: indices,
+    }..addAll(getBaseData());
+  }
+}
