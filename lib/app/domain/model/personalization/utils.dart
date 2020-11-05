@@ -199,4 +199,16 @@ class CommandJsonTest {
     ],
     "commandType":"writeFiles"
   }''';
+
+  static String readFiles = '''{
+    "commandType":"readFiles"
+  }''';
+
+  static String readFiles2 = '''{
+    "readPrivateFiles": false,
+    "indices": [
+      0
+    ],
+    "commandType":"readFiles"
+  }''';
 }

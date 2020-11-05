@@ -23,3 +23,8 @@ extension hexAndBytes on String {
 extension ByteArrayToHex on List<int> {
   String toHexString() => hex.encode(this);
 }
+
+extension ListInt on List {
+  List<int> toIntList() =>
+      this.map((e) => int.tryParse(e.toString())).toList()..removeWhere((element) => element == null);
+}

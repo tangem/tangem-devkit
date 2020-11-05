@@ -150,9 +150,9 @@ class FileHashDataHex {
 
   FileHashDataHex(this.startingHash, this.finalizingHash, [this.startingSignature, this.finalizingSignature]);
 
-  factory FileHashDataHex.fromJson(Map<String, dynamic> json) => _$FileHashDataFromJson(json);
+  factory FileHashDataHex.fromJson(Map<String, dynamic> json) => _$FileHashDataHexFromJson(json);
 
-  Map<String, dynamic> toJson() => _$FileHashDataToJson(this);
+  Map<String, dynamic> toJson() => _$FileHashDataHexToJson(this);
 }
 
 @JsonSerializable()
@@ -162,7 +162,54 @@ class WriteFilesResponse {
 
   WriteFilesResponse(this.cardId, [this.index]);
 
-  factory WriteFilesResponse.fromJson(Map<String, dynamic> json) => _$WriteFileResponseFromJson(json);
+  factory WriteFilesResponse.fromJson(Map<String, dynamic> json) => _$WriteFilesResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$WriteFileResponseToJson(this);
+  Map<String, dynamic> toJson() => _$WriteFilesResponseToJson(this);
+}
+
+@JsonSerializable()
+class ReadFilesResponse {
+  final List<FileHex> files;
+
+  ReadFilesResponse(this.files);
+
+  factory ReadFilesResponse.fromJson(Map<String, dynamic> json) => _$ReadFilesResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ReadFilesResponseToJson(this);
+}
+
+@JsonSerializable()
+class FileHex {
+  final int fileIndex;
+  final String fileData;
+  final FileSettings fileSettings;
+
+  FileHex(this.fileIndex, this.fileData, [this.fileSettings]);
+
+  factory FileHex.fromJson(Map<String, dynamic> json) => _$FileHexFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FileHexToJson(this);
+}
+
+@JsonSerializable()
+class FileSettingsChange {
+  final int fileIndex;
+  final FileSettings settings;
+
+  FileSettingsChange(this.fileIndex, this.settings);
+
+  factory FileSettingsChange.fromJson(Map<String, dynamic> json) => _$FileSettingsChangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FileSettingsChangeToJson(this);
+}
+
+enum FileSettings { Public, Private }
+
+extension FileSettingsCode on FileSettings {
+  static const codes = {
+    FileSettings.Public: 0x0001,
+    FileSettings.Private: 0x0000,
+  };
+
+  int get code => codes[this];
 }
