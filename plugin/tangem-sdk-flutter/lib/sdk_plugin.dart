@@ -29,6 +29,7 @@ class TangemSdk {
   static const cWriteUserProtectedData = 'writeUserProtectedData';
   static const cSetPin1 = 'setPin1';
   static const cSetPin2 = 'setPin2';
+  static const cWriteFiles = 'writeFiles';
   static const cPrepareHashes = "prepareHashes";
 
   static const isAllowedOnlyDebugCards = "isAllowedOnlyDebugCards";
@@ -51,8 +52,10 @@ class TangemSdk {
   static const userProtectedData = "userProtectedData";
   static const userProtectedCounter = "userProtectedCounter";
   static const pinCode = "pinCode";
+  static const files = "files";
   static const fileData = "fileData";
   static const fileCounter = "fileCounter";
+  static const counter = "counter";
   static const privateKey = "privateKey";
 
   static const MethodChannel _channel = const MethodChannel('tangemSdk');
@@ -191,11 +194,20 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future setPinCode(PinType pinType, Callback callback, [Map<String, dynamic> valuesToExport]) async {
+  static Future setPinCode(Callback callback, PinType pinType, [Map<String, dynamic> valuesToExport]) async {
     final cPinMethod = pinType == PinType.PIN1 ? cSetPin1 : cSetPin2;
     _channel
         .invokeMethod(cPinMethod, valuesToExport)
         .then((result) => callback.onSuccess(_createResponse(cPinMethod, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future writeFiles(Callback callback, List<FileDataHex> filesData,
+      [Map<String, dynamic> valuesToExport]) async {
+    valuesToExport[files] = jsonEncode(filesData);
+    _channel
+        .invokeMethod(cWriteFiles, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cWriteFiles, result)))
         .catchError((error) => _sendBackError(callback, error));
   }
 
@@ -247,8 +259,10 @@ class TangemSdk {
         return SetPinResponse.fromJson(jsonResponse);
       case cSetPin2:
         return SetPinResponse.fromJson(jsonResponse);
+      case cWriteFiles:
+        return WriteFilesResponse.fromJson(jsonResponse);
       case cPrepareHashes:
-        return FileHashData.fromJson(jsonResponse);
+        return FileHashDataHex.fromJson(jsonResponse);
     }
     return response;
   }

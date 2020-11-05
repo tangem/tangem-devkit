@@ -200,11 +200,11 @@ class _CommandListWidgetState extends State<CommandListWidget> {
   }
 
   handleSetPin1() {
-    TangemSdk.setPinCode(PinType.PIN1, _callback, {TangemSdk.cid: _cardId});
+    TangemSdk.setPinCode(_callback, PinType.PIN1, {TangemSdk.cid: _cardId});
   }
 
   handleSetPin2() {
-    TangemSdk.setPinCode(PinType.PIN2, _callback, {TangemSdk.cid: _cardId});
+    TangemSdk.setPinCode(_callback, PinType.PIN2, {TangemSdk.cid: _cardId});
   }
 
   _showToast(String message) {

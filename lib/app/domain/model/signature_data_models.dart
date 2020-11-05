@@ -114,13 +114,13 @@ class WriteIssuerDataModel extends SignatureDataModel {
     final completer = Completer<Map<String, dynamic>>();
 
     final callback = Callback((success) {
-      if (success is! FileHashData) {
+      if (success is! FileHashDataHex) {
         onError(Exception("PrepareHashes success, but type of result isn't the FileHashData"));
         completer.complete(null);
         return;
       }
 
-      final finalizingSignature = (success as FileHashData).finalizingSignature;
+      final finalizingSignature = (success as FileHashDataHex).finalizingSignature;
       final signatureData = {
         TangemSdk.issuerData: issuerDataHex,
         TangemSdk.issuerDataSignature: finalizingSignature,
@@ -175,13 +175,13 @@ class WriteIssuerExDataModel extends SignatureDataModel {
     final completer = Completer<Map<String, dynamic>>();
 
     final callback = Callback((success) {
-      if (success is! FileHashData) {
+      if (success is! FileHashDataHex) {
         onError(Exception("PrepareHashes success, but type of result isn't the FileHashData"));
         completer.complete(null);
         return;
       }
 
-      final fileHasData = success as FileHashData;
+      final fileHasData = success as FileHashDataHex;
       final signatureData = {
         TangemSdk.issuerData: issuerExData.toHexString(),
         TangemSdk.startingSignature: fileHasData.startingSignature,
@@ -288,5 +288,86 @@ class SetPin2Model extends SignatureDataModel {
     return {
       TangemSdk.pinCode: pinCode,
     }..addAll(getBaseData());
+  }
+}
+
+class WriteFileData {
+  final String data;
+  final int counter;
+
+  WriteFileData(this.data, [this.counter]);
+
+  factory WriteFileData.fromJson(Map<String, dynamic> json) {
+    return WriteFileData(json[TangemSdk.fileData], json[TangemSdk.counter]);
+  }
+
+  static int daysStartsFrom2020() {
+    return DateTime.now().difference(DateTime(2020)).inDays;
+  }
+}
+
+class WriteFilesModel extends SignatureDataModel {
+  final List<WriteFileData> filesData;
+  final Issuer issuer;
+
+  WriteFilesModel(this.filesData, [this.issuer]) : super(TangemSdk.cWriteFiles);
+
+  factory WriteFilesModel.fromJson(Map<String, dynamic> json) {
+    final dataToWrite = json[TangemSdk.files] as List;
+    List<WriteFileData> filesData = dataToWrite.map((e) => WriteFileData.fromJson(e)).toList();
+    final model = WriteFilesModel(
+      filesData,
+      json.containsKey("issuer") ? Issuer.fromJson(json["issuer"]) : null,
+    );
+    return CommandSignatureData.attachBaseData(model, json);
+  }
+
+  @override
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    final mainCompleter = Completer<Map<String, dynamic>>();
+
+    final isProtectedByIssuer = issuer != null || cardId != null;
+    if (isProtectedByIssuer && (issuer == null || cardId == null)) {
+      onError(Exception("Can't write files protected by issuer without issuerData or cardId"));
+      mainCompleter.complete(null);
+      return mainCompleter.future;
+    }
+
+    if (isProtectedByIssuer) {
+      final hashDataAssociation = <int, FileHashDataHex>{};
+      final prepareHashesFutureList = filesData.map((fileData) {
+        final completer = Completer<FileHashDataHex>();
+        final callback = Callback((success) {
+          hashDataAssociation[fileData.counter] = success;
+          completer.complete(success);
+        }, (error) {
+          completer.completeError(error);
+        });
+
+        TangemSdk.prepareHashes(
+            callback, cardId, fileData.data.toHexString(), fileData.counter, issuer.dataKeyPair.privateKey);
+        return completer.future;
+      }).toList();
+      await Future.wait(prepareHashesFutureList);
+
+      final filesSignatureData = filesData.map((fileData) {
+        final hashData = hashDataAssociation[fileData.counter];
+        final signature = FileDataSignatureHex(hashData.startingSignature, hashData.finalizingSignature);
+        final protectedFileData = DataProtectedBySignatureHex(
+          fileData.data.toHexString(),
+          fileData.counter,
+          signature,
+          issuer.dataKeyPair.publicKey,
+        );
+        return protectedFileData.toJson();
+      }).toList();
+      final signatureData = <String, dynamic>{TangemSdk.files: jsonEncode(filesSignatureData)}..addAll(getBaseData());
+      mainCompleter.complete(signatureData);
+    } else {
+      final filesDataHex = this.filesData.map((e) => DataProtectedByPasscodeHex(e.data.toHexString())).toList();
+      final signatureData = <String, dynamic>{TangemSdk.files: jsonEncode(filesDataHex)}..addAll(getBaseData());
+      mainCompleter.complete(signatureData);
+    }
+    return mainCompleter.future;
   }
 }

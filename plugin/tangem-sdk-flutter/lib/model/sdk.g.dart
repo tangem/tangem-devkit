@@ -254,3 +254,49 @@ Map<String, dynamic> _$NdefRecordSdkToJson(NdefRecordSdk instance) =>
       'type': instance.type,
       'value': instance.value,
     };
+
+DataProtectedByPasscodeHex _$DataProtectedByPasscodeHexFromJson(
+    Map<String, dynamic> json) {
+  return DataProtectedByPasscodeHex(
+    json['data'] as String,
+  );
+}
+
+Map<String, dynamic> _$DataProtectedByPasscodeHexToJson(
+        DataProtectedByPasscodeHex instance) =>
+    <String, dynamic>{
+      'data': instance.data,
+    };
+
+DataProtectedBySignatureHex _$DataProtectedBySignatureHexFromJson(
+    Map<String, dynamic> json) {
+  return DataProtectedBySignatureHex(
+    json['data'] as String,
+    json['counter'] as int,
+    FileDataSignatureHex.fromJson(json['signature'] as Map<String, dynamic>),
+    json['issuerPublicKey'] as String,
+  );
+}
+
+Map<String, dynamic> _$DataProtectedBySignatureHexToJson(
+        DataProtectedBySignatureHex instance) =>
+    <String, dynamic>{
+      'data': instance.data,
+      'counter': instance.counter,
+      'signature': instance.signature,
+      'issuerPublicKey': instance.issuerPublicKey,
+    };
+
+FileDataSignatureHex _$FileDataSignatureHexFromJson(Map<String, dynamic> json) {
+  return FileDataSignatureHex(
+    json['startingSignature'] as String,
+    json['finalizingSignature'] as String,
+  );
+}
+
+Map<String, dynamic> _$FileDataSignatureHexToJson(
+        FileDataSignatureHex instance) =>
+    <String, dynamic>{
+      'startingSignature': instance.startingSignature,
+      'finalizingSignature': instance.finalizingSignature,
+    };
