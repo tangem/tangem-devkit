@@ -39,6 +39,7 @@ class SignBloc extends Bloc<Event, SSign> {
     }, (error) {
       add(ECardSignError(error));
     });
-    TangemSdk.runCommand(callback, SignModel(state.dataForHashing)..cardId = state.cid);
+    List<String> listOfData = state.dataForHashing?.toList(ifEmpty: []);
+    TangemSdk.runCommand(callback, SignModel(listOfData)..cardId = state.cid);
   }
 }

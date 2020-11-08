@@ -100,28 +100,6 @@ class Transl {
 
   String get screen_response => get("screen_response");
 
-  String get screen_response_scan => get("screen_response_scan");
-
-  String get screen_response_sign => get("screen_response_sign");
-
-  String get screen_response_personalization => get("screen_response_personalization");
-
-  String get screen_response_depersonalization => get("screen_response_depersonalization");
-
-  String get screen_response_create_wallet => get("screen_response_create_wallet");
-
-  String get screen_response_purge_wallet => get("screen_response_purge_wallet");
-
-  String get screen_response_read_issuer_data => get("screen_response_read_issuer_data");
-
-  String get screen_response_write_issuer_data => get("screen_response_write_issuer_data");
-
-  String get screen_response_read_issuer_extra_data => get("screen_response_read_issuer_extra_data");
-
-  String get screen_response_read_user_data => get("screen_response_read_user_data");
-
-  String get screen_response_write_user_data => get("screen_response_write_user_data");
-
   String get screen_set_pin1 => get("screen_set_pin1");
 
   String get screen_set_pin2 => get("screen_set_pin2");
@@ -837,4 +815,52 @@ class Transl {
   String get how_to_scan => get("how_to_scan");
 
   String get how_to_depersonalize => get("how_to_depersonalize");
+
+  String get screen_files_write => get("screen_files_write");
+
+  String get screen_files_read => get("screen_files_read");
+
+  String get files_data_protection => get("files_data_protection");
+
+  String get desc_files_data_protection => get("desc_files_data_protection");
+
+  String get response_files_write_index => get("response_files_write_index");
+
+  String get desc_response_files_write_index => get("desc_response_files_write_index");
+
+  String get files_read_indices => get("files_read_indices");
+
+  String get desc_files_read_indices => get("desc_files_read_indices");
+
+  String get read_private_files => get("read_private_files");
+
+  String get desc_read_private_files => get("desc_read_private_files");
+
+  String get response_file_index => get("response_file_index");
+
+  String get desc_response_file_index => get("desc_response_file_index");
+
+  String get response_file_settings => get("response_file_settings");
+
+  String get desc_response_file_settings => get("desc_response_file_settings");
+
+  String get response_file_data => get("response_file_data");
+
+  String get desc_response_file_data => get("desc_response_file_data");
+
+  String get screen_files_delete => get("screen_files_delete");
+
+  String get files_delete_indices => get("files_delete_indices");
+
+  String get desc_files_delete_indices => get("desc_files_delete_indices");
+
+  String get action_files_change_settings => get("action_files_change_settings");
+
+  String get desc_action_files_change_settings => get("desc_action_files_change_settings");
+
+  String get screen_files_change_settings => get("screen_files_change_settings");
+
+  String get files_file_settings => get("files_file_settings");
+
+  String get desc_files_file_settings => get("desc_files_file_settings");
 }

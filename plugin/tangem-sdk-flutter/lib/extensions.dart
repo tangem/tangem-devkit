@@ -20,6 +20,18 @@ extension hexAndBytes on String {
   List<int> toBytes() => this.codeUnits;
 }
 
+extension ToList on String {
+  List<String> toList({String delimiter = ",", List<String> ifEmpty}) {
+    if (this == null || this.isEmpty) return ifEmpty;
+
+    if (this.contains(delimiter)) {
+      return this.split(delimiter).toList().map((e) => e.trim()).toList();
+    } else {
+      return [this.trim()];
+    }
+  }
+}
+
 extension ByteArrayToHex on List<int> {
   String toHexString() => hex.encode(this);
 }
