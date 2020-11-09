@@ -1,4 +1,5 @@
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
+import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
 import 'package:devkit/app/domain/model/signature_data_models.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
@@ -115,37 +116,5 @@ class _FilesReadBodyState extends State<FilesChangeSettingsBody> {
   void dispose() {
     _cidController.dispose();
     super.dispose();
-  }
-}
-
-class FilesChangeSettingsBloc extends ActionBloc<ChangeFilesSettingsResponse> {
-  final fileSettings = [
-    Pair("Public", FileSettings.Public),
-    Pair("Private", FileSettings.Private),
-  ];
-
-  final bsIndices = BehaviorSubject<String>();
-  final bsFileSettings = BehaviorSubject<Pair<String, FileSettings>>();
-
-  String _indices;
-  FileSettings _fileSettings;
-
-  Stream<String> get indicesStream => bsIndices.stream;
-
-  FilesChangeSettingsBloc() {
-    subscriptions.add(bsIndices.listen((value) => _indices = value));
-    subscriptions.add(bsFileSettings.listen((value) => _fileSettings = value.b));
-  }
-
-  @override
-  CommandSignatureData createCommandData() {
-    List<int> indices = _indices.toList()?.toIntList();
-    if (indices == null) {
-      sendSnackbarMessage("Indices is empty");
-      return null;
-    }
-
-    final changes = indices.map((e) => ChangeFileSettings(e, _fileSettings)).toList();
-    return FilesChangeSettingsModel(changes);
   }
 }

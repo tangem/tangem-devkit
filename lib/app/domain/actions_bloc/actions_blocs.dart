@@ -242,3 +242,53 @@ class FilesReadBloc extends ActionBloc<ReadFilesResponse> {
     return FilesReadModel(_readProtectionFiles ?? false, indices);
   }
 }
+
+class FilesDeleteBloc extends ActionBloc<DeleteFilesResponse> {
+  final bsIndices = BehaviorSubject<String>();
+
+  String _indices;
+
+  Stream<String> get indicesStream => bsIndices.stream;
+
+  FilesDeleteBloc() {
+    subscriptions.add(bsIndices.listen((value) => _indices = value));
+  }
+
+  @override
+  CommandSignatureData createCommandData() {
+    List<int> indices = _indices.toList()?.toIntList();
+    return FilesDeleteModel(indices);
+  }
+}
+
+class FilesChangeSettingsBloc extends ActionBloc<ChangeFilesSettingsResponse> {
+  final fileSettings = [
+    Pair("Public", FileSettings.Public),
+    Pair("Private", FileSettings.Private),
+  ];
+
+  final bsIndices = BehaviorSubject<String>();
+  final bsFileSettings = BehaviorSubject<Pair<String, FileSettings>>();
+
+  String _indices;
+  FileSettings _fileSettings;
+
+  Stream<String> get indicesStream => bsIndices.stream;
+
+  FilesChangeSettingsBloc() {
+    subscriptions.add(bsIndices.listen((value) => _indices = value));
+    subscriptions.add(bsFileSettings.listen((value) => _fileSettings = value.b));
+  }
+
+  @override
+  CommandSignatureData createCommandData() {
+    List<int> indices = _indices.toList()?.toIntList();
+    if (indices == null) {
+      sendSnackbarMessage("Indices is empty");
+      return null;
+    }
+
+    final changes = indices.map((e) => ChangeFileSettings(e, _fileSettings)).toList();
+    return FilesChangeSettingsModel(changes);
+  }
+}

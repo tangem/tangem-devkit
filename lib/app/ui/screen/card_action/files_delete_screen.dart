@@ -1,4 +1,5 @@
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
+import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
 import 'package:devkit/app/domain/model/signature_data_models.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
@@ -107,23 +108,5 @@ class _FilesDeleteBodyState extends State<FilesDeleteBody> {
   void dispose() {
     _cidController.dispose();
     super.dispose();
-  }
-}
-
-class FilesDeleteBloc extends ActionBloc<DeleteFilesResponse> {
-  final bsIndices = BehaviorSubject<String>();
-
-  String _indices;
-
-  Stream<String> get indicesStream => bsIndices.stream;
-
-  FilesDeleteBloc() {
-    subscriptions.add(bsIndices.listen((value) => _indices = value));
-  }
-
-  @override
-  CommandSignatureData createCommandData() {
-    List<int> indices = _indices.toList()?.toIntList();
-    return FilesDeleteModel(indices);
   }
 }
