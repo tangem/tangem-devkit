@@ -48,5 +48,9 @@
 	</array>
 	<key>NFCReaderUsageDescription</key>
 	<string>To Scan Smart Card</string>
+	<key>NSCameraUsageDescription</key>
+ <string>To take a photo.</string>
+ <key>NSMicrophoneUsageDescription</key>
+ <string>To take a photo.</string>
 </dict>
 </plist>

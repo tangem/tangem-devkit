@@ -12,27 +12,18 @@ class ScanModel extends SignatureDataModel {
 }
 
 class SignModel extends SignatureDataModel {
-  final String dataForHashing;
+  final List<String> dataForHashing;
 
   SignModel(this.dataForHashing) : super(TangemSdk.cSign);
 
   factory SignModel.fromJson(Map<String, dynamic> json) {
-    return CommandSignatureData.attachBaseData(SignModel(json["dataForHashing"]), json);
-  }
-
-  static List<String> getHashesFromString(String dataForHashing) {
-    final splitPattern = ",";
-    if (dataForHashing.contains(splitPattern)) {
-      final rawHashes = dataForHashing.split(splitPattern);
-      return rawHashes.map((element) => element.trim().toHexString()).toList();
-    } else {
-      return [dataForHashing.toHexString()];
-    }
+    final listDataForHashing = json["dataForHashing"] as List;
+    return CommandSignatureData.attachBaseData(SignModel(listDataForHashing), json);
   }
 
   @override
   Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async =>
-      {TangemSdk.hashes: getHashesFromString(dataForHashing)}..addAll(getBaseData());
+      {TangemSdk.hashes: dataForHashing.map((e) => e.toHexString()).toList()}..addAll(getBaseData());
 }
 
 class PersonalizationModel extends SignatureDataModel {
@@ -292,13 +283,15 @@ class SetPin2Model extends SignatureDataModel {
 }
 
 class WriteFileData {
-  final String data;
+  final List<int> data;
   final int counter;
 
   WriteFileData(this.data, [this.counter]);
 
   factory WriteFileData.fromJson(Map<String, dynamic> json) {
-    return WriteFileData(json[TangemSdk.fileData], json[TangemSdk.counter]);
+    final stringData = json[TangemSdk.fileData] as String;
+
+    return WriteFileData(stringData.toBytes(), json[TangemSdk.counter]);
   }
 
   static int daysStartsFrom2020() {
@@ -306,16 +299,16 @@ class WriteFileData {
   }
 }
 
-class WriteFilesModel extends SignatureDataModel {
+class FilesWriteModel extends SignatureDataModel {
   final List<WriteFileData> filesData;
   final Issuer issuer;
 
-  WriteFilesModel(this.filesData, [this.issuer]) : super(TangemSdk.cWriteFiles);
+  FilesWriteModel(this.filesData, [this.issuer]) : super(TangemSdk.cWriteFiles);
 
-  factory WriteFilesModel.fromJson(Map<String, dynamic> json) {
+  factory FilesWriteModel.fromJson(Map<String, dynamic> json) {
     final dataToWrite = json[TangemSdk.files] as List;
     List<WriteFileData> filesData = dataToWrite.map((e) => WriteFileData.fromJson(e)).toList();
-    final model = WriteFilesModel(
+    final model = FilesWriteModel(
       filesData,
       json.containsKey("issuer") ? Issuer.fromJson(json["issuer"]) : null,
     );
@@ -372,15 +365,15 @@ class WriteFilesModel extends SignatureDataModel {
   }
 }
 
-class ReadFilesModel extends SignatureDataModel {
+class FilesReadModel extends SignatureDataModel {
   final bool readPrivateFiles;
   final List<int> indices;
 
-  ReadFilesModel([this.readPrivateFiles = false, this.indices]) : super(TangemSdk.cReadFiles);
+  FilesReadModel([this.readPrivateFiles = false, this.indices]) : super(TangemSdk.cReadFiles);
 
-  factory ReadFilesModel.fromJson(Map<String, dynamic> json) {
+  factory FilesReadModel.fromJson(Map<String, dynamic> json) {
     List<int> indices = (json[TangemSdk.indices] as List).toIntList();
-    final model = ReadFilesModel(json[TangemSdk.readPrivateFiles], indices);
+    final model = FilesReadModel(json[TangemSdk.readPrivateFiles], indices);
     return CommandSignatureData.attachBaseData(model, json);
   }
 
@@ -389,6 +382,47 @@ class ReadFilesModel extends SignatureDataModel {
     return {
       TangemSdk.readPrivateFiles: readPrivateFiles,
       TangemSdk.indices: indices,
+    }..addAll(getBaseData());
+  }
+}
+
+class FilesDeleteModel extends SignatureDataModel {
+  final List<int> indices;
+
+  FilesDeleteModel([this.indices]) : super(TangemSdk.cDeleteFiles);
+
+  factory FilesDeleteModel.fromJson(Map<String, dynamic> json) {
+    List<int> indices = (json[TangemSdk.indices] as List)?.toIntList();
+    return CommandSignatureData.attachBaseData(FilesDeleteModel(indices), json);
+  }
+
+  @override
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    return {
+      TangemSdk.indices: indices,
+    }..addAll(getBaseData());
+  }
+}
+
+class FilesChangeSettingsModel extends SignatureDataModel {
+  final List<ChangeFileSettings> changes;
+
+  FilesChangeSettingsModel([this.changes]) : super(TangemSdk.cChangeFilesSettings);
+
+  factory FilesChangeSettingsModel.fromJson(Map<String, dynamic> json) {
+    final jsonList = (json[TangemSdk.changes] as List);
+    final changes = jsonList.map((e) => ChangeFileSettings.fromJson(e)).toList();
+    return CommandSignatureData.attachBaseData(FilesChangeSettingsModel(changes), json);
+  }
+
+  @override
+  Future<Map<String, dynamic>> toSignatureData([ConversionError onError]) async {
+    if (changes == null || changes.isEmpty) {
+      onError(Exception("Can't create signature data, because changes is empty"));
+      return null;
+    }
+    return {
+      TangemSdk.changes: jsonEncode(changes),
     }..addAll(getBaseData());
   }
 }

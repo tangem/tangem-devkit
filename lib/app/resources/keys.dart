@@ -99,6 +99,13 @@ class ItemName {
   //set pin code
   static final pinCode = "pinCode";
 
+  //files
+  static final takePhoto = "takePhoto";
+  static final protectionType = "protectionType";
+  static final readPrivateFiles = "readPrivateFiles";
+  static final indices = "indices";
+  static final fileSettings = "fileSettings";
+
   //hidden
   static final navigateToTestScreen = "navigateToTestScreen";
   static final commandJson = "commandJson";

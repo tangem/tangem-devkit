@@ -158,9 +158,9 @@ class FileHashDataHex {
 @JsonSerializable()
 class WriteFilesResponse {
   final String cardId;
-  final int index;
+  final int fileIndex;
 
-  WriteFilesResponse(this.cardId, [this.index]);
+  WriteFilesResponse(this.cardId, [this.fileIndex]);
 
   factory WriteFilesResponse.fromJson(Map<String, dynamic> json) => _$WriteFilesResponseFromJson(json);
 
@@ -192,15 +192,15 @@ class FileHex {
 }
 
 @JsonSerializable()
-class FileSettingsChange {
+class ChangeFileSettings {
   final int fileIndex;
   final FileSettings settings;
 
-  FileSettingsChange(this.fileIndex, this.settings);
+  ChangeFileSettings(this.fileIndex, this.settings);
 
-  factory FileSettingsChange.fromJson(Map<String, dynamic> json) => _$FileSettingsChangeFromJson(json);
+  factory ChangeFileSettings.fromJson(Map<String, dynamic> json) => _$ChangeFileSettingsFromJson(json);
 
-  Map<String, dynamic> toJson() => _$FileSettingsChangeToJson(this);
+  Map<String, dynamic> toJson() => _$ChangeFileSettingsToJson(this);
 }
 
 enum FileSettings { Public, Private }
@@ -212,4 +212,26 @@ extension FileSettingsCode on FileSettings {
   };
 
   int get code => codes[this];
+}
+
+@JsonSerializable()
+class DeleteFilesResponse {
+  final String cardId;
+
+  DeleteFilesResponse(this.cardId);
+
+  factory DeleteFilesResponse.fromJson(Map<String, dynamic> json) => _$DeleteFilesResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DeleteFilesResponseToJson(this);
+}
+
+@JsonSerializable()
+class ChangeFilesSettingsResponse {
+  final String cardId;
+
+  ChangeFilesSettingsResponse(this.cardId);
+
+  factory ChangeFilesSettingsResponse.fromJson(Map<String, dynamic> json) => _$ChangeFilesSettingsResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChangeFilesSettingsResponseToJson(this);
 }

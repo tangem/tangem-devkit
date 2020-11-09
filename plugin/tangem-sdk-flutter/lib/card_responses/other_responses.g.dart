@@ -171,13 +171,13 @@ Map<String, dynamic> _$FileHashDataHexToJson(FileHashDataHex instance) => <Strin
 WriteFilesResponse _$WriteFilesResponseFromJson(Map<String, dynamic> json) {
   return WriteFilesResponse(
     json['cardId'] as String,
-    json['index'] as int,
+    json['fileIndex'] as int,
   );
 }
 
 Map<String, dynamic> _$WriteFilesResponseToJson(WriteFilesResponse instance) => <String, dynamic>{
       'cardId': instance.cardId,
-      'index': instance.index,
+      'fileIndex': instance.fileIndex,
     };
 
 ReadFilesResponse _$ReadFilesResponseFromJson(Map<String, dynamic> json) {
@@ -239,14 +239,34 @@ const _$FileSettingsEnumMap = {
   FileSettings.Private: 'Private',
 };
 
-FileSettingsChange _$FileSettingsChangeFromJson(Map<String, dynamic> json) {
-  return FileSettingsChange(
+ChangeFileSettings _$ChangeFileSettingsFromJson(Map<String, dynamic> json) {
+  return ChangeFileSettings(
     json['fileIndex'] as int,
     _$enumDecodeNullable(_$FileSettingsEnumMap, json['settings']),
   );
 }
 
-Map<String, dynamic> _$FileSettingsChangeToJson(FileSettingsChange instance) => <String, dynamic>{
+Map<String, dynamic> _$ChangeFileSettingsToJson(ChangeFileSettings instance) => <String, dynamic>{
       'fileIndex': instance.fileIndex,
       'settings': _$FileSettingsEnumMap[instance.settings],
     };
+
+DeleteFilesResponse _$DeleteFilesResponseFromJson(Map<String, dynamic> json) {
+  return DeleteFilesResponse(
+    json['cardId'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteFilesResponseToJson(DeleteFilesResponse instance) => <String, dynamic>{
+  'cardId': instance.cardId,
+};
+
+ChangeFilesSettingsResponse _$ChangeFilesSettingsResponseFromJson(Map<String, dynamic> json) {
+  return ChangeFilesSettingsResponse(
+    json['cardId'] as String,
+  );
+}
+
+Map<String, dynamic> _$ChangeFilesSettingsResponseToJson(ChangeFilesSettingsResponse instance) => <String, dynamic>{
+  'cardId': instance.cardId,
+};
