@@ -88,6 +88,7 @@ class Utils {
       requireTerminalCertSignature: config.requireTerminalCertSignature,
       checkPIN3OnCard: config.checkPIN3OnCard,
       createWallet: config.createWallet == 1,
+      walletsCount: config.walletsCount,
       cardData: createCardDataSdk(config, issuer),
       ndefRecords: config.ndef,
     );
