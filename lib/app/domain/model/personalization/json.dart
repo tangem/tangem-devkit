@@ -22,6 +22,7 @@ class DefaultPersonalizationJson {
   "checkPIN3OnCard": false,
   "count": 0,
   "createWallet": 1,
+  "walletsCount": 1,
   "curveID": "secp256k1",
   "disablePrecomputedNDEF": false,
   "prohibitDefaultPIN1": false,
