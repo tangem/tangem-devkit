@@ -30,6 +30,9 @@ class TangemSdk {
   static const cSetPin1 = 'setPin1';
   static const cSetPin2 = 'setPin2';
   static const cWriteFiles = 'writeFiles';
+  static const cReadFiles = 'readFiles';
+  static const cDeleteFiles = 'deleteFiles';
+  static const cChangeFilesSettings = 'changeFilesSettings';
   static const cPrepareHashes = "prepareHashes";
 
   static const isAllowedOnlyDebugCards = "isAllowedOnlyDebugCards";
@@ -55,7 +58,10 @@ class TangemSdk {
   static const files = "files";
   static const fileData = "fileData";
   static const fileCounter = "fileCounter";
+  static const readPrivateFiles = "readPrivateFiles";
+  static const indices = "indices";
   static const counter = "counter";
+  static const changes = "changes";
   static const privateKey = "privateKey";
 
   static const MethodChannel _channel = const MethodChannel('tangemSdk');
@@ -211,6 +217,29 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
+  static Future readFiles(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    _channel
+        .invokeMethod(cReadFiles, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cReadFiles, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future deleteFiles(Callback callback, [Map<String, dynamic> valuesToExport]) async {
+    _channel
+        .invokeMethod(cDeleteFiles, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cDeleteFiles, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
+  static Future changeFilesSettings(Callback callback, List<ChangeFileSettings> changes,
+      [Map<String, dynamic> valuesToExport]) async {
+    valuesToExport[TangemSdk.changes] = jsonEncode(changes);
+    _channel
+        .invokeMethod(cChangeFilesSettings, valuesToExport)
+        .then((result) => callback.onSuccess(_createResponse(cChangeFilesSettings, result)))
+        .catchError((error) => _sendBackError(callback, error));
+  }
+
   static Future prepareHashes(Callback callback, String cardId, String fileDataHex, int fileCounter,
       [String privateKeyHex]) async {
     final valuesToExport = <String, dynamic>{
@@ -261,6 +290,12 @@ class TangemSdk {
         return SetPinResponse.fromJson(jsonResponse);
       case cWriteFiles:
         return WriteFilesResponse.fromJson(jsonResponse);
+      case cReadFiles:
+        return ReadFilesResponse.fromJson(jsonResponse);
+      case cDeleteFiles:
+        return DeleteFilesResponse.fromJson(jsonResponse);
+      case cChangeFilesSettings:
+        return ChangeFilesSettingsResponse.fromJson(jsonResponse);
       case cPrepareHashes:
         return FileHashDataHex.fromJson(jsonResponse);
     }

@@ -150,19 +150,88 @@ class FileHashDataHex {
 
   FileHashDataHex(this.startingHash, this.finalizingHash, [this.startingSignature, this.finalizingSignature]);
 
-  factory FileHashDataHex.fromJson(Map<String, dynamic> json) => _$FileHashDataFromJson(json);
+  factory FileHashDataHex.fromJson(Map<String, dynamic> json) => _$FileHashDataHexFromJson(json);
 
-  Map<String, dynamic> toJson() => _$FileHashDataToJson(this);
+  Map<String, dynamic> toJson() => _$FileHashDataHexToJson(this);
 }
 
 @JsonSerializable()
 class WriteFilesResponse {
   final String cardId;
-  final int index;
+  final int fileIndex;
 
-  WriteFilesResponse(this.cardId, [this.index]);
+  WriteFilesResponse(this.cardId, [this.fileIndex]);
 
-  factory WriteFilesResponse.fromJson(Map<String, dynamic> json) => _$WriteFileResponseFromJson(json);
+  factory WriteFilesResponse.fromJson(Map<String, dynamic> json) => _$WriteFilesResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$WriteFileResponseToJson(this);
+  Map<String, dynamic> toJson() => _$WriteFilesResponseToJson(this);
+}
+
+@JsonSerializable()
+class ReadFilesResponse {
+  final List<FileHex> files;
+
+  ReadFilesResponse(this.files);
+
+  factory ReadFilesResponse.fromJson(Map<String, dynamic> json) => _$ReadFilesResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ReadFilesResponseToJson(this);
+}
+
+@JsonSerializable()
+class FileHex {
+  final int fileIndex;
+  final String fileData;
+  final FileSettings fileSettings;
+
+  FileHex(this.fileIndex, this.fileData, [this.fileSettings]);
+
+  factory FileHex.fromJson(Map<String, dynamic> json) => _$FileHexFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FileHexToJson(this);
+}
+
+@JsonSerializable()
+class ChangeFileSettings {
+  final int fileIndex;
+  final FileSettings settings;
+
+  ChangeFileSettings(this.fileIndex, this.settings);
+
+  factory ChangeFileSettings.fromJson(Map<String, dynamic> json) => _$ChangeFileSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChangeFileSettingsToJson(this);
+}
+
+enum FileSettings { Public, Private }
+
+extension FileSettingsCode on FileSettings {
+  static const codes = {
+    FileSettings.Public: 0x0001,
+    FileSettings.Private: 0x0000,
+  };
+
+  int get code => codes[this];
+}
+
+@JsonSerializable()
+class DeleteFilesResponse {
+  final String cardId;
+
+  DeleteFilesResponse(this.cardId);
+
+  factory DeleteFilesResponse.fromJson(Map<String, dynamic> json) => _$DeleteFilesResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DeleteFilesResponseToJson(this);
+}
+
+@JsonSerializable()
+class ChangeFilesSettingsResponse {
+  final String cardId;
+
+  ChangeFilesSettingsResponse(this.cardId);
+
+  factory ChangeFilesSettingsResponse.fromJson(Map<String, dynamic> json) => _$ChangeFilesSettingsResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChangeFilesSettingsResponseToJson(this);
 }

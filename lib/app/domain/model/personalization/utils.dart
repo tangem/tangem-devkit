@@ -133,9 +133,18 @@ class Utils {
 class CommandJsonTest {
   static String scan = "{\"commandType\":\"scanCard\"}";
 
-  static String sign =
-      "{\"commandType\":\"sign\",\"dataForHashing\":\"some,data\",\"cid\":\"BB03000000000004\",\"initialMessage\":{"
-      "\"body\":\"Body message\",\"header\":\"Header Message\"}}";
+  static String sign = '''{
+      "commandType":"sign",
+      "dataForHashing":[
+        "some,data 1",
+        "some data 2"
+      ],
+      "cid":"BB03000000000004",
+      "initialMessage": {
+        "body":"Body message",
+        "header":"Header Message"
+      }
+  }''';
 
   static String depersonalize = "{\"commandType\":\"depersonalize\"}";
   static String createWallet = "{\"commandType\":\"createWallet\"}";
@@ -198,5 +207,42 @@ class CommandJsonTest {
       }
     ],
     "commandType":"writeFiles"
+  }''';
+
+  static String readFiles = '''{
+    "commandType":"readFiles"
+  }''';
+
+  static String readFiles2 = '''{
+    "readPrivateFiles": false,
+    "indices": [
+      0
+    ],
+    "commandType":"readFiles"
+  }''';
+
+  static String deleteFiles = '''{
+    "indices": [
+      1
+    ],
+    "commandType":"deleteFiles"
+  }''';
+
+  static String deleteFiles2 = '''{
+    "commandType":"deleteFiles"
+  }''';
+
+  static String changeFilesSettings = '''{
+    "changes": [
+      {
+        "fileIndex": 0,
+        "settings": "Public"
+      },
+      {
+        "fileIndex": 1,
+        "settings": "Private"
+      }
+    ],
+    "commandType": "changeFilesSettings"
   }''';
 }

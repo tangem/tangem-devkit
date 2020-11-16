@@ -1,6 +1,8 @@
 import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/test_bloc.dart';
+import 'package:devkit/app/ui/screen/card_action/files_change_settings_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/files_delete_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BlocFinder {
@@ -32,7 +34,17 @@ class RepoFinder {
 
   static WriteUserDataBloc writeUserDataBloc(context) => RepositoryProvider.of<WriteUserDataBloc>(context);
 
-  static WriteUserProtectedDataBloc writeUserProtectedDataBloc(context) => RepositoryProvider.of<WriteUserProtectedDataBloc>(context);
+  static WriteUserProtectedDataBloc writeUserProtectedDataBloc(context) =>
+      RepositoryProvider.of<WriteUserProtectedDataBloc>(context);
 
   static SetPinBlock setPinBloc(context) => RepositoryProvider.of<SetPinBlock>(context);
+
+  static FilesWriteBloc setFilesWriteBloc(context) => RepositoryProvider.of<FilesWriteBloc>(context);
+
+  static FilesReadBloc setFilesReadBloc(context) => RepositoryProvider.of<FilesReadBloc>(context);
+
+  static FilesDeleteBloc setFilesDeleteBloc(context) => RepositoryProvider.of<FilesDeleteBloc>(context);
+
+  static FilesChangeSettingsBloc setFilesChangeSettingsBloc(context) =>
+      RepositoryProvider.of<FilesChangeSettingsBloc>(context);
 }

@@ -42,6 +42,8 @@ abstract class ActionBloc<T> extends Disposable {
     _snackbarMessage.add(message);
   }
 
+  bool hasCid() => _cid != null && _cid.isNotEmpty;
+
   scanCard() {
     final callback = Callback((result) {
       bsCid.add(parseCidFromSuccessScan(result));

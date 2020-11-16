@@ -152,7 +152,7 @@ Map<String, dynamic> _$SetPinResponseToJson(SetPinResponse instance) => <String,
       'status': instance.status,
     };
 
-FileHashDataHex _$FileHashDataFromJson(Map<String, dynamic> json) {
+FileHashDataHex _$FileHashDataHexFromJson(Map<String, dynamic> json) {
   return FileHashDataHex(
     json['startingHash'] as String,
     json['finalizingHash'] as String,
@@ -161,21 +161,112 @@ FileHashDataHex _$FileHashDataFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$FileHashDataToJson(FileHashDataHex instance) => <String, dynamic>{
+Map<String, dynamic> _$FileHashDataHexToJson(FileHashDataHex instance) => <String, dynamic>{
       'startingHash': instance.startingHash,
       'finalizingHash': instance.finalizingHash,
       'startingSignature': instance.startingSignature,
       'finalizingSignature': instance.finalizingSignature,
     };
 
-WriteFilesResponse _$WriteFileResponseFromJson(Map<String, dynamic> json) {
+WriteFilesResponse _$WriteFilesResponseFromJson(Map<String, dynamic> json) {
   return WriteFilesResponse(
     json['cardId'] as String,
-    json['index'] as int,
+    json['fileIndex'] as int,
   );
 }
 
-Map<String, dynamic> _$WriteFileResponseToJson(WriteFilesResponse instance) => <String, dynamic>{
+Map<String, dynamic> _$WriteFilesResponseToJson(WriteFilesResponse instance) => <String, dynamic>{
       'cardId': instance.cardId,
-      'index': instance.index,
+      'fileIndex': instance.fileIndex,
     };
+
+ReadFilesResponse _$ReadFilesResponseFromJson(Map<String, dynamic> json) {
+  return ReadFilesResponse(
+    (json['files'] as List)?.map((e) => e == null ? null : FileHex.fromJson(e as Map<String, dynamic>))?.toList(),
+  );
+}
+
+Map<String, dynamic> _$ReadFilesResponseToJson(ReadFilesResponse instance) => <String, dynamic>{
+      'files': instance.files,
+    };
+
+FileHex _$FileHexFromJson(Map<String, dynamic> json) {
+  return FileHex(
+    json['fileIndex'] as int,
+    json['fileData'] as String,
+    _$enumDecodeNullable(_$FileSettingsEnumMap, json['fileSettings']),
+  );
+}
+
+Map<String, dynamic> _$FileHexToJson(FileHex instance) => <String, dynamic>{
+      'fileIndex': instance.fileIndex,
+      'fileData': instance.fileData,
+      'fileSettings': _$FileSettingsEnumMap[instance.fileSettings],
+    };
+
+T _$enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError('A value must be provided. Supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+
+  final value = enumValues.entries.singleWhere((e) => e.value == source, orElse: () => null)?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
+}
+
+T _$enumDecodeNullable<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
+}
+
+const _$FileSettingsEnumMap = {
+  FileSettings.Public: 'Public',
+  FileSettings.Private: 'Private',
+};
+
+ChangeFileSettings _$ChangeFileSettingsFromJson(Map<String, dynamic> json) {
+  return ChangeFileSettings(
+    json['fileIndex'] as int,
+    _$enumDecodeNullable(_$FileSettingsEnumMap, json['settings']),
+  );
+}
+
+Map<String, dynamic> _$ChangeFileSettingsToJson(ChangeFileSettings instance) => <String, dynamic>{
+      'fileIndex': instance.fileIndex,
+      'settings': _$FileSettingsEnumMap[instance.settings],
+    };
+
+DeleteFilesResponse _$DeleteFilesResponseFromJson(Map<String, dynamic> json) {
+  return DeleteFilesResponse(
+    json['cardId'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteFilesResponseToJson(DeleteFilesResponse instance) => <String, dynamic>{
+  'cardId': instance.cardId,
+};
+
+ChangeFilesSettingsResponse _$ChangeFilesSettingsResponseFromJson(Map<String, dynamic> json) {
+  return ChangeFilesSettingsResponse(
+    json['cardId'] as String,
+  );
+}
+
+Map<String, dynamic> _$ChangeFilesSettingsResponseToJson(ChangeFilesSettingsResponse instance) => <String, dynamic>{
+  'cardId': instance.cardId,
+};

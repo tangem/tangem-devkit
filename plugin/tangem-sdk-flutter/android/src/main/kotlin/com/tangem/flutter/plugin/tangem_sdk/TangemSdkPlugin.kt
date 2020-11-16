@@ -12,6 +12,7 @@ import com.tangem.*
 import com.tangem.commands.common.ResponseConverter
 import com.tangem.commands.file.FileData
 import com.tangem.commands.file.FileDataSignature
+import com.tangem.commands.file.FileSettingsChange
 import com.tangem.commands.personalization.entities.Acquirer
 import com.tangem.commands.personalization.entities.CardConfig
 import com.tangem.commands.personalization.entities.Issuer
@@ -99,18 +100,12 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "setPin1" -> setPin1(call, result)
       "setPin2" -> setPin2(call, result)
       "writeFiles" -> writeFiles(call, result)
+      "readFiles" -> readFiles(call, result)
+      "deleteFiles" -> deleteFiles(call, result)
+      "changeFilesSettings" -> changeFilesSettings(call, result)
       "prepareHashes" -> prepareHashes(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
-    }
-  }
-
-  private fun writeFiles(call: MethodCall, result: Result) {
-    try {
-      val filesList = extractFilesToWrite(call, result)
-      sdk.writeFiles(filesList, cid(call), message(call)) { handleResult(result, it) }
-    } catch (ex: Exception) {
-      handleException(result, ex)
     }
   }
 
@@ -262,6 +257,43 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       sdk.writeUserProtectedData(cid(call), userProtectedData, userProtectedCounter(call), message(call)) {
         handleResult(result, it)
       }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun writeFiles(call: MethodCall, result: Result) {
+    try {
+      val filesList = extractFilesToWrite(call, result)
+      sdk.writeFiles(filesList, cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun readFiles(call: MethodCall, result: Result) {
+    try {
+      val readPrivateFiles = call.argument<Boolean>("readPrivateFiles") ?: false
+      val indices = call.argument<List<Int>>("indices")?.toList()
+      sdk.readFiles(readPrivateFiles, indices, cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun deleteFiles(call: MethodCall, result: Result) {
+    try {
+      val indices = call.argument<List<Int>>("indices")?.toList()
+      sdk.deleteFiles(indices, cid(call), message(call)) { handleResult(result, it) }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun changeFilesSettings(call: MethodCall, result: Result) {
+    try {
+      val listOfSettings = extractChangesOfFileSettings(call, result)
+      sdk.changeFilesSettings(listOfSettings, cid(call), message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -439,6 +471,16 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       } else {
         jsonList.map { gson.fromJson(it, FileDataHex.DataProtectedByPasscodeHex::class.java) }.map { it.convert() }
       }
+    }
+
+    private fun extractChangesOfFileSettings(call: MethodCall, result: Result): List<FileSettingsChange> {
+      val gson = Gson()
+      val mapType = object: TypeToken<MutableList<MutableMap<String, Any>>>() {}.type
+      val json = call.argument<String>("changes")
+      val rawList = gson.fromJson<MutableList<MutableMap<String, Any>>>(json, mapType)
+      if (rawList.isEmpty()) return mutableListOf()
+
+      return rawList.map { gson.toJson(it) }.map { gson.fromJson(it, FileSettingsChange::class.java) }
     }
 
     @Throws(Exception::class)

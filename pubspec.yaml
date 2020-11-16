@@ -43,7 +43,10 @@ dependencies:
   share: ^0.6.4+1
   recase: ^2.0.1
   crypto: ^2.1.4
-
+  path_provider: ^1.6.24
+  path: ^1.7.0
+  camera_camera: ^1.0.34+1
+  flutter_image_compress: ^0.7.0
 
 flutter_icons:
   # How to update icons? Launch in terminal - flutter pub run flutter_launcher_icons:main

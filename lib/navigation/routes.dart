@@ -1,4 +1,8 @@
 import 'package:devkit/app/ui/screen/card_action/depersonalization_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/files_change_settings_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/files_delete_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/files_read_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/files_write_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_read_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_read_ex_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_write_data_screen.dart';
@@ -36,6 +40,10 @@ class Routes {
   static const USER_WRITE_PROTECTED_DATA = "/user_write_protected_data";
   static const SET_PIN1 = "/set_pin_1";
   static const SET_PIN2 = "/set_pin_2";
+  static const FILES_READ = "/files_read";
+  static const FILES_WRITE = "/files_write";
+  static const FILES_DELETE = "/files_delete";
+  static const FILES_CHANGE_SETTINGS = "/files_change_settings";
   static const RESPONSE = "/response";
 
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -74,6 +82,14 @@ class Routes {
         return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.PIN1));
       case SET_PIN2:
         return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.PIN2));
+      case FILES_READ:
+        return MaterialPageRoute(builder: (_) => FilesReadScreen());
+      case FILES_WRITE:
+        return MaterialPageRoute(builder: (_) => FilesWriteScreen());
+      case FILES_DELETE:
+        return MaterialPageRoute(builder: (_) => FilesDeleteScreen());
+      case FILES_CHANGE_SETTINGS:
+        return MaterialPageRoute(builder: (_) => FilesChangeSettingsScreen());
       case RESPONSE:
         return PageRouteBuilder(pageBuilder: (_, _1, _2) => ResponseScreen(arguments: settings.arguments));
       default:

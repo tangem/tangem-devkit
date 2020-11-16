@@ -1,5 +1,6 @@
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/commons/extensions/app_extensions.dart';
+import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/card_responses/other_responses.dart';
 
@@ -301,6 +302,104 @@ class SetPinResponseBody extends StatelessWidget {
           description: transl.desc_response_set_pin_status,
         ),
       ],
+    );
+  }
+}
+
+class WriteFilesResponseBody extends StatelessWidget {
+  final WriteFilesResponse _response;
+
+  WriteFilesResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return Column(
+      children: <Widget>[
+        ResponseTextWidget(
+          name: transl.response_card_cid,
+          value: _response.cardId,
+          description: transl.desc_response_card_cid,
+        ),
+        ResponseTextWidget(
+          name: transl.response_files_write_index,
+          value: _response.fileIndex,
+          description: transl.response_files_write_index,
+        ),
+      ],
+    );
+  }
+}
+
+class ReadFilesResponseBody extends StatelessWidget {
+  final ReadFilesResponse _response;
+
+  ReadFilesResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    if (_response.files == null || _response.files.isEmpty) {
+      return ResponseTextWidget(
+        name: "",
+        value: "Files not exist",
+        description: "",
+      );
+    }
+    final widgets = _response.files.map((e) {
+      final fileSettings = e.fileSettings == null ? "" : enumToString(e.fileSettings);
+      return Column(
+        children: [
+          ResponseTextWidget(
+            name: transl.response_file_index,
+            value: e.fileIndex,
+            description: transl.desc_response_file_index,
+          ),
+          ResponseTextWidget(
+            name: transl.response_file_settings,
+            value: fileSettings,
+            description: transl.desc_response_file_settings,
+          ),
+          ResponseTextWidget(
+            name: transl.response_file_data,
+            value: e.fileData,
+            description: transl.desc_response_file_data,
+          ),
+        ],
+      );
+    }).toList();
+    return SingleChildScrollView(child: Column(children: widgets));
+  }
+}
+
+class DeleteFilesResponseBody extends StatelessWidget {
+  final DeleteFilesResponse _response;
+
+  const DeleteFilesResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return ResponseTextWidget(
+      name: transl.card_id,
+      value: _response.cardId,
+      description: transl.desc_card_id,
+    );
+  }
+}
+
+class ChangeFilesSettingsResponseBody extends StatelessWidget {
+  final ChangeFilesSettingsResponse _response;
+
+  const ChangeFilesSettingsResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return ResponseTextWidget(
+      name: transl.card_id,
+      value: _response.cardId,
+      description: transl.desc_card_id,
     );
   }
 }

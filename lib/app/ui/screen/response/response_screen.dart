@@ -71,6 +71,10 @@ class ResponseFrame extends StatelessWidget {
     if (arguments is ReadUserDataResponse) return ReadUserDataResponseBody(arguments);
     if (arguments is WriteUserDataResponse) return WriteUserDataResponseBody(arguments);
     if (arguments is SetPinResponse) return SetPinResponseBody(arguments);
+    if (arguments is WriteFilesResponse) return WriteFilesResponseBody(arguments);
+    if (arguments is ReadFilesResponse) return ReadFilesResponseBody(arguments);
+    if (arguments is DeleteFilesResponse) return DeleteFilesResponseBody(arguments);
+    if (arguments is ChangeFilesSettingsResponse) return ChangeFilesSettingsResponseBody(arguments);
 
     return Center(child: TextWidget("Not implemented yet"));
   }

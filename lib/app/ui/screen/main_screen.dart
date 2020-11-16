@@ -75,6 +75,10 @@ class MainBody extends StatelessWidget {
     Pair("action_user_write_protected_data", "user_write_protected_data"),
     Pair("action_set_pin1", "set_pin_1"),
     Pair("action_set_pin2", "set_pin_2"),
+    Pair("action_files_read", "files_read"),
+    Pair("action_files_write", "files_write"),
+    Pair("action_files_delete", "files_delete"),
+    Pair("action_files_change_settings", "files_change_settings"),
   ];
 
   @override
