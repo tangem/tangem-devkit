@@ -1,33 +1,55 @@
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-import 'ReadCard.dart';
-import 'PersonalizeCard.dart';
-import 'ConfigForPersonalize.dart';
-import 'PurgeWallet.dart';
 import 'dart:convert';
-import 'DepersonalizeCard.dart';
+import 'ConfigForPersonalize.dart';
+import 'Methods.dart';
+import 'AutoTestStep.dart';
 
 
 void main() {
-  final menuButton = find.byValueKey('menu.btn');
-  final testItem = find.byValueKey("navigateToTestScreen.btn");
-  final commandJson = "commandJson";
-  final responseSuccessJson = "responseSuccessJson";
-  final responseErrorJson = "responseErrorJson";
+  final configForPersonalize = ConfigForPersonalize();
+  final autoTestSteps = AutoTestStep();
 
   FlutterDriver driver;
 
-  group('Read card test when settingMask =true', () {
+  group('Personalization test when enabled SettingMask', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
       await driver.requestData('restart');
     });
 
     test("read",() async {
-      print("1 tap");
-      await driver.tap(menuButton);
-      print("2 tap");
-      await driver.tap(testItem);
+
+      print("DATA PREPARATION:");
+      print("Preparing config for personalise");
+      final personaliseConfig = await configForPersonalize.returnConfig('config2');
+      String personaliseConfigToJson = jsonEncode(personaliseConfig);
+      print(personaliseConfig);
+
+      print("Preparing config for issuer");
+      final issuerConfig = await configForPersonalize.returnConfig('issuerConfig1');
+      String issuerConfigToJson = jsonEncode(issuerConfig);
+      print(issuerConfig);
+
+      print("Create command JSON");
+      String commandJson = '''{
+      "config": $personaliseConfigToJson,
+      "issuer":$issuerConfigToJson,
+      "commandType":"personalize" 
+      }''';
+      print(commandJson);
+
+      print("PERSONALISATION CARD:");
+      final personalizeResponse = await autoTestSteps.stepsInAutoTestingScreen(driver, commandJson, 'success');
+      print(personalizeResponse);
+
+      print("CHECKING RESULT");
+      print("Reconciliation curve");
+      expect(personalizeResponse['curve'], personaliseConfig['curveID']);
+
+
+
+
 
 
     });
@@ -40,3 +62,6 @@ void main() {
   });
 
 }
+
+
+
