@@ -101,6 +101,8 @@ class Languages {
   "desc_pers_item_max_signatures": "Total number of signatures allowed for the wallet when the card was personalized",
   "pers_item_create_wallet": "Create wallet",
   "desc_pers_item_create_wallet": "Off - don’t create wallet (user must be create wallet by himself with App)\\nOn - create wallet (after personalization wallet alredy will be created and card ready to use)",
+  "pers_item_wallets_count": "Wallets count",
+  "desc_pers_item_wallets_count": "Number of wallets supported by card",
   "pers_item_sign_tx_hashes": "Sign TX hashes (0)",
   "desc_pers_item_sign_tx_hashes": "Allow card to sign hashed transaction",
   "pers_item_sign_raw_tx": "Sign raw TX (1)",

@@ -248,6 +248,10 @@ class Transl {
 
   String get desc_pers_item_create_wallet => get("desc_pers_item_create_wallet");
 
+  String get pers_item_wallets_count => get("pers_item_wallets_count");
+
+  String get desc_pers_item_wallets_count => get("desc_pers_item_wallets_count");
+
   String get pers_item_sign_tx_hashes => get("pers_item_sign_tx_hashes");
 
   String get desc_pers_item_sign_tx_hashes => get("desc_pers_item_sign_tx_hashes");

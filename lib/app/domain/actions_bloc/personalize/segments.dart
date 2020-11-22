@@ -64,6 +64,7 @@ class CommonSegment extends BaseSegment {
   final bsCurve = BehaviorSubject<Pair<String, String>>();
   final bsMaxSignatures = BehaviorSubject<String>();
   final bsCreateWallet = BehaviorSubject<bool>();
+  final bsWalletsCount = BehaviorSubject<String>();
   final bsPauseBeforePin = BehaviorSubject<Pair<String, int>>();
 
   CommonSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
@@ -75,7 +76,10 @@ class CommonSegment extends BaseSegment {
     _subscriptions.add(bsCurve.listen((value) => _config.curveID = value.b));
     _subscriptions.add(bsMaxSignatures.listen((value) => _config.MaxSignatures = value.isEmpty ? 0 : int.parse(value)));
     _subscriptions.add(bsCreateWallet.listen((value) => _config.createWallet = value ? 1 : 0));
+    _subscriptions.add(bsWalletsCount.listen((value) => _config.walletsCount = int.tryParse(value) ?? 1));
     _subscriptions.add(bsPauseBeforePin.listen((value) => _config.pauseBeforePIN2 = value.b));
+
+    bsWalletsCount.add("1");
   }
 
   _listenBlockchain(Pair<String, String> value) {

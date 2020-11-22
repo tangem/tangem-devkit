@@ -55,6 +55,7 @@ CardConfigSdk _$CardConfigSdkFromJson(Map<String, dynamic> json) {
     requireTerminalCertSignature: json['requireTerminalCertSignature'] as bool,
     checkPIN3OnCard: json['checkPIN3OnCard'] as bool,
     createWallet: json['createWallet'] as bool,
+    walletsCount: json['walletsCount'] as int,
     cardData: json['cardData'] == null
         ? null
         : CardDataSdk.fromJson(json['cardData'] as Map<String, dynamic>),
@@ -111,6 +112,7 @@ Map<String, dynamic> _$CardConfigSdkToJson(CardConfigSdk instance) =>
       'requireTerminalCertSignature': instance.requireTerminalCertSignature,
       'checkPIN3OnCard': instance.checkPIN3OnCard,
       'createWallet': instance.createWallet,
+      'walletsCount': instance.walletsCount,
       'cardData': instance.cardData,
       'ndefRecords': instance.ndefRecords,
     };

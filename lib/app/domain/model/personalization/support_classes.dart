@@ -22,6 +22,7 @@ class PersonalizationConfig {
   bool checkPIN3OnCard;
   int count;
   int createWallet;
+  int walletsCount;
   String curveID;
   bool disablePrecomputedNDEF;
   bool prohibitDefaultPIN1;
@@ -69,6 +70,7 @@ class PersonalizationConfig {
       this.checkPIN3OnCard,
       this.count,
       this.createWallet,
+      this.walletsCount,
       this.curveID,
       this.disablePrecomputedNDEF,
       this.prohibitDefaultPIN1,
