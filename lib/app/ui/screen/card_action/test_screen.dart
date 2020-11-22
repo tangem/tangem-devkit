@@ -89,7 +89,7 @@ class _TestBodyState extends State<TestBody> {
         Expanded(
           flex: 5,
           child: TextField(
-            key: ItemId.from(ItemName.responseErrorJson),
+            key: ItemId.from(ItemName.commandJson),
             controller: _inputCommandController.controller,
             keyboardType: TextInputType.multiline,
             maxLines: null,

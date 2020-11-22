@@ -26,6 +26,7 @@ class ItemName {
   static final curve = "curve";
   static final maxSignatures = "maxSignatures";
   static final createWallet = "createWallet";
+  static final walletsCount = "walletsCount";
   static final pauseBeforePin2 = "pauseBeforePin2";
 
   static final txHashes = "txHashes";

@@ -43,6 +43,7 @@ class CardConfigSdk {
   final bool requireTerminalCertSignature;
   final bool checkPIN3OnCard;
   final bool createWallet;
+  final int walletsCount;
   final CardDataSdk cardData;
   final List<NdefRecordSdk> ndefRecords;
 
@@ -86,6 +87,7 @@ class CardConfigSdk {
     this.requireTerminalCertSignature,
     this.checkPIN3OnCard,
     this.createWallet,
+    this.walletsCount,
     this.cardData,
     this.ndefRecords,
   });

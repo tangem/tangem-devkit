@@ -17,6 +17,7 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
   PersonalizationBloc _bloc;
   TextStreamController _customBlockchainController;
   TextStreamController _maxSignaturesController;
+  TextStreamController _walletsCountController;
 
   @override
   void initState() {
@@ -25,6 +26,7 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
     _bloc = RepoFinder.personalizationBloc(context);
     _customBlockchainController = TextStreamController(_bloc.common.bsCustomBlockchain);
     _maxSignaturesController = TextStreamController(_bloc.common.bsMaxSignatures, [RegExp(r'\d+')]);
+    _walletsCountController = TextStreamController(_bloc.common.bsWalletsCount);
   }
 
   @override
@@ -69,6 +71,14 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
           _bloc.common.bsCreateWallet,
           initialData: false,
         ).withUnderline(),
+        InputWidget(
+          ItemName.walletsCount,
+          _walletsCountController.controller,
+          hint: transl.pers_item_wallets_count,
+          description: transl.desc_pers_item_wallets_count,
+          inputType: TextInputType.number,
+          scrollStream: _bloc.scrollingStateStream,
+        ).withUnderline(),
         SpinnerWidget(
           ItemName.pauseBeforePin2,
           _bloc.values.pauseBeforePin,
@@ -83,6 +93,8 @@ class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
   @override
   void dispose() {
     _customBlockchainController.dispose();
+    _maxSignaturesController.dispose();
+    _walletsCountController.dispose();
     super.dispose();
   }
 }
