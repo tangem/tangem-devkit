@@ -124,6 +124,8 @@ class PersonalizationCardData {
   bool productNote;
   @JsonKey(name: 'product_tag')
   bool productTag;
+  @JsonKey(name: 'product_twin_card')
+  bool productTwinCard;
   @JsonKey(name: 'token_symbol', includeIfNull: false)
   String tokenSymbol;
   @JsonKey(name: 'token_contract_address', includeIfNull: false)
@@ -142,6 +144,7 @@ class PersonalizationCardData {
     this.productIdIssuer,
     this.productNote,
     this.productTag,
+    this.productTwinCard,
   });
 
   factory PersonalizationCardData.fromJson(Map<String, dynamic> json) => _$PersonalizationCardDataFromJson(json);

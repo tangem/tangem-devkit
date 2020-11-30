@@ -5,6 +5,7 @@ enum Product {
   Tag,
   IdCard,
   IdIssuer,
+  TwinCard,
 }
 
 extension ProductCodes on Product {
@@ -13,6 +14,7 @@ extension ProductCodes on Product {
     Product.Tag: 0x02,
     Product.IdCard: 0x04,
     Product.IdIssuer: 0x08,
+    Product.TwinCard: 0x10,
   };
 
   int get code => codes[this];

@@ -40,6 +40,7 @@ class ItemName {
   static final tag = "tag";
   static final idCard = "idCard";
   static final idIssuer = "idIssuer";
+  static final twinCard = "twinCard";
   static final allowUnencrypted = "allowUnencrypted";
   static final allowFastEncryption = "allowFastEncryption";
   static final pin1 = "pin1";

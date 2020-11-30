@@ -199,6 +199,7 @@ class ProductMaskResponseWidget extends StatelessWidget {
     "Tag",
     "IdCard",
     "IdIssuer",
+    "TwinCard",
   ];
 
   ProductMaskResponseWidget(this._cardData);

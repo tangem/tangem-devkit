@@ -130,6 +130,7 @@ PersonalizationCardData _$PersonalizationCardDataFromJson(
     date: json['date'] as String,
     productIdCard: json['product_id_card'] as bool,
     productIdIssuer: json['product_id_issuer'] as bool,
+    productTwinCard: json['product_twin_card'] as bool,
     productNote: json['product_note'] as bool,
     productTag: json['product_tag'] as bool,
   );
@@ -143,6 +144,7 @@ Map<String, dynamic> _$PersonalizationCardDataToJson(
     'date': instance.date,
     'product_id_card': instance.productIdCard,
     'product_id_issuer': instance.productIdIssuer,
+    'product_twin_card': instance.productTwinCard,
     'product_note': instance.productNote,
     'product_tag': instance.productTag,
   };
