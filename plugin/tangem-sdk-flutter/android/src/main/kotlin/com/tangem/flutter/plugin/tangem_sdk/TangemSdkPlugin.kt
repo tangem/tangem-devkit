@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.tangem.*
 import com.tangem.commands.common.ResponseConverter
+import com.tangem.commands.common.card.FirmwareType
 import com.tangem.commands.file.FileData
 import com.tangem.commands.file.FileDataSignature
 import com.tangem.commands.file.FileSettingsChange
@@ -19,7 +20,6 @@ import com.tangem.commands.personalization.entities.Issuer
 import com.tangem.commands.personalization.entities.Manufacturer
 import com.tangem.common.CardValuesDbStorage
 import com.tangem.common.CompletionResult
-import com.tangem.common.extensions.CardType
 import com.tangem.common.extensions.calculateSha256
 import com.tangem.common.extensions.hexToBytes
 import com.tangem.tangem_sdk_new.DefaultSessionViewDelegate
@@ -56,7 +56,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       hiddenLifecycleReference.lifecycle.addObserver(NfcLifecycleObserver(this))
     }
     val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager).apply { this.activity = activity }
-    val config = Config(cardFilter = CardFilter(EnumSet.of(CardType.Sdk)))
+    val config = Config(cardFilter = CardFilter(EnumSet.of(FirmwareType.Sdk)))
     val valueStorage = CardValuesDbStorage(AndroidSqliteDriver(Database.Schema, activity.applicationContext,
         "flutter_cards.db"))
     val keyStorage = TerminalKeysStorage(activity.application)
@@ -119,7 +119,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun sign(call: MethodCall, result: Result) {
     try {
-      sdk.sign(hashes(call), cid(call), message(call)) { handleResult(result, it) }
+      sdk.sign(hashes(call), null, cid(call), message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -148,7 +148,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun createWallet(call: MethodCall, result: Result) {
     try {
-      sdk.createWallet(cid(call), message(call)) { handleResult(result, it) }
+      sdk.createWallet(null, null, cid(call), message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -156,7 +156,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun purgeWallet(call: MethodCall, result: Result) {
     try {
-      sdk.purgeWallet(cid(call), message(call)) { handleResult(result, it) }
+      sdk.purgeWallet(null, cid(call), message(call)) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -317,7 +317,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       val name = "isAllowedOnlyDebugCards"
       assert(call, name)
       val allowedOnlyDebug = call.argument<Boolean>(name) !!
-      val allowedCardTypes = if (allowedOnlyDebug) EnumSet.of(CardType.Sdk) else EnumSet.allOf(CardType::class.java)
+      val allowedCardTypes = if (allowedOnlyDebug) EnumSet.of(FirmwareType.Sdk) else EnumSet.allOf(FirmwareType::class.java)
       sdk.config.cardFilter.allowedCardTypes = allowedCardTypes
     } catch (ex: Exception) {
       handleException(result, ex)
