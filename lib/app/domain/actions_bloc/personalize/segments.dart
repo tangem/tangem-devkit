@@ -79,7 +79,7 @@ class CommonSegment extends BaseSegment {
     _subscriptions.add(bsWalletsCount.listen((value) => _config.walletsCount = int.tryParse(value) ?? 1));
     _subscriptions.add(bsPauseBeforePin.listen((value) => _config.pauseBeforePIN2 = value.b));
 
-    bsWalletsCount.add("1");
+    bsWalletsCount.add("5");
   }
 
   _listenBlockchain(Pair<String, String> value) {
