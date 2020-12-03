@@ -14,7 +14,7 @@ extension ProductCodes on Product {
     Product.Tag: 0x02,
     Product.IdCard: 0x04,
     Product.IdIssuer: 0x08,
-    Product.TwinCard: 0x10,
+    Product.TwinCard: 0x20,
   };
 
   int get code => codes[this];
