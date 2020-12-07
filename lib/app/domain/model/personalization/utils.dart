@@ -32,12 +32,14 @@ class Utils {
     final isTag = config.cardData.productTag;
     final isIdCard = config.cardData.productIdCard;
     final isIdIssuer = config.cardData.productIdIssuer;
+    final isTwinCard = config.cardData.productTwinCard;
 
     final productMaskBuilder = ProductMaskBuilder();
     if (isNote) productMaskBuilder.add(Product.Note);
     if (isTag) productMaskBuilder.add(Product.Tag);
     if (isIdCard) productMaskBuilder.add(Product.IdCard);
     if (isIdIssuer) productMaskBuilder.add(Product.IdIssuer);
+    if (isTwinCard) productMaskBuilder.add(Product.TwinCard);
     return productMaskBuilder.build();
   }
 

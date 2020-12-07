@@ -34,7 +34,7 @@ class ReadResponseBody extends StatelessWidget {
           ),
           ResponseTextWidget(
             name: transl.response_card_firmware_version,
-            value: _card.firmwareVersion,
+            value: _card.firmwareVersion.version,
             description: transl.desc_response_card_firmware_version,
           ),
           ResponseTextWidget(
@@ -199,6 +199,7 @@ class ProductMaskResponseWidget extends StatelessWidget {
     "Tag",
     "IdCard",
     "IdIssuer",
+    "TwinCard",
   ];
 
   ProductMaskResponseWidget(this._cardData);

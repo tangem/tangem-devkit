@@ -340,6 +340,10 @@ class Transl {
 
   String get desc_pers_item_id_issuer_card => get("desc_pers_item_id_issuer_card");
 
+  String get pers_item_id_twin_card => get("pers_item_id_twin_card");
+
+  String get desc_pers_item_id_twin_card => get("desc_pers_item_id_twin_card");
+
   String get pers_item_is_reusable => get("pers_item_is_reusable");
 
   String get desc_pers_item_is_reusable => get("desc_pers_item_is_reusable");
