@@ -147,6 +147,8 @@ class Languages {
   "desc_pers_item_id_card": "Personal ID card",
   "pers_item_id_issuer_card": "ID Issuer",
   "desc_pers_item_id_issuer_card": "",
+  "pers_item_id_twin_card": "Twin card",
+  "desc_pers_item_id_twin_card": "",
   "pers_item_is_reusable": "Is reusable",
   "desc_pers_item_is_reusable": "Defines what happens when user calls PURGE_WALLET command:\\nOff - Card will switch to Purged state\\nOn - Card will switch to Empty state and let create a new wallet again",
   "pers_item_use_activation": "Need activation",

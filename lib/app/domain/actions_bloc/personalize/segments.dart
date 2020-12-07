@@ -79,7 +79,7 @@ class CommonSegment extends BaseSegment {
     _subscriptions.add(bsWalletsCount.listen((value) => _config.walletsCount = int.tryParse(value) ?? 1));
     _subscriptions.add(bsPauseBeforePin.listen((value) => _config.pauseBeforePIN2 = value.b));
 
-    bsWalletsCount.add("1");
+    bsWalletsCount.add("5");
   }
 
   _listenBlockchain(Pair<String, String> value) {
@@ -262,6 +262,7 @@ class ProductMaskSegment extends BaseSegment {
   final tag = BehaviorSubject<bool>();
   final idCard = BehaviorSubject<bool>();
   final idIssuer = BehaviorSubject<bool>();
+  final twinCard = BehaviorSubject<bool>();
 
   ProductMaskSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
@@ -271,6 +272,7 @@ class ProductMaskSegment extends BaseSegment {
     tag.add(_config.cardData.productTag);
     idCard.add(_config.cardData.productIdCard);
     idIssuer.add(_config.cardData.productIdIssuer);
+    twinCard.add(_config.cardData.productTwinCard);
   }
 
   @override
@@ -279,6 +281,7 @@ class ProductMaskSegment extends BaseSegment {
     _subscriptions.add(tag.listen((isChecked) => _config.cardData.productTag = isChecked));
     _subscriptions.add(idCard.listen((isChecked) => _config.cardData.productIdCard = isChecked));
     _subscriptions.add(idIssuer.listen((isChecked) => _config.cardData.productIdIssuer = isChecked));
+    _subscriptions.add(twinCard.listen((isChecked) => _config.cardData.productTwinCard = isChecked));
   }
 }
 

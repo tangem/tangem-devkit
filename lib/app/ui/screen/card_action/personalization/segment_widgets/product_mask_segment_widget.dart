@@ -41,6 +41,13 @@ class ProductMaskSegmentWidget extends StatelessWidget {
           transl.desc_pers_item_id_issuer_card,
           productMask.idIssuer,
           initialData: false,
+        ).withUnderline(),
+        SwitchWidget(
+          ItemName.twinCard,
+          transl.pers_item_id_twin_card,
+          transl.desc_pers_item_id_twin_card,
+          productMask.twinCard,
+          initialData: false,
         ),
       ],
     );
