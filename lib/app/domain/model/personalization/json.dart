@@ -18,6 +18,7 @@ class DefaultPersonalizationJson {
     "product_id_issuer": false,
     "product_note": true,
     "product_tag": false
+    "product_twin_card": false
   },
   "checkPIN3OnCard": false,
   "count": 0,
