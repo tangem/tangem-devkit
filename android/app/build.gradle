@@ -24,6 +24,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply from: '../signing_configs.gradle'
 
 android {
   compileSdkVersion 29
@@ -34,6 +35,7 @@ android {
 
   lintOptions {
     disable 'InvalidPackage'
+    checkReleaseBuilds false
   }
 
   defaultConfig {
@@ -50,7 +52,10 @@ android {
     release {
       // TODO: Add your own signing config for the release build.
       // Signing with the debug keys for now, so `flutter run --release` works.
-      signingConfig signingConfigs.debug
+      debuggable false
+      minifyEnabled true
+      signingConfig signingConfigs.release
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
 }
