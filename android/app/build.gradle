@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-apply from: '../signing_configs.gradle'
+//apply from: '../signing_configs.gradle'
 
 android {
   compileSdkVersion 29
@@ -54,7 +54,7 @@ android {
       // Signing with the debug keys for now, so `flutter run --release` works.
       debuggable false
       minifyEnabled true
-      signingConfig signingConfigs.release
+      signingConfig signingConfigs.debug
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
