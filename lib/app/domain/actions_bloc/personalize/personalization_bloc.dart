@@ -115,6 +115,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
       _restoreConfig(PersonalizationConfig.fromJson(configMap));
     } catch (ex) {
       sendSnackbarMessage(ex);
+      _restoreConfig(_getDefaultConfig());
     }
   }
 
