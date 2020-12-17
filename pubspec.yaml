@@ -12,9 +12,10 @@ description: A new Flutter application.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-# andriod - flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
+# andriod - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
+# andriod - flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
 # ios     - flutter build ios (then archive from Xcode)
-version: 1.3.0+5
+version: 1.3.1+6
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
