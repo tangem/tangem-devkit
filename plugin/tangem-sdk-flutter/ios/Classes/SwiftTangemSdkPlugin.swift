@@ -232,7 +232,7 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
     
     private func allowsOnlyDebugCards(_ args: Any?, _ completion: @escaping FlutterResult) {
         if let allowedOnlyDebug = (args as? [String: Any])?["isAllowedOnlyDebugCards"] as? Bool {
-            sdk.config.allowedCardTypes = allowedOnlyDebug ? [.sdk] : [.sdk, .release, .unknown]
+            sdk.config.allowedCardTypes = allowedOnlyDebug ? [.sdk] : FirmwareType.allCases
         }
     }
     
