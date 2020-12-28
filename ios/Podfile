@@ -1,10 +1,10 @@
 # Uncomment this line to define a global platform for your project
- platform :ios, '13.0'
+platform :ios, '13.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
-project 'Runner', {
+project 'Tangem DevKit', {
   'Debug' => :debug,
   'Profile' => :release,
   'Release' => :release,
@@ -32,7 +32,7 @@ def parse_KV_file(file, separator='=')
   generated_key_values
 end
 
-target 'Runner' do
+target 'Tangem DevKit' do
   use_frameworks!
   use_modular_headers!
   

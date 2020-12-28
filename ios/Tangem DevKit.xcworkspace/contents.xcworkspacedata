@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/alexander.osokin/repos/tangem/tangem-dev-kit-flutter/ios/Tangem DevKit.xcodeproj">
+      location = "group:Tangem DevKit.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
