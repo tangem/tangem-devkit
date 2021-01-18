@@ -1,0 +1,219 @@
+import 'package:flutter_driver/flutter_driver.dart';
+import 'package:test/test.dart';
+import 'dart:convert';
+import 'ConfigForPersonalize.dart';
+import 'AutoTestStep.dart';
+import 'DepersonalizeCard.dart';
+
+void main() {
+  final configForPersonalize = ConfigForPersonalize();
+  final autoTestSteps = AutoTestStep();
+  final depersonalize = DepersonalizeCard();
+  final backButton = find.byTooltip('Back');
+
+  FlutterDriver driver;
+
+  group('Read card autotest when settingMask =true', () {
+    setUpAll(() async {
+      driver = await FlutterDriver.connect();
+      await driver.requestData('restart');
+    });
+
+    test("Read Card autotest when settingMask =true",() async {
+
+      print("Preparing config");
+      final config = await configForPersonalize.returnConfig('config1');
+      String jsonString = jsonEncode(config);
+
+      print("Personalize card");
+      final personalize = await personalizeCardMethod.personalizeCard(driver, jsonString);
+
+      print("Return to menu");
+      await driver.tap(backButton);
+
+      print("Read card");
+      final readResponce = await readCardMethod.readCard(driver);
+      print(personalize);
+      print(readResponce);
+
+      print("Reconciliation cardId");
+      final startNumber = config['startNumber'].toString();
+      final cardId = config['series']+ startNumber;
+      print(cardId);
+      expect(readResponce['cardId'].contains(cardId), true);
+
+      print("Reconciliation manufacturerName");
+      expect(readResponce['manufacturerName'], "TANGEM");
+
+      print("Reconciliation status");
+      expect(readResponce['status'], "Empty");
+
+      print("Reconciliation walletPublicKey");
+      expect(readResponce['walletPublicKey'], null);
+
+      print("Reconciliation walletRemainingSignatures");
+      expect(readResponce['walletRemainingSignatures'], null);
+
+      print("Reconciliation walletSignedHashes");
+      expect(readResponce['walletSignedHashes'], null);
+
+      print("Reconciliation firmwareVersion");
+      expect(readResponce['firmwareVersion'], isNotNull);
+
+      print("Reconciliation cardPublicKey");
+      expect(readResponce['cardPublicKey'], isNotNull);
+
+      print("Reconciliation issuerPublicKey");
+      expect(readResponce['issuerPublicKey'], isNotNull);
+
+      print("Reconciliation curve");
+      expect(readResponce['curve'], null);
+
+      print("Reconciliation maxSignatures");
+      expect(readResponce['maxSignatures'], null);
+
+      print("Reconciliation pauseBeforePin2");
+      if (config['pauseBeforePIN2']>0) {
+        final pauseBeforePin2 = config['pauseBeforePIN2']/10;
+        expect(readResponce['pauseBeforePin2'], pauseBeforePin2 );
+      }
+      else{
+        expect(readResponce['pauseBeforePin2'], null );
+      }
+
+      print("Reconciliation health");
+      expect(readResponce['health'], 0);
+
+      print("Reconciliation isActivated");
+      expect(readResponce['isActivated'], true);
+
+      print("Reconciliation signingMethods");
+      expect(readResponce['signingMethods'], null);
+
+      print("Reconciliation batchId");
+      expect(readResponce['cardData']['batchId'], config['cardData']['batch']);
+
+      print("Reconciliation issuerName");
+      expect(readResponce['cardData']['issuerName'], "TANGEM SDK");
+
+      print("Reconciliation blockchainName");
+      expect(readResponce['cardData']['blockchainName'], config['cardData']['blockchain']);
+
+      print("Reconciliation manufacturerSignature");
+      expect(readResponce['cardData']['manufacturerSignature'], isNotNull);
+
+      if (jsonString.contains('token_symbol')) {
+        print("Reconciliation token info");
+        expect(readResponce['cardData']['tokenSymbol'], config['cardData']['token_symbol']);
+        expect(readResponce['cardData']['tokenContractAddress'], config['cardData']['token_contract_address']);
+        expect(readResponce['cardData']['tokenDecimal'], config['cardData']['token_decimal']);
+      }
+
+      print("Reconciliation productMask");
+      List productMask = readResponce['cardData']['productMask'];
+      if (config['cardData']['product_note']==true) {
+        expect(productMask.contains('Note'), true);
+      }
+
+      if (config['cardData']['product_id_card']==true) {
+        expect(productMask.contains('IdCard'), true);
+      }
+      if (config['cardData']['product_id_issuer']==true) {
+        expect(productMask.contains('IdIssuer'), true);
+      }
+      if (config['cardData']['product_tag']==true) {
+        expect(productMask.contains('Tag'), true);
+      }
+
+      print("Reconciliation settingsMask"); //Todo: make this check a loop
+      List settingsMask = readResponce['settingsMask'];
+      if (config['isReusable']==true) {
+        expect(settingsMask.contains('IsReusable'), true);
+      }
+      if (config['useActivation']==true) {
+        expect(settingsMask.contains('UseActivation'), true);
+      }
+      if (config['useBlock']==true) {
+        expect(settingsMask.contains('UseBlock'), true);
+      }
+      if (config['allowSetPIN1']==true) {
+        expect(settingsMask.contains('AllowSetPIN1'), true);
+      }
+      if (config['allowSetPIN2']==true) {
+        expect(settingsMask.contains('AllowSetPIN2'), true);
+      }
+      if (config['useCvc']==true) {
+        expect(settingsMask.contains('UseCvc'), true);
+      }
+      if (config['prohibitDefaultPIN1']==true) {
+        expect(settingsMask.contains('ProhibitDefaultPIN1'), true);
+      }
+      if (config['useOneCommandAtTime']==true) {
+        expect(settingsMask.contains('UseOneCommandAtTime'), true);
+      }
+      if (config['useNDEF']==true) {
+        expect(settingsMask.contains('UseNDEF'), true);
+      }
+      if (config['useDynamicNDEF']==true) {
+        expect(settingsMask.contains('UseDynamicNDEF'), true);
+      }
+      if (config['smartSecurityDelay']==true) {
+        expect(settingsMask.contains('SmartSecurityDelay'), true);
+      }
+      if (config['allowUnencrypted']==true) {
+        expect(settingsMask.contains('AllowUnencrypted'), true);
+      }
+      if (config['allowFastEncryption']==true) {
+        expect(settingsMask.contains('AllowFastEncryption'), true);
+      }
+      if (config['protectIssuerDataAgainstReplay']==true) {
+        expect(settingsMask.contains('ProtectIssuerDataAgainstReplay'), true);
+      }
+      if (config['restrictOverwriteIssuerExtraData']==true) {
+        expect(settingsMask.contains('RestrictOverwriteIssuerExtraData'), true);
+      }
+      if (config['allowSelectBlockchain']==true) {
+        expect(settingsMask.contains('AllowSelectBlockchain'), true);
+      }
+      if (config['disablePrecomputedNDEF']==true) {
+        expect(settingsMask.contains('DisablePrecomputedNDEF'), true);
+      }
+      if (config['skipSecurityDelayIfValidatedByLinkedTerminal']==true) {
+        expect(settingsMask.contains('SkipSecurityDelayIfValidatedByLinkedTerminal'), true);
+      }
+      if (config['skipCheckPIN2CVCIfValidatedByIssuer']==true) {
+        expect(settingsMask.contains('SkipCheckPIN2CVCIfValidatedByIssuer'), true);
+      }
+      if (config['skipSecurityDelayIfValidatedByIssuer']==true) {
+        expect(settingsMask.contains('SkipSecurityDelayIfValidatedByIssuer'), true);
+      }
+      if (config['requireTerminalTxSignature']==true) {
+        expect(settingsMask.contains('RequireTermTxSignature'), true);
+      }
+      if (config['requireTerminalCertSignature']==true) {
+        expect(settingsMask.contains('RequireTermCertSignature'), true);
+      }
+      if (config['checkPIN3OnCard']==true) {
+        expect(settingsMask.contains('CheckPIN3OnCard'), true);
+      }
+      if (config['prohibitPurgeWallet']==true) {
+        expect(settingsMask.contains('ProhibitPurgeWallet'), true);
+      }
+
+      print("Reconciliation terminalIsLinked");
+      expect(readResponce['terminalIsLinked'], false);
+
+      // TODO: manufactureDateTime
+
+    });
+
+    tearDownAll(() async {
+      await driver.tap(backButton);
+      await depersonalize.depersonalize(driver);
+      await Future.delayed(Duration(seconds: 3));
+      driver?.close();
+    });
+  });
+
+
+}
