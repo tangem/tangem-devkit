@@ -1,11 +1,39 @@
 PODS:
+  - camera (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
+  - flutter_image_compress (0.0.1):
+    - Flutter
+    - Mantle
+    - SDWebImageWebPCoder
   - fluttertoast (0.0.2):
+    - Flutter
+  - libwebp (1.1.0):
+    - libwebp/demux (= 1.1.0)
+    - libwebp/mux (= 1.1.0)
+    - libwebp/webp (= 1.1.0)
+  - libwebp/demux (1.1.0):
+    - libwebp/webp
+  - libwebp/mux (1.1.0):
+    - libwebp/demux
+  - libwebp/webp (1.1.0)
+  - Mantle (2.1.6):
+    - Mantle/extobjc (= 2.1.6)
+  - Mantle/extobjc (2.1.6)
+  - native_device_orientation (0.0.1):
+    - Flutter
+  - path_provider (0.0.1):
     - Flutter
   - path_provider_linux (0.0.1):
     - Flutter
+  - path_provider_macos (0.0.1):
+    - Flutter
   - path_provider_windows (0.0.1):
     - Flutter
+  - SDWebImage/Core (5.10.0)
+  - SDWebImageWebPCoder (0.8.0):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.10)
   - share (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
@@ -22,11 +50,22 @@ PODS:
     - Flutter
     - TangemSdk (~> 2.2.0)
   - TangemSdk (2.2.0)
+  - video_player (0.0.1):
+    - Flutter
+  - video_player_web (0.0.1):
+    - Flutter
+  - wakelock (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
+  - camera (from `.symlinks/plugins/camera/ios`)
   - Flutter (from `Flutter`)
+  - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - native_device_orientation (from `.symlinks/plugins/native_device_orientation/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_linux (from `.symlinks/plugins/path_provider_linux/ios`)
+  - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - path_provider_windows (from `.symlinks/plugins/path_provider_windows/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -36,18 +75,35 @@ DEPENDENCIES:
   - shared_preferences_windows (from `.symlinks/plugins/shared_preferences_windows/ios`)
   - tangem_sdk (from `.symlinks/plugins/tangem_sdk/ios`)
   - TangemSdk
+  - video_player (from `.symlinks/plugins/video_player/ios`)
+  - video_player_web (from `.symlinks/plugins/video_player_web/ios`)
+  - wakelock (from `.symlinks/plugins/wakelock/ios`)
 
 SPEC REPOS:
   trunk:
+    - libwebp
+    - Mantle
+    - SDWebImage
+    - SDWebImageWebPCoder
     - TangemSdk
 
 EXTERNAL SOURCES:
+  camera:
+    :path: ".symlinks/plugins/camera/ios"
   Flutter:
     :path: Flutter
+  flutter_image_compress:
+    :path: ".symlinks/plugins/flutter_image_compress/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  native_device_orientation:
+    :path: ".symlinks/plugins/native_device_orientation/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
   path_provider_linux:
     :path: ".symlinks/plugins/path_provider_linux/ios"
+  path_provider_macos:
+    :path: ".symlinks/plugins/path_provider_macos/ios"
   path_provider_windows:
     :path: ".symlinks/plugins/path_provider_windows/ios"
   share:
@@ -64,12 +120,27 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_windows/ios"
   tangem_sdk:
     :path: ".symlinks/plugins/tangem_sdk/ios"
+  video_player:
+    :path: ".symlinks/plugins/video_player/ios"
+  video_player_web:
+    :path: ".symlinks/plugins/video_player_web/ios"
+  wakelock:
+    :path: ".symlinks/plugins/wakelock/ios"
 
 SPEC CHECKSUMS:
+  camera: a0ca5080336f7af47b88436e5e26da3dee5568f0
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_image_compress: 082f8daaf6c1b0c9fe798251c750ef0ecd98d7ae
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
+  libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
+  Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
+  native_device_orientation: e24d00be281de72996640885d80e706142707660
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
+  path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   path_provider_windows: a2b81600c677ac1959367280991971cb9a1edb3b
+  SDWebImage: 9169792e9eec3e45bba2a0c02f74bf8bd922d1ee
+  SDWebImageWebPCoder: e5f9fae2face076b66b19fba5e13b405e4d3f335
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   shared_preferences_linux: afefbfe8d921e207f01ede8b60373d9e3b566b78
@@ -78,7 +149,10 @@ SPEC CHECKSUMS:
   shared_preferences_windows: 36b76d6f54e76ead957e60b49e2f124b4cd3e6ae
   tangem_sdk: ba74c6441a264c2fe519902c3243d24cc66d4b83
   TangemSdk: 5ccb934490db3e1abc8ec770e26701e472e6fef7
+  video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
+  video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
+  wakelock: 0d4a70faf8950410735e3f61fb15d517c8a6efc4
 
 PODFILE CHECKSUM: c0be7c9fe2f036d0634e167b3b53199c57ebb43d
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0

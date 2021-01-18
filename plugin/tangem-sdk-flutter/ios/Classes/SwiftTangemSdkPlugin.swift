@@ -4,7 +4,9 @@ import TangemSdk
 
 public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
     private lazy var sdk: TangemSdk = {
-        return TangemSdk()
+        let sdk = TangemSdk()
+        sdk.config.allowedCardTypes = [.sdk]
+        return sdk
     }()
     
     
@@ -46,6 +48,8 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
             setPin1(call.arguments, result)
         case "setPin2":
             setPin2(call.arguments, result)
+        case "allowsOnlyDebugCards":
+            allowsOnlyDebugCards(call.arguments, result)
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -223,6 +227,12 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
                        pin: pin?.sha256(),
                        initialMessage: getArg(.initialMessage, from: args)) { [weak self] result in
                         self?.handleCompletion(result, completion)
+        }
+    }
+    
+    private func allowsOnlyDebugCards(_ args: Any?, _ completion: @escaping FlutterResult) {
+        if let allowedOnlyDebug = (args as? [String: Any])?["isAllowedOnlyDebugCards"] as? Bool {
+            sdk.config.allowedCardTypes = allowedOnlyDebug ? [.sdk] : FirmwareType.allCases
         }
     }
     
