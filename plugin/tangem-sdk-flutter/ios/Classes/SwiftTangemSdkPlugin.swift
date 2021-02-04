@@ -69,10 +69,10 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
     }
     
     private func sign(_ args: Any?, _ completion: @escaping FlutterResult) throws {
-        // let hexHashes: [Data] = try getArg(.hashes, from: args)
-        // let hashes = hexHashes.compactMap({Data(hexString: $0)})
+         let hexHashes: [String] = try getArg(.hashes, from: args)
+         let hashes = hexHashes.compactMap({Data(hexString: $0)})
         
-        sdk.sign(hashes: try getArg(.hashes, from: args),
+        sdk.sign(hashes: hashes,
                  initialMessage: try getArgOptional(.initialMessage, from: args),
                  pin1: try getArgOptional(.pin1, from: args),
                  pin2: try getArgOptional(.pin2, from: args)
@@ -248,7 +248,15 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
                     throw PluginInternalError.failedToParseDataFromHex(key)
                 }
             } else {
-                return try decodeObject(value)
+                do {
+                    return try decodeObject(value)
+                } catch {
+                    if let converted = value as? T {
+                        return converted
+                    } else {
+                        throw error
+                    }
+                }
             }
         } else {
             throw PluginInternalError.missingArgument(key)
