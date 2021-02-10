@@ -22,7 +22,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": true,
         "count": 0,
@@ -48,7 +49,7 @@ class ConfigForPersonalize{
         "pauseBeforePIN2": 5000,
         "protectIssuerDataAgainstReplay": true,
         "allowFastEncryption": true,
-        "allowUnencrypted ": true,
+        "allowUnencrypted": true,
         "releaseVersion": false,
         "requireTerminalCertSignature": true,
         "requireTerminalTxSignature": true,
@@ -90,7 +91,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -156,6 +158,7 @@ class ConfigForPersonalize{
           "product_id_issuer": false,
           "product_note": true,
           "product_tag": false,
+          "product_twin_card": false,
           "token_contract_address": "BUSD-BD1",
           "token_decimal": 8,
           "token_symbol": "BUSD"
@@ -222,7 +225,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -286,7 +290,8 @@ class ConfigForPersonalize{
           "product_id_card": true,
           "product_id_issuer": false,
           "product_note": false,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -350,7 +355,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": true,
           "product_note": false,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -414,7 +420,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -479,6 +486,7 @@ class ConfigForPersonalize{
           "product_id_issuer": false,
           "product_note": false,
           "product_tag": true,
+          "product_twin_card": false,
           "token_contract_address": "0x4E7Bd88E3996f48E2a24D15E37cA4C02B4D134d2",
           "token_decimal": 18,
           "token_symbol": "NFT: Tangem TAG"
@@ -544,7 +552,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
