@@ -76,7 +76,7 @@ class CommonSegment extends BaseSegment {
     _subscriptions.add(bsCurve.listen((value) => _config.curveID = value.b));
     _subscriptions.add(bsMaxSignatures.listen((value) => _config.MaxSignatures = value.isEmpty ? 0 : int.parse(value)));
     _subscriptions.add(bsCreateWallet.listen((value) => _config.createWallet = value ? 1 : 0));
-    _subscriptions.add(bsWalletsCount.listen((value) => _config.walletsCount = int.tryParse(value) ?? 1));
+    _subscriptions.add(bsWalletsCount.listen((value) => _config.walletsCount = int.tryParse(value)));
     _subscriptions.add(bsPauseBeforePin.listen((value) => _config.pauseBeforePIN2 = value.b));
 
     bsWalletsCount.add("5");
@@ -111,6 +111,7 @@ class CommonSegment extends BaseSegment {
     bsCreateWallet.add(_config.createWallet == 1);
     bsPauseBeforePin.add(_bloc.values.getPauseBeforePin(_config.pauseBeforePIN2) ?? _bloc.values.pauseBeforePin[0]);
     bsMaxSignatures.add(_config.MaxSignatures.toString());
+    bsWalletsCount.add(_config.walletsCount == null ? "" : _config.walletsCount.toString());
   }
 }
 
