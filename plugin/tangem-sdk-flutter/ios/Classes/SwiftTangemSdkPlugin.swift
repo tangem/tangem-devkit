@@ -51,6 +51,16 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
                 try setPin2(call.arguments, result)
             case "allowsOnlyDebugCards":
                 allowsOnlyDebugCards(call.arguments, result)
+            case "prepareHashes":
+                try prepareHashes(call.arguments, result)
+//            case "writeFiles":
+//                try writeFiles(call.arguments, result)
+            case "readFiles":
+                try readFiles(call.arguments, result)
+            case "deleteFiles":
+                try deleteFiles(call.arguments, result)
+//            case "changeFilesSettings":
+//                try changeFilesSettings(call.arguments, result)
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -208,7 +218,59 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    private func handleCompletion<TResult: ResponseCodable>(_ sdkResult: Result<TResult, TangemSdkError>, _ completion: @escaping FlutterResult) {
+    private func prepareHashes(_ args: Any?, _ completion: @escaping FlutterResult) throws {
+        let hashes = sdk.prepareHashes(cardId: try getArg(.cid, from: args),
+                                       fileData: try getArg(.fileData, from: args),
+                                       fileCounter: try getArg(.fileCounter, from: args),
+                                       privateKey: try getArgOptional(.privateKey, from: args))
+        completion(hashes.description)
+    }
+    
+    private func readFiles(_ args: Any?, _ completion: @escaping FlutterResult) throws {
+        let readPrivateFiles: Bool = try getArgOptional(.readPrivateFiles, from: args) ?? false
+        //let indices: [Int] = try getArg(.indices, from: args)
+        
+        sdk.readFiles(cardId: try getArgOptional(.cid, from: args),
+                      initialMessage: try getArgOptional(.initialMessage, from: args),
+                      pin1: try getArgOptional(.pin1, from: args),
+                      pin2: try getArgOptional(.pin2, from: args),
+                      readSettings: ReadFilesTaskSettings(readPrivateFiles: readPrivateFiles)) { [weak self] result in
+            self?.handleCompletion(result, completion)
+        }
+    }
+    
+//    private func writeFiles(_ args: Any?, _ completion: @escaping FlutterResult) throws {
+//        sdk.writeFiles(cardId: try getArgOptional(.cid, from: args),
+//                       initialMessage: try getArgOptional(.initialMessage, from: args),
+//                       pin1: try getArgOptional(.pin1, from: args),
+//                       pin2: try getArgOptional(.pin2, from: args),
+//                       files: [DataToWrite],
+//                       writeFilesSettings: Set<WriteFilesSettings>) { [weak self] result in
+//            self?.handleCompletion(result, completion)
+//        }
+//    }
+    
+//    private func changeFilesSettings(_ args: Any?, _ completion: @escaping FlutterResult) throws {
+//        sdk.changeFilesSettings(cardId: try getArgOptional(.cid, from: args),
+//                                initialMessage: try getArgOptional(.initialMessage, from: args),
+//                                pin1: try getArgOptional(.pin1, from: args),
+//                                pin2: try getArgOptional(.pin2, from: args),
+//                                files: <#T##[File]#>) { [weak self] result in
+//            self?.handleCompletion(result, completion)
+//        }
+//    }
+    
+    private func deleteFiles(_ args: Any?, _ completion: @escaping FlutterResult) throws {
+        sdk.deleteFiles(cardId: try getArgOptional(.cid, from: args),
+                        initialMessage: try getArgOptional(.initialMessage, from: args),
+                        pin1: try getArgOptional(.pin1, from: args),
+                        pin2: try getArgOptional(.pin2, from: args),
+                        indicesToDelete: try getArgOptional(.indices, from: args)) { [weak self] result in
+            self?.handleCompletion(result, completion)
+        }
+    }
+    
+    private func handleCompletion<TResult: JSONStringConvertible>(_ sdkResult: Result<TResult, TangemSdkError>, _ completion: @escaping FlutterResult) {
         switch sdkResult {
         case .success(let response):
             completion(response.description)
@@ -241,7 +303,7 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
     
     private func getArg<T: Decodable>(_ key: ArgKey, from arguments: Any?) throws -> T {
         if let value = (arguments as? [String: Any])?[key.rawValue] {
-            if T.self == Data.self {
+            if T.self == Data.self || T.self == Data?.self {
                 if let hex = value as? String {
                     return (Data(hexString: hex) as! T)
                 } else {
@@ -335,4 +397,11 @@ fileprivate enum ArgKey: String {
     case cardConfig
     case pinCode
     case initialMessage
+    case fileData
+    case fileCounter
+    case privateKey
+    case readPrivateFiles
+    case indices
 }
+
+// "files" : "[{\"data\":\"ffd8ffe000104a46494600010100004800480000ffe100584578696600004d4d002a000000080002011200030000000100010000876900040000000100000026000000000003a00100030000000100010000a00200040000000100000140a0030004000000010000023800000000ffed003850686f746f73686f7020332e30003842494d04040000000000003842494d0425000000000010d41d8cd98f00b204e9800998ecf8427effc00011080238014003012200021101031101ffc4001f0000010501010101010100000000000000000102030405060708090a0bffc400b5100002010303020403050504040000017d01020300041105122131410613516107227114328191a1082342b1c11552d1f02433627282090a161718191a25262728292a3435363738393a434445464748494a535455565758595a636465666768696a737475767778797a838485868788898a92939495969798999aa2a3a4a5a6a7a8a9aab2b3b4b5b6b7b8b9bac2c3c4c5c6c7c8c9cad2d3d4d5d6d7d8d9dae1e2e3e4e5e6e7e8e9eaf1f2f3f4f5f6f7f8f9faffc4001f0100030101010101010101010000000000000102030405060708090a0bffc400b51100020102040403040705040400010277000102031104052131061241510761711322328108144291a1b1c109233352f0156272d10a162434e125f11718191a26272"
