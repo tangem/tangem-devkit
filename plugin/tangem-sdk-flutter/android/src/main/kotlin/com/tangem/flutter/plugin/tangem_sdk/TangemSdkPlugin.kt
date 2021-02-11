@@ -55,7 +55,7 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       setCurrentActivity(activity)
       hiddenLifecycleReference.lifecycle.addObserver(NfcLifecycleObserver(this))
     }
-    val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager).apply { this.activity = activity }
+    val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager, nfcManager.reader).apply { this.activity = activity }
     val config = Config(cardFilter = CardFilter(EnumSet.of(FirmwareType.Sdk)))
     val valueStorage = CardValuesDbStorage(AndroidSqliteDriver(Database.Schema, activity.applicationContext,
         "flutter_cards.db"))
@@ -335,7 +335,8 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       is CompletionResult.Failure -> {
         val error = completionResult.error
         val errorMessage = if (error is TangemSdkError) {
-          wActivity.get()?.getString(error.localizedDescription()) ?: error.customMessage
+          val activity = wActivity.get()
+          if (activity == null) error.customMessage else error.localizedDescription(activity)
         } else {
           error.customMessage
         }
