@@ -72,7 +72,9 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
     }
     
     private func scanCard(_ args: Any?, _ completion: @escaping FlutterResult) throws {
-        sdk.scanCard(initialMessage: try getArgOptional(.initialMessage, from: args),
+        sdk.scanCard(onlineVerification: false,
+                     walletIndex: nil,
+                     initialMessage: try getArgOptional(.initialMessage, from: args),
                      pin1: try getArgOptional(.pin1, from: args)) { [weak self] result in
             self?.handleCompletion(result, completion)
         }
