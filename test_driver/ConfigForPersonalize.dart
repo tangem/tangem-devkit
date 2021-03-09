@@ -22,7 +22,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": true,
         "count": 0,
@@ -48,7 +49,7 @@ class ConfigForPersonalize{
         "pauseBeforePIN2": 5000,
         "protectIssuerDataAgainstReplay": true,
         "allowFastEncryption": true,
-        "allowUnencrypted ": true,
+        "allowUnencrypted": true,
         "releaseVersion": false,
         "requireTerminalCertSignature": true,
         "requireTerminalTxSignature": true,
@@ -90,7 +91,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -156,6 +158,7 @@ class ConfigForPersonalize{
           "product_id_issuer": false,
           "product_note": true,
           "product_tag": false,
+          "product_twin_card": false,
           "token_contract_address": "BUSD-BD1",
           "token_decimal": 8,
           "token_symbol": "BUSD"
@@ -222,7 +225,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -286,7 +290,8 @@ class ConfigForPersonalize{
           "product_id_card": true,
           "product_id_issuer": false,
           "product_note": false,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -350,7 +355,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": true,
           "product_note": false,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -414,7 +420,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -479,6 +486,7 @@ class ConfigForPersonalize{
           "product_id_issuer": false,
           "product_note": false,
           "product_tag": true,
+          "product_twin_card": false,
           "token_contract_address": "0x4E7Bd88E3996f48E2a24D15E37cA4C02B4D134d2",
           "token_decimal": 18,
           "token_symbol": "NFT: Tangem TAG"
@@ -544,7 +552,8 @@ class ConfigForPersonalize{
           "product_id_card": false,
           "product_id_issuer": false,
           "product_note": true,
-          "product_tag": false
+          "product_tag": false,
+          "product_twin_card": false
         },
         "checkPIN3OnCard": false,
         "count": 0,
@@ -587,7 +596,23 @@ class ConfigForPersonalize{
         "useDynamicNDEF": true,
         "useNDEF": true,
         "useOneCommandAtTime": false
-      }
+      },
+
+      //IssuerTangem
+      "issuerConfig1": {
+          "name": "TANGEM SDK",
+          "id": "TANGEM SDK"+"\u0000",
+          "dataKeyPair": {
+            "publicKey": "045F16BD1D2EAFE463E62A335A09E6B2BBCBD04452526885CB679FC4D27AF1BD22F553C7DEEFB54FD3D4F361D14E6DC3F11B7D4EA183250A60720EBDF9E110CD26",
+            "privateKey": "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92"
+          },
+          "transactionKeyPair": {
+            "publicKey": "0484c5192e9bfa6c528a344f442137a92b89ea835bfef1d04cb4362eb906b508c5889846cfea71ba6dc7b3120c2208df9c46127d3d85cb5cfbd1479e97133a39d8",
+            "privateKey": "11121314151617184771ED81F2BACF57479E4735EB1405081918171615141312"
+          }
+        }
+
+
     };
 
     return mapper[configName];
