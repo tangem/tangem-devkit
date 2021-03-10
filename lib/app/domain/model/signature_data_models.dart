@@ -17,7 +17,7 @@ class SignModel extends SignatureDataModel {
   SignModel(this.dataForHashing) : super(TangemSdk.cSign);
 
   factory SignModel.fromJson(Map<String, dynamic> json) {
-    final listDataForHashing = json["dataForHashing"] as List;
+    final listDataForHashing = (json["dataForHashing"] as List).toStringList();
     return CommandSignatureData.attachBaseData(SignModel(listDataForHashing), json);
   }
 

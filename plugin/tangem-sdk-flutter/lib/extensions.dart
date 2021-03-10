@@ -39,4 +39,6 @@ extension ByteArrayToHex on List<int> {
 extension ListInt on List {
   List<int> toIntList() =>
       this.map((e) => int.tryParse(e.toString())).toList()..removeWhere((element) => element == null);
+
+  List<String> toStringList() => this.map((e) => e?.toString()).toList()..removeWhere((element) => element == null);
 }

@@ -39,13 +39,16 @@ class TestBlock extends ActionBloc<dynamic> {
       return;
     }
 
-    final commandData = createCommandData();
-    if (commandData == null) {
-      sendError(TangemSdkError("Command data signature not created"));
-      return;
+    try {
+      final commandData = createCommandData();
+      if (commandData == null) {
+        sendError(TangemSdkError("Command data signature not created"));
+        return;
+      }
+      TangemSdk.runCommand(callback, commandData);
+    } catch (e) {
+      sendError(TangemSdkError("Can't create the command data: $e"));
     }
-
-    TangemSdk.runCommand(callback, commandData);
   }
 
   @override
