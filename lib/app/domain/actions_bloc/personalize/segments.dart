@@ -425,6 +425,8 @@ class SettingsMaskNdefSegment extends BaseSegment {
       if (isCustom(value)) return;
 
       removeAll(typeAar);
+      if (value.a == "NONE" && value.b.isEmpty) return
+
       addNdef(typeAar, value.b);
       customAar.add("");
     }));
