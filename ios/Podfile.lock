@@ -46,10 +46,10 @@ PODS:
     - Flutter
   - shared_preferences_windows (0.0.1):
     - Flutter
-  - tangem_sdk (0.0.2):
+  - tangem_sdk (0.0.3):
     - Flutter
-    - TangemSdk (~> 2.3.1)
-  - TangemSdk (2.3.1)
+    - TangemSdk (~> 2.4.1)
+  - TangemSdk (2.4.1)
   - video_player (0.0.1):
     - Flutter
   - video_player_web (0.0.1):
@@ -147,12 +147,12 @@ SPEC CHECKSUMS:
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   shared_preferences_windows: 36b76d6f54e76ead957e60b49e2f124b4cd3e6ae
-  tangem_sdk: aa6ab03d195f6de6fcf4bd183daec57d43cb0885
-  TangemSdk: 36e66effd2a2d756c4b026b72addf196e7006f34
+  tangem_sdk: 68488e10bb1757ec54ed6867724f333c1a3ae6e4
+  TangemSdk: ebc62de93e0dc3d9a4aeea545aac80b832b65535
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
   wakelock: 0d4a70faf8950410735e3f61fb15d517c8a6efc4
 
-PODFILE CHECKSUM: 22497b47cf32184638f522f3218773085fd80813
+PODFILE CHECKSUM: c158dd0976c7bc7fa3d9cfd2d0fb213ba376cb3e
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

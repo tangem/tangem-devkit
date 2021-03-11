@@ -85,6 +85,7 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
          let hashes = hexHashes.compactMap({Data(hexString: $0)})
         
         sdk.sign(hashes: hashes,
+                 cardId: try getArgOptional(.cid, from: args),
                  initialMessage: try getArgOptional(.initialMessage, from: args),
                  pin1: try getArgOptional(.pin1, from: args),
                  pin2: try getArgOptional(.pin2, from: args)
