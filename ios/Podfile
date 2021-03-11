@@ -78,6 +78,7 @@ target 'Tangem DevKit' do
   end
   
   pod 'TangemSdk'
+  #pod 'TangemSdk', :path => '../../card-sdk-swift'
 end
 
 # Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.
