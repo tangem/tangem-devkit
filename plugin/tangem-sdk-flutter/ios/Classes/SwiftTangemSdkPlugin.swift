@@ -306,6 +306,10 @@ public class SwiftTangemSdkPlugin: NSObject, FlutterPlugin {
     
     private func getArg<T: Decodable>(_ key: ArgKey, from arguments: Any?) throws -> T {
         if let value = (arguments as? [String: Any])?[key.rawValue] {
+            if String(describing: value) == "<null>" {
+                throw PluginInternalError.missingArgument(key)
+            }
+            
             if T.self == Data.self || T.self == Data?.self {
                 if let hex = value as? String {
                     return (Data(hexString: hex) as! T)
