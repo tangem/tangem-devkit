@@ -8,15 +8,15 @@ PODS:
     - SDWebImageWebPCoder
   - fluttertoast (0.0.2):
     - Flutter
-  - libwebp (1.1.0):
-    - libwebp/demux (= 1.1.0)
-    - libwebp/mux (= 1.1.0)
-    - libwebp/webp (= 1.1.0)
-  - libwebp/demux (1.1.0):
+  - libwebp (1.2.0):
+    - libwebp/demux (= 1.2.0)
+    - libwebp/mux (= 1.2.0)
+    - libwebp/webp (= 1.2.0)
+  - libwebp/demux (1.2.0):
     - libwebp/webp
-  - libwebp/mux (1.1.0):
+  - libwebp/mux (1.2.0):
     - libwebp/demux
-  - libwebp/webp (1.1.0)
+  - libwebp/webp (1.2.0)
   - Mantle (2.1.6):
     - Mantle/extobjc (= 2.1.6)
   - Mantle/extobjc (2.1.6)
@@ -30,8 +30,8 @@ PODS:
     - Flutter
   - path_provider_windows (0.0.1):
     - Flutter
-  - SDWebImage/Core (5.10.1)
-  - SDWebImageWebPCoder (0.8.1):
+  - SDWebImage/Core (5.10.4)
+  - SDWebImageWebPCoder (0.8.3):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
   - share (0.0.1):
@@ -48,8 +48,8 @@ PODS:
     - Flutter
   - tangem_sdk (0.0.3):
     - Flutter
-    - TangemSdk (~> 2.4.1)
-  - TangemSdk (2.4.1)
+    - TangemSdk (~> 2.4.2)
+  - TangemSdk (2.4.2)
   - video_player (0.0.1):
     - Flutter
   - video_player_web (0.0.1):
@@ -132,23 +132,23 @@ SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_image_compress: 082f8daaf6c1b0c9fe798251c750ef0ecd98d7ae
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
-  libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
+  libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   Mantle: 4c0ed6ce47c96eccc4dc3bb071deb3def0e2c3be
   native_device_orientation: e24d00be281de72996640885d80e706142707660
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   path_provider_windows: a2b81600c677ac1959367280991971cb9a1edb3b
-  SDWebImage: f66a16b95183b92ed6b965ad21d33167bc07612d
-  SDWebImageWebPCoder: fac2821bf5a6642a73979d0962dbed5eac45a605
+  SDWebImage: c666b97e1fa9c64b4909816a903322018f0a9c84
+  SDWebImageWebPCoder: bbf46e29fb8d1980a78ad3d5e9b4123c77f10ebc
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   shared_preferences_linux: afefbfe8d921e207f01ede8b60373d9e3b566b78
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   shared_preferences_windows: 36b76d6f54e76ead957e60b49e2f124b4cd3e6ae
-  tangem_sdk: 68488e10bb1757ec54ed6867724f333c1a3ae6e4
-  TangemSdk: ebc62de93e0dc3d9a4aeea545aac80b832b65535
+  tangem_sdk: e7063c3a57970265a09d435fc3f533286efddb6d
+  TangemSdk: 468a619db3a2105b2f93524893bc7aa5de0647c3
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
   wakelock: 0d4a70faf8950410735e3f61fb15d517c8a6efc4
