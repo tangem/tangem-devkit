@@ -18,20 +18,6 @@ abstract class CommandSignatureData {
   }
 }
 
-class Message {
-  final String body;
-  final String header;
-
-  Message(this.body, this.header);
-
-  factory Message.fromJson(Map<String, dynamic> json) => Message(json["body"], json["header"]);
-
-  Map<String, dynamic> toJson() => {
-        "body": body,
-        "header": header,
-      };
-}
-
 abstract class SignatureDataModel extends CommandSignatureData {
   final String type;
 

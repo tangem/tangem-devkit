@@ -3,6 +3,18 @@ import 'package:json_annotation/json_annotation.dart';
 part 'sdk.g.dart';
 
 @JsonSerializable()
+class Message {
+  final String body;
+  final String header;
+
+  Message(this.body, this.header);
+
+  factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MessageToJson(this);
+}
+
+@JsonSerializable()
 class CardConfigSdk {
   final String issuerName;
   final String acquirerName;
