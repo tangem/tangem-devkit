@@ -27,6 +27,7 @@ import com.tangem.tangem_sdk_new.NfcLifecycleObserver
 import com.tangem.tangem_sdk_new.TerminalKeysStorage
 import com.tangem.tangem_sdk_new.extensions.localizedDescription
 import com.tangem.tangem_sdk_new.nfc.NfcManager
+import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -41,10 +42,15 @@ import java.util.*
 /** TangemSdkPlugin */
 public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
+  private lateinit var dartExecutor: DartExecutor
+  private var replyAlreadySubmit = false
+
   private val handler = Handler(Looper.getMainLooper())
   private val converter = ResponseConverter()
+
   private lateinit var sdk: TangemSdk
-  private var replyAlreadySubmit = false;
+  private lateinit var sdkChannel: MethodChannel
+  private lateinit var defaultViewDelegate: SessionViewDelegate
 
   override fun onAttachedToActivity(pluginBinding: ActivityPluginBinding) {
     val activity = pluginBinding.activity
@@ -55,12 +61,11 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       setCurrentActivity(activity)
       hiddenLifecycleReference.lifecycle.addObserver(NfcLifecycleObserver(this))
     }
-    val cardManagerDelegate = DefaultSessionViewDelegate(nfcManager, nfcManager.reader).apply { this.activity = activity }
+    defaultViewDelegate = DefaultSessionViewDelegate(nfcManager, nfcManager.reader).apply { this.activity = activity }
     val config = Config(cardFilter = CardFilter(EnumSet.of(FirmwareType.Sdk)))
-    val valueStorage = CardValuesDbStorage(AndroidSqliteDriver(Database.Schema, activity.applicationContext,
-        "flutter_cards.db"))
+    val sqliteDriver = AndroidSqliteDriver(Database.Schema, activity.applicationContext, "flutter_cards.db")
     val keyStorage = TerminalKeysStorage(activity.application)
-    sdk = TangemSdk(nfcManager.reader, cardManagerDelegate, config, valueStorage, keyStorage)
+    sdk = TangemSdk(nfcManager.reader, defaultViewDelegate, config, CardValuesDbStorage(sqliteDriver), keyStorage)
   }
 
   override fun onDetachedFromActivity() {
@@ -73,11 +78,13 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    val channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "tangemSdk")
-    channel.setMethodCallHandler(this);
+    dartExecutor = flutterPluginBinding.flutterEngine.dartExecutor
+    sdkChannel = MethodChannel(dartExecutor, "tangemSdk")
+    sdkChannel.setMethodCallHandler(this);
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    sdkChannel.setMethodCallHandler(null)
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -104,6 +111,9 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "deleteFiles" -> deleteFiles(call, result)
       "changeFilesSettings" -> changeFilesSettings(call, result)
       "prepareHashes" -> prepareHashes(call, result)
+      "setViewDelegate" -> setViewDelegate(call, result);
+      "removeViewDelegate" -> removeViewDelegate(call, result);
+      "setDefaultViewDelegate" -> setDefaultViewDelegate(call, result);
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
@@ -317,11 +327,28 @@ public class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       val name = "isAllowedOnlyDebugCards"
       assert(call, name)
       val allowedOnlyDebug = call.argument<Boolean>(name) !!
-      val allowedCardTypes = if (allowedOnlyDebug) EnumSet.of(FirmwareType.Sdk) else EnumSet.allOf(FirmwareType::class.java)
+      val allowedCardTypes = if (allowedOnlyDebug) EnumSet.of(FirmwareType.Sdk) else EnumSet.allOf(
+          FirmwareType::class.java)
       sdk.config.cardFilter.allowedCardTypes = allowedCardTypes
     } catch (ex: Exception) {
       handleException(result, ex)
     }
+  }
+
+  private fun setViewDelegate(call: MethodCall, result: Result) {
+    val channel = MethodChannel(dartExecutor, "tangemSdk.viewDelegate")
+    //    sdk.setViewDelegate(PluginViewDelegate(channel, handler, converter.gson))
+    result.success(null)
+  }
+
+  private fun removeViewDelegate(call: MethodCall, result: Result) {
+    //    sdk.setViewDelegate(null)
+    result.success(null)
+  }
+
+  private fun setDefaultViewDelegate(call: MethodCall, result: Result) {
+    //    sdk.setViewDelegate(defaultViewDelegate)
+    result.success(null)
   }
 
   private fun handleResult(result: Result, completionResult: CompletionResult<*>) {
@@ -506,7 +533,8 @@ sealed class FileDataHex(val data: HexString) {
       val issuerPublicKey: HexString? = null
   ): FileDataHex(data) {
     fun convert(): FileData.DataProtectedBySignature {
-      return FileData.DataProtectedBySignature(data.hexToBytes(), counter, signature.convert(), issuerPublicKey?.hexToBytes())
+      return FileData.DataProtectedBySignature(data.hexToBytes(), counter, signature.convert(),
+          issuerPublicKey?.hexToBytes())
     }
   }
 

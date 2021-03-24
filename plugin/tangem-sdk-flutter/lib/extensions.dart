@@ -36,9 +36,13 @@ extension ByteArrayToHex on List<int> {
   String toHexString() => hex.encode(this);
 }
 
-extension ListInt on List {
+extension ListExt on List {
   List<int> toIntList() =>
       this.map((e) => int.tryParse(e.toString())).toList()..removeWhere((element) => element == null);
 
   List<String> toStringList() => this.map((e) => e?.toString()).toList()..removeWhere((element) => element == null);
+}
+
+extension ListT<T, V> on List<T> {
+  Map<T, V> toMap<Key>(MapEntry<T, V> Function(T e) getEntry) => Map.fromEntries(map(getEntry));
 }

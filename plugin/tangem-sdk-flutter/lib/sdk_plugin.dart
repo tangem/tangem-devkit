@@ -7,6 +7,7 @@ import 'package:tangem_sdk/model/command_signature_data.dart';
 
 import 'card_responses/other_responses.dart';
 import 'model/sdk.dart';
+import 'view_delegate/view_delegate.dart';
 
 /// Flutter TangemSdk is an interface which provides access to platform specific TangemSdk library.
 /// The response from the successfully completed execution of the 'channel method' is expected in the json.
@@ -65,6 +66,25 @@ class TangemSdk {
   static const privateKey = "privateKey";
 
   static const MethodChannel _channel = const MethodChannel('tangemSdk');
+  static ViewDelegate _viewDelegate;
+
+  static Future setViewDelegate(TangemSdkViewDelegate viewDelegate) {
+    _viewDelegate = ViewDelegate(viewDelegate);
+    _viewDelegate.subscribe();
+    _channel.invokeMethod("setViewDelegate");
+  }
+
+  static Future removeViewDelegate() {
+    _viewDelegate?.unsubscribe();
+    _viewDelegate = null;
+    _channel.invokeMethod("removeViewDelegate");
+  }
+
+  static Future setDefaultViewDelegate() {
+    _viewDelegate?.unsubscribe();
+    _viewDelegate = null;
+    _channel.invokeMethod("setDefaultViewDelegate");
+  }
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -348,4 +368,34 @@ class Callback {
   final Function(dynamic error) onError;
 
   Callback(this.onSuccess, this.onError);
+}
+
+T enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError('A value must be provided. Supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+
+  final value = enumValues.entries.singleWhere((e) => e.value == source, orElse: () => null)?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
+}
+
+T enumDecodeNullable<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return enumDecode<T>(enumValues, source, unknownValue: unknownValue);
 }
