@@ -7,7 +7,7 @@ class DefaultPersonalizationJson {
   "PIN2": "000",
   "PIN3": "",
   "SigningMethod": 0,
-  "allowSelectBlockchain": false,
+  "allowSelectBlockchain": true,
   "allowSetPIN1": true,
   "allowSetPIN2": true,
   "cardData": {
