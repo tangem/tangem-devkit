@@ -12,26 +12,22 @@ class PersonalizationConfigStore {
 
   final String spaceKey = "#@%";
 
-  SharedPreferences shPref = AppSharedPreferences.shPref;
-  StoreObject storeObject = StoreObject();
-  DefaultConfigGetter _defaultConfigGetter;
+  final SharedPreferences shPref = AppSharedPreferences.shPref;
+  final StoreObject storeObject = StoreObject();
 
   PersonalizationConfigStore(DefaultConfigGetter defaultConfigGetter) {
     logD(this, "new instance");
-    _defaultConfigGetter = defaultConfigGetter;
-  }
 
-  load() {
-    String jsonString = shPref.getString(SP_PERSONALIZATION_KEY);
+    final defConfig = defaultConfigGetter();
+    String? jsonString = shPref.getString(SP_PERSONALIZATION_KEY);
     storeObject.fromJsonString(jsonString);
     if (!storeObject.hasDefault()) {
-      final defConfig = _defaultConfigGetter();
       storeObject.setDefault(defConfig);
       storeObject.setCurrent(defConfig);
       save();
     }
     if (!storeObject.hasCurrent()) {
-      storeObject.setCurrent(_defaultConfigGetter());
+      storeObject.setCurrent(defConfig);
       save();
     }
   }
@@ -41,13 +37,14 @@ class PersonalizationConfigStore {
     shPref.setString(SP_PERSONALIZATION_KEY, jsonString);
   }
 
-  PersonalizationConfig get(String name) => storeObject.get(_replaceSpaces(name));
+  PersonalizationConfig? get(String name) => storeObject.get(_replaceSpaces(name));
 
   PersonalizationConfig getCurrent() => storeObject.getCurrent();
 
-  PersonalizationConfig getDefault() => storeObject.getDefault();
+  PersonalizationConfig? getDefault() => storeObject.getDefault();
 
-  set(String name, PersonalizationConfig config) {
+  set(String name, PersonalizationConfig? config) {
+    if (config == null) return;
     storeObject.set(_replaceSpaces(name), config);
   }
 
@@ -64,7 +61,11 @@ class PersonalizationConfigStore {
   String _replaceKey(String withKeys) => withKeys.replaceAll(spaceKey, " ");
 
   List<String> getNames() {
-    return storeObject.keys().map((e) => _replaceKey(e)).where((element) => !element.contains(StoreObject.hidden)).toList();
+    return storeObject
+        .keys()
+        .map((e) => _replaceKey(e))
+        .where((element) => !element.contains(StoreObject.hidden))
+        .toList();
   }
 }
 
@@ -85,11 +86,11 @@ class StoreObject {
 
   bool hasCurrent() => has(current);
 
-  PersonalizationConfig get(String key) => _store[key];
+  PersonalizationConfig? get(String key) => _store[key];
 
-  PersonalizationConfig getDefault() => get(defaultKey);
+  PersonalizationConfig getDefault() => get(defaultKey)!;
 
-  PersonalizationConfig getCurrent() => get(current);
+  PersonalizationConfig getCurrent() => get(current) ?? getDefault();
 
   set(String key, PersonalizationConfig config) {
     _store[key] = config;
@@ -107,7 +108,7 @@ class StoreObject {
     _store.remove(replaceSpaces);
   }
 
-  fromJsonString(String jsonString) {
+  fromJsonString(String? jsonString) {
     if (jsonString == null) return;
 
     Map map = json.decode(jsonString);

@@ -8,7 +8,7 @@ abstract class BaseResponseWidget extends StatelessWidget {
   final String name;
   final dynamic value;
 
-  const BaseResponseWidget({Key key, this.name, this.value}) : super(key: key);
+  const BaseResponseWidget(this.name, this.value, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +27,10 @@ abstract class BaseResponseWidget extends StatelessWidget {
 
 class ResponseTextWidget extends BaseResponseWidget {
   final String description;
-  final Color bgColor;
+  final Color? bgColor;
 
-  const ResponseTextWidget({Key key, String name, dynamic value, this.description, this.bgColor}) : super(key: key, name: name, value: value);
+  const ResponseTextWidget(String name, dynamic value, this.description, {Key? key, this.bgColor})
+      : super(name, value, key: key);
 
   @override
   Widget buildWidget(BuildContext context) {
@@ -47,7 +48,8 @@ class ResponseTextWidget extends BaseResponseWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   TextWidget(name, fontSize: 16),
-                  TextWidget(stringOf(value, def: "null"), fontSize: AppDimen.itemTitleTextSize, color: AppColor.itemDescription),
+                  TextWidget(stringOf(value, def: "null"),
+                      fontSize: AppDimen.itemTitleTextSize, color: AppColor.itemDescription),
                   DescriptionWidget(description, EdgeInsets.only(top: 5)),
                 ],
               ),
@@ -61,10 +63,10 @@ class ResponseTextWidget extends BaseResponseWidget {
 }
 
 class ResponseCheckboxWidget extends BaseResponseWidget {
-  final String description;
-  final Color bgColor;
+  final Color? bgColor;
 
-  const ResponseCheckboxWidget({Key key, String name, dynamic value, this.description, this.bgColor}) : super(key: key, name: name, value: value);
+  const ResponseCheckboxWidget(String name, dynamic value, {Key? key, this.bgColor})
+      : super(name, value, key: key);
 
   @override
   Widget buildWidget(BuildContext context) {

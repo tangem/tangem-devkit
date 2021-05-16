@@ -19,7 +19,7 @@ class HiddenResponseHandlerWidget extends StatelessWidget {
           initialData: null,
           builder: (context, snapshot) {
             final widget = StubWidget();
-            if (snapshot == null || snapshot.data == null) return widget;
+            if (snapshot.data == null) return widget;
 
             Future.delayed(Duration(milliseconds: 100), () => ResponseScreen.navigate(context, snapshot.data));
             return widget;
@@ -30,7 +30,7 @@ class HiddenResponseHandlerWidget extends StatelessWidget {
           initialData: null,
           builder: (context, snapshot) {
             final widget = StubWidget();
-            if (snapshot == null || snapshot.data == null) return widget;
+            if (snapshot.data == null) return widget;
 
             Future.delayed(Duration(milliseconds: 100), () => showJsonSnackbar(context, snapshot.data));
             return widget;

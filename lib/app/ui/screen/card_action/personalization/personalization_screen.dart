@@ -26,7 +26,7 @@ class PersonalizationScreen extends StatefulWidget {
 }
 
 class _PersonalizationScreenState extends State<PersonalizationScreen> {
-  PersonalizationBloc _bloc;
+  late PersonalizationBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
@@ -112,11 +112,12 @@ class PersonalizeBody extends StatelessWidget {
             PinsSegmentWidget().gone(),
             Container(
               child: StreamBuilder<bool>(
-                stream: bloc.statedFieldsVisibility.stream,
                 initialData: false,
+                stream: bloc.statedFieldsVisibility.stream,
                 builder: (context, snapshot) {
-                  final text = snapshot.data ? Transl.of(context).hide_rare_fields : Transl.of(context).show_rare_fields;
-                  return Button(text: text, onPressed: () => bloc.statedFieldsVisibility.sink.add(!snapshot.data)).padding16();
+                  final data = snapshot.data ?? false;
+                  final text = data ? Transl.of(context).hide_rare_fields : Transl.of(context).show_rare_fields;
+                  return Button(text, onPressed: () => bloc.statedFieldsVisibility.sink.add(!data)).padding16();
                 },
               ),
             )

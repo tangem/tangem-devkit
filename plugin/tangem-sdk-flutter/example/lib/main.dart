@@ -32,8 +32,8 @@ class _CommandListWidgetState extends State<CommandListWidget> {
   final Utils _utils = Utils();
   final _jsonEncoder = JsonEncoder.withIndent('  ');
 
-  Callback _callback;
-  String _cardId;
+  late Callback _callback;
+  String? _cardId;
 
   @override
   void initState() {
@@ -65,46 +65,46 @@ class _CommandListWidgetState extends State<CommandListWidget> {
           SizedBox(height: 25),
           RowActions(
             [
-              ActionButton(text: "Scan card", action: handleScanCard),
-              ActionButton(text: "Sign", action: handleSign),
+              ActionButton("Scan card", action: handleScanCard),
+              ActionButton("Sign", action: handleSign),
             ],
           ),
           ActionType("Issuer data"),
           RowActions(
             [
-              ActionButton(text: "Read", action: handleReadIssuerData),
-              ActionButton(text: "Write", action: handleWriteIssuerData),
+              ActionButton("Read", action: handleReadIssuerData),
+              ActionButton("Write", action: handleWriteIssuerData),
             ],
           ),
           ActionType("Issuer extra data"),
           RowActions(
             [
-              ActionButton(text: "Read", action: handleReadIssuerExtraData),
-              ActionButton(text: "Write", action: handleWriteIssuerExtraData),
+              ActionButton("Read", action: handleReadIssuerExtraData),
+              ActionButton("Write", action: handleWriteIssuerExtraData),
             ],
           ),
           ActionType("User data"),
           RowActions(
             [
-              ActionButton(text: "Read (all)", action: handleReadUserData),
-              ActionButton(text: "Write data", action: handleWriteUserData),
+              ActionButton("Read (all)", action: handleReadUserData),
+              ActionButton("Write data", action: handleWriteUserData),
             ],
           ),
           RowActions([
-            ActionButton(text: "Write protected data", action: handleWriteUserProtectedData),
+            ActionButton("Write protected data", action: handleWriteUserProtectedData),
           ]),
           ActionType("Wallet"),
           RowActions(
             [
-              ActionButton(text: "Create", action: handleCreateWallet),
-              ActionButton(text: "Purge", action: handlePurgeWallet),
+              ActionButton("Create", action: handleCreateWallet),
+              ActionButton("Purge", action: handlePurgeWallet),
             ],
           ),
           ActionType("Pins"),
           RowActions(
             [
-              ActionButton(text: "Change PIN1", action: handleSetPin1),
-              ActionButton(text: "Change PIN2", action: handleSetPin2),
+              ActionButton("Change PIN1", action: handleSetPin1),
+              ActionButton("Change PIN2", action: handleSetPin2),
             ],
           ),
           SizedBox(height: 25)

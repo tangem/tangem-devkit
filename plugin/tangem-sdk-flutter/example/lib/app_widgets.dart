@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class RowActions extends StatelessWidget {
   final List<Widget> children;
 
-  const RowActions(this.children, {Key key}) : super(key: key);
+  const RowActions(this.children, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class RowActions extends StatelessWidget {
 class ActionType extends StatelessWidget {
   final String name;
 
-  const ActionType(this.name, {Key key}) : super(key: key);
+  const ActionType(this.name, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +43,14 @@ class ActionType extends StatelessWidget {
 
 class ActionButton extends StatelessWidget {
   final String text;
-  final Function action;
+  final VoidCallback? action;
 
-  const ActionButton({Key key, this.text, this.action}) : super(key: key);
+  const ActionButton(this.text, {Key? key, this.action}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: RaisedButton(
+      child: ElevatedButton(
         child: Text(text),
         onPressed: action,
       ),

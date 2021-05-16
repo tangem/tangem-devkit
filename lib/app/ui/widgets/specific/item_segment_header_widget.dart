@@ -7,9 +7,9 @@ import '../app_widgets.dart';
 
 class SegmentHeader extends StatelessWidget {
   final String title;
-  final String description;
+  final String? description;
 
-  const SegmentHeader(this.title, {Key key, this.description}) : super(key: key);
+  const SegmentHeader(this.title, {Key? key, this.description}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

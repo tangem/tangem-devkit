@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/text_controller.dart';
@@ -14,17 +14,12 @@ class PurgeWalletScreen extends StatefulWidget {
 }
 
 class _PurgeWalletScreenState extends State<PurgeWalletScreen> {
-  PurgeWalletBloc _bloc;
+  late PurgeWalletBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = PurgeWalletBloc();
-          return _bloc;
-        })
-      ],
+      providers: [RepositoryProvider(create: (context) => PurgeWalletBloc().apply((it) => _bloc = it))],
       child: PurgeWalletFrame(),
     );
   }
@@ -61,8 +56,8 @@ class PurgeWalletBody extends StatefulWidget {
 }
 
 class _PurgeWalletBodyState extends State<PurgeWalletBody> {
-  PurgeWalletBloc _bloc;
-  TextStreamController _cidController;
+  late PurgeWalletBloc _bloc;
+  late TextStreamController _cidController;
 
   @override
   void initState() {

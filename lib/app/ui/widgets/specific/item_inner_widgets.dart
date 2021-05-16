@@ -4,11 +4,12 @@ import 'package:devkit/commons/extensions/widgets.dart';
 import 'package:devkit/commons/global/show_description.dart';
 import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
+import 'package:tangem_sdk/extensions.dart';
 
 class TitleWidget extends StatelessWidget {
   final String title;
 
-  const TitleWidget({Key key, this.title}) : super(key: key);
+  const TitleWidget(this.title, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,26 +24,28 @@ class TitleWidget extends StatelessWidget {
 }
 
 class DescriptionWidget extends StatelessWidget {
-  final String description;
-  final EdgeInsets padding;
+  final String? description;
+  final EdgeInsets? padding;
 
   DescriptionWidget(this.description, [this.padding]);
 
   @override
   Widget build(BuildContext context) {
-    if (description == null || description.isEmpty) return StubWidget();
+    if (description.isNullOrEmpty()) return StubWidget();
 
+    final desc = description!;
     return StreamBuilder<bool>(
       initialData: false,
       stream: DescriptionState.listen(),
       builder: (context, snapshot) {
-        final widget = TextWidget(description, fontSize: AppDimen.itemDescTextSize, color: AppColor.itemDescription);
+        final data = snapshot.data ?? false;
+        final widget = TextWidget(desc, fontSize: AppDimen.itemDescTextSize, color: AppColor.itemDescription);
         return AnimatedOpacity(
-          opacity: snapshot.data ? 1.0 : 0.0,
+          opacity: data ? 1.0 : 0.0,
           duration: Duration(milliseconds: 300),
           child: Visibility(
-            visible: snapshot.data,
-            child: padding == null ? widget : widget.padding(padding),
+            visible: data,
+            child: padding == null ? widget : widget.padding(padding!),
           ),
         );
       },

@@ -42,7 +42,7 @@ class ExSwitch extends StatefulWidget {
   final String keyName;
   final String title;
   final BehaviorSubject<bool> bSubject;
-  final bool initialData;
+  final bool? initialData;
 
   const ExSwitch(this.keyName, this.title, this.bSubject, this.initialData);
 
@@ -51,15 +51,15 @@ class ExSwitch extends StatefulWidget {
 }
 
 class _ExSwitchState extends State<ExSwitch> {
-  bool _isChecked;
-  StreamSubscription<bool> subscription;
+  late bool _isChecked;
+  late StreamSubscription<bool> subscription;
 
   @override
   void initState() {
     super.initState();
     _isChecked = widget.initialData ?? false;
     subscription = widget.bSubject.listen((value) {
-      if (this.mounted) setState(() => _isChecked = value ?? false);
+      if (this.mounted) setState(() => _isChecked = value);
     });
   }
 
@@ -94,7 +94,7 @@ class _ExSwitchState extends State<ExSwitch> {
 
   @override
   void dispose() {
-    subscription?.cancel();
+    subscription.cancel();
     super.dispose();
   }
 }

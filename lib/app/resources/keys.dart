@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class ItemId {
-  static LocalKey from(String name) => ValueKey<String>(name);
+  static LocalKey from(String? name) => ValueKey<String?>(name);
   static LocalKey btnFrom(String name) => ValueKey<String>("$name.btn");
 }
 

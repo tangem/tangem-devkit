@@ -14,10 +14,10 @@ class CommonSegmentWidget extends StatefulWidget {
 }
 
 class _CommonSegmentWidgetState extends State<CommonSegmentWidget> {
-  PersonalizationBloc _bloc;
-  TextStreamController _customBlockchainController;
-  TextStreamController _maxSignaturesController;
-  TextStreamController _walletsCountController;
+  late PersonalizationBloc _bloc;
+  late TextStreamController _customBlockchainController;
+  late TextStreamController _maxSignaturesController;
+  late TextStreamController _walletsCountController;
 
   @override
   void initState() {

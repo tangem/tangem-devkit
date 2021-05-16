@@ -1,7 +1,7 @@
 import 'dart:async';
 
 class Timers {
-  static StreamSubscription countDown(Duration duration, Function(Duration) tick, Function(bool) isFinished) {
+  static StreamSubscription countDown(Duration duration, Function(Duration?) tick, Function(bool) isFinished) {
     isFinished(false);
     final oneSecDuration = Duration(seconds: 1);
     Stream<Duration> stream = Stream.periodic(oneSecDuration, (_) => duration = duration - oneSecDuration);

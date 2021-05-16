@@ -25,7 +25,7 @@ abstract class ModelBuilder<F, T> implements IBuilder<F, T> {
 abstract class TypedHolder<T, K> {
   register(T type, K clazz);
 
-  K get(T type);
+  K? get(T type);
 }
 
 class BaseHolder<T, K> implements TypedHolder<T, K> {
@@ -37,7 +37,7 @@ class BaseHolder<T, K> implements TypedHolder<T, K> {
   }
 
   @override
-  K get(T type) => holderData[type];
+  K? get(T type) => holderData[type];
 }
 
 class Pair<A, B> {
@@ -61,10 +61,10 @@ abstract class Disposable {
 
 class StatedBehaviorSubject<T> extends Disposable {
   final BehaviorSubject<T> _subject;
-  StreamSubscription _subscription;
-  T _state;
+  late StreamSubscription _subscription;
+  T? _state;
 
-  StatedBehaviorSubject([T initialState])
+  StatedBehaviorSubject([T? initialState])
       : this._subject = initialState == null ? BehaviorSubject<T>() : BehaviorSubject<T>.seeded(initialState),
         this._state = initialState {
     _subscription = _subject.stream.listen((event) => _state = event);
@@ -74,7 +74,7 @@ class StatedBehaviorSubject<T> extends Disposable {
 
   Sink<T> get sink => _subject.sink;
 
-  T get state => _state;
+  T? get state => _state;
 
   @override
   dispose() {

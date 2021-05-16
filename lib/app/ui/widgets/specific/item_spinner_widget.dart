@@ -10,7 +10,7 @@ class SpinnerWidget extends StatelessWidget {
   final String keyName;
   final String title;
   final String description;
-  final List<Pair> items;
+  final List<Pair>? items;
   final BehaviorSubject<Pair> subject;
 
   const SpinnerWidget(
@@ -32,28 +32,32 @@ class SpinnerWidget extends StatelessWidget {
         children: <Widget>[
           Stack(
             children: <Widget>[
-              TitleWidget(title: title),
-              StreamBuilder(
+              TitleWidget(title),
+              StreamBuilder<Pair>(
                 stream: subject,
-                initialData: items == null || items.isEmpty ? null : items[0],
+                initialData: items?.firstOrNull(),
                 builder: (context, snapshot) {
-                  if (snapshot == null || snapshot.data == null) return StubWidget();
+                  if (snapshot.data == null) return StubWidget();
 
+                  final data = snapshot.data!;
                   return ButtonTheme(
                     alignedDropdown: true,
                     child: DropdownButton<Pair>(
                       key: ItemId.from(keyName),
                       itemHeight: null,
                       isExpanded: true,
-                      underline: Container(margin: EdgeInsets.only(bottom: 8), height: 1, color: AppColor.dropDownUnderline),
-                      value: snapshot.data,
+                      underline:
+                          Container(margin: EdgeInsets.only(bottom: 8), height: 1, color: AppColor.dropDownUnderline),
+                      value: data,
                       items: items
-                          .map((Pair pair) => DropdownMenuItem<Pair>(
+                          ?.map((Pair pair) => DropdownMenuItem<Pair>(
                                 value: pair,
                                 child: Text(Transl.of(context).get(pair.a)),
                               ))
                           .toList(),
-                      onChanged: (pair) => subject.add(pair),
+                      onChanged: (pair) {
+                        if (pair != null) subject.add(pair);
+                      },
                     ),
                   );
                 },

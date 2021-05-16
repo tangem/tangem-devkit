@@ -5,6 +5,7 @@ import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tangem_sdk/extensions.dart';
 import 'package:tangem_sdk/model/sdk.dart';
 
 import 'personalization_bloc.dart';
@@ -76,7 +77,7 @@ class CommonSegment extends BaseSegment {
     _subscriptions.add(bsCurve.listen((value) => _config.curveID = value.b));
     _subscriptions.add(bsMaxSignatures.listen((value) => _config.MaxSignatures = value.isEmpty ? 0 : int.parse(value)));
     _subscriptions.add(bsCreateWallet.listen((value) => _config.createWallet = value ? 1 : 0));
-    _subscriptions.add(bsWalletsCount.listen((value) => _config.walletsCount = int.tryParse(value)));
+    _subscriptions.add(bsWalletsCount.listen((value) => _config.walletsCount = int.tryParse(value) ?? 0));
     _subscriptions.add(bsPauseBeforePin.listen((value) => _config.pauseBeforePIN2 = value.b));
 
     bsWalletsCount.add("5");
@@ -194,7 +195,8 @@ class SignHashExPropSegment extends BaseSegment {
 
   @override
   _initSubscriptions() {
-    _subscriptions.add(pinLessFloorLimit.listen((value) => logE(this, "Attribute not implemented in the personalization JSON")));
+    _subscriptions
+        .add(pinLessFloorLimit.listen((value) => logE(this, "Attribute not implemented in the personalization JSON")));
     _subscriptions.add(hexCrExKey.listen((value) => _config.hexCrExKey = value));
     _subscriptions.add(requireTerminalCertSignature.listen((value) => _config.requireTerminalCertSignature = value));
     _subscriptions.add(requireTerminalTxSignature.listen((value) => _config.requireTerminalTxSignature = value));
@@ -339,13 +341,16 @@ class SettingsMaskSegment extends BaseSegment {
     _subscriptions.add(allowSetPIN2.listen((isChecked) => _config.allowSetPIN2 = isChecked));
     _subscriptions.add(prohibitDefaultPIN1.listen((isChecked) => _config.prohibitDefaultPIN1 = isChecked));
     _subscriptions.add(smartSecurityDelay.listen((isChecked) => _config.smartSecurityDelay = isChecked));
-    _subscriptions.add(protectIssuerDataAgainstReplay.listen((isChecked) => _config.protectIssuerDataAgainstReplay = isChecked));
-    _subscriptions.add(skipSecurityDelayIfValidatedByIssuer.listen((isChecked) => _config.skipSecurityDelayIfValidatedByIssuer = isChecked));
-    _subscriptions.add(skipCheckPIN2CVCIfValidatedByIssuer.listen((isChecked) => _config.skipCheckPIN2CVCIfValidatedByIssuer = isChecked));
     _subscriptions
-        .add(skipSecurityDelayIfValidatedByLinkedTerminal.listen((isChecked) => _config.skipSecurityDelayIfValidatedByLinkedTerminal = isChecked));
-    _subscriptions.add(restrictOverwriteIssuerExtraData.listen((isChecked) => _config.restrictOverwriteIssuerExtraData =
-        isChecked));
+        .add(protectIssuerDataAgainstReplay.listen((isChecked) => _config.protectIssuerDataAgainstReplay = isChecked));
+    _subscriptions.add(skipSecurityDelayIfValidatedByIssuer
+        .listen((isChecked) => _config.skipSecurityDelayIfValidatedByIssuer = isChecked));
+    _subscriptions.add(skipCheckPIN2CVCIfValidatedByIssuer
+        .listen((isChecked) => _config.skipCheckPIN2CVCIfValidatedByIssuer = isChecked));
+    _subscriptions.add(skipSecurityDelayIfValidatedByLinkedTerminal
+        .listen((isChecked) => _config.skipSecurityDelayIfValidatedByLinkedTerminal = isChecked));
+    _subscriptions.add(
+        restrictOverwriteIssuerExtraData.listen((isChecked) => _config.restrictOverwriteIssuerExtraData = isChecked));
   }
 }
 
@@ -390,14 +395,16 @@ class SettingsMaskNdefSegment extends BaseSegment {
   }
 
   _updateNdefRecords() {
-    NdefRecordSdk findNdef(String type) => _config.ndef.firstWhere((element) => element.type == type, orElse: () => null);
+    NdefRecordSdk? findNdef(String type) => _config.ndef.firstWhereOrNull((element) => element.type == type);
     final foundAar = findNdef(typeAar);
     if (foundAar == null) {
-      aar.add(_bloc.values.getAar(""));
+      final noneAar = _bloc.values.getAar("");
+      if (noneAar != null) aar.add(noneAar);
     } else {
       // isCustom?
       if (_bloc.values.hasAar(foundAar.value)) {
-        aar.add(_bloc.values.getAar(foundAar.value));
+        final getAar = _bloc.values.getAar(foundAar.value);
+        if (getAar != null) aar.add(getAar);
       } else {
         customAar.add(foundAar.value);
       }
@@ -419,15 +426,13 @@ class SettingsMaskNdefSegment extends BaseSegment {
 
   _initNdefSubscriptions() {
     removeAll(String type) => _config.ndef.removeWhere((element) => element.type == type);
-    addNdef(String type, String value) => _config.ndef.add(NdefRecordSdk(type: type, value: value));
+    addNdef(String type, String value) => _config.ndef.add(NdefRecordSdk(type, value));
 
     _subscriptions.add(aar.listen((value) {
       if (isCustom(value)) return;
 
       removeAll(typeAar);
-      if (value.a == "NONE" && value.b.isEmpty) return
-
-      addNdef(typeAar, value.b);
+      if (value.a == "NONE" && value.b.isEmpty) return addNdef(typeAar, value.b);
       customAar.add("");
     }));
 

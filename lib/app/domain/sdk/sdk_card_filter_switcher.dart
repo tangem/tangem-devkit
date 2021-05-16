@@ -11,9 +11,10 @@ class TangemSdkCardFilterSwitcher {
   }
 
   toggle() {
-    final isEnabled = _shPref.getBool(_key);
-    _shPref.setBool(_key, !isEnabled);
+    _shPref.setBool(_key, !_isOn());
   }
 
-  bool isAllowedOnlyDebugCards() => _shPref.getBool(_key);
+  bool isAllowedOnlyDebugCards() => _isOn();
+
+  bool _isOn() => _shPref.getBool(_key) ?? false;
 }

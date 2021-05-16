@@ -13,11 +13,11 @@ class InputWidget extends StatelessWidget {
   final String keyName;
   final TextEditingController controller;
   final TextInputType inputType;
-  final String hint;
-  final String description;
+  final String? hint;
+  final String? description;
   final double minHeight;
-  final EdgeInsets padding;
-  final Stream scrollStream;
+  final EdgeInsets? padding;
+  final Stream<bool>? scrollStream;
 
   const InputWidget(
     this.keyName,
@@ -41,16 +41,16 @@ class InputWidget extends StatelessWidget {
         children: <Widget>[
           scrollStream == null
               ? buildTextField(false)
-              : StreamBuilder(
-                  stream: scrollStream,
+              : StreamBuilder<bool>(
                   initialData: true,
-                  builder: (context, snapshot) => buildTextField(snapshot.data),
+                  stream: scrollStream!,
+                  builder: (context, snapshot) => buildTextField(snapshot.data ?? true),
                 ),
           DescriptionWidget(description, EdgeInsets.only(top: 10)),
         ],
       ),
     );
-    return padding == null ? widget.padding16() : Padding(padding: padding, child: widget);
+    return padding == null ? widget.padding16() : Padding(padding: padding!, child: widget);
   }
 
   // crutch! -> hide cursor while the widget is scrolling. If don't do this, the scroll jumps to the textField
@@ -70,8 +70,8 @@ class InputWidget extends StatelessWidget {
 class InputCidWidget extends StatefulWidget {
   final String keyName;
   final TextEditingController controller;
-  final Function onTap;
-  final EdgeInsets padding;
+  final VoidCallback onTap;
+  final EdgeInsets? padding;
 
   InputCidWidget(this.keyName, this.controller, this.onTap, {this.padding});
 
@@ -105,8 +105,8 @@ class _InputCidWidgetState extends State<InputCidWidget> {
           ),
           Visibility(
             child: Button(
+              Transl.of(context).action_scan,
               key: ItemId.btnFrom(widget.keyName),
-              text: Transl.of(context).action_scan,
               onPressed: widget.onTap,
             ),
           ),

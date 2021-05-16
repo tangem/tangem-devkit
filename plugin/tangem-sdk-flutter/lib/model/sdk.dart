@@ -4,9 +4,9 @@ part 'sdk.g.dart';
 
 @JsonSerializable()
 class CardConfigSdk {
-  final String issuerName;
-  final String acquirerName;
-  final String series;
+  final String? issuerName;
+  final String? acquirerName;
+  final String? series;
   final int startNumber;
   final int count;
   final List<int> pin;
@@ -47,12 +47,7 @@ class CardConfigSdk {
   final CardDataSdk cardData;
   final List<NdefRecordSdk> ndefRecords;
 
-  CardConfigSdk({
-    this.issuerName,
-    this.acquirerName,
-    this.series,
-    this.startNumber,
-    this.count,
+  CardConfigSdk(
     this.pin,
     this.pin2,
     this.pin3,
@@ -89,7 +84,12 @@ class CardConfigSdk {
     this.createWallet,
     this.walletsCount,
     this.cardData,
-    this.ndefRecords,
+    this.ndefRecords, {
+    this.issuerName,
+    this.acquirerName,
+    this.series,
+    this.startNumber = 0,
+    this.count = 0,
   });
 
   factory CardConfigSdk.fromJson(Map<String, dynamic> json) => _$CardConfigSdkFromJson(json);
@@ -153,28 +153,32 @@ class CardDataSdk {
   final String issuerName;
   final String batchId;
   final String blockchainName;
-  @JsonKey(includeIfNull: false)
-  final String tokenSymbol;
-  @JsonKey(includeIfNull: false)
-  final String tokenContractAddress;
-  @JsonKey(includeIfNull: false)
-  final int tokenDecimal;
-  @JsonKey(includeIfNull: false)
-  final List<int> manufacturerSignature;
   final String manufactureDateTime;
   final ProductMaskSdk productMask;
+  @JsonKey(includeIfNull: false)
+  final String? tokenSymbol;
+  @JsonKey(includeIfNull: false)
+  final String? tokenContractAddress;
+  @JsonKey(includeIfNull: false)
+  final int? tokenDecimal;
+  @JsonKey(includeIfNull: false)
+  final List<int>? manufacturerSignature;
 
-  CardDataSdk({
-    this.productMask,
-    this.issuerName,
+  CardDataSdk(
+    String issuerName,
+    String batchId,
+    String blockchainName,
+    String manufactureDateTime,
+    ProductMaskSdk productMask, {
     this.manufacturerSignature,
-    this.batchId,
-    this.blockchainName,
-    this.manufactureDateTime,
     this.tokenSymbol,
     this.tokenContractAddress,
     this.tokenDecimal,
-  });
+  })  : this.productMask = productMask,
+        this.issuerName = issuerName,
+        this.batchId = batchId,
+        this.blockchainName = blockchainName,
+        this.manufactureDateTime = manufactureDateTime;
 
   factory CardDataSdk.fromJson(Map<String, dynamic> json) => _$CardDataSdkFromJson(json);
 
@@ -208,7 +212,7 @@ class NdefRecordSdk {
   final String type;
   final String value;
 
-  NdefRecordSdk({this.type, this.value});
+  NdefRecordSdk(this.type, this.value);
 
   factory NdefRecordSdk.fromJson(Map<String, dynamic> json) => _$NdefRecordSdkFromJson(json);
 
@@ -235,10 +239,8 @@ class DataProtectedByPasscodeHex extends FileDataHex {
 @JsonSerializable()
 class DataProtectedBySignatureHex extends FileDataHex {
   final int counter;
-  @JsonKey(nullable: false)
   final FileDataSignatureHex signature;
-  @JsonKey(nullable: true)
-  final String issuerPublicKey;
+  final String? issuerPublicKey;
 
   DataProtectedBySignatureHex(String data, this.counter, this.signature, [this.issuerPublicKey]) : super(data);
 

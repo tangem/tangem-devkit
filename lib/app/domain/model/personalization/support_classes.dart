@@ -57,49 +57,50 @@ class PersonalizationConfig {
   // "RequireTermCertSignature",
 
   PersonalizationConfig(
-      {this.CVC,
-      this.MaxSignatures,
-      this.PIN,
-      this.PIN2,
-      this.PIN3,
-      this.SigningMethod,
-      this.allowSelectBlockchain,
-      this.allowSetPIN1,
-      this.allowSetPIN2,
-      this.cardData,
-      this.checkPIN3OnCard,
-      this.count,
-      this.createWallet,
-      this.walletsCount,
-      this.curveID,
-      this.disablePrecomputedNDEF,
-      this.prohibitDefaultPIN1,
-      this.prohibitPurgeWallet,
-      this.hexCrExKey,
-      this.isReusable,
-      this.issuerName,
-      this.ndef,
-      this.numberFormat,
-      this.pauseBeforePIN2,
-      this.protectIssuerDataAgainstReplay,
-      this.allowFastEncryption,
-      this.allowUnencrypted,
-      this.releaseVersion,
-      this.requireTerminalCertSignature,
-      this.requireTerminalTxSignature,
-      this.restrictOverwriteIssuerExtraData,
-      this.series,
-      this.skipCheckPIN2CVCIfValidatedByIssuer,
-      this.skipSecurityDelayIfValidatedByIssuer,
-      this.skipSecurityDelayIfValidatedByLinkedTerminal,
-      this.smartSecurityDelay,
-      this.startNumber,
-      this.useActivation,
-      this.useBlock,
-      this.useCvc,
-      this.useDynamicNDEF,
-      this.useNDEF,
-      this.useOneCommandAtTime});
+    this.CVC,
+    this.MaxSignatures,
+    this.PIN,
+    this.PIN2,
+    this.PIN3,
+    this.SigningMethod,
+    this.allowSelectBlockchain,
+    this.allowSetPIN1,
+    this.allowSetPIN2,
+    this.cardData,
+    this.checkPIN3OnCard,
+    this.count,
+    this.createWallet,
+    this.walletsCount,
+    this.curveID,
+    this.disablePrecomputedNDEF,
+    this.prohibitDefaultPIN1,
+    this.prohibitPurgeWallet,
+    this.hexCrExKey,
+    this.isReusable,
+    this.issuerName,
+    this.ndef,
+    this.numberFormat,
+    this.pauseBeforePIN2,
+    this.protectIssuerDataAgainstReplay,
+    this.allowFastEncryption,
+    this.allowUnencrypted,
+    this.releaseVersion,
+    this.requireTerminalCertSignature,
+    this.requireTerminalTxSignature,
+    this.restrictOverwriteIssuerExtraData,
+    this.series,
+    this.skipCheckPIN2CVCIfValidatedByIssuer,
+    this.skipSecurityDelayIfValidatedByIssuer,
+    this.skipSecurityDelayIfValidatedByLinkedTerminal,
+    this.smartSecurityDelay,
+    this.startNumber,
+    this.useActivation,
+    this.useBlock,
+    this.useCvc,
+    this.useDynamicNDEF,
+    this.useNDEF,
+    this.useOneCommandAtTime,
+  );
 
   static PersonalizationConfig getDefault() {
     final map = json.decode(DefaultPersonalizationJson.jsonString);
@@ -115,7 +116,7 @@ class PersonalizationConfig {
 class PersonalizationCardData {
   String batch;
   String blockchain;
-  String date;
+  String? date;
   @JsonKey(name: 'product_id_card')
   bool productIdCard;
   @JsonKey(name: 'product_id_issuer')
@@ -127,24 +128,24 @@ class PersonalizationCardData {
   @JsonKey(name: 'product_twin_card')
   bool productTwinCard;
   @JsonKey(name: 'token_symbol', includeIfNull: false)
-  String tokenSymbol;
+  String? tokenSymbol;
   @JsonKey(name: 'token_contract_address', includeIfNull: false)
-  String tokenContractAddress;
+  String? tokenContractAddress;
   @JsonKey(name: 'token_decimal', includeIfNull: false)
-  int tokenDecimal;
+  int? tokenDecimal;
 
-  PersonalizationCardData({
-    this.tokenSymbol,
-    this.tokenContractAddress,
-    this.tokenDecimal,
+  PersonalizationCardData(
     this.batch,
     this.blockchain,
-    this.date,
     this.productIdCard,
     this.productIdIssuer,
     this.productNote,
     this.productTag,
-    this.productTwinCard,
+    this.productTwinCard, {
+    this.tokenSymbol,
+    this.tokenContractAddress,
+    this.tokenDecimal,
+    this.date,
   });
 
   factory PersonalizationCardData.fromJson(Map<String, dynamic> json) => _$PersonalizationCardDataFromJson(json);

@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/text_controller.dart';
@@ -14,17 +14,12 @@ class WriteUserProtectedDataScreen extends StatefulWidget {
 }
 
 class _WriteUserProtectedDataScreenState extends State<WriteUserProtectedDataScreen> {
-  WriteUserProtectedDataBloc _bloc;
+  late WriteUserProtectedDataBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = WriteUserProtectedDataBloc();
-          return _bloc;
-        })
-      ],
+      providers: [RepositoryProvider(create: (context) => WriteUserProtectedDataBloc().apply((it) => _bloc = it))],
       child: WriteUserProtectedDataFrame(),
     );
   }
@@ -61,10 +56,10 @@ class WriteUserProtectedDataBody extends StatefulWidget {
 }
 
 class _WriteUserProtectedDataBodyState extends State<WriteUserProtectedDataBody> {
-  WriteUserProtectedDataBloc _bloc;
-  TextStreamController _cidController;
-  TextStreamController _userDataController;
-  TextStreamController _userDataCounterController;
+  late WriteUserProtectedDataBloc _bloc;
+  late TextStreamController _cidController;
+  late TextStreamController _userDataController;
+  late TextStreamController _userDataCounterController;
 
   @override
   void initState() {

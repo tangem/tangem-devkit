@@ -17,7 +17,7 @@ void main() {
   final backButton = find.byTooltip('Back');
   final depersonalize = DepersonalizeCard();
 
-  FlutterDriver driver;
+  late FlutterDriver driver;
 
   group('Read card test when settingMask =true', () {
     setUpAll(() async {
@@ -216,7 +216,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 
@@ -433,7 +433,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 
@@ -648,7 +648,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 
@@ -863,7 +863,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 
@@ -1078,7 +1078,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 
@@ -1282,7 +1282,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 

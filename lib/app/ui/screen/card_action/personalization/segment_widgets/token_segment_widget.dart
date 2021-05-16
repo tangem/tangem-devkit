@@ -13,10 +13,10 @@ class TokenSegmentWidget extends StatefulWidget {
 }
 
 class _TokenSegmentWidgetState extends State<TokenSegmentWidget> {
-  PersonalizationBloc _bloc;
-  TextStreamController tokenSymbol;
-  TextStreamController tokenContractAddress;
-  TextStreamController tokenDecimal;
+  late PersonalizationBloc _bloc;
+  late TextStreamController tokenSymbol;
+  late TextStreamController tokenContractAddress;
+  late TextStreamController tokenDecimal;
 
   @override
   void initState() {

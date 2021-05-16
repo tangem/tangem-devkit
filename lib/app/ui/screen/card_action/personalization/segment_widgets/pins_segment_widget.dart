@@ -13,11 +13,11 @@ class PinsSegmentWidget extends StatefulWidget {
 }
 
 class _PinsSegmentWidgetState extends State<PinsSegmentWidget> {
-  PersonalizationBloc _bloc;
-  TextStreamController _pin1Controller;
-  TextStreamController _pin2Controller;
-  TextStreamController _pin3Controller;
-  TextStreamController _cvcController;
+  late PersonalizationBloc _bloc;
+  late TextStreamController _pin1Controller;
+  late TextStreamController _pin2Controller;
+  late TextStreamController _pin3Controller;
+  late TextStreamController _cvcController;
 
   @override
   void initState() {

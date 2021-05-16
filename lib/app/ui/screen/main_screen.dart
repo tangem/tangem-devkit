@@ -18,8 +18,8 @@ class MainFrame extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: TapEncounterWidget(
-          maxTapCount: 7,
-          child: Text(Transl.of(context).app_name),
+          7,
+          Text(Transl.of(context).app_name),
           onSuccess: () {
             final switcher = TangemSdkCardFilterSwitcher()..toggle();
             final isAllowedOnlyDebug = switcher.isAllowedOnlyDebugCards();
@@ -90,9 +90,9 @@ class MainBody extends StatelessWidget {
         final pair = _transKeys[index];
 
         return ListItemWidget(
+          TextWidget(trans.get(pair.a), fontSize: 18),
+          DescriptionWidget(trans.getDesc(pair.a)),
           key: ItemId.from(pair.b),
-          item: TextWidget(trans.get(pair.a), fontSize: 18),
-          description: DescriptionWidget(trans.getDesc(pair.a)),
           onTap: () => Navigator.of(context).pushNamed("/${pair.b.toLowerCase()}"),
         );
       },
@@ -105,9 +105,9 @@ class MainBody extends StatelessWidget {
 class ListItemWidget extends StatelessWidget {
   final Widget item;
   final Widget description;
-  final Function onTap;
+  final GestureTapCallback? onTap;
 
-  const ListItemWidget({Key key, @required this.item, @required this.description, this.onTap}) : super(key: key);
+  const ListItemWidget(this.item, this.description, {Key? key, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

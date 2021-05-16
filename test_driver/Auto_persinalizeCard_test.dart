@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-import 'dart:convert';
+
 import 'ConfigForPersonalize.dart';
 import 'AutoTestStep.dart';
 import 'DepersonalizeCard.dart';
@@ -12,7 +13,7 @@ void main() {
   final depersonalize = DepersonalizeCard();
   final backButton = find.byTooltip('Back');
 
-  FlutterDriver driver;
+  late FlutterDriver driver;
 
   group('Personalization autotest when enabled SettingMask', () {
     setUpAll(() async {
@@ -219,7 +220,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
 
   });
@@ -430,7 +431,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
 
   });
@@ -639,7 +640,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
 
   });
@@ -850,7 +851,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
 
   });
@@ -1062,7 +1063,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
 
   });
@@ -1272,7 +1273,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
 
   });

@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/text_controller.dart';
@@ -14,17 +14,12 @@ class ReadUserDataScreen extends StatefulWidget {
 }
 
 class _ReadUserDataScreenState extends State<ReadUserDataScreen> {
-  ReadUserDataBloc _bloc;
+  late ReadUserDataBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = ReadUserDataBloc();
-          return _bloc;
-        })
-      ],
+      providers: [RepositoryProvider(create: (context) => ReadUserDataBloc().apply((it) => _bloc = it))],
       child: ReadUserDataFrame(),
     );
   }
@@ -61,8 +56,8 @@ class ReadUserDataBody extends StatefulWidget {
 }
 
 class _ReadUserDataBodyState extends State<ReadUserDataBody> {
-  ReadUserDataBloc _bloc;
-  TextStreamController _cidController;
+  late ReadUserDataBloc _bloc;
+  late TextStreamController _cidController;
 
   @override
   void initState() {
