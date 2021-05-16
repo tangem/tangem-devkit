@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
-import 'package:devkit/app/domain/model/signature_data_models.dart';
+import 'package:devkit/app/domain/model/command_data_models.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/model/command_signature_data.dart';
+import 'package:tangem_sdk/model/command_data.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class TestBlock extends ActionBloc<dynamic> {
@@ -52,7 +52,7 @@ class TestBlock extends ActionBloc<dynamic> {
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     if (_command == null || _commandType == null) return null;
 
     final command = _command!;

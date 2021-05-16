@@ -151,7 +151,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   }
 
   @override
-  CommandSignatureData createCommandData() {
+  CommandDataModel? createCommandData() {
     throw UnimplementedError();
   }
 

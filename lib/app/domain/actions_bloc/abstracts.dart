@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:devkit/app/domain/model/signature_data_models.dart';
+import 'package:devkit/app/domain/model/command_data_models.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
@@ -61,7 +61,7 @@ abstract class ActionBloc<T> extends Disposable {
     TangemSdk.runCommand(callback, commandData);
   }
 
-  CommandSignatureData? createCommandData();
+  CommandDataModel? createCommandData();
 
   @override
   dispose() {

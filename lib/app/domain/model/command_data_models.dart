@@ -5,28 +5,28 @@ import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
-class ScanModel extends SignatureDataModel {
+class ScanModel extends CommandDataModel {
   ScanModel() : super(TangemSdk.cScanCard);
 
-  factory ScanModel.fromJson(Map<String, dynamic> json) => CommandSignatureData.attachBaseData(ScanModel(), json);
+  factory ScanModel.fromJson(Map<String, dynamic> json) => CommandDataModel.attachBaseData(ScanModel(), json);
 }
 
-class SignModel extends SignatureDataModel {
+class SignModel extends CommandDataModel {
   final List<String> dataForHashing;
 
   SignModel(this.dataForHashing) : super(TangemSdk.cSign);
 
   factory SignModel.fromJson(Map<String, dynamic> json) {
     final listDataForHashing = (json["dataForHashing"] as List).toStringList();
-    return CommandSignatureData.attachBaseData(SignModel(listDataForHashing), json);
+    return CommandDataModel.attachBaseData(SignModel(listDataForHashing), json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async =>
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async =>
       {TangemSdk.hashes: dataForHashing.map((e) => e.toHexString()).toList()}..addAll(getBaseData());
 }
 
-class PersonalizationModel extends SignatureDataModel {
+class PersonalizationModel extends CommandDataModel {
   final PersonalizationConfig config;
   final Issuer issuer;
 
@@ -37,11 +37,11 @@ class PersonalizationModel extends SignatureDataModel {
       PersonalizationConfig.fromJson(json["config"]),
       Issuer.fromJson(json["issuer"]),
     );
-    return CommandSignatureData.attachBaseData(model, json);
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) {
     final acquirer = Utils.createDefaultAcquirer();
     final manufacturer = Utils.createDefaultManufacturer();
     final data = {
@@ -54,28 +54,28 @@ class PersonalizationModel extends SignatureDataModel {
   }
 }
 
-class DepersonalizeModel extends SignatureDataModel {
+class DepersonalizeModel extends CommandDataModel {
   DepersonalizeModel() : super(TangemSdk.cDepersonalize);
 
   factory DepersonalizeModel.fromJson(Map<String, dynamic> json) =>
-      CommandSignatureData.attachBaseData(DepersonalizeModel(), json);
+      CommandDataModel.attachBaseData(DepersonalizeModel(), json);
 }
 
-class CreateWalletModel extends SignatureDataModel {
+class CreateWalletModel extends CommandDataModel {
   CreateWalletModel() : super(TangemSdk.cCreateWallet);
 
   factory CreateWalletModel.fromJson(Map<String, dynamic> json) =>
-      CommandSignatureData.attachBaseData(CreateWalletModel(), json);
+      CommandDataModel.attachBaseData(CreateWalletModel(), json);
 }
 
-class PurgeWalletModel extends SignatureDataModel {
+class PurgeWalletModel extends CommandDataModel {
   PurgeWalletModel() : super(TangemSdk.cPurgeWallet);
 
   factory PurgeWalletModel.fromJson(Map<String, dynamic> json) =>
-      CommandSignatureData.attachBaseData(PurgeWalletModel(), json);
+      CommandDataModel.attachBaseData(PurgeWalletModel(), json);
 }
 
-class WriteIssuerDataModel extends SignatureDataModel {
+class WriteIssuerDataModel extends CommandDataModel {
   final String issuerData;
   final String issuerPrivateKeyHex;
   final int issuerDataCounter;
@@ -96,11 +96,11 @@ class WriteIssuerDataModel extends SignatureDataModel {
       json[TangemSdk.privateKey],
       json[TangemSdk.issuerDataCounter],
     );
-    return CommandSignatureData.attachBaseData(model, json);
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     final issuerDataHex = issuerData.toHexString();
     final completer = Completer<Map<String, dynamic>>();
 
@@ -129,14 +129,14 @@ class WriteIssuerDataModel extends SignatureDataModel {
   }
 }
 
-class ReadIssuerDataModel extends SignatureDataModel {
+class ReadIssuerDataModel extends CommandDataModel {
   ReadIssuerDataModel() : super(TangemSdk.cReadIssuerData);
 
   factory ReadIssuerDataModel.fromJson(Map<String, dynamic> json) =>
-      CommandSignatureData.attachBaseData(ReadIssuerDataModel(), json);
+      CommandDataModel.attachBaseData(ReadIssuerDataModel(), json);
 }
 
-class WriteIssuerExDataModel extends SignatureDataModel {
+class WriteIssuerExDataModel extends CommandDataModel {
   final String issuerExData;
   final String issuerPrivateKeyHex;
   final int issuerDataCounter;
@@ -157,11 +157,11 @@ class WriteIssuerExDataModel extends SignatureDataModel {
       json[TangemSdk.privateKey],
       json[TangemSdk.issuerDataCounter],
     );
-    return CommandSignatureData.attachBaseData(model, json);
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     final issuerDataHex = issuerExData.toHexString();
     final completer = Completer<Map<String, dynamic>>();
 
@@ -190,14 +190,14 @@ class WriteIssuerExDataModel extends SignatureDataModel {
   }
 }
 
-class ReadIssuerExDataModel extends SignatureDataModel {
+class ReadIssuerExDataModel extends CommandDataModel {
   ReadIssuerExDataModel() : super(TangemSdk.cReadIssuerExData);
 
   factory ReadIssuerExDataModel.fromJson(Map<String, dynamic> json) =>
-      CommandSignatureData.attachBaseData(ReadIssuerExDataModel(), json);
+      CommandDataModel.attachBaseData(ReadIssuerExDataModel(), json);
 }
 
-class WriteUserDataModel extends SignatureDataModel {
+class WriteUserDataModel extends CommandDataModel {
   final String userData;
   final int? userCounter;
 
@@ -205,11 +205,11 @@ class WriteUserDataModel extends SignatureDataModel {
 
   factory WriteUserDataModel.fromJson(Map<String, dynamic> json) {
     final model = WriteUserDataModel(json[TangemSdk.userData], json[TangemSdk.userCounter]);
-    return CommandSignatureData.attachBaseData(model, json);
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     return {
       TangemSdk.userData: userData.toHexString(),
       TangemSdk.userCounter: userCounter,
@@ -217,14 +217,14 @@ class WriteUserDataModel extends SignatureDataModel {
   }
 }
 
-class ReadUserDataModel extends SignatureDataModel {
+class ReadUserDataModel extends CommandDataModel {
   ReadUserDataModel() : super(TangemSdk.cReadUserData);
 
   factory ReadUserDataModel.fromJson(Map<String, dynamic> json) =>
-      CommandSignatureData.attachBaseData(ReadUserDataModel(), json);
+      CommandDataModel.attachBaseData(ReadUserDataModel(), json);
 }
 
-class WriteUserProtectedDataModel extends SignatureDataModel {
+class WriteUserProtectedDataModel extends CommandDataModel {
   final String userProtectedData;
   final int? userProtectedCounter;
 
@@ -233,11 +233,11 @@ class WriteUserProtectedDataModel extends SignatureDataModel {
 
   factory WriteUserProtectedDataModel.fromJson(Map<String, dynamic> json) {
     final model = WriteUserProtectedDataModel(json[TangemSdk.userProtectedData], json[TangemSdk.userProtectedCounter]);
-    return CommandSignatureData.attachBaseData(model, json);
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     return {
       TangemSdk.userProtectedData: userProtectedData.toHexString(),
       TangemSdk.userProtectedCounter: userProtectedCounter,
@@ -245,36 +245,36 @@ class WriteUserProtectedDataModel extends SignatureDataModel {
   }
 }
 
-class SetPin1Model extends SignatureDataModel {
+class SetPin1Model extends CommandDataModel {
   final String? pinCode;
 
   SetPin1Model(this.pinCode) : super(TangemSdk.cSetPin1);
 
   factory SetPin1Model.fromJson(Map<String, dynamic> json) {
     final model = SetPin1Model(json[TangemSdk.pinCode]);
-    return CommandSignatureData.attachBaseData(model, json);
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     return {
       TangemSdk.pinCode: pinCode,
     }..addAll(getBaseData());
   }
 }
 
-class SetPin2Model extends SignatureDataModel {
+class SetPin2Model extends CommandDataModel {
   final String? pinCode;
 
   SetPin2Model(this.pinCode) : super(TangemSdk.cSetPin2);
 
   factory SetPin2Model.fromJson(Map<String, dynamic> json) {
     final model = SetPin2Model(json[TangemSdk.pinCode]);
-    return CommandSignatureData.attachBaseData(model, json);
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     return {
       TangemSdk.pinCode: pinCode,
     }..addAll(getBaseData());
@@ -298,7 +298,7 @@ class WriteFileData {
   }
 }
 
-class FilesWriteModel extends SignatureDataModel {
+class FilesWriteModel extends CommandDataModel {
   final List<WriteFileData> filesData;
   final Issuer? issuer;
 
@@ -311,11 +311,11 @@ class FilesWriteModel extends SignatureDataModel {
       filesData,
       json.containsKey("issuer") ? Issuer.fromJson(json["issuer"]) : null,
     );
-    return CommandSignatureData.attachBaseData(model, json);
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     final mainCompleter = Completer<Map<String, dynamic>>();
     final errorHandler = (String message) {
       onError(Exception(message));
@@ -385,7 +385,7 @@ class FilesWriteModel extends SignatureDataModel {
   }
 }
 
-class FilesReadModel extends SignatureDataModel {
+class FilesReadModel extends CommandDataModel {
   final bool readPrivateFiles;
   final List<int>? indices;
 
@@ -394,11 +394,11 @@ class FilesReadModel extends SignatureDataModel {
   factory FilesReadModel.fromJson(Map<String, dynamic> json) {
     List<int> indices = (json[TangemSdk.indices] as List).toIntList();
     final model = FilesReadModel(json[TangemSdk.readPrivateFiles], indices);
-    return CommandSignatureData.attachBaseData(model, json);
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     return {
       TangemSdk.readPrivateFiles: readPrivateFiles,
       TangemSdk.indices: indices,
@@ -406,25 +406,25 @@ class FilesReadModel extends SignatureDataModel {
   }
 }
 
-class FilesDeleteModel extends SignatureDataModel {
+class FilesDeleteModel extends CommandDataModel {
   final List<int>? indices;
 
   FilesDeleteModel([this.indices]) : super(TangemSdk.cDeleteFiles);
 
   factory FilesDeleteModel.fromJson(Map<String, dynamic> json) {
     List<int>? indices = (json[TangemSdk.indices] as List?)?.toIntList();
-    return CommandSignatureData.attachBaseData(FilesDeleteModel(indices), json);
+    return CommandDataModel.attachBaseData(FilesDeleteModel(indices), json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     return {
       TangemSdk.indices: indices,
     }..addAll(getBaseData());
   }
 }
 
-class FilesChangeSettingsModel extends SignatureDataModel {
+class FilesChangeSettingsModel extends CommandDataModel {
   final List<ChangeFileSettings> changes;
 
   FilesChangeSettingsModel(this.changes) : super(TangemSdk.cChangeFilesSettings);
@@ -432,11 +432,11 @@ class FilesChangeSettingsModel extends SignatureDataModel {
   factory FilesChangeSettingsModel.fromJson(Map<String, dynamic> json) {
     final jsonList = (json[TangemSdk.changes] as List);
     final changes = jsonList.map((e) => ChangeFileSettings.fromJson(e)).toList();
-    return CommandSignatureData.attachBaseData(FilesChangeSettingsModel(changes), json);
+    return CommandDataModel.attachBaseData(FilesChangeSettingsModel(changes), json);
   }
 
   @override
-  Future<Map<String, dynamic>?> toSignatureData(ConversionError onError) async {
+  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
     if (changes.isEmpty) {
       onError(Exception("Can't create signature data, because changes is empty"));
       return null;
