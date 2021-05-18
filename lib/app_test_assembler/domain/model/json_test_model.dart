@@ -40,7 +40,7 @@ class TestSetup {
   ]) : this.creationDateMs = creationDateMs ?? DateTime.now().millisecondsSinceEpoch;
 
   factory TestSetup.getDefault() {
-    final persConfig = PersonalizationConfigStore().getCurrent();
+    final persConfig = PersonalizationConfigStorage().getCurrent();
     final persCommandConfig = Utils.createPersonalizationCommandConfig(persConfig);
     return TestSetup(
       "Simple test",

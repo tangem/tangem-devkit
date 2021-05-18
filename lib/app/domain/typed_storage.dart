@@ -16,7 +16,7 @@ abstract class TypedStorage<T> {
   final _psStorageModified = PublishSubject<StorageModifyEvent<T>>();
   bool _isChangeListenersActive = false;
 
-  final Map<String, T> _store = {};
+  final Map<String, T> _storage = {};
 
   TypedStorage() {
     logD(this, "new instance");
@@ -34,27 +34,27 @@ abstract class TypedStorage<T> {
 
   save({String? name, VoidCallback? onComplete});
 
-  bool has(String name) => _store.containsKey(name);
+  bool has(String name) => _storage.containsKey(name);
 
-  T? get(String name) => _store[name];
+  T? get(String name) => _storage[name];
 
   set(String name, T? value) {
     if (value == null) return;
 
-    _store[name] = value;
+    _storage[name] = value;
     _notifySet(value);
   }
 
   remove(String name) {
-    final removedValue = _store.remove(name);
+    final removedValue = _storage.remove(name);
     _notifyRemove(removedValue);
   }
 
-  List<String> names() => _store.keys.toList();
+  List<String> names() => _storage.keys.toList();
 
-  List<T> values() => _store.values.toList();
+  List<T> values() => _storage.values.toList();
 
-  int size() => _store.length;
+  int size() => _storage.length;
 
   _notifySet(T? value) {
     if (value != null && _isChangeListenersActive) _psStorageModified.add(StorageModifyEvent.set(value));
@@ -117,7 +117,7 @@ abstract class ConfigStorage<T> extends TypedStorage<T> {
   }
 
   List<String> names() {
-    return _store.keys.toList().where((e) => !e.contains(hidden)).toList();
+    return _storage.keys.toList().where((e) => !e.contains(hidden)).toList();
   }
 
   T getDefaultValue();
@@ -142,16 +142,16 @@ abstract class ConfigSharedPrefsStorage<T> extends ConfigStorage<T> with MapToTy
     }
 
     Map jsonMap = json.decode(jsonString);
-    jsonMap.forEach((key, value) => _store[key] = convertFrom(value));
+    jsonMap.forEach((key, value) => _storage[key] = convertFrom(value));
     super.restore(onComplete);
   }
 
   @override
   save({String? name, VoidCallback? onComplete}) {
     if (name == null) {
-      _shPref.setString(_storeKey, json.encode(_store));
+      _shPref.setString(_storeKey, json.encode(_storage));
     } else {
-      _store[name]?.let((it) => _shPref.setString(name, json.encode(it)));
+      _storage[name]?.let((it) => _shPref.setString(name, json.encode(it)));
     }
   }
 }
@@ -169,7 +169,7 @@ abstract class FileStorage<T> extends TypedStorage<T> with MapToTypeConvertible<
         final content = element.readAsStringSync();
         final fileName = basenameWithoutExtension(element.path);
         final value = json.decode(content);
-        _store[fileName] = convertFrom(value);
+        _storage[fileName] = convertFrom(value);
       }
     });
     onComplete();
@@ -184,9 +184,9 @@ abstract class FileStorage<T> extends TypedStorage<T> with MapToTypeConvertible<
     }
 
     if (name == null) {
-      _store.forEach((key, value) => saveToFile(key, value));
+      _storage.forEach((key, value) => saveToFile(key, value));
     } else {
-      _store[name]?.let((it) => saveToFile(name, it));
+      _storage[name]?.let((it) => saveToFile(name, it));
     }
     onComplete?.call();
   }
@@ -196,7 +196,7 @@ abstract class FileStorage<T> extends TypedStorage<T> with MapToTypeConvertible<
     final file = File(_assembleFilePath(name));
     if (file.existsSync()) {
       file.delete().then((value) {
-        final removedValue = _store.remove(name);
+        final removedValue = _storage.remove(name);
         _notifyRemove(removedValue);
       });
     }

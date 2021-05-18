@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/typed_store.dart';
+import 'package:devkit/app/domain/typed_storage.dart';
 import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 
 class JsonTestsStorage extends FileStorage<JsonTest> {
