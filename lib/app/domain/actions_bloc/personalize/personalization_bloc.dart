@@ -12,8 +12,8 @@ import 'package:share/share.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
+import '../../typed_store.dart';
 import 'segments.dart';
-import 'store.dart';
 
 class PersonalizationBloc extends ActionBloc<CardResponse> {
   final PersonalizationValues values = PersonalizationValues();
@@ -41,15 +41,13 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
 
   PersonalizationBloc() {
     logD(this, "new instance");
-    _store = PersonalizationConfigStore(_getDefaultConfig);
+    _store = PersonalizationConfigStore();
     _initSegments();
     _updateConfigIntoTheSegments(_store.getCurrent());
   }
 
   _initSegments() {
     final currentConfig = _store.getCurrent();
-    if (currentConfig == null) return;
-
     cardNumber = CardNumberSegment(this, currentConfig);
     common = CommonSegment(this, currentConfig);
     signingMethod = SigningMethodSegment(this, currentConfig);
@@ -95,7 +93,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   }
 
   fetchSavedConfigNames() {
-    List<String> listNames = _store.getNames();
+    List<String> listNames = _store.names();
     bsSavedConfigNames.add(listNames);
   }
 
@@ -115,7 +113,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
       _restoreConfig(PersonalizationConfig.fromJson(configMap));
     } catch (ex) {
       sendSnackbarMessage(ex);
-      _restoreConfig(_getDefaultConfig());
+      _restoreConfig(PersonalizationConfig.getDefault());
     }
   }
 
@@ -134,20 +132,10 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     _configSegments.forEach((element) => element.update(config));
   }
 
-  PersonalizationConfig _getDefaultConfig() => PersonalizationConfig.getDefault();
-
   @override
-  invokeAction() {
-    final issuer = Utils.createDefaultIssuer();
-    final acquirer = Utils.createDefaultAcquirer();
-    final manufacturer = Utils.createDefaultManufacturer();
-
-    TangemSdk.personalize(callback, {
-      TangemSdk.cardConfig: json.encode(Utils.createCardConfig(_store.getCurrent(), issuer, acquirer)),
-      TangemSdk.issuer: json.encode(issuer),
-      TangemSdk.acquirer: json.encode(acquirer),
-      TangemSdk.manufacturer: json.encode(manufacturer),
-    });
+  invokeAction() async {
+    final personalizationMap = Utils.createPersonalizationCommandConfig(_store.getCurrent());
+    TangemSdk.personalize(callback, personalizationMap);
   }
 
   @override
@@ -155,7 +143,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     throw UnimplementedError();
   }
 
-  bool isDefaultConfigName(String name) => StoreObject.defaultKey == name;
+  bool isDefaultConfigName(String name) => ConfigStorage.defaultKey == name;
 
   @override
   dispose() {
@@ -163,5 +151,42 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     _configSegments.forEach((element) => element.dispose());
     _store.save();
     super.dispose();
+  }
+}
+
+class PersonalizationConfigStore extends ConfigSharedPrefsStorage<PersonalizationConfig> {
+  final String _spaceKey = "#@%";
+
+  PersonalizationConfigStore() : super("personalizationConfigStorage");
+
+  @override
+  PersonalizationConfig? get(String name) => super.get(_replaceSpaces(name));
+
+  @override
+  set(String name, PersonalizationConfig? config) {
+    if (config == null) return;
+    super.set(_replaceSpaces(name), config);
+  }
+
+  @override
+  remove(String name) {
+    super.remove(_replaceSpaces(name));
+  }
+
+  @override
+  List<String> names() {
+    return super.names().map((e) => _replaceKey(e)).toList();
+  }
+
+  String _replaceSpaces(String withSpaces) => withSpaces.replaceAll(" ", _spaceKey);
+
+  String _replaceKey(String withKeys) => withKeys.replaceAll(_spaceKey, " ");
+
+  @override
+  PersonalizationConfig getDefaultValue() => PersonalizationConfig.getDefault();
+
+  @override
+  PersonalizationConfig convertFrom(Map<String, dynamic> jsonMap) {
+    return PersonalizationConfig.fromJson(jsonMap);
   }
 }

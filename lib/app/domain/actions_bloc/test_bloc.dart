@@ -19,10 +19,10 @@ class TestBlock extends ActionBloc<dynamic> {
     subscriptions.add(_bsInputCommand.stream.listen((event) => _inputedCommand = event));
   }
 
-  invokeAction() {
+  invokeAction() async{
     _clearFields();
     if (_inputedCommand.isNullOrEmpty()) {
-      sendError(TangemSdkError("Input a command first"));
+      sendError(TangemSdkError("Input the command json first"));
       return;
     }
 

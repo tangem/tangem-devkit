@@ -19,12 +19,17 @@ import 'package:devkit/app/ui/screen/card_action/wallet_create_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/wallet_purge_screen.dart';
 import 'package:devkit/app/ui/screen/main_screen.dart';
 import 'package:devkit/app/ui/screen/response/response_screen.dart';
+import 'package:devkit/app_test_assembler/ui/screen/json_test_detail_screen.dart';
+import 'package:devkit/app_test_assembler/ui/screen/json_test_list_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/model/sdk.dart';
 
 class Routes {
   static const MAIN = "/";
   static const TEST = "/test";
+  static const JSON_TEST_LIST = "/json_test_list";
+  static const JSON_TEST_DETAIL = "/json_test_detail";
   static const SCAN = "/scan";
   static const SIGN = "/sign";
   static const PERSONALIZE = "/personalize";
@@ -50,8 +55,6 @@ class Routes {
     switch (settings.name) {
       case MAIN:
         return MaterialPageRoute(builder: (_) => MainScreen());
-      case TEST:
-        return MaterialPageRoute(builder: (_) => TestScreen());
       case SCAN:
         return MaterialPageRoute(builder: (_) => ScanScreen());
       case SIGN:
@@ -92,6 +95,15 @@ class Routes {
         return MaterialPageRoute(builder: (_) => FilesChangeSettingsScreen());
       case RESPONSE:
         return PageRouteBuilder(pageBuilder: (_, _1, _2) => ResponseScreen(arguments: settings.arguments));
+      case TEST:
+        return MaterialPageRoute(builder: (_) => TestScreen());
+      case JSON_TEST_LIST:
+        return MaterialPageRoute(builder: (_) => JsonTestListScreen());
+      case JSON_TEST_DETAIL:
+        return CupertinoPageRoute(
+          builder: (_) => JsonTestDetailScreen(),
+          settings: settings,
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

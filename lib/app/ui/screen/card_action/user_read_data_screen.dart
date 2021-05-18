@@ -73,6 +73,7 @@ class _ReadUserDataBodyState extends State<ReadUserDataBody> {
       children: <Widget>[
         HiddenResponseHandlerWidget(_bloc),
         HiddenSnackbarHandlerWidget([_bloc.snackbarMessageStream]),
+        HiddenTestRecorderWidget(_bloc),
         SizedBox(height: 8),
         InputCidWidget(
           ItemName.cid,

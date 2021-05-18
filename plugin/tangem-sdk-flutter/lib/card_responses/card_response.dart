@@ -2,8 +2,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'card_response.g.dart';
 
+abstract class TangemSdkResponse {
+  Map<String, dynamic> toJson();
+}
+
 @JsonSerializable()
-class CardResponse {
+class CardResponse extends TangemSdkResponse {
   final CardDataResponse cardData;
   final String cardId;
   final String cardPublicKey;
@@ -50,13 +54,14 @@ class CardResponse {
 
 @JsonSerializable()
 class FirmwareVersion {
-  final int hotFix;
   final int major;
   final int minor;
+  final int hotFix;
   final String type;
   final String version;
 
-  FirmwareVersion(this.hotFix, this.major, this.minor, this.type, this.version);
+  FirmwareVersion(this.major, this.minor, [this.hotFix = 0, this.type = "d SDK"])
+      : this.version = "$major.$minor.$hotFix";
 
   factory FirmwareVersion.fromJson(Map<String, dynamic> json) => _$FirmwareVersionFromJson(json);
 
@@ -64,7 +69,7 @@ class FirmwareVersion {
 }
 
 @JsonSerializable()
-class CardDataResponse {
+class CardDataResponse extends TangemSdkResponse {
   final String batchId;
   final String blockchainName;
   final String issuerName;

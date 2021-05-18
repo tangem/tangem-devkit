@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
 import 'package:devkit/app/ui/screen/response/response_screen.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/app_test_assembler/domain/bloc/test_recorder_bloc.dart';
+import 'package:devkit/application.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HiddenResponseHandlerWidget extends StatelessWidget {
   final ActionBloc _bloc;
@@ -56,7 +59,9 @@ class _HiddenSnackbarHandlerWidgetState extends State<HiddenSnackbarHandlerWidge
   @override
   void initState() {
     super.initState();
-    widget.messageStreams.forEach((element) => _subscriptions.add(element.listen((event) => showJsonSnackbar(context, event))));
+    widget.messageStreams.forEach((element) => _subscriptions.add(element.listen(
+          (event) => showJsonSnackbar(context, event),
+        )));
   }
 
   @override
@@ -64,7 +69,39 @@ class _HiddenSnackbarHandlerWidgetState extends State<HiddenSnackbarHandlerWidge
 
   @override
   void dispose() {
-    super.dispose();
     _subscriptions.forEach((element) => element.cancel());
+    super.dispose();
+  }
+}
+
+class HiddenTestRecorderWidget extends StatefulWidget {
+  final ActionBloc _actionBloc;
+
+  const HiddenTestRecorderWidget(this._actionBloc, {Key? key}) : super(key: key);
+
+  @override
+  _HiddenTestRecorderWidgetState createState() => _HiddenTestRecorderWidgetState();
+}
+
+class _HiddenTestRecorderWidgetState extends State<HiddenTestRecorderWidget> {
+  final List<StreamSubscription> _subscriptions = [];
+  late final TestRecorderBlock _recorder;
+
+  @override
+  void initState() {
+    super.initState();
+    _recorder = context.read<ApplicationContext>().testRecorderBloc;
+    _subscriptions.add(widget._actionBloc.commandDataStream.listen(_recorder.handleCommand));
+    _subscriptions.add(widget._actionBloc.successResponseStream.listen(_recorder.handleCommandResponse));
+    _subscriptions.add(widget._actionBloc.errorResponseStream.listen(_recorder.handleCommandError));
+  }
+
+  @override
+  Widget build(BuildContext context) => StubWidget();
+
+  @override
+  void dispose() {
+    _subscriptions.forEach((element) => element.cancel());
+    super.dispose();
   }
 }

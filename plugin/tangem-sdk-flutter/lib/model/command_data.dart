@@ -5,15 +5,23 @@ import 'package:tangem_sdk/model/sdk.dart';
 import '../sdk_plugin.dart';
 
 typedef ConversionError = Function(dynamic);
+typedef PrepareError = Function(dynamic);
 
 abstract class CommandDataModel {
+  final Exception notPrepared = Exception("Data not prepared");
   final String type;
   String? cardId;
   Message? initialMessage;
 
   CommandDataModel(this.type);
 
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) => Future.value(getBaseData());
+  Map<String, dynamic>? toJson(ConversionError onError) => getBaseData();
+
+  Future prepare() async => Completer()
+    ..complete()
+    ..future;
+
+  bool isPrepared() => true;
 
   Map<String, dynamic> getBaseData() {
     final map = <String, dynamic>{TangemSdk.commandType: type};

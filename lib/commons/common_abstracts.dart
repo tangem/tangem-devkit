@@ -59,12 +59,14 @@ abstract class Disposable {
   dispose();
 }
 
+abstract class DisposableBloc extends Disposable {}
+
 class StatedBehaviorSubject<T> extends Disposable {
   final BehaviorSubject<T> _subject;
   late StreamSubscription _subscription;
-  T? _state;
+  T _state;
 
-  StatedBehaviorSubject([T? initialState])
+  StatedBehaviorSubject(T initialState)
       : this._subject = initialState == null ? BehaviorSubject<T>() : BehaviorSubject<T>.seeded(initialState),
         this._state = initialState {
     _subscription = _subject.stream.listen((event) => _state = event);
@@ -74,7 +76,9 @@ class StatedBehaviorSubject<T> extends Disposable {
 
   Sink<T> get sink => _subject.sink;
 
-  T? get state => _state;
+  T get state => _state;
+
+  BehaviorSubject get subject => _subject;
 
   @override
   dispose() {

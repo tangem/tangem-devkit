@@ -22,7 +22,7 @@ class SignModel extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async =>
+  Map<String, dynamic>? toJson(ConversionError onError) =>
       {TangemSdk.hashes: dataForHashing.map((e) => e.toHexString()).toList()}..addAll(getBaseData());
 }
 
@@ -41,16 +41,9 @@ class PersonalizationModel extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) {
-    final acquirer = Utils.createDefaultAcquirer();
-    final manufacturer = Utils.createDefaultManufacturer();
-    final data = {
-      TangemSdk.cardConfig: json.encode(Utils.createCardConfig(config, issuer, acquirer)),
-      TangemSdk.issuer: json.encode(issuer),
-      TangemSdk.acquirer: json.encode(acquirer),
-      TangemSdk.manufacturer: json.encode(manufacturer),
-    };
-    return Future.value(getBaseData()..addAll(data));
+  Map<String, dynamic>? toJson(ConversionError onError) {
+    final data = Utils.createPersonalizationCommandConfig(config, issuer);
+    return getBaseData()..addAll(data);
   }
 }
 
@@ -79,6 +72,7 @@ class WriteIssuerDataModel extends CommandDataModel {
   final String issuerData;
   final String issuerPrivateKeyHex;
   final int issuerDataCounter;
+  String? _finalizingSignature;
 
   WriteIssuerDataModel(
     String cardId,
@@ -100,32 +94,35 @@ class WriteIssuerDataModel extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
-    final issuerDataHex = issuerData.toHexString();
-    final completer = Completer<Map<String, dynamic>>();
-
+  Future prepare() async {
+    final completer = Completer();
     final callback = Callback((success) {
       if (success is! FileHashDataHex) {
-        onError(Exception("PrepareHashes success, but type of result isn't the FileHashData"));
-        completer.complete(null);
+        completer.completeError(Exception("PrepareHashes success, but type of result isn't the FileHashData"));
         return;
       }
+      _finalizingSignature = success.finalizingSignature;
+      completer.complete();
+    }, (error) => completer.completeError(error));
 
-      final finalizingSignature = success.finalizingSignature;
-      final signatureData = <String, dynamic>{
-        TangemSdk.issuerData: issuerDataHex,
-        TangemSdk.issuerDataSignature: finalizingSignature,
-        TangemSdk.issuerDataCounter: issuerDataCounter,
-      }..addAll(getBaseData());
-      completer.complete(signatureData);
-    }, (error) {
-      onError(error);
-      completer.complete(null);
-    });
+    TangemSdk.prepareHashes(callback, cardId!, issuerData.toHexString(), issuerDataCounter, issuerPrivateKeyHex);
+    return completer;
+  }
 
-    TangemSdk.prepareHashes(callback, cardId!, issuerDataHex, issuerDataCounter, issuerPrivateKeyHex);
+  @override
+  bool isPrepared() => _finalizingSignature != null;
 
-    return completer.future;
+  @override
+  Map<String, dynamic>? toJson(ConversionError onError) {
+    if (_finalizingSignature == null) {
+      onError(notPrepared);
+      return null;
+    }
+    return <String, dynamic>{
+      TangemSdk.issuerData: issuerData.toHexString(),
+      TangemSdk.issuerDataSignature: _finalizingSignature,
+      TangemSdk.issuerDataCounter: issuerDataCounter,
+    }..addAll(getBaseData());
   }
 }
 
@@ -140,6 +137,7 @@ class WriteIssuerExDataModel extends CommandDataModel {
   final String issuerExData;
   final String issuerPrivateKeyHex;
   final int issuerDataCounter;
+  FileHashDataHex? _fileHashDataHex;
 
   WriteIssuerExDataModel(
     String cardId,
@@ -161,32 +159,37 @@ class WriteIssuerExDataModel extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
-    final issuerDataHex = issuerExData.toHexString();
-    final completer = Completer<Map<String, dynamic>>();
-
+  Future prepare() async {
+    final completer = Completer();
     final callback = Callback((success) {
       if (success is! FileHashDataHex) {
-        onError.call(Exception("PrepareHashes success, but type of result isn't the FileHashData"));
-        completer.complete(null);
+        completer.completeError(Exception("PrepareHashes success, but type of result isn't the FileHashData"));
         return;
       }
+      _fileHashDataHex = success;
+      completer.complete();
+    }, (error) => completer.completeError(error));
+    TangemSdk.prepareHashes(callback, cardId!, issuerExData.toHexString(), issuerDataCounter, issuerPrivateKeyHex);
 
-      final signatureData = <String, dynamic>{
-        TangemSdk.issuerData: issuerExData.toHexString(),
-        TangemSdk.startingSignature: success.startingSignature,
-        TangemSdk.finalizingSignature: success.finalizingSignature,
-        TangemSdk.issuerDataCounter: issuerDataCounter,
-      }..addAll(getBaseData());
-      completer.complete(signatureData);
-    }, (error) {
-      onError(error);
-      completer.complete(null);
-    });
+    return completer;
+  }
 
-    TangemSdk.prepareHashes(callback, cardId!, issuerDataHex, issuerDataCounter, issuerPrivateKeyHex);
+  @override
+  bool isPrepared() => _fileHashDataHex != null;
 
-    return completer.future;
+  @override
+  Map<String, dynamic>? toJson(ConversionError onError) {
+    if (_fileHashDataHex == null) {
+      onError(notPrepared);
+      return null;
+    }
+
+    return {
+      TangemSdk.issuerData: issuerExData.toHexString(),
+      TangemSdk.startingSignature: _fileHashDataHex!.startingSignature,
+      TangemSdk.finalizingSignature: _fileHashDataHex!.finalizingSignature,
+      TangemSdk.issuerDataCounter: issuerDataCounter,
+    }..addAll(getBaseData());
   }
 }
 
@@ -209,7 +212,7 @@ class WriteUserDataModel extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
+  Map<String, dynamic>? toJson(ConversionError onError) {
     return {
       TangemSdk.userData: userData.toHexString(),
       TangemSdk.userCounter: userCounter,
@@ -237,7 +240,7 @@ class WriteUserProtectedDataModel extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
+  Map<String, dynamic>? toJson(ConversionError onError) {
     return {
       TangemSdk.userProtectedData: userProtectedData.toHexString(),
       TangemSdk.userProtectedCounter: userProtectedCounter,
@@ -256,7 +259,7 @@ class SetPin1Model extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
+  Map<String, dynamic>? toJson(ConversionError onError) {
     return {
       TangemSdk.pinCode: pinCode,
     }..addAll(getBaseData());
@@ -274,7 +277,7 @@ class SetPin2Model extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
+  Map<String, dynamic>? toJson(ConversionError onError) {
     return {
       TangemSdk.pinCode: pinCode,
     }..addAll(getBaseData());
@@ -301,6 +304,7 @@ class WriteFileData {
 class FilesWriteModel extends CommandDataModel {
   final List<WriteFileData> filesData;
   final Issuer? issuer;
+  List<Map<String, dynamic>>? _filesSignatureData;
 
   FilesWriteModel(this.filesData, [this.issuer]) : super(TangemSdk.cWriteFiles);
 
@@ -314,74 +318,79 @@ class FilesWriteModel extends CommandDataModel {
     return CommandDataModel.attachBaseData(model, json);
   }
 
-  @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
-    final mainCompleter = Completer<Map<String, dynamic>>();
-    final errorHandler = (String message) {
-      onError(Exception(message));
-      mainCompleter.complete(null);
-    };
+  bool _isProtectedByIssuer() => issuer != null || cardId != null;
 
-    final isProtectedByIssuer = issuer != null || cardId != null;
-    if (isProtectedByIssuer && (issuer == null || cardId == null)) {
-      errorHandler("Can't write files protected by issuer without issuerData or cardId");
-      return mainCompleter.future;
+  @override
+  Future prepare() async {
+    final mainCompleter = Completer<Map<String, dynamic>>();
+    if (_isProtectedByIssuer() && (issuer == null || cardId == null)) {
+      mainCompleter.completeError(Exception("Can't write files protected by issuer without issuerData or cardId"));
+      return;
     }
 
-    if (isProtectedByIssuer) {
-      await _writeProtectedByIssuer(mainCompleter, errorHandler);
+    if (_isProtectedByIssuer()) {
+      if (filesData.hasNull((e) => e.counter)) {
+        mainCompleter.completeError(Exception("All files data must contains the counter value"));
+        return;
+      }
+
+      final issuerPk = issuer!.dataKeyPair.privateKey;
+      final hashDataAssociation = <int, FileHashDataHex?>{};
+      final List<Future> prepareHashesFutures = filesData.map((fileData) {
+        final completer = Completer();
+        final callback = Callback((success) {
+          hashDataAssociation[fileData.counter!] = success;
+          completer.complete();
+        }, (error) {
+          hashDataAssociation[fileData.counter!] = null;
+          completer.completeError(error);
+        });
+
+        TangemSdk.prepareHashes(callback, cardId!, fileData.data.toHexString(), fileData.counter!, issuerPk);
+        return completer.future;
+      }).toList();
+
+      await Future.wait(prepareHashesFutures);
+      if (hashDataAssociation.hasNull()) {
+        mainCompleter.completeError(Exception("Prepare hashes failed"));
+        return;
+      }
+
+      _filesSignatureData = filesData.map((fileData) {
+        final hashData = hashDataAssociation[fileData.counter]!;
+        final signature = FileDataSignatureHex(hashData.startingSignature!, hashData.finalizingSignature!);
+        final protectedFileData = DataProtectedBySignatureHex(
+          fileData.data.toHexString(),
+          fileData.counter!,
+          signature,
+          issuerPk,
+        );
+        return protectedFileData.toJson();
+      }).toList();
+
+      mainCompleter.complete();
     } else {
-      final filesDataHex = this.filesData.map((e) => DataProtectedByPasscodeHex(e.data.toHexString())).toList();
-      final signatureData = <String, dynamic>{TangemSdk.files: jsonEncode(filesDataHex)}..addAll(getBaseData());
-      mainCompleter.complete(signatureData);
+      mainCompleter.complete();
     }
     return mainCompleter.future;
   }
 
-  _writeProtectedByIssuer(Completer<Map<String, dynamic>> mainCompleter, Function(String) errorHandler) async {
-    if (filesData.hasNull((e) => e.counter)) {
-      errorHandler("All files data must contains the counter value");
-      return;
+  @override
+  bool isPrepared() => _filesSignatureData != null;
+
+  @override
+  Map<String, dynamic>? toJson(ConversionError onError) {
+    if (_isProtectedByIssuer()) {
+      if (_filesSignatureData == null) {
+        onError(notPrepared);
+        return null;
+      } else {
+        return {TangemSdk.files: jsonEncode(_filesSignatureData)}..addAll(getBaseData());
+      }
+    } else {
+      final filesDataHex = this.filesData.map((e) => DataProtectedByPasscodeHex(e.data.toHexString())).toList();
+      return {TangemSdk.files: jsonEncode(filesDataHex)}..addAll(getBaseData());
     }
-
-    final issuerPk = issuer!.dataKeyPair.privateKey;
-    final safeCardId = cardId!;
-    final hashDataAssociation = <int, FileHashDataHex?>{};
-
-    final List<Future> prepareHashesFutures = filesData.map((fileData) {
-      final completer = Completer<FileHashDataHex>();
-      final callback = Callback((success) {
-        hashDataAssociation[fileData.counter!] = success;
-        completer.complete(success);
-      }, (error) {
-        hashDataAssociation[fileData.counter!] = null;
-        completer.completeError(error);
-      });
-
-      TangemSdk.prepareHashes(callback, safeCardId, fileData.data.toHexString(), fileData.counter!, issuerPk);
-      return completer.future;
-    }).toList();
-    await Future.wait(prepareHashesFutures);
-
-    if (hashDataAssociation.hasNull()) {
-      errorHandler("Prepare hashes failed");
-      return;
-    }
-
-    final filesSignatureData = filesData.map((fileData) {
-      final hashData = hashDataAssociation[fileData.counter]!;
-      final signature = FileDataSignatureHex(hashData.startingSignature!, hashData.finalizingSignature!);
-      final protectedFileData = DataProtectedBySignatureHex(
-        fileData.data.toHexString(),
-        fileData.counter!,
-        signature,
-        issuerPk,
-      );
-      return protectedFileData.toJson();
-    }).toList();
-
-    final signatureData = <String, dynamic>{TangemSdk.files: jsonEncode(filesSignatureData)}..addAll(getBaseData());
-    mainCompleter.complete(signatureData);
   }
 }
 
@@ -398,7 +407,7 @@ class FilesReadModel extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
+  Map<String, dynamic>? toJson(ConversionError onError) {
     return {
       TangemSdk.readPrivateFiles: readPrivateFiles,
       TangemSdk.indices: indices,
@@ -417,7 +426,7 @@ class FilesDeleteModel extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
+  Map<String, dynamic>? toJson(ConversionError onError) {
     return {
       TangemSdk.indices: indices,
     }..addAll(getBaseData());
@@ -436,7 +445,7 @@ class FilesChangeSettingsModel extends CommandDataModel {
   }
 
   @override
-  Future<Map<String, dynamic>?> toJson(ConversionError onError) async {
+  Map<String, dynamic>? toJson(ConversionError onError) {
     if (changes.isEmpty) {
       onError(Exception("Can't create signature data, because changes is empty"));
       return null;

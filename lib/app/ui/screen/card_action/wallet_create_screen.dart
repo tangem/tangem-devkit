@@ -73,6 +73,7 @@ class _CreateWalletBodyState extends State<CreateWalletBody> {
       children: <Widget>[
         HiddenResponseHandlerWidget(_bloc),
         HiddenSnackbarHandlerWidget([_bloc.snackbarMessageStream]),
+        HiddenTestRecorderWidget(_bloc),
         SizedBox(height: 8),
         InputCidWidget(
           ItemName.cid,
