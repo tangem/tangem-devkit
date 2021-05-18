@@ -1,17 +1,16 @@
 import 'dart:developer' as d;
 
+import 'package:devkit/commons/utils/u_of.dart';
 import 'package:intl/intl.dart';
 
-import 'u_of.dart';
-
 class Logger {
-  static Logger _instanse;
+  static Logger? _instanse;
 
   static Logger get instance => _createOrGet();
 
   static Logger _createOrGet() {
     if (_instanse == null) _instanse = Logger();
-    return _instanse;
+    return _instanse!;
   }
 
   final _allLogs = <String>[];

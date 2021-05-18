@@ -22,18 +22,18 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   final bsSavedConfigNames = BehaviorSubject<List<String>>();
   final statedFieldsVisibility = StatedBehaviorSubject<bool>(false);
 
-  PersonalizationConfigStore _store;
+  late PersonalizationConfigStore _store;
 
-  CardNumberSegment cardNumber;
-  CommonSegment common;
-  SigningMethodSegment signingMethod;
-  SignHashExPropSegment signHashExProperties;
-  TokenSegment token;
-  ProductMaskSegment productMask;
-  SettingsMaskSegment settingsMask;
-  SettingMaskProtocolEncryptionSegment settingMaskProtocolEncryption;
-  SettingsMaskNdefSegment settingsMaskNdef;
-  PinsSegmentSegment pins;
+  late CardNumberSegment cardNumber;
+  late CommonSegment common;
+  late SigningMethodSegment signingMethod;
+  late SignHashExPropSegment signHashExProperties;
+  late TokenSegment token;
+  late ProductMaskSegment productMask;
+  late SettingsMaskSegment settingsMask;
+  late SettingMaskProtocolEncryptionSegment settingMaskProtocolEncryption;
+  late SettingsMaskNdefSegment settingsMaskNdef;
+  late PinsSegmentSegment pins;
 
   Stream<bool> get scrollingStateStream => _scrollingState.stream;
 
@@ -42,13 +42,13 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   PersonalizationBloc() {
     logD(this, "new instance");
     _store = PersonalizationConfigStore(_getDefaultConfig);
-    _store.load();
     _initSegments();
     _updateConfigIntoTheSegments(_store.getCurrent());
   }
 
   _initSegments() {
     final currentConfig = _store.getCurrent();
+    if (currentConfig == null) return;
 
     cardNumber = CardNumberSegment(this, currentConfig);
     common = CommonSegment(this, currentConfig);
@@ -81,7 +81,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     _restoreConfig(_store.get(name));
   }
 
-  _restoreConfig(PersonalizationConfig config) {
+  _restoreConfig(PersonalizationConfig? config) {
     if (config == null) return;
 
     final newCopyOfConfig = PersonalizationConfig.fromJson(json.decode(json.encode(config)));
@@ -128,7 +128,9 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     }
   }
 
-  _updateConfigIntoTheSegments(PersonalizationConfig config) {
+  _updateConfigIntoTheSegments(PersonalizationConfig? config) {
+    if (config == null) return;
+
     _configSegments.forEach((element) => element.update(config));
   }
 

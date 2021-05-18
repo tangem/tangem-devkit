@@ -5,14 +5,14 @@ import 'package:devkit/app/resources/lang/languages.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:tangem_sdk/extensions.dart';
 
 class AppLocalization {
   static const LocalizationsDelegate<Transl> delegate = _LocalizationDelegate();
 
-  static Locale resolutionCallback(Locale locale, Iterable<Locale> supportedLocales) {
-    final supportedLocale = supportedLocales.firstWhere(
-      (item) => item.languageCode == locale.languageCode && item.countryCode == locale.countryCode,
-      orElse: () => null,
+  static Locale? resolutionCallback(Locale? locale, Iterable<Locale> supportedLocales) {
+    final supportedLocale = supportedLocales.firstWhereOrNull(
+            (item) => item.languageCode == locale?.languageCode && item.countryCode == locale?.countryCode
     );
     return supportedLocale ?? supportedLocales.first;
   }
@@ -53,7 +53,9 @@ class Transl {
     _load(Languages.map[locale.languageCode]);
   }
 
-  _load(String jsonString) {
+  _load(String? jsonString) {
+    if (jsonString == null) return;
+
     try {
       Map<String, dynamic> jsonMap = json.decode(jsonString);
       _localizedStrings = jsonMap.map((key, value) => MapEntry(key, stringOf(value)));
@@ -62,7 +64,7 @@ class Transl {
     }
   }
 
-  static Transl of(BuildContext context) => Localizations.of<Transl>(context, Transl);
+  static Transl of(BuildContext context) => Localizations.of<Transl>(context, Transl)!;
 
   String get(String key) => _localizedStrings[key] ?? key;
 
@@ -268,13 +270,16 @@ class Transl {
 
   String get desc_pers_item_sign_validated_raw_tx => get("desc_pers_item_sign_validated_raw_tx");
 
-  String get pers_item_sign_validated_tx_hashes_with_iss_data => get("pers_item_sign_validated_tx_hashes_with_iss_data");
+  String get pers_item_sign_validated_tx_hashes_with_iss_data =>
+      get("pers_item_sign_validated_tx_hashes_with_iss_data");
 
-  String get desc_pers_item_sign_validated_tx_hashes_with_iss_data => get("desc_pers_item_sign_validated_tx_hashes_with_iss_data");
+  String get desc_pers_item_sign_validated_tx_hashes_with_iss_data =>
+      get("desc_pers_item_sign_validated_tx_hashes_with_iss_data");
 
   String get pers_item_sign_validated_raw_tx_with_iss_data => get("pers_item_sign_validated_raw_tx_with_iss_data");
 
-  String get desc_pers_item_sign_validated_raw_tx_with_iss_data => get("desc_pers_item_sign_validated_raw_tx_with_iss_data");
+  String get desc_pers_item_sign_validated_raw_tx_with_iss_data =>
+      get("desc_pers_item_sign_validated_raw_tx_with_iss_data");
 
   String get pers_item_sign_hash_ex => get("pers_item_sign_hash_ex");
 
@@ -390,7 +395,8 @@ class Transl {
 
   String get pers_item_protect_issuer_data_against_replay => get("pers_item_protect_issuer_data_against_replay");
 
-  String get desc_pers_item_protect_issuer_data_against_replay => get("desc_pers_item_protect_issuer_data_against_replay");
+  String get desc_pers_item_protect_issuer_data_against_replay =>
+      get("desc_pers_item_protect_issuer_data_against_replay");
 
   String get pers_item_skip_security_delay_if_validated => get("pers_item_skip_security_delay_if_validated");
 
@@ -400,13 +406,16 @@ class Transl {
 
   String get desc_pers_item_skip_pin2_and_cvc_if_validated => get("desc_pers_item_skip_pin2_and_cvc_if_validated");
 
-  String get pers_item_skip_security_delay_on_linked_terminal => get("pers_item_skip_security_delay_on_linked_terminal");
+  String get pers_item_skip_security_delay_on_linked_terminal =>
+      get("pers_item_skip_security_delay_on_linked_terminal");
 
-  String get desc_pers_item_skip_security_delay_on_linked_terminal => get("desc_pers_item_skip_security_delay_on_linked_terminal");
+  String get desc_pers_item_skip_security_delay_on_linked_terminal =>
+      get("desc_pers_item_skip_security_delay_on_linked_terminal");
 
   String get pers_item_restrict_overwrite_ex_issuer_data => get("pers_item_restrict_overwrite_ex_issuer_data");
 
-  String get desc_pers_item_restrict_overwrite_ex_issuer_data => get("desc_pers_item_restrict_overwrite_ex_issuer_data");
+  String get desc_pers_item_restrict_overwrite_ex_issuer_data =>
+      get("desc_pers_item_restrict_overwrite_ex_issuer_data");
 
   String get pers_item_allow_unencrypted => get("pers_item_allow_unencrypted");
 
@@ -540,9 +549,11 @@ class Transl {
 
   String get desc_response_card_allow_fast_encryption => get("desc_response_card_allow_fast_encryption");
 
-  String get response_card_protect_issuer_data_against_replay => get("response_card_protect_issuer_data_against_replay");
+  String get response_card_protect_issuer_data_against_replay =>
+      get("response_card_protect_issuer_data_against_replay");
 
-  String get desc_response_card_protect_issuer_data_against_replay => get("desc_response_card_protect_issuer_data_against_replay");
+  String get desc_response_card_protect_issuer_data_against_replay =>
+      get("desc_response_card_protect_issuer_data_against_replay");
 
   String get response_card_allow_select_blockchain => get("response_card_allow_select_blockchain");
 
@@ -556,9 +567,11 @@ class Transl {
 
   String get desc_response_card_security_delay_if_validated => get("desc_response_card_security_delay_if_validated");
 
-  String get response_card_skip_pin2_cvc_if_validated_by_issuer => get("response_card_skip_pin2_cvc_if_validated_by_issuer");
+  String get response_card_skip_pin2_cvc_if_validated_by_issuer =>
+      get("response_card_skip_pin2_cvc_if_validated_by_issuer");
 
-  String get desc_response_card_skip_pin2_cvc_if_validated_by_issuer => get("desc_response_card_skip_pin2_cvc_if_validated_by_issuer");
+  String get desc_response_card_skip_pin2_cvc_if_validated_by_issuer =>
+      get("desc_response_card_skip_pin2_cvc_if_validated_by_issuer");
 
   String get response_card_skip_security_delay_if_validated_by_linked_terminal =>
       get("response_card_skip_security_delay_if_validated_by_linked_terminal");
@@ -568,11 +581,14 @@ class Transl {
 
   String get response_card_restrict_overwrite_issuer_ex_data => get("response_card_restrict_overwrite_issuer_ex_data");
 
-  String get desc_response_card_restrict_overwrite_issuer_ex_data => get("desc_response_card_restrict_overwrite_issuer_ex_data");
+  String get desc_response_card_restrict_overwrite_issuer_ex_data =>
+      get("desc_response_card_restrict_overwrite_issuer_ex_data");
 
-  String get response_card_prohibit_overwriting_issuer_ex_data => get("response_card_prohibit_overwriting_issuer_ex_data");
+  String get response_card_prohibit_overwriting_issuer_ex_data =>
+      get("response_card_prohibit_overwriting_issuer_ex_data");
 
-  String get desc_response_card_prohibit_overwriting_issuer_ex_data => get("desc_response_card_prohibit_overwriting_issuer_ex_data");
+  String get desc_response_card_prohibit_overwriting_issuer_ex_data =>
+      get("desc_response_card_prohibit_overwriting_issuer_ex_data");
 
   String get response_card_require_terminal_tx_sig => get("response_card_require_terminal_tx_sig");
 
@@ -652,7 +668,8 @@ class Transl {
 
   String get response_card_card_data_manufacture_date_time => get("response_card_card_data_manufacture_date_time");
 
-  String get desc_response_card_card_data_manufacture_date_time => get("desc_response_card_card_data_manufacture_date_time");
+  String get desc_response_card_card_data_manufacture_date_time =>
+      get("desc_response_card_card_data_manufacture_date_time");
 
   String get response_card_card_data_issuer_name => get("response_card_card_data_issuer_name");
 
@@ -664,7 +681,8 @@ class Transl {
 
   String get response_card_card_data_manufacturer_signature => get("response_card_card_data_manufacturer_signature");
 
-  String get desc_response_card_card_data_manufacturer_signature => get("desc_response_card_card_data_manufacturer_signature");
+  String get desc_response_card_card_data_manufacturer_signature =>
+      get("desc_response_card_card_data_manufacturer_signature");
 
   String get response_card_card_data_product_mask => get("response_card_card_data_product_mask");
 
@@ -676,7 +694,8 @@ class Transl {
 
   String get response_card_card_data_token_contract_address => get("response_card_card_data_token_contract_address");
 
-  String get desc_response_card_card_data_token_contract_address => get("desc_response_card_card_data_token_contract_address");
+  String get desc_response_card_card_data_token_contract_address =>
+      get("desc_response_card_card_data_token_contract_address");
 
   String get response_card_card_data_token_decimal => get("response_card_card_data_token_decimal");
 

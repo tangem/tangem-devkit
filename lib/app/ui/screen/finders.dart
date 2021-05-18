@@ -1,22 +1,17 @@
-import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
+
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/domain/actions_bloc/test_bloc.dart';
-import 'package:devkit/app/ui/screen/card_action/files_change_settings_screen.dart';
-import 'package:devkit/app/ui/screen/card_action/files_delete_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BlocFinder {
-  static SignBloc sign(context) => BlocProvider.of<SignBloc>(context);
-
-  static ScanBloc scan(context) => BlocProvider.of<ScanBloc>(context);
-
-  static DepersonalizeBloc depersonalize(context) => BlocProvider.of<DepersonalizeBloc>(context);
-}
-
 class RepoFinder {
-  static TestBlock createTestBloc(context) => RepositoryProvider.of<TestBlock>(context);
+  static ScanBloc scanBloc(context) => RepositoryProvider.of<ScanBloc>(context);
+
+  static SignBloc signBloc(context) => RepositoryProvider.of<SignBloc>(context);
 
   static PersonalizationBloc personalizationBloc(context) => RepositoryProvider.of<PersonalizationBloc>(context);
+
+  static DepersonalizationBloc depersonalizationBloc(context) => RepositoryProvider.of<DepersonalizationBloc>(context);
 
   static CreateWalletBloc createWalletBloc(context) => RepositoryProvider.of<CreateWalletBloc>(context);
 
@@ -47,4 +42,6 @@ class RepoFinder {
 
   static FilesChangeSettingsBloc setFilesChangeSettingsBloc(context) =>
       RepositoryProvider.of<FilesChangeSettingsBloc>(context);
+
+  static TestBlock createTestBloc(context) => RepositoryProvider.of<TestBlock>(context);
 }

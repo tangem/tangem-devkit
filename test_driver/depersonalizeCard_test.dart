@@ -13,7 +13,7 @@ void main() {
   final readCardMethod = ReadCard();
   final backButton = find.byTooltip('Back');
 
-  FlutterDriver driver;
+  late FlutterDriver driver;
 
   group('Depersonalize card test', () {
     setUpAll(() async {
@@ -54,7 +54,7 @@ void main() {
 
     tearDownAll(() async {
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 }

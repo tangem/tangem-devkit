@@ -13,9 +13,9 @@ class SettingsMaskNdefSegmentWidget extends StatefulWidget {
 }
 
 class _SettingsMaskNdefSegmentWidgetState extends State<SettingsMaskNdefSegmentWidget> {
-  TextStreamController customAarController;
-  TextStreamController uriController;
-  PersonalizationBloc _bloc;
+  late PersonalizationBloc _bloc;
+  late TextStreamController customAarController;
+  late TextStreamController uriController;
 
   @override
   void initState() {

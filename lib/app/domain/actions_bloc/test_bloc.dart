@@ -9,9 +9,9 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 class TestBlock extends ActionBloc<dynamic> {
   final _bsInputCommand = BehaviorSubject<String>();
 
-  Map<String, dynamic> _command;
-  String _commandType;
-  String _inputedCommand;
+  Map<String, dynamic>? _command;
+  String? _commandType;
+  String? _inputedCommand;
 
   Subject<String> get inputCommandSubject => _bsInputCommand;
 
@@ -21,14 +21,14 @@ class TestBlock extends ActionBloc<dynamic> {
 
   invokeAction() {
     _clearFields();
-    if (_inputedCommand == null || _inputedCommand.isEmpty) {
+    if (_inputedCommand.isNullOrEmpty()) {
       sendError(TangemSdkError("Input a command first"));
       return;
     }
 
     try {
-      _command = json.decode(_inputedCommand) as Map<String, dynamic>;
-      _commandType = _command[TangemSdk.commandType];
+      _command = json.decode(_inputedCommand!) as Map<String, dynamic>;
+      _commandType = _command![TangemSdk.commandType];
 
       if (_commandType == null) {
         sendError(TangemSdkError("Missing the commandType attribute"));
@@ -52,48 +52,49 @@ class TestBlock extends ActionBloc<dynamic> {
   }
 
   @override
-  CommandSignatureData createCommandData() {
+  CommandSignatureData? createCommandData() {
     if (_command == null || _commandType == null) return null;
 
+    final command = _command!;
     switch (_commandType) {
       case TangemSdk.cScanCard:
         return ScanModel();
       case TangemSdk.cSign:
-        return SignModel.fromJson(_command);
+        return SignModel.fromJson(command);
       case TangemSdk.cPersonalize:
-        return PersonalizationModel.fromJson(_command);
+        return PersonalizationModel.fromJson(command);
       case TangemSdk.cDepersonalize:
-        return DepersonalizeModel.fromJson(_command);
+        return DepersonalizeModel.fromJson(command);
       case TangemSdk.cCreateWallet:
-        return CreateWalletModel.fromJson(_command);
+        return CreateWalletModel.fromJson(command);
       case TangemSdk.cPurgeWallet:
-        return PurgeWalletModel.fromJson(_command);
+        return PurgeWalletModel.fromJson(command);
       case TangemSdk.cReadIssuerData:
-        return ReadUserDataModel.fromJson(_command);
+        return ReadUserDataModel.fromJson(command);
       case TangemSdk.cWriteIssuerData:
-        return WriteIssuerDataModel.fromJson(_command);
+        return WriteIssuerDataModel.fromJson(command);
       case TangemSdk.cReadIssuerExData:
-        return ReadIssuerExDataModel.fromJson(_command);
+        return ReadIssuerExDataModel.fromJson(command);
       case TangemSdk.cWriteIssuerExData:
-        return WriteIssuerExDataModel.fromJson(_command);
+        return WriteIssuerExDataModel.fromJson(command);
       case TangemSdk.cReadUserData:
-        return ReadUserDataModel.fromJson(_command);
+        return ReadUserDataModel.fromJson(command);
       case TangemSdk.cWriteUserData:
-        return WriteUserDataModel.fromJson(_command);
+        return WriteUserDataModel.fromJson(command);
       case TangemSdk.cWriteUserProtectedData:
-        return WriteUserProtectedDataModel.fromJson(_command);
+        return WriteUserProtectedDataModel.fromJson(command);
       case TangemSdk.cSetPin1:
-        return SetPin1Model.fromJson(_command);
+        return SetPin1Model.fromJson(command);
       case TangemSdk.cSetPin2:
-        return SetPin2Model.fromJson(_command);
+        return SetPin2Model.fromJson(command);
       case TangemSdk.cWriteFiles:
-        return FilesWriteModel.fromJson(_command);
+        return FilesWriteModel.fromJson(command);
       case TangemSdk.cReadFiles:
-        return FilesReadModel.fromJson(_command);
+        return FilesReadModel.fromJson(command);
       case TangemSdk.cDeleteFiles:
-        return FilesDeleteModel.fromJson(_command);
+        return FilesDeleteModel.fromJson(command);
       case TangemSdk.cChangeFilesSettings:
-        return FilesChangeSettingsModel.fromJson(_command);
+        return FilesChangeSettingsModel.fromJson(command);
       default:
         return null;
     }
@@ -105,7 +106,7 @@ class TestBlock extends ActionBloc<dynamic> {
   }
 
   @override
-  sendError(TangemSdkBaseError error) {
+  sendError(TangemSdkBaseError? error) {
     if (error is UserCancelledError) return;
 
     super.sendError(error);

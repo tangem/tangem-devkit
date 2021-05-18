@@ -13,9 +13,9 @@ class SignHashExPropSegmentWidget extends StatefulWidget {
 }
 
 class _SignHashExPropSegmentWidgetState extends State<SignHashExPropSegmentWidget> {
-  PersonalizationBloc _bloc;
-  TextStreamController pinLessFloorLimitController;
-  TextStreamController hexCrExKeyController;
+  late PersonalizationBloc _bloc;
+  late TextStreamController pinLessFloorLimitController;
+  late TextStreamController hexCrExKeyController;
 
   @override
   void initState() {

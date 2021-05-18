@@ -17,7 +17,7 @@ extension ProductCodes on Product {
     Product.TwinCard: 0x20,
   };
 
-  int get code => codes[this];
+  int get code => codes[this]!;
 }
 
 class ProductMaskBuilder {

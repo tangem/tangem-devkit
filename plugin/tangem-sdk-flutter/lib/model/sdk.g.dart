@@ -8,62 +8,51 @@ part of 'sdk.dart';
 
 CardConfigSdk _$CardConfigSdkFromJson(Map<String, dynamic> json) {
   return CardConfigSdk(
-    issuerName: json['issuerName'] as String,
-    acquirerName: json['acquirerName'] as String,
-    series: json['series'] as String,
+    (json['pin'] as List<dynamic>).map((e) => e as int).toList(),
+    (json['pin2'] as List<dynamic>).map((e) => e as int).toList(),
+    (json['pin3'] as List<dynamic>).map((e) => e as int).toList(),
+    json['hexCrExKey'] as String,
+    json['cvc'] as String,
+    json['pauseBeforePin2'] as int,
+    json['smartSecurityDelay'] as bool,
+    json['curveID'] as String,
+    SigningMethodMaskSdk.fromJson(
+        json['signingMethods'] as Map<String, dynamic>),
+    json['maxSignatures'] as int,
+    json['isReusable'] as bool,
+    json['allowSetPIN1'] as bool,
+    json['allowSetPIN2'] as bool,
+    json['useActivation'] as bool,
+    json['useCvc'] as bool,
+    json['useNDEF'] as bool,
+    json['useDynamicNDEF'] as bool,
+    json['useOneCommandAtTime'] as bool,
+    json['useBlock'] as bool,
+    json['allowSelectBlockchain'] as bool,
+    json['prohibitPurgeWallet'] as bool,
+    json['allowUnencrypted'] as bool,
+    json['allowFastEncryption'] as bool,
+    json['protectIssuerDataAgainstReplay'] as bool,
+    json['prohibitDefaultPIN1'] as bool,
+    json['disablePrecomputedNDEF'] as bool,
+    json['skipSecurityDelayIfValidatedByIssuer'] as bool,
+    json['skipCheckPIN2CVCIfValidatedByIssuer'] as bool,
+    json['skipSecurityDelayIfValidatedByLinkedTerminal'] as bool,
+    json['restrictOverwriteIssuerExtraData'] as bool,
+    json['requireTerminalTxSignature'] as bool,
+    json['requireTerminalCertSignature'] as bool,
+    json['checkPIN3OnCard'] as bool,
+    json['createWallet'] as bool,
+    json['walletsCount'] as int,
+    CardDataSdk.fromJson(json['cardData'] as Map<String, dynamic>),
+    (json['ndefRecords'] as List<dynamic>)
+        .map((e) => NdefRecordSdk.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    issuerName: json['issuerName'] as String?,
+    acquirerName: json['acquirerName'] as String?,
+    series: json['series'] as String?,
     startNumber: json['startNumber'] as int,
     count: json['count'] as int,
-    pin: (json['pin'] as List)?.map((e) => e as int)?.toList(),
-    pin2: (json['pin2'] as List)?.map((e) => e as int)?.toList(),
-    pin3: (json['pin3'] as List)?.map((e) => e as int)?.toList(),
-    hexCrExKey: json['hexCrExKey'] as String,
-    cvc: json['cvc'] as String,
-    pauseBeforePin2: json['pauseBeforePin2'] as int,
-    smartSecurityDelay: json['smartSecurityDelay'] as bool,
-    curveID: json['curveID'] as String,
-    signingMethods: json['signingMethods'] == null
-        ? null
-        : SigningMethodMaskSdk.fromJson(
-            json['signingMethods'] as Map<String, dynamic>),
-    maxSignatures: json['maxSignatures'] as int,
-    isReusable: json['isReusable'] as bool,
-    allowSetPIN1: json['allowSetPIN1'] as bool,
-    allowSetPIN2: json['allowSetPIN2'] as bool,
-    useActivation: json['useActivation'] as bool,
-    useCvc: json['useCvc'] as bool,
-    useNDEF: json['useNDEF'] as bool,
-    useDynamicNDEF: json['useDynamicNDEF'] as bool,
-    useOneCommandAtTime: json['useOneCommandAtTime'] as bool,
-    useBlock: json['useBlock'] as bool,
-    allowSelectBlockchain: json['allowSelectBlockchain'] as bool,
-    prohibitPurgeWallet: json['prohibitPurgeWallet'] as bool,
-    allowUnencrypted: json['allowUnencrypted'] as bool,
-    allowFastEncryption: json['allowFastEncryption'] as bool,
-    protectIssuerDataAgainstReplay:
-        json['protectIssuerDataAgainstReplay'] as bool,
-    prohibitDefaultPIN1: json['prohibitDefaultPIN1'] as bool,
-    disablePrecomputedNDEF: json['disablePrecomputedNDEF'] as bool,
-    skipSecurityDelayIfValidatedByIssuer:
-        json['skipSecurityDelayIfValidatedByIssuer'] as bool,
-    skipCheckPIN2CVCIfValidatedByIssuer:
-        json['skipCheckPIN2CVCIfValidatedByIssuer'] as bool,
-    skipSecurityDelayIfValidatedByLinkedTerminal:
-        json['skipSecurityDelayIfValidatedByLinkedTerminal'] as bool,
-    restrictOverwriteIssuerExtraData:
-        json['restrictOverwriteIssuerExtraData'] as bool,
-    requireTerminalTxSignature: json['requireTerminalTxSignature'] as bool,
-    requireTerminalCertSignature: json['requireTerminalCertSignature'] as bool,
-    checkPIN3OnCard: json['checkPIN3OnCard'] as bool,
-    createWallet: json['createWallet'] as bool,
-    walletsCount: json['walletsCount'] as int,
-    cardData: json['cardData'] == null
-        ? null
-        : CardDataSdk.fromJson(json['cardData'] as Map<String, dynamic>),
-    ndefRecords: (json['ndefRecords'] as List)
-        ?.map((e) => e == null
-            ? null
-            : NdefRecordSdk.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
   );
 }
 
@@ -121,13 +110,8 @@ Issuer _$IssuerFromJson(Map<String, dynamic> json) {
   return Issuer(
     json['name'] as String,
     json['id'] as String,
-    json['dataKeyPair'] == null
-        ? null
-        : KeyPairHex.fromJson(json['dataKeyPair'] as Map<String, dynamic>),
-    json['transactionKeyPair'] == null
-        ? null
-        : KeyPairHex.fromJson(
-            json['transactionKeyPair'] as Map<String, dynamic>),
+    KeyPairHex.fromJson(json['dataKeyPair'] as Map<String, dynamic>),
+    KeyPairHex.fromJson(json['transactionKeyPair'] as Map<String, dynamic>),
   );
 }
 
@@ -142,9 +126,7 @@ Acquirer _$AcquirerFromJson(Map<String, dynamic> json) {
   return Acquirer(
     json['name'] as String,
     json['id'] as String,
-    json['keyPair'] == null
-        ? null
-        : KeyPairHex.fromJson(json['keyPair'] as Map<String, dynamic>),
+    KeyPairHex.fromJson(json['keyPair'] as Map<String, dynamic>),
   );
 }
 
@@ -157,9 +139,7 @@ Map<String, dynamic> _$AcquirerToJson(Acquirer instance) => <String, dynamic>{
 Manufacturer _$ManufacturerFromJson(Map<String, dynamic> json) {
   return Manufacturer(
     json['name'] as String,
-    json['keyPair'] == null
-        ? null
-        : KeyPairHex.fromJson(json['keyPair'] as Map<String, dynamic>),
+    KeyPairHex.fromJson(json['keyPair'] as Map<String, dynamic>),
   );
 }
 
@@ -184,18 +164,17 @@ Map<String, dynamic> _$KeyPairHexToJson(KeyPairHex instance) =>
 
 CardDataSdk _$CardDataSdkFromJson(Map<String, dynamic> json) {
   return CardDataSdk(
-    productMask: json['productMask'] == null
-        ? null
-        : ProductMaskSdk.fromJson(json['productMask'] as Map<String, dynamic>),
-    issuerName: json['issuerName'] as String,
-    manufacturerSignature:
-        (json['manufacturerSignature'] as List)?.map((e) => e as int)?.toList(),
-    batchId: json['batchId'] as String,
-    blockchainName: json['blockchainName'] as String,
-    manufactureDateTime: json['manufactureDateTime'] as String,
-    tokenSymbol: json['tokenSymbol'] as String,
-    tokenContractAddress: json['tokenContractAddress'] as String,
-    tokenDecimal: json['tokenDecimal'] as int,
+    json['issuerName'] as String,
+    json['batchId'] as String,
+    json['blockchainName'] as String,
+    json['manufactureDateTime'] as String,
+    ProductMaskSdk.fromJson(json['productMask'] as Map<String, dynamic>),
+    manufacturerSignature: (json['manufacturerSignature'] as List<dynamic>?)
+        ?.map((e) => e as int)
+        .toList(),
+    tokenSymbol: json['tokenSymbol'] as String?,
+    tokenContractAddress: json['tokenContractAddress'] as String?,
+    tokenDecimal: json['tokenDecimal'] as int?,
   );
 }
 
@@ -204,6 +183,8 @@ Map<String, dynamic> _$CardDataSdkToJson(CardDataSdk instance) {
     'issuerName': instance.issuerName,
     'batchId': instance.batchId,
     'blockchainName': instance.blockchainName,
+    'manufactureDateTime': instance.manufactureDateTime,
+    'productMask': instance.productMask,
   };
 
   void writeNotNull(String key, dynamic value) {
@@ -216,8 +197,6 @@ Map<String, dynamic> _$CardDataSdkToJson(CardDataSdk instance) {
   writeNotNull('tokenContractAddress', instance.tokenContractAddress);
   writeNotNull('tokenDecimal', instance.tokenDecimal);
   writeNotNull('manufacturerSignature', instance.manufacturerSignature);
-  val['manufactureDateTime'] = instance.manufactureDateTime;
-  val['productMask'] = instance.productMask;
   return val;
 }
 
@@ -246,8 +225,8 @@ Map<String, dynamic> _$ProductMaskSdkToJson(ProductMaskSdk instance) =>
 
 NdefRecordSdk _$NdefRecordSdkFromJson(Map<String, dynamic> json) {
   return NdefRecordSdk(
-    type: json['type'] as String,
-    value: json['value'] as String,
+    json['type'] as String,
+    json['value'] as String,
   );
 }
 
@@ -276,7 +255,7 @@ DataProtectedBySignatureHex _$DataProtectedBySignatureHexFromJson(
     json['data'] as String,
     json['counter'] as int,
     FileDataSignatureHex.fromJson(json['signature'] as Map<String, dynamic>),
-    json['issuerPublicKey'] as String,
+    json['issuerPublicKey'] as String?,
   );
 }
 

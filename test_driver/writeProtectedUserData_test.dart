@@ -17,7 +17,7 @@ void main() {
   final depersonalize = DepersonalizeCard();
   final backButton = find.byTooltip('Back');
 
-  FlutterDriver driver;
+  late FlutterDriver driver;
 
   group('Write Protected User Data test', () {
     setUpAll(() async {
@@ -61,7 +61,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 }

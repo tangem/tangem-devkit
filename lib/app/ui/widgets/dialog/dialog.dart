@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DialogBody extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
-  const DialogBody({Key key, this.child}) : super(key: key);
+  const DialogBody(this.child, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +40,14 @@ class DialogBody extends StatelessWidget {
 class DialogTitle extends StatelessWidget {
   final String title;
 
-  const DialogTitle({Key key, this.title}) : super(key: key);
+  const DialogTitle(this.title, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16),
       child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.headline6!,
         child: Semantics(
           child: TextWidget(title),
           namesRoute: true,

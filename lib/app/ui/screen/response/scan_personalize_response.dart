@@ -18,78 +18,78 @@ class ReadResponseBody extends StatelessWidget {
       child: ListBody(
         children: <Widget>[
           ResponseTextWidget(
-            name: transl.response_card_cid,
-            value: _card.cardId,
-            description: transl.desc_response_card_cid,
+            transl.response_card_cid,
+            _card.cardId,
+            transl.desc_response_card_cid,
           ),
           ResponseTextWidget(
-            name: transl.response_card_manufacturer_name,
-            value: _card.manufacturerName,
-            description: transl.desc_response_card_manufacturer_name,
+            transl.response_card_manufacturer_name,
+            _card.manufacturerName,
+            transl.desc_response_card_manufacturer_name,
           ),
           ResponseTextWidget(
-            name: transl.response_card_status,
-            value: _card.status,
-            description: transl.desc_response_card_status,
+            transl.response_card_status,
+            _card.status,
+            transl.desc_response_card_status,
           ),
           ResponseTextWidget(
-            name: transl.response_card_firmware_version,
-            value: _card.firmwareVersion.version,
-            description: transl.desc_response_card_firmware_version,
+            transl.response_card_firmware_version,
+            _card.firmwareVersion.version,
+            transl.desc_response_card_firmware_version,
           ),
           ResponseTextWidget(
-            name: transl.response_card_public_key,
-            value: _card.cardPublicKey,
-            description: transl.desc_response_card_public_key,
+            transl.response_card_public_key,
+            _card.cardPublicKey,
+            transl.desc_response_card_public_key,
           ),
           ResponseTextWidget(
-            name: transl.response_card_issuer_data_public_key,
-            value: _card.issuerPublicKey,
-            description: transl.desc_response_card_issuer_data_public_key,
+            transl.response_card_issuer_data_public_key,
+            _card.issuerPublicKey,
+            transl.desc_response_card_issuer_data_public_key,
           ),
           ResponseTextWidget(
-            name: transl.response_card_curve,
-            value: _card.curve,
-            description: transl.desc_response_card_curve,
+            transl.response_card_curve,
+            _card.curve,
+            transl.desc_response_card_curve,
           ),
           ResponseTextWidget(
-            name: transl.response_card_max_signatures,
-            value: _card.maxSignatures,
-            description: transl.desc_response_card_max_signatures,
+            transl.response_card_max_signatures,
+            _card.maxSignatures,
+            transl.desc_response_card_max_signatures,
           ),
           ResponseTextWidget(
-            name: transl.response_card_pause_before_pin2,
-            value: _card.pauseBeforePin2,
-            description: transl.desc_response_card_pause_before_pin2,
+            transl.response_card_pause_before_pin2,
+            _card.pauseBeforePin2,
+            transl.desc_response_card_pause_before_pin2,
           ),
           ResponseTextWidget(
-            name: transl.response_card_wallet_public_key,
-            value: _card.walletPublicKey,
-            description: transl.desc_response_card_wallet_public_key,
+            transl.response_card_wallet_public_key,
+            _card.walletPublicKey,
+            transl.desc_response_card_wallet_public_key,
           ),
           ResponseTextWidget(
-            name: transl.response_card_wallet_remaining_signatures,
-            value: _card.walletRemainingSignatures,
-            description: transl.desc_response_card_wallet_remaining_signatures,
+            transl.response_card_wallet_remaining_signatures,
+            _card.walletRemainingSignatures,
+            transl.desc_response_card_wallet_remaining_signatures,
           ),
           ResponseTextWidget(
-            name: transl.response_card_wallet_signed_hashes,
-            value: _card.walletSignedHashes,
-            description: transl.desc_response_card_wallet_signed_hashes,
+            transl.response_card_wallet_signed_hashes,
+            _card.walletSignedHashes,
+            transl.desc_response_card_wallet_signed_hashes,
           ),
           ResponseTextWidget(
-            name: transl.response_card_health,
-            value: _card.health,
-            description: transl.desc_response_card_health,
+            transl.response_card_health,
+            _card.health,
+            transl.desc_response_card_health,
           ),
           ResponseTextWidget(
-            name: transl.response_card_is_activated,
-            value: _card.isActivated,
-            description: transl.desc_response_card_is_activated,
+            transl.response_card_is_activated,
+            _card.isActivated,
+            transl.desc_response_card_is_activated,
           ),
           SigningMethodsResponseWidget(_card),
           CardDataResponseWidget(_card.cardData),
-          ProductMaskResponseWidget(_card.cardData),
+          // ProductMaskResponseWidget(_card.cardData),
           SettingsMaskResponseWidget(_card),
         ],
       ),
@@ -112,51 +112,51 @@ class CardDataResponseWidget extends StatelessWidget {
       children: <Widget>[
         SegmentHeader(transl.response_card_card_data, description: transl.desc_response_card_card_data),
         ResponseTextWidget(
-          name: transl.response_card_card_data_batch_id,
-          value: _cardData.batchId,
-          description: transl.desc_response_card_card_data_batch_id,
+          transl.response_card_card_data_batch_id,
+          _cardData.batchId,
+          transl.desc_response_card_card_data_batch_id,
           bgColor: _color,
         ),
         ResponseTextWidget(
-          name: transl.response_card_card_data_manufacture_date_time,
-          value: _cardData.manufactureDateTime,
-          description: transl.desc_response_card_card_data_manufacture_date_time,
+          transl.response_card_card_data_manufacture_date_time,
+          _cardData.manufactureDateTime,
+          transl.desc_response_card_card_data_manufacture_date_time,
           bgColor: _color,
         ),
         ResponseTextWidget(
-          name: transl.response_card_card_data_issuer_name,
-          value: _cardData.issuerName,
-          description: transl.desc_response_card_card_data_issuer_name,
+          transl.response_card_card_data_issuer_name,
+          _cardData.issuerName,
+          transl.desc_response_card_card_data_issuer_name,
           bgColor: _color,
         ),
         ResponseTextWidget(
-          name: transl.response_card_card_data_blockchain_name,
-          value: _cardData.blockchainName,
-          description: transl.desc_response_card_card_data_blockchain_name,
+          transl.response_card_card_data_blockchain_name,
+          _cardData.blockchainName,
+          transl.desc_response_card_card_data_blockchain_name,
           bgColor: _color,
         ),
         ResponseTextWidget(
-          name: transl.response_card_card_data_manufacturer_signature,
-          value: _cardData.manufacturerSignature,
-          description: transl.desc_response_card_card_data_manufacturer_signature,
+          transl.response_card_card_data_manufacturer_signature,
+          _cardData.manufacturerSignature,
+          transl.desc_response_card_card_data_manufacturer_signature,
           bgColor: _color,
         ),
         ResponseTextWidget(
-          name: transl.response_card_card_data_token_symbol,
-          value: _cardData.tokenSymbol,
-          description: transl.desc_response_card_card_data_token_symbol,
+          transl.response_card_card_data_token_symbol,
+          _cardData.tokenSymbol,
+          transl.desc_response_card_card_data_token_symbol,
           bgColor: _color,
         ),
         ResponseTextWidget(
-          name: transl.response_card_card_data_token_contract_address,
-          value: _cardData.tokenContractAddress,
-          description: transl.desc_response_card_card_data_token_contract_address,
+          transl.response_card_card_data_token_contract_address,
+          _cardData.tokenContractAddress,
+          transl.desc_response_card_card_data_token_contract_address,
           bgColor: _color,
         ),
         ResponseTextWidget(
-          name: transl.response_card_card_data_token_decimal,
-          value: _cardData.tokenDecimal,
-          description: transl.desc_response_card_card_data_token_decimal,
+          transl.response_card_card_data_token_decimal,
+          _cardData.tokenDecimal,
+          transl.desc_response_card_card_data_token_decimal,
           bgColor: _color,
         ),
       ],
@@ -183,9 +183,16 @@ class SigningMethodsResponseWidget extends StatelessWidget {
     if (_card.signingMethods == null) return StubWidget();
 
     final transl = Transl.of(context);
-    List<Widget> widgets =
-        _signingMethods.map<Widget>((method) => ResponseCheckboxWidget(name: method, value: _card.signingMethods.contains(method))).toList();
-    widgets.insert(0, SegmentHeader(transl.response_card_signing_method, description: transl.desc_response_card_signing_method));
+    List<Widget> widgets = [];
+    widgets.add(
+      SegmentHeader(
+        transl.response_card_signing_method,
+        description: transl.desc_response_card_signing_method,
+      ),
+    );
+    _signingMethods.forEach((element) {
+      widgets.add(ResponseCheckboxWidget(element, _card.signingMethods.contains(element)));
+    });
     return Column(children: widgets);
   }
 }
@@ -209,10 +216,17 @@ class ProductMaskResponseWidget extends StatelessWidget {
     if (_cardData == null || _cardData.productMask == null) return StubWidget();
 
     final transl = Transl.of(context);
-    List<Widget> widgets = _productMaskList
-        .map<Widget>((method) => ResponseCheckboxWidget(name: method, value: _cardData.productMask.contains(method), bgColor: _color) as Widget)
-        .toList();
-    widgets.insert(0, SegmentHeader(transl.response_card_card_data_product_mask, description: transl.desc_response_card_card_data_product_mask));
+    List<Widget> widgets = [];
+    widgets.add(
+      SegmentHeader(
+        transl.response_card_card_data_product_mask,
+        description: transl.desc_response_card_card_data_product_mask,
+      ),
+    );
+
+    _productMaskList.forEach((element) {
+      widgets.add(ResponseCheckboxWidget(element, _cardData.productMask.contains(element), bgColor: _color));
+    });
     return Column(children: widgets);
   }
 }
@@ -255,9 +269,16 @@ class SettingsMaskResponseWidget extends StatelessWidget {
     if (_card.settingsMask == null) return StubWidget();
 
     final transl = Transl.of(context);
-    List<Widget> widgets =
-        _settingsMaskList.map<Widget>((method) => ResponseCheckboxWidget(name: method, value: _card.settingsMask.contains(method), bgColor: _color)).toList();
-    widgets.insert(0, SegmentHeader(transl.response_card_settings_mask, description: transl.desc_response_card_settings_mask));
+    List<Widget> widgets = [];
+    widgets.add(
+      SegmentHeader(
+        transl.response_card_settings_mask,
+        description: transl.desc_response_card_settings_mask,
+      ),
+    );
+    _settingsMaskList.forEach((element) {
+      widgets.add(ResponseCheckboxWidget(element, _card.settingsMask.contains(element), bgColor: _color));
+    });
     return Column(children: widgets);
   }
 }

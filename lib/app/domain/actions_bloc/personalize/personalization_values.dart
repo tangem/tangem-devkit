@@ -1,5 +1,6 @@
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:intl/intl.dart';
+import 'package:tangem_sdk/extensions.dart';
 
 class PersonalizationValues {
   static final String CUSTOM = "--- CUSTOM ---";
@@ -54,11 +55,13 @@ class PersonalizationValues {
 
   List<Pair<String, int>> get pauseBeforePin => _pauseBeforePin;
 
-  bool has(Pair pair, List<Pair> into) => into.firstWhere((element) => element.a == pair.a && element.b == pair.b, orElse: () => null) != null;
+  bool has(Pair pair, List<Pair> into) => into.firstWhereOrNull((element) => element.a == pair.a && element.b == pair.b) != null;
 
-  bool hasValue(dynamic value, List<Pair> into) => into.firstWhere((element) => element.b == value, orElse: () => null) != null;
+  bool hasValue(dynamic value, List<Pair> into) => into.firstWhereOrNull((element) => element.b == value) != null;
 
-  Pair getOrNull(dynamic value, List<Pair> from) => from.firstWhere((element) => element.b == value, orElse: () => null);
+  Pair<String, dynamic>? getOrNull(dynamic value, List<Pair<String, dynamic>> from) {
+    return from.firstWhereOrNull((element) => element.b == value);
+  }
 
   bool hasBlockchain(dynamic value) => hasValue(value, blockchain);
 
@@ -68,16 +71,18 @@ class PersonalizationValues {
 
   bool hasPauseBeforePin(dynamic value) => hasValue(value, pauseBeforePin);
 
-  Pair<String, String> getBlockchain(dynamic value) => getOrNull(value, blockchain);
 
-  Pair<String, String> getCurve(String value) {
-    Pair curve = getOrNull(value, curves);
-    return curve ?? getOrNull(toBeginningOfSentenceCase(value), _curves);
+
+  Pair<String, String>? getBlockchain(dynamic value) => getOrNull(value, blockchain) as Pair<String, String>?;
+
+  Pair<String, String>? getCurve(String value) {
+    Pair? curve = getOrNull(value, curves) ?? getOrNull(toBeginningOfSentenceCase(value), _curves);
+    if (curve == null) return _curves[0]; else return curve as Pair<String, String>?;
   }
 
-  Pair<String, String> getAar(dynamic value) => getOrNull(value, aar);
+  Pair<String, String>? getAar(dynamic value) => getOrNull(value, aar) as Pair<String, String>?;
 
-  Pair<String, int> getPauseBeforePin(dynamic value) => getOrNull(value, pauseBeforePin);
+  Pair<String, int>? getPauseBeforePin(dynamic value) => getOrNull(value, pauseBeforePin) as Pair<String, int>?;
 
   Pair<String, String> getCustom() => _customPair;
 }

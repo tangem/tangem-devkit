@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tangem_sdk/extensions.dart';
 
 class TextStreamController {
   final TextEditingController controller = TextEditingController();
-  final List<RegExp> regExpList;
+  final List<RegExp>? regExpList;
 
   Subject<String> _subject;
-  StreamSubscription _subscription;
+  late StreamSubscription _subscription;
   String _currentValue = "";
   bool fromStream = false;
   bool fromController = false;
@@ -58,16 +59,16 @@ class TextStreamController {
   }
 
   String _applyRegExp(String value) {
-    if (regExpList == null || regExpList.isEmpty) return value;
+    if (regExpList.isNullOrEmpty()) return value;
 
-    regExpList.forEach((regExp) {
-      value = regExp.allMatches(value).map<String>((Match match) => match.group(0)).join();
+    regExpList?.forEach((regExp) {
+      value = regExp.allMatches(value).map<String?>((Match match) => match.group(0)).toList().toNullSafe().join();
     });
     return value;
   }
 
   dispose() {
-    _subscription?.cancel();
+    _subscription.cancel();
     controller.dispose();
   }
 }

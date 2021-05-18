@@ -3,12 +3,12 @@ import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
 
 class TextWidget extends StatelessWidget {
-  final String keyName;
   final String text;
-  final Color color;
-  final double fontSize;
-  final TextAlign textAlign;
-  final int maxLines;
+  final String? keyName;
+  final double? fontSize;
+  final Color? color;
+  final TextAlign? textAlign;
+  final int? maxLines;
 
   const TextWidget(this.text, {this.keyName, this.fontSize, this.color, this.textAlign, this.maxLines});
 
@@ -22,7 +22,7 @@ class TextWidget extends StatelessWidget {
         style: textStyle(color, fontSize),
       );
 
-  static TextStyle textStyle(Color color, double fontSize) =>
+  static TextStyle textStyle(Color? color, double? fontSize) =>
       TextStyle(
         color: color,
         fontSize: fontSize,

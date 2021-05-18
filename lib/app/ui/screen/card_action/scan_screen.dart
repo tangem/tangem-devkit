@@ -1,24 +1,39 @@
-import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
+import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app/ui/screen/finders.dart';
-import 'package:devkit/app/ui/screen/response/response_screen.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ScanScreen extends StatelessWidget {
+class ScanScreen extends StatefulWidget {
+  @override
+  _ScanScreenState createState() => _ScanScreenState();
+}
+
+class _ScanScreenState extends State<ScanScreen> {
+  late ScanBloc _bloc;
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ScanBloc(),
+    return RepositoryProvider(
+      create: (BuildContext context) => ScanBloc().apply((it) => _bloc = it),
       child: ScanFrame(),
     );
+  }
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
   }
 }
 
 class ScanFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final bloc = RepoFinder.scanBloc(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(Transl.of(context).screen_scan),
@@ -27,29 +42,38 @@ class ScanFrame extends StatelessWidget {
       body: ScanBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
-        onPressed: () => BlocFinder.scan(context).add(EScanCard()),
+        onPressed: bloc.invokeAction,
       ),
     );
   }
 }
 
-class ScanBody extends StatelessWidget {
+class ScanBody extends StatefulWidget {
+  @override
+  _ScanBodyState createState() => _ScanBodyState();
+}
+
+class _ScanBodyState extends State<ScanBody> {
+  late ScanBloc _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _bloc = RepoFinder.scanBloc(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ScanBloc, SScan>(
-      listener: (context, state) {
-        if (state is SCardScanSuccess) {
-          ResponseScreen.navigate(context, state.success);
-        } else if (state is SCardScanError) {
-          showJsonSnackbar(context, state.error);
-        }
-      },
-      child: Center(
+    return Stack(children: <Widget>[
+      HiddenResponseHandlerWidget(_bloc),
+      HiddenSnackbarHandlerWidget([_bloc.snackbarMessageStream]),
+      Center(
         child: Padding(
           padding: EdgeInsets.all(16),
           child: TextWidget.howTo(Transl.of(context).how_to_scan),
         ),
       ),
-    );
+    ]);
   }
 }

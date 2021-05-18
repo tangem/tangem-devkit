@@ -17,7 +17,7 @@ enum MenuItem {
 
 class Menu {
   static PopupMenuButton popupDescription() {
-    BuildContext temporaryContext;
+    late BuildContext temporaryContext;
     return PopupMenuButton<MenuItem>(
       key: ItemId.btnFrom(ItemName.menu),
       onSelected: (MenuItem item) {
@@ -32,16 +32,17 @@ class Menu {
       },
       itemBuilder: (BuildContext context) {
         temporaryContext = context;
-        return [
-          Menu.descriptionItem(),
-          kReleaseMode
-              ? null
-              : PopupMenuItem(
-                  key: ItemId.btnFrom(ItemName.navigateToTestScreen),
-                  value: MenuItem.navigateToTestScreen,
-                  child: TextWidget("Test screen"),
-                ),
-        ];
+        final menuItemList = <PopupMenuItem<MenuItem>>[];
+        menuItemList.add(Menu.descriptionItem());
+        if (!kReleaseMode) {
+          final testScreenItem = PopupMenuItem(
+            key: ItemId.btnFrom(ItemName.navigateToTestScreen),
+            value: MenuItem.navigateToTestScreen,
+            child: TextWidget("Test screen"),
+          );
+          menuItemList.add(testScreenItem);
+        }
+        return menuItemList;
       },
     );
   }
@@ -49,9 +50,9 @@ class Menu {
   static PopupMenuItem<MenuItem> descriptionItem() {
     return PopupMenuItem<MenuItem>(
       value: MenuItem.switchDescription,
-      child: StreamBuilder(
-        stream: DescriptionState.listen(),
+      child: StreamBuilder<bool>(
         initialData: DescriptionState.state,
+        stream: DescriptionState.listen(),
         builder: (context, snapshot) {
           return CheckboxListTile(
             key: ItemId.btnFrom(ItemName.menuDescription),

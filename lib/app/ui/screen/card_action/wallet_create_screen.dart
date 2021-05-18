@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/text_controller.dart';
@@ -14,17 +14,12 @@ class CreateWalletScreen extends StatefulWidget {
 }
 
 class _CreateWalletScreenState extends State<CreateWalletScreen> {
-  CreateWalletBloc _bloc;
+  late CreateWalletBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = CreateWalletBloc();
-          return _bloc;
-        })
-      ],
+      providers: [RepositoryProvider(create: (context) => CreateWalletBloc().apply((it) => _bloc = it))],
       child: CreateWalletFrame(),
     );
   }
@@ -61,8 +56,8 @@ class CreateWalletBody extends StatefulWidget {
 }
 
 class _CreateWalletBodyState extends State<CreateWalletBody> {
-  CreateWalletBloc _bloc;
-  TextStreamController _cidController;
+  late CreateWalletBloc _bloc;
+  late TextStreamController _cidController;
 
   @override
   void initState() {

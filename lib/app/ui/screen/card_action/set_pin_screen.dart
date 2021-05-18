@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
@@ -19,17 +19,12 @@ class SetPinScreen extends StatefulWidget {
 }
 
 class _SetPinScreenState extends State<SetPinScreen> {
-  SetPinBlock _bloc;
+  late SetPinBlock _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = SetPinBlock(widget.pinType);
-          return _bloc;
-        })
-      ],
+      providers: [RepositoryProvider(create: (context) => SetPinBlock(widget.pinType).apply((it) => _bloc = it))],
       child: SetPinFrame(),
     );
   }
@@ -77,9 +72,9 @@ class SetPinBody extends StatefulWidget {
 }
 
 class _SetPinBodyState extends State<SetPinBody> {
-  SetPinBlock _bloc;
-  TextStreamController _cidController;
-  TextStreamController _pinCodeController;
+  late SetPinBlock _bloc;
+  late TextStreamController _cidController;
+  late TextStreamController _pinCodeController;
 
   @override
   void initState() {

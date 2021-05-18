@@ -13,17 +13,17 @@ class Utils {
 
   static CardDataSdk createCardDataSdk(PersonalizationConfig config, Issuer issuer) {
     final cardData = config.cardData;
-    cardData.date = cardData.date != null && cardData.date.isEmpty ? _createCardDate() : cardData.date;
+    final date = cardData.date.isNullOrEmpty() ? _createCardDate() : cardData.date!;
     return CardDataSdk(
-      productMask: createProductMask(config),
-      issuerName: issuer.name,
-      batchId: cardData.batch,
-      blockchainName: cardData.blockchain,
-      manufactureDateTime: cardData.date,
+      issuer.name,
+      cardData.batch,
+      cardData.blockchain,
+      date,
+      createProductMask(config),
+      manufacturerSignature: null,
       tokenSymbol: cardData.tokenSymbol,
       tokenContractAddress: cardData.tokenContractAddress,
       tokenDecimal: cardData.tokenDecimal,
-      manufacturerSignature: null,
     );
   }
 
@@ -51,48 +51,48 @@ class Utils {
     }
 
     return CardConfigSdk(
+      convertToSha256(config.PIN),
+      convertToSha256(config.PIN2),
+      convertToSha256(config.PIN3),
+      config.hexCrExKey,
+      config.CVC,
+      config.pauseBeforePIN2,
+      config.smartSecurityDelay,
+      config.curveID,
+      SigningMethodMaskSdk(config.SigningMethod),
+      config.MaxSignatures,
+      config.isReusable,
+      config.allowSetPIN1,
+      config.allowSetPIN2,
+      config.useActivation,
+      config.useCvc,
+      config.useNDEF,
+      config.useDynamicNDEF,
+      config.useOneCommandAtTime,
+      config.useBlock,
+      config.allowSelectBlockchain,
+      config.prohibitPurgeWallet,
+      config.allowUnencrypted,
+      config.allowFastEncryption,
+      config.protectIssuerDataAgainstReplay,
+      config.prohibitDefaultPIN1,
+      config.disablePrecomputedNDEF,
+      config.skipSecurityDelayIfValidatedByIssuer,
+      config.skipCheckPIN2CVCIfValidatedByIssuer,
+      config.skipSecurityDelayIfValidatedByLinkedTerminal,
+      config.restrictOverwriteIssuerExtraData,
+      config.requireTerminalTxSignature,
+      config.requireTerminalCertSignature,
+      config.checkPIN3OnCard,
+      config.createWallet == 1,
+      config.walletsCount,
+      createCardDataSdk(config, issuer),
+      config.ndef,
       issuerName: issuer.name,
       acquirerName: acquirer.name,
       series: config.series,
       startNumber: config.startNumber,
       count: config.count,
-      pin: convertToSha256(config.PIN),
-      pin2: convertToSha256(config.PIN2),
-      pin3: convertToSha256(config.PIN3),
-      hexCrExKey: config.hexCrExKey,
-      cvc: config.CVC,
-      pauseBeforePin2: config.pauseBeforePIN2,
-      smartSecurityDelay: config.smartSecurityDelay,
-      curveID: config.curveID,
-      signingMethods: SigningMethodMaskSdk(config.SigningMethod),
-      maxSignatures: config.MaxSignatures,
-      isReusable: config.isReusable,
-      allowSetPIN1: config.allowSetPIN1,
-      allowSetPIN2: config.allowSetPIN2,
-      useActivation: config.useActivation,
-      useCvc: config.useCvc,
-      useNDEF: config.useNDEF,
-      useDynamicNDEF: config.useDynamicNDEF,
-      useOneCommandAtTime: config.useOneCommandAtTime,
-      useBlock: config.useBlock,
-      allowSelectBlockchain: config.allowSelectBlockchain,
-      prohibitPurgeWallet: config.prohibitPurgeWallet,
-      allowUnencrypted: config.allowUnencrypted,
-      allowFastEncryption: config.allowFastEncryption,
-      protectIssuerDataAgainstReplay: config.protectIssuerDataAgainstReplay,
-      prohibitDefaultPIN1: config.prohibitDefaultPIN1,
-      disablePrecomputedNDEF: config.disablePrecomputedNDEF,
-      skipSecurityDelayIfValidatedByIssuer: config.skipSecurityDelayIfValidatedByIssuer,
-      skipCheckPIN2CVCIfValidatedByIssuer: config.skipCheckPIN2CVCIfValidatedByIssuer,
-      skipSecurityDelayIfValidatedByLinkedTerminal: config.skipSecurityDelayIfValidatedByLinkedTerminal,
-      restrictOverwriteIssuerExtraData: config.restrictOverwriteIssuerExtraData,
-      requireTerminalTxSignature: config.requireTerminalTxSignature,
-      requireTerminalCertSignature: config.requireTerminalCertSignature,
-      checkPIN3OnCard: config.checkPIN3OnCard,
-      createWallet: config.createWallet == 1,
-      walletsCount: config.walletsCount,
-      cardData: createCardDataSdk(config, issuer),
-      ndefRecords: config.ndef,
     );
   }
 
@@ -190,7 +190,6 @@ class CommandJsonTest {
     ],
     "commandType":"writeFiles"
   }''';
-
 
   static String writeFilesIssuer = '''{
     "cid":"${Utils.cardId}",

@@ -53,7 +53,7 @@ extension SettingsCodes on Settings {
     Settings.CheckPIN3OnCard: 0x04000000
   };
 
-  int get code => codes[this];
+  int get code => codes[this]!;
 }
 
 class SettingsMaskBuilder {

@@ -1,55 +1,92 @@
-import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/screen/finders.dart';
-import 'package:devkit/app/ui/screen/response/response_screen.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DepersonalizationScreen extends StatelessWidget {
+import 'helpers.dart';
+
+class DepersonalizationScreen extends StatefulWidget {
+  @override
+  _DepersonalizationScreenState createState() => _DepersonalizationScreenState();
+}
+
+class _DepersonalizationScreenState extends State<DepersonalizationScreen> {
+  late DepersonalizationBloc _bloc;
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<DepersonalizeBloc>(
-      create: (context) => DepersonalizeBloc(),
-      child: DepersonalizeFrame(),
+    return RepositoryProvider(
+      create: (BuildContext context) => DepersonalizationBloc().apply((it) => _bloc = it),
+      child: DepersonalizationFrame(),
     );
+  }
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
   }
 }
 
-class DepersonalizeFrame extends StatelessWidget {
+class DepersonalizationFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final bloc = RepoFinder.depersonalizationBloc(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(Transl.of(context).screen_depersonalize),
         actions: [Menu.popupDescription()],
       ),
-      body: DepersonalizeBody(),
+      body: DepersonalizationBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
-        onPressed: () => BlocFinder.depersonalize(context).add(EDepersonalize()),
+        onPressed: bloc.invokeAction,
       ),
     );
   }
 }
 
-class DepersonalizeBody extends StatelessWidget {
+class DepersonalizationBody extends StatefulWidget {
+  @override
+  _DepersonalizationBodyState createState() => _DepersonalizationBodyState();
+}
+
+class _DepersonalizationBodyState extends State<DepersonalizationBody> {
+  late DepersonalizationBloc _bloc;
+  late TextStreamController _cidController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _bloc = RepoFinder.depersonalizationBloc(context);
+    _cidController = TextStreamController(_bloc.bsCid);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<DepersonalizeBloc, SDepersonalize>(
-      listener: (context, state) {
-        if (state is SCardDepersonalizeSuccess) {
-          ResponseScreen.navigate(context, state.success);
-        } else if (state is SCardDepersonalizeError) {
-          showJsonSnackbar(context, state.error);
-        }
-      },
-      child: Center(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: TextWidget.howTo(Transl.of(context).how_to_depersonalize),
+    return Column(
+      children: <Widget>[
+        HiddenResponseHandlerWidget(_bloc),
+        HiddenSnackbarHandlerWidget([_bloc.snackbarMessageStream]),
+        SizedBox(height: 8),
+        InputCidWidget(
+          ItemName.cid,
+          _cidController.controller,
+          _bloc.scanCard,
+          padding: EdgeInsets.symmetric(horizontal: 16),
         ),
-      ),
+      ],
     );
+  }
+
+  @override
+  void dispose() {
+    _cidController.dispose();
+    super.dispose();
   }
 }

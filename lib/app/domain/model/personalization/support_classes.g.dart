@@ -9,62 +9,51 @@ part of 'support_classes.dart';
 PersonalizationConfig _$PersonalizationConfigFromJson(
     Map<String, dynamic> json) {
   return PersonalizationConfig(
-    CVC: json['CVC'] as String,
-    MaxSignatures: json['MaxSignatures'] as int,
-    PIN: json['PIN'] as String,
-    PIN2: json['PIN2'] as String,
-    PIN3: json['PIN3'] as String,
-    SigningMethod: json['SigningMethod'] as int,
-    allowSelectBlockchain: json['allowSelectBlockchain'] as bool,
-    allowSetPIN1: json['allowSetPIN1'] as bool,
-    allowSetPIN2: json['allowSetPIN2'] as bool,
-    cardData: json['cardData'] == null
-        ? null
-        : PersonalizationCardData.fromJson(
-            json['cardData'] as Map<String, dynamic>),
-    checkPIN3OnCard: json['checkPIN3OnCard'] as bool,
-    count: json['count'] as int,
-    createWallet: json['createWallet'] as int,
-    walletsCount: json['walletsCount'] as int,
-    curveID: json['curveID'] as String,
-    disablePrecomputedNDEF: json['disablePrecomputedNDEF'] as bool,
-    prohibitDefaultPIN1: json['prohibitDefaultPIN1'] as bool,
-    prohibitPurgeWallet: json['prohibitPurgeWallet'] as bool,
-    hexCrExKey: json['hexCrExKey'] as String,
-    isReusable: json['isReusable'] as bool,
-    issuerName: json['issuerName'] as String,
-    ndef: (json['ndef'] as List)
-        ?.map((e) => e == null
-            ? null
-            : NdefRecordSdk.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    numberFormat: json['numberFormat'] as String,
-    pauseBeforePIN2: json['pauseBeforePIN2'] as int,
-    protectIssuerDataAgainstReplay:
-        json['protectIssuerDataAgainstReplay'] as bool,
-    allowFastEncryption:
-        json['allowFastEncryption'] as bool,
-    allowUnencrypted: json['allowUnencrypted'] as bool,
-    releaseVersion: json['releaseVersion'] as bool,
-    requireTerminalCertSignature: json['requireTerminalCertSignature'] as bool,
-    requireTerminalTxSignature: json['requireTerminalTxSignature'] as bool,
-    restrictOverwriteIssuerExtraData:
-        json['restrictOverwriteIssuerExtraData'] as bool,
-    series: json['series'] as String,
-    skipCheckPIN2CVCIfValidatedByIssuer:
-        json['skipCheckPIN2CVCIfValidatedByIssuer'] as bool,
-    skipSecurityDelayIfValidatedByIssuer:
-        json['skipSecurityDelayIfValidatedByIssuer'] as bool,
-    skipSecurityDelayIfValidatedByLinkedTerminal:
-        json['skipSecurityDelayIfValidatedByLinkedTerminal'] as bool,
-    smartSecurityDelay: json['smartSecurityDelay'] as bool,
-    startNumber: json['startNumber'] as int,
-    useActivation: json['useActivation'] as bool,
-    useBlock: json['useBlock'] as bool,
-    useCvc: json['useCvc'] as bool,
-    useDynamicNDEF: json['useDynamicNDEF'] as bool,
-    useNDEF: json['useNDEF'] as bool,
-    useOneCommandAtTime: json['useOneCommandAtTime'] as bool,
+    json['CVC'] as String,
+    json['MaxSignatures'] as int,
+    json['PIN'] as String,
+    json['PIN2'] as String,
+    json['PIN3'] as String,
+    json['SigningMethod'] as int,
+    json['allowSelectBlockchain'] as bool,
+    json['allowSetPIN1'] as bool,
+    json['allowSetPIN2'] as bool,
+    PersonalizationCardData.fromJson(json['cardData'] as Map<String, dynamic>),
+    json['checkPIN3OnCard'] as bool,
+    json['count'] as int,
+    json['createWallet'] as int,
+    json['walletsCount'] as int,
+    json['curveID'] as String,
+    json['disablePrecomputedNDEF'] as bool,
+    json['prohibitDefaultPIN1'] as bool,
+    json['prohibitPurgeWallet'] as bool,
+    json['hexCrExKey'] as String,
+    json['isReusable'] as bool,
+    json['issuerName'] as String,
+    (json['ndef'] as List<dynamic>)
+        .map((e) => NdefRecordSdk.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    json['numberFormat'] as String,
+    json['pauseBeforePIN2'] as int,
+    json['protectIssuerDataAgainstReplay'] as bool,
+    json['allowFastEncryption'] as bool,
+    json['allowUnencrypted'] as bool,
+    json['releaseVersion'] as bool,
+    json['requireTerminalCertSignature'] as bool,
+    json['requireTerminalTxSignature'] as bool,
+    json['restrictOverwriteIssuerExtraData'] as bool,
+    json['series'] as String,
+    json['skipCheckPIN2CVCIfValidatedByIssuer'] as bool,
+    json['skipSecurityDelayIfValidatedByIssuer'] as bool,
+    json['skipSecurityDelayIfValidatedByLinkedTerminal'] as bool,
+    json['smartSecurityDelay'] as bool,
+    json['startNumber'] as int,
+    json['useActivation'] as bool,
+    json['useBlock'] as bool,
+    json['useCvc'] as bool,
+    json['useDynamicNDEF'] as bool,
+    json['useNDEF'] as bool,
+    json['useOneCommandAtTime'] as bool,
   );
 }
 
@@ -101,7 +90,8 @@ Map<String, dynamic> _$PersonalizationConfigToJson(
       'releaseVersion': instance.releaseVersion,
       'requireTerminalCertSignature': instance.requireTerminalCertSignature,
       'requireTerminalTxSignature': instance.requireTerminalTxSignature,
-      'restrictOverwriteIssuerExtraData': instance.restrictOverwriteIssuerExtraData,
+      'restrictOverwriteIssuerExtraData':
+          instance.restrictOverwriteIssuerExtraData,
       'series': instance.series,
       'skipCheckPIN2CVCIfValidatedByIssuer':
           instance.skipCheckPIN2CVCIfValidatedByIssuer,
@@ -122,17 +112,17 @@ Map<String, dynamic> _$PersonalizationConfigToJson(
 PersonalizationCardData _$PersonalizationCardDataFromJson(
     Map<String, dynamic> json) {
   return PersonalizationCardData(
-    tokenSymbol: json['token_symbol'] as String,
-    tokenContractAddress: json['token_contract_address'] as String,
-    tokenDecimal: json['token_decimal'] as int,
-    batch: json['batch'] as String,
-    blockchain: json['blockchain'] as String,
-    date: json['date'] as String,
-    productIdCard: json['product_id_card'] as bool,
-    productIdIssuer: json['product_id_issuer'] as bool,
-    productTwinCard: json['product_twin_card'] as bool,
-    productNote: json['product_note'] as bool,
-    productTag: json['product_tag'] as bool,
+    json['batch'] as String,
+    json['blockchain'] as String,
+    json['product_id_card'] as bool,
+    json['product_id_issuer'] as bool,
+    json['product_note'] as bool,
+    json['product_tag'] as bool,
+    json['product_twin_card'] as bool,
+    tokenSymbol: json['token_symbol'] as String?,
+    tokenContractAddress: json['token_contract_address'] as String?,
+    tokenDecimal: json['token_decimal'] as int?,
+    date: json['date'] as String?,
   );
 }
 
@@ -144,9 +134,9 @@ Map<String, dynamic> _$PersonalizationCardDataToJson(
     'date': instance.date,
     'product_id_card': instance.productIdCard,
     'product_id_issuer': instance.productIdIssuer,
-    'product_twin_card': instance.productTwinCard,
     'product_note': instance.productNote,
     'product_tag': instance.productTag,
+    'product_twin_card': instance.productTwinCard,
   };
 
   void writeNotNull(String key, dynamic value) {

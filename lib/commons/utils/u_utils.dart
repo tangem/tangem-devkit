@@ -13,7 +13,7 @@ int randomRange(int min, int max) => min + Random().nextInt(max - min);
 
 Locale getLocale(BuildContext context) => Localizations.localeOf(context);
 
-String getLocaleCountryCode(BuildContext context) => getLocale(context).countryCode;
+String getLocaleCountryCode(BuildContext context) => getLocale(context).countryCode ?? "en";
 
 String getLocaleLanguageCode(BuildContext context) => getLocale(context).languageCode;
 

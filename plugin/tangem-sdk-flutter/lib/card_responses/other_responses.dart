@@ -2,32 +2,32 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'other_responses.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 class SignResponse {
   String cardId;
   String signature;
   int walletRemainingSignatures;
-  int walletSignedHashes;
+  int? walletSignedHashes;
 
-  SignResponse({this.cardId, this.signature, this.walletRemainingSignatures, this.walletSignedHashes});
+  SignResponse(this.cardId, this.signature, this.walletRemainingSignatures, [this.walletSignedHashes]);
 
   factory SignResponse.fromJson(Map<String, dynamic> json) => _$SignResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$SignResponseToJson(this);
 }
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 class DepersonalizeResponse {
   bool success;
 
-  DepersonalizeResponse({this.success});
+  DepersonalizeResponse(this.success);
 
   factory DepersonalizeResponse.fromJson(Map<String, dynamic> json) => _$DepersonalizeResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$DepersonalizeResponseToJson(this);
 }
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 class CreateWalletResponse {
   final String cardId;
   final String status;
@@ -40,7 +40,7 @@ class CreateWalletResponse {
   Map<String, dynamic> toJson() => _$CreateWalletResponseToJson(this);
 }
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 class PurgeWalletResponse {
   final String cardId;
   final String status;
@@ -145,8 +145,8 @@ class SetPinResponse {
 class FileHashDataHex {
   final String startingHash;
   final String finalizingHash;
-  final String startingSignature;
-  final String finalizingSignature;
+  final String? startingSignature;
+  final String? finalizingSignature;
 
   FileHashDataHex(this.startingHash, this.finalizingHash, [this.startingSignature, this.finalizingSignature]);
 
@@ -160,7 +160,7 @@ class WriteFilesResponse {
   final String cardId;
   final int fileIndex;
 
-  WriteFilesResponse(this.cardId, [this.fileIndex]);
+  WriteFilesResponse(this.cardId, this.fileIndex);
 
   factory WriteFilesResponse.fromJson(Map<String, dynamic> json) => _$WriteFilesResponseFromJson(json);
 
@@ -182,7 +182,7 @@ class ReadFilesResponse {
 class FileHex {
   final int fileIndex;
   final String fileData;
-  final FileSettings fileSettings;
+  final FileSettings? fileSettings;
 
   FileHex(this.fileIndex, this.fileData, [this.fileSettings]);
 
@@ -211,7 +211,7 @@ extension FileSettingsCode on FileSettings {
     FileSettings.Private: 0x0000,
   };
 
-  int get code => codes[this];
+  int get code => codes[this]!;
 }
 
 @JsonSerializable()
@@ -231,7 +231,8 @@ class ChangeFilesSettingsResponse {
 
   ChangeFilesSettingsResponse(this.cardId);
 
-  factory ChangeFilesSettingsResponse.fromJson(Map<String, dynamic> json) => _$ChangeFilesSettingsResponseFromJson(json);
+  factory ChangeFilesSettingsResponse.fromJson(Map<String, dynamic> json) =>
+      _$ChangeFilesSettingsResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChangeFilesSettingsResponseToJson(this);
 }

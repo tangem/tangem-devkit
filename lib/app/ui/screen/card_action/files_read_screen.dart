@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
@@ -14,17 +14,12 @@ class FilesReadScreen extends StatefulWidget {
 }
 
 class _FilesReadScreenState extends State<FilesReadScreen> {
-  FilesReadBloc _bloc;
+  late FilesReadBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = FilesReadBloc();
-          return _bloc;
-        })
-      ],
+      providers: [RepositoryProvider(create: (context) => FilesReadBloc().apply((it) => _bloc = it))],
       child: FilesReadFrame(),
     );
   }
@@ -61,9 +56,9 @@ class FilesReadBody extends StatefulWidget {
 }
 
 class _FilesReadBodyState extends State<FilesReadBody> {
-  FilesReadBloc _bloc;
-  TextStreamController _cidController;
-  TextStreamController _indicesController;
+  late FilesReadBloc _bloc;
+  late TextStreamController _cidController;
+  late TextStreamController _indicesController;
 
   @override
   void initState() {
@@ -71,7 +66,7 @@ class _FilesReadBodyState extends State<FilesReadBody> {
 
     _bloc = RepoFinder.setFilesReadBloc(context);
     _cidController = TextStreamController(_bloc.bsCid);
-    _indicesController = TextStreamController(_bloc.indicesStream);
+    _indicesController = TextStreamController(_bloc.bsIndices);
   }
 
   @override

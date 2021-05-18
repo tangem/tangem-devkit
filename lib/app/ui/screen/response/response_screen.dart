@@ -13,9 +13,9 @@ import 'other_responses.dart';
 import 'scan_personalize_response.dart';
 
 class ResponseScreen extends StatelessWidget {
-  final Object arguments;
+  final Object? arguments;
 
-  const ResponseScreen({Key key, this.arguments}) : super(key: key);
+  const ResponseScreen({Key? key, this.arguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => ResponseFrame(arguments: arguments);
@@ -26,10 +26,10 @@ class ResponseScreen extends StatelessWidget {
 }
 
 class ResponseFrame extends StatelessWidget {
-  final Object arguments;
-  String jsonArguments;
+  final Object? arguments;
+  late String jsonArguments;
 
-  ResponseFrame({Key key, this.arguments}) : super(key: key) {
+  ResponseFrame({Key? key, this.arguments}) : super(key: key) {
     jsonArguments = json.encode(arguments);
   }
 
@@ -59,22 +59,27 @@ class ResponseFrame extends StatelessWidget {
   }
 
   Widget _createAppropriateResponseWidget() {
-    if (arguments is CardResponse) return ReadResponseBody(arguments);
-    if (arguments is SignResponse) return SignResponseBody(arguments);
-    if (arguments is DepersonalizeResponse) return DepersonalizeResponseBody(arguments);
-    if (arguments is CreateWalletResponse) return CreateWalletResponseBody(arguments);
-    if (arguments is PurgeWalletResponse) return PurgeWalletResponseBody(arguments);
-    if (arguments is ReadIssuerDataResponse) return ReadIssuerDataResponseBody(arguments);
-    if (arguments is WriteIssuerDataResponse) return WriteIssuerDataResponseBody(arguments);
-    if (arguments is ReadIssuerExDataResponse) return ReadIssuerExDataResponseBody(arguments);
-    if (arguments is WriteIssuerExDataResponse) return WriteIssuerExDataResponseBody(arguments);
-    if (arguments is ReadUserDataResponse) return ReadUserDataResponseBody(arguments);
-    if (arguments is WriteUserDataResponse) return WriteUserDataResponseBody(arguments);
-    if (arguments is SetPinResponse) return SetPinResponseBody(arguments);
-    if (arguments is WriteFilesResponse) return WriteFilesResponseBody(arguments);
-    if (arguments is ReadFilesResponse) return ReadFilesResponseBody(arguments);
-    if (arguments is DeleteFilesResponse) return DeleteFilesResponseBody(arguments);
-    if (arguments is ChangeFilesSettingsResponse) return ChangeFilesSettingsResponseBody(arguments);
+    if (arguments == null) {
+      return Center(child: TextWidget("Response is null"));
+    }
+
+    final args = arguments!;
+    if (args is CardResponse) return ReadResponseBody(args);
+    if (args is SignResponse) return SignResponseBody(args);
+    if (args is DepersonalizeResponse) return DepersonalizeResponseBody(args);
+    if (args is CreateWalletResponse) return CreateWalletResponseBody(args);
+    if (args is PurgeWalletResponse) return PurgeWalletResponseBody(args);
+    if (args is ReadIssuerDataResponse) return ReadIssuerDataResponseBody(args);
+    if (args is WriteIssuerDataResponse) return WriteIssuerDataResponseBody(args);
+    if (args is ReadIssuerExDataResponse) return ReadIssuerExDataResponseBody(args);
+    if (args is WriteIssuerExDataResponse) return WriteIssuerExDataResponseBody(args);
+    if (args is ReadUserDataResponse) return ReadUserDataResponseBody(args);
+    if (args is WriteUserDataResponse) return WriteUserDataResponseBody(args);
+    if (args is SetPinResponse) return SetPinResponseBody(args);
+    if (args is WriteFilesResponse) return WriteFilesResponseBody(args);
+    if (args is ReadFilesResponse) return ReadFilesResponseBody(args);
+    if (args is DeleteFilesResponse) return DeleteFilesResponseBody(args);
+    if (args is ChangeFilesSettingsResponse) return ChangeFilesSettingsResponseBody(args);
 
     return Center(child: TextWidget("Not implemented yet"));
   }

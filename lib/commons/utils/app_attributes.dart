@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 
 class App {
   static const isDebug = !kReleaseMode;
-  static PlatformType platformType;
+  // static PlatformType platformType;
 
   static forceClose() {
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
@@ -26,19 +26,19 @@ class AppDimen {
 }
 
 class AppColor {
-  static final Color primaryColor = Colors.blue[600];
-  static final Color primaryDarkColor = Colors.blue[600];
-  static final Color accentColor = Colors.blue[600];
+  static final Color primaryColor = Colors.blue[600]!;
+  static final Color primaryDarkColor = Colors.blue[600]!;
+  static final Color accentColor = Colors.blue[600]!;
 
   static final listDelimiter = Colors.grey.withAlpha(70);
   static final border = Colors.blueGrey.withAlpha(70);
   static final dropDownUnderline = Colors.grey;
 
-  static final howTo = Colors.grey[600];
-  static final itemHeader = Colors.grey[700];
-  static final itemBgHeader = Colors.grey[400];
-  static final itemTitle = Colors.grey[600];
-  static final itemDescription = Colors.grey[600];
+  static final howTo = Colors.grey[600]!;
+  static final itemHeader = Colors.grey[700]!;
+  static final itemBgHeader = Colors.grey[400]!;
+  static final itemTitle = Colors.grey[600]!;
+  static final itemDescription = Colors.grey[600]!;
 
   static final responseCardData = HexColor("#D7E4F3");
   static final responseProductMask = HexColor("#D7E4F3");

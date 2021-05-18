@@ -15,7 +15,7 @@ class SaveLoadConfigsDialog {
       context: context,
       builder: (context) {
         return DialogBody(
-          child: Padding(
+          Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -106,12 +106,12 @@ class ConfigListWidget extends StatelessWidget {
     return Flexible(
       child: SingleChildScrollView(
         child: StreamBuilder<List<String>>(
-          stream: _bloc.bsSavedConfigNames.stream,
           initialData: [],
+          stream: _bloc.bsSavedConfigNames.stream,
           builder: (context, snapshot) {
             return Container(
               decoration: BoxDecoration(border: Border.all(color: AppColor.border)),
-              child: ListBody(children: _generateTileList(context, snapshot.data)),
+              child: ListBody(children: _generateTileList(context, snapshot.data!)),
             );
           },
         ),

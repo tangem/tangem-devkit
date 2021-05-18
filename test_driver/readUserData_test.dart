@@ -21,7 +21,7 @@ void main() {
   final depersonalize = DepersonalizeCard();
 
 
-  FlutterDriver driver;
+  late FlutterDriver driver;
 
   group('Read User Data test when there is no data', () {
     setUpAll(() async {
@@ -59,7 +59,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 
@@ -120,7 +120,7 @@ void main() {
       await driver.tap(backButton);
       await depersonalize.depersonalize(driver);
       await Future.delayed(Duration(seconds: 3));
-      driver?.close();
+      driver.close();
     });
   });
 }

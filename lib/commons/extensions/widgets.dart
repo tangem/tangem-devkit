@@ -41,11 +41,11 @@ extension Wrapper on Widget {
 
   Widget visibilityHandler(StatedBehaviorSubject<bool> bSubject) {
     return StreamBuilder<bool>(
-      stream: bSubject.stream,
       initialData: bSubject.state,
+      stream: bSubject.stream,
       builder: (context, snapshot) {
         logD(this, "state: ${snapshot.data}");
-        return snapshot.data ? this : this.gone();
+        return snapshot.data ?? false ? this : this.gone();
       },
     );
   }

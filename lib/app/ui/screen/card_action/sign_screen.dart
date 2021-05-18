@@ -1,28 +1,41 @@
-import 'package:devkit/app/domain/actions_bloc/app_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
-import 'package:devkit/app/ui/screen/response/response_screen.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../finders.dart';
+import 'helpers.dart';
 
-class SignScreen extends StatelessWidget {
+class SignScreen extends StatefulWidget {
+  @override
+  _SignScreenState createState() => _SignScreenState();
+}
+
+class _SignScreenState extends State<SignScreen> {
+  late SignBloc _bloc;
+
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<SignBloc>(create: (context) => SignBloc()),
-        BlocProvider<ScanBloc>(create: (context) => ScanBloc()),
-      ],
+    return MultiRepositoryProvider(
+      providers: [RepositoryProvider(create: (context) => SignBloc().apply((it) => _bloc = it))],
       child: SignFrame(),
     );
+  }
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    super.dispose();
   }
 }
 
 class SignFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final bloc = RepoFinder.signBloc(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(Transl.of(context).screen_sign),
@@ -31,7 +44,7 @@ class SignFrame extends StatelessWidget {
       body: SignBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
-        onPressed: () => BlocFinder.sign(context).add(ESign()),
+        onPressed: bloc.invokeAction,
       ),
     );
   }
@@ -43,65 +56,48 @@ class SignBody extends StatefulWidget {
 }
 
 class _SignBodyState extends State<SignBody> {
-  final TextEditingController _cidController = TextEditingController();
-  final TextEditingController _dataController = TextEditingController();
-
-  SignBloc _block;
+  late SignBloc _bloc;
+  late TextStreamController _cidController;
+  late TextStreamController _dataForHashingController;
 
   @override
   void initState() {
     super.initState();
-    _cidController.addListener(() => _block.add(ECidChanged(_cidController.text)));
-    _dataController.addListener(() => _block.add(EDataChanged(_dataController.text)));
-    _block = BlocFinder.sign(context);
-    _block.add(EInitSign());
+
+    _bloc = RepoFinder.signBloc(context);
+    _cidController = TextStreamController(_bloc.bsCid);
+    _dataForHashingController = TextStreamController(_bloc.bsDataForHashing);
   }
 
   @override
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
-    return BlocListener<SignBloc, SSign>(
-      listener: (context, state) {
-        if (state is SCardSignError) {
-          showJsonSnackbar(context, state.error);
-        } else if (state is SCardSignSuccess) {
-          ResponseScreen.navigate(context, state.success);
-        } else if (state.theseFromBloc) {
-          _cidController.text = state.cid;
-          _dataController.text = state.dataForHashing;
-        }
-      },
-      child: BlocBuilder<SignBloc, SSign>(
-        builder: (context, state) {
-          return Column(
-            children: <Widget>[
-              SizedBox(height: 8),
-              InputCidWidget(
-                ItemName.cid,
-                _cidController,
-                () => BlocFinder.scan(context).scanCardWith(_block),
-                padding: EdgeInsets.symmetric(horizontal: 16),
-              ),
-              SizedBox(height: 8),
-              InputWidget(
-                ItemName.dataForHashing,
-                _dataController,
-                hint: transl.transaction_out_hash,
-                description: transl.desc_transaction_out_hash,
-                minHeight: 0,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-              ),
-            ],
-          );
-        },
-      ),
+    return Column(
+      children: <Widget>[
+        HiddenResponseHandlerWidget(_bloc),
+        HiddenSnackbarHandlerWidget([_bloc.snackbarMessageStream]),
+        SizedBox(height: 8),
+        InputCidWidget(
+          ItemName.cid,
+          _cidController.controller,
+          _bloc.scanCard,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+        ),
+        InputWidget(
+          ItemName.dataForHashing,
+          _dataForHashingController.controller,
+          hint: transl.transaction_out_hash,
+          description: transl.desc_transaction_out_hash,
+          padding: EdgeInsets.symmetric(horizontal: 16),
+        ),
+      ],
     );
   }
 
   @override
   void dispose() {
     _cidController.dispose();
-    _dataController.dispose();
+    _dataForHashingController.dispose();
     super.dispose();
   }
 }

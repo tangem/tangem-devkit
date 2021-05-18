@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:devkit/app/domain/actions_bloc/test_bloc.dart';
-import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:tangem_sdk/extensions.dart';
 import 'package:tangem_sdk/sdk_plugin.dart';
 
 import '../finders.dart';
@@ -18,17 +18,12 @@ class TestScreen extends StatefulWidget {
 }
 
 class _TestScreenState extends State<TestScreen> {
-  TestBlock _bloc;
+  late TestBlock _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = TestBlock();
-          return _bloc;
-        })
-      ],
+      providers: [RepositoryProvider(create: (context) => TestBlock().apply((it) => _bloc = it))],
       child: TestFrame(),
     );
   }
@@ -65,8 +60,8 @@ class TestBody extends StatefulWidget {
 }
 
 class _TestBodyState extends State<TestBody> {
-  TestBlock _bloc;
-  TextStreamController _inputCommandController;
+  late TestBlock _bloc;
+  late TextStreamController _inputCommandController;
 
   @override
   void initState() {
@@ -122,21 +117,21 @@ class _TestBodyState extends State<TestBody> {
           child: TextWidget.center("Error Response"),
         ),
         HorizontalDelimiter(),
-        StreamBuilder(
+        StreamBuilder<TangemSdkBaseError?>(
           stream: _bloc.errorResponseStream,
           initialData: null,
           builder: (context, snapshot) {
-            final data = snapshot.data;
             final stub = Expanded(flex: 1, child: SingleChildScrollView(child: StubWidget()));
-            if (data == null) return stub;
+            if (snapshot.data == null) return stub;
 
+            final data = snapshot.data!;
             if (data is TangemSdkError) {
               Fluttertoast.showToast(msg: data.message, toastLength: Toast.LENGTH_LONG);
               return stub;
             } else {
               return Expanded(
                 flex: 10,
-                child: TextWidget(snapshot.data.message, keyName: ItemName.responseErrorJson),
+                child: TextWidget(data.toString(), keyName: ItemName.responseErrorJson),
               );
             }
           },

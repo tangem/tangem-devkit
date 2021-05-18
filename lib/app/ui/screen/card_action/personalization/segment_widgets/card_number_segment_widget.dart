@@ -13,10 +13,10 @@ class CardNumberSegmentWidget extends StatefulWidget {
 }
 
 class _CardNumberSegmentWidgetState extends State<CardNumberSegmentWidget> {
-  PersonalizationBloc _bloc;
-  TextStreamController _seriesController;
-  TextStreamController _numberController;
-  TextStreamController _batchIdController;
+  late PersonalizationBloc _bloc;
+  late TextStreamController _seriesController;
+  late TextStreamController _numberController;
+  late TextStreamController _batchIdController;
 
   @override
   void initState() {

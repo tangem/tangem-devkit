@@ -17,24 +17,24 @@ class SignResponseBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         ResponseTextWidget(
-          name: transl.response_sign_cid,
-          value: _response.cardId,
-          description: transl.desc_response_sign_cid,
+          transl.response_sign_cid,
+          _response.cardId,
+          transl.desc_response_sign_cid,
         ),
         ResponseTextWidget(
-          name: transl.response_sign_wallet_signed_hashes,
-          value: _response.walletSignedHashes,
-          description: transl.desc_response_sign_wallet_signed_hashes,
+          transl.response_sign_wallet_signed_hashes,
+          _response.walletSignedHashes,
+          transl.desc_response_sign_wallet_signed_hashes,
         ),
         ResponseTextWidget(
-          name: transl.response_sign_wallet_remaining_signatures,
-          value: _response.walletRemainingSignatures,
-          description: transl.desc_response_sign_wallet_remaining_signatures,
+          transl.response_sign_wallet_remaining_signatures,
+          _response.walletRemainingSignatures,
+          transl.desc_response_sign_wallet_remaining_signatures,
         ),
         ResponseTextWidget(
-          name: transl.response_sign_signature,
-          value: _response.signature,
-          description: transl.desc_response_sign_signature,
+          transl.response_sign_signature,
+          _response.signature,
+          transl.desc_response_sign_signature,
         ),
       ],
     );
@@ -50,9 +50,9 @@ class DepersonalizeResponseBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
     return ResponseTextWidget(
-      name: transl.response_depersonalize_is_success,
-      value: _response.success,
-      description: transl.desc_response_depersonalize_is_success,
+      transl.response_depersonalize_is_success,
+      _response.success,
+      transl.desc_response_depersonalize_is_success,
     );
   }
 }
@@ -68,19 +68,19 @@ class CreateWalletResponseBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         ResponseTextWidget(
-          name: transl.response_card_cid,
-          value: _response.cardId,
-          description: transl.desc_response_card_cid,
+          transl.response_card_cid,
+          _response.cardId,
+          transl.desc_response_card_cid,
         ),
         ResponseTextWidget(
-          name: transl.response_card_status,
-          value: _response.status,
-          description: transl.desc_response_card_wallet_public_key,
+          transl.response_card_status,
+          _response.status,
+          transl.desc_response_card_wallet_public_key,
         ),
         ResponseTextWidget(
-          name: transl.response_card_wallet_public_key,
-          value: _response.walletPublicKey,
-          description: transl.desc_response_card_wallet_public_key,
+          transl.response_card_wallet_public_key,
+          _response.walletPublicKey,
+          transl.desc_response_card_wallet_public_key,
         ),
       ],
     );
@@ -98,14 +98,14 @@ class PurgeWalletResponseBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         ResponseTextWidget(
-          name: transl.response_card_cid,
-          value: _response.cardId,
-          description: transl.desc_response_card_cid,
+          transl.response_card_cid,
+          _response.cardId,
+          transl.desc_response_card_cid,
         ),
         ResponseTextWidget(
-          name: transl.response_card_status,
-          value: _response.status,
-          description: transl.desc_response_card_wallet_public_key,
+          transl.response_card_status,
+          _response.status,
+          transl.desc_response_card_wallet_public_key,
         ),
       ],
     );
@@ -123,24 +123,24 @@ class ReadIssuerDataResponseBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         ResponseTextWidget(
-          name: transl.response_card_cid,
-          value: _response.cardId,
-          description: transl.desc_response_card_cid,
+          transl.response_card_cid,
+          _response.cardId,
+          transl.desc_response_card_cid,
         ),
         ResponseTextWidget(
-          name: transl.response_issuer_data,
-          value: _response.issuerData.hexToString(),
-          description: transl.desc_response_issuer_data,
+          transl.response_issuer_data,
+          _response.issuerData.hexToString(),
+          transl.desc_response_issuer_data,
         ),
         ResponseTextWidget(
-          name: transl.response_issuer_data_signature,
-          value: _response.issuerDataSignature,
-          description: transl.desc_response_issuer_data_signature,
+          transl.response_issuer_data_signature,
+          _response.issuerDataSignature,
+          transl.desc_response_issuer_data_signature,
         ),
         ResponseTextWidget(
-          name: transl.response_issuer_data_counter,
-          value: _response.issuerDataCounter,
-          description: transl.desc_response_issuer_data_counter,
+          transl.response_issuer_data_counter,
+          _response.issuerDataCounter,
+          transl.desc_response_issuer_data_counter,
         ),
       ],
     );
@@ -158,9 +158,9 @@ class WriteIssuerDataResponseBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         ResponseTextWidget(
-          name: transl.response_card_cid,
-          value: _response.cardId,
-          description: transl.desc_response_card_cid,
+          transl.response_card_cid,
+          _response.cardId,
+          transl.desc_response_card_cid,
         ),
       ],
     );
@@ -179,29 +179,29 @@ class ReadIssuerExDataResponseBody extends StatelessWidget {
       child: Column(
         children: <Widget>[
           ResponseTextWidget(
-            name: transl.response_card_cid,
-            value: _response.cardId,
-            description: transl.desc_response_card_cid,
+            transl.response_card_cid,
+            _response.cardId,
+            transl.desc_response_card_cid,
           ),
           ResponseTextWidget(
-            name: transl.response_issuer_ex_data_size,
-            value: _response.size,
-            description: transl.desc_response_issuer_ex_data_size,
+            transl.response_issuer_ex_data_size,
+            _response.size,
+            transl.desc_response_issuer_ex_data_size,
           ),
           ResponseTextWidget(
-            name: transl.response_issuer_ex_data,
-            value: _response.issuerData,
-            description: transl.desc_response_issuer_ex_data,
+            transl.response_issuer_ex_data,
+            _response.issuerData,
+            transl.desc_response_issuer_ex_data,
           ),
           ResponseTextWidget(
-            name: transl.response_issuer_ex_data_signature,
-            value: _response.issuerDataSignature,
-            description: transl.desc_response_issuer_ex_data_signature,
+            transl.response_issuer_ex_data_signature,
+            _response.issuerDataSignature,
+            transl.desc_response_issuer_ex_data_signature,
           ),
           ResponseTextWidget(
-            name: transl.response_issuer_ex_data_counter,
-            value: _response.issuerDataCounter,
-            description: transl.desc_response_issuer_ex_data_counter,
+            transl.response_issuer_ex_data_counter,
+            _response.issuerDataCounter,
+            transl.desc_response_issuer_ex_data_counter,
           ),
         ],
       ),
@@ -218,9 +218,9 @@ class WriteIssuerExDataResponseBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
     return ResponseTextWidget(
-      name: transl.card_id,
-      value: _response.cardId,
-      description: transl.desc_card_id,
+      transl.card_id,
+      _response.cardId,
+      transl.desc_card_id,
     );
   }
 }
@@ -236,29 +236,29 @@ class ReadUserDataResponseBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         ResponseTextWidget(
-          name: transl.response_card_cid,
-          value: _response.cardId,
-          description: transl.desc_response_card_cid,
+          transl.response_card_cid,
+          _response.cardId,
+          transl.desc_response_card_cid,
         ),
         ResponseTextWidget(
-          name: transl.response_user_data,
-          value: _response.userData.hexToString(),
-          description: transl.desc_response_user_data,
+          transl.response_user_data,
+          _response.userData.hexToString(),
+          transl.desc_response_user_data,
         ),
         ResponseTextWidget(
-          name: transl.response_user_data_counter,
-          value: _response.userCounter,
-          description: transl.desc_response_user_data_counter,
+          transl.response_user_data_counter,
+          _response.userCounter,
+          transl.desc_response_user_data_counter,
         ),
         ResponseTextWidget(
-          name: transl.response_user_protected_data,
-          value: _response.userProtectedData.hexToString(),
-          description: transl.desc_response_user_protected_data,
+          transl.response_user_protected_data,
+          _response.userProtectedData.hexToString(),
+          transl.desc_response_user_protected_data,
         ),
         ResponseTextWidget(
-          name: transl.response_user_data_protected_counter,
-          value: _response.userProtectedCounter,
-          description: transl.desc_response_user_data_protected_counter,
+          transl.response_user_data_protected_counter,
+          _response.userProtectedCounter,
+          transl.desc_response_user_data_protected_counter,
         ),
       ],
     );
@@ -274,9 +274,9 @@ class WriteUserDataResponseBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
     return ResponseTextWidget(
-      name: transl.card_id,
-      value: _response.cardId,
-      description: transl.desc_card_id,
+      transl.card_id,
+      _response.cardId,
+      transl.desc_card_id,
     );
   }
 }
@@ -292,14 +292,14 @@ class SetPinResponseBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         ResponseTextWidget(
-          name: transl.response_card_cid,
-          value: _response.cardId,
-          description: transl.desc_response_card_cid,
+          transl.response_card_cid,
+          _response.cardId,
+          transl.desc_response_card_cid,
         ),
         ResponseTextWidget(
-          name: transl.response_set_pin_status,
-          value: _response.status,
-          description: transl.desc_response_set_pin_status,
+          transl.response_set_pin_status,
+          _response.status,
+          transl.desc_response_set_pin_status,
         ),
       ],
     );
@@ -317,14 +317,14 @@ class WriteFilesResponseBody extends StatelessWidget {
     return Column(
       children: <Widget>[
         ResponseTextWidget(
-          name: transl.response_card_cid,
-          value: _response.cardId,
-          description: transl.desc_response_card_cid,
+          transl.response_card_cid,
+          _response.cardId,
+          transl.desc_response_card_cid,
         ),
         ResponseTextWidget(
-          name: transl.response_files_write_index,
-          value: _response.fileIndex,
-          description: transl.response_files_write_index,
+          transl.response_files_write_index,
+          _response.fileIndex,
+          transl.response_files_write_index,
         ),
       ],
     );
@@ -339,31 +339,31 @@ class ReadFilesResponseBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
-    if (_response.files == null || _response.files.isEmpty) {
+    if (_response.files.isEmpty) {
       return ResponseTextWidget(
-        name: "",
-        value: "Files not exist",
-        description: "",
+        "Files not found",
+        "",
+        "",
       );
     }
     final widgets = _response.files.map((e) {
-      final fileSettings = e.fileSettings == null ? "" : enumToString(e.fileSettings);
+      final fileSettings = e.fileSettings == null ? "" : enumToString(e.fileSettings!);
       return Column(
         children: [
           ResponseTextWidget(
-            name: transl.response_file_index,
-            value: e.fileIndex,
-            description: transl.desc_response_file_index,
+            transl.response_file_index,
+            e.fileIndex,
+            transl.desc_response_file_index,
           ),
           ResponseTextWidget(
-            name: transl.response_file_settings,
-            value: fileSettings,
-            description: transl.desc_response_file_settings,
+            transl.response_file_settings,
+            fileSettings,
+            transl.desc_response_file_settings,
           ),
           ResponseTextWidget(
-            name: transl.response_file_data,
-            value: e.fileData,
-            description: transl.desc_response_file_data,
+            transl.response_file_data,
+            e.fileData,
+            transl.desc_response_file_data,
           ),
         ],
       );
@@ -381,9 +381,9 @@ class DeleteFilesResponseBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
     return ResponseTextWidget(
-      name: transl.card_id,
-      value: _response.cardId,
-      description: transl.desc_card_id,
+      transl.card_id,
+      _response.cardId,
+      transl.desc_card_id,
     );
   }
 }
@@ -397,9 +397,9 @@ class ChangeFilesSettingsResponseBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
     return ResponseTextWidget(
-      name: transl.card_id,
-      value: _response.cardId,
-      description: transl.desc_card_id,
+      transl.card_id,
+      _response.cardId,
+      transl.desc_card_id,
     );
   }
 }

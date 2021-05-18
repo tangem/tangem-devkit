@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
   final String text;
-  final Function onPressed;
+  final VoidCallback? onPressed;
 
-  const Button({@required this.text, @required this.onPressed, Key key}) : super(key: key);
+  const Button(this.text, {@required this.onPressed, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-      child: TextWidget(text.toUpperCase()),
+    return ElevatedButton(
+      child: TextWidget(text.toUpperCase(), color: Colors.white),
       onPressed: onPressed,
-      textColor: Colors.white,
-      color: AppColor.accentColor,
+      style: ButtonStyle(
+        backgroundColor: MaterialStateColor.resolveWith((states) => AppColor.accentColor)
+      ),
     );
   }
 }

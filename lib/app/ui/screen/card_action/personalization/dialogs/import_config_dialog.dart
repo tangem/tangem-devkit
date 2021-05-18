@@ -14,7 +14,7 @@ class ImportConfigDialog {
       context: context,
       builder: (context) {
         return DialogBody(
-          child: Padding(
+          Padding(
             padding: const EdgeInsets.all(16.0),
             child: ImportConfigWidget(_bloc),
           ),

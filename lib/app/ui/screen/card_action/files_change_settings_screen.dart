@@ -1,15 +1,10 @@
-import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
-import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
-import 'package:devkit/app/domain/model/signature_data_models.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
-import 'package:devkit/commons/common_abstracts.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../finders.dart';
 
@@ -19,17 +14,12 @@ class FilesChangeSettingsScreen extends StatefulWidget {
 }
 
 class _FilesReadScreenState extends State<FilesChangeSettingsScreen> {
-  FilesChangeSettingsBloc _bloc;
+  late FilesChangeSettingsBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = FilesChangeSettingsBloc();
-          return _bloc;
-        })
-      ],
+      providers: [RepositoryProvider(create: (context) => FilesChangeSettingsBloc().apply((it) => _bloc = it))],
       child: FilesChangeSettingsFrame(),
     );
   }
@@ -66,9 +56,9 @@ class FilesChangeSettingsBody extends StatefulWidget {
 }
 
 class _FilesReadBodyState extends State<FilesChangeSettingsBody> {
-  FilesChangeSettingsBloc _bloc;
-  TextStreamController _cidController;
-  TextStreamController _indicesController;
+  late FilesChangeSettingsBloc _bloc;
+  late TextStreamController _cidController;
+  late TextStreamController _indicesController;
 
   @override
   void initState() {
@@ -76,7 +66,7 @@ class _FilesReadBodyState extends State<FilesChangeSettingsBody> {
 
     _bloc = RepoFinder.setFilesChangeSettingsBloc(context);
     _cidController = TextStreamController(_bloc.bsCid);
-    _indicesController = TextStreamController(_bloc.indicesStream);
+    _indicesController = TextStreamController(_bloc.bsIndices);
   }
 
   @override

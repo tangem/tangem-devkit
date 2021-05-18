@@ -4,27 +4,27 @@ part 'card_response.g.dart';
 
 @JsonSerializable()
 class CardResponse {
-  CardDataResponse cardData;
-  String cardId;
-  String cardPublicKey;
-  String curve;
-  FirmwareVersion firmwareVersion;
-  int health;
-  bool isActivated;
-  String issuerPublicKey;
-  String manufacturerName;
-  int maxSignatures;
-  int pauseBeforePin2;
-  List<String> settingsMask;
-  List<String> signingMethods;
-  String status;
-  bool terminalIsLinked;
-  String walletPublicKey;
-  int walletRemainingSignatures;
-  int walletSignedHashes;
+  final CardDataResponse cardData;
+  final String cardId;
+  final String cardPublicKey;
+  final String curve;
+  final FirmwareVersion firmwareVersion;
+  final int health;
+  final bool isActivated;
+  final String issuerPublicKey;
+  final String manufacturerName;
+  final int maxSignatures;
+  final int pauseBeforePin2;
+  final List<String> settingsMask;
+  final List<String> signingMethods;
+  final String status;
+  final bool terminalIsLinked;
+  final String walletPublicKey;
+  final int walletRemainingSignatures;
+  final int walletSignedHashes;
 
   CardResponse(
-      {this.cardData,
+      this.cardData,
       this.cardId,
       this.cardPublicKey,
       this.curve,
@@ -41,7 +41,7 @@ class CardResponse {
       this.terminalIsLinked,
       this.walletPublicKey,
       this.walletRemainingSignatures,
-      this.walletSignedHashes});
+      this.walletSignedHashes);
 
   factory CardResponse.fromJson(Map<String, dynamic> json) => _$CardResponseFromJson(json);
 
@@ -72,19 +72,19 @@ class CardDataResponse {
   final String manufactureDateTime;
   final List<String> productMask;
   @JsonKey(includeIfNull: false)
-  final String tokenContractAddress;
+  final String? tokenContractAddress;
   @JsonKey(includeIfNull: false)
-  final String tokenSymbol;
+  final String? tokenSymbol;
   @JsonKey(includeIfNull: false)
-  final int tokenDecimal;
+  final int? tokenDecimal;
 
-  CardDataResponse({
+  CardDataResponse(
     this.batchId,
     this.blockchainName,
     this.issuerName,
     this.manufacturerSignature,
     this.manufactureDateTime,
-    this.productMask,
+    this.productMask, {
     this.tokenContractAddress,
     this.tokenSymbol,
     this.tokenDecimal,

@@ -1,4 +1,4 @@
-import 'package:devkit/app/domain/actions_bloc/actions_blocs.dart';
+import 'package:devkit/app/domain/actions_bloc/ex_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/commons/text_controller.dart';
@@ -14,17 +14,12 @@ class ReadIssuerExDataScreen extends StatefulWidget {
 }
 
 class _ReadIssuerExDataScreenState extends State<ReadIssuerExDataScreen> {
-  ReadIssuerExDataBloc _bloc;
+  late ReadIssuerExDataBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = ReadIssuerExDataBloc();
-          return _bloc;
-        })
-      ],
+      providers: [RepositoryProvider(create: (context) => ReadIssuerExDataBloc().apply((it) => _bloc = it))],
       child: ReadIssuerExDataFrame(),
     );
   }
@@ -61,8 +56,8 @@ class ReadIssuerExDataBody extends StatefulWidget {
 }
 
 class _ReadIssuerExDataBodyState extends State<ReadIssuerExDataBody> {
-  ReadIssuerExDataBloc _bloc;
-  TextStreamController _cidController;
+  late ReadIssuerExDataBloc _bloc;
+  late TextStreamController _cidController;
 
   @override
   void initState() {

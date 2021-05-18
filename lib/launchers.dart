@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:devkit/commons/global/show_description.dart';
 import 'package:devkit/commons/global/shared_preferences.dart';
+import 'package:devkit/commons/global/show_description.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tangem_sdk/sdk_plugin.dart';
@@ -48,7 +48,10 @@ class ReleaseLauncher extends AppLauncher {
 
   _initCrashlytics() async {
 //    await FlutterCrashlytics().initialize();
-    FlutterError.onError = (FlutterErrorDetails details) => Zone.current.handleUncaughtError(details.exception, details.stack);
+    FlutterError.onError = (FlutterErrorDetails details) => Zone.current.handleUncaughtError(
+          details.exception,
+          details.stack ?? StackTrace.empty,
+        );
 
 //    runZoned<Future<Null>>(() async {
     _launchApplication(this);

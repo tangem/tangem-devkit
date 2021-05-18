@@ -3,22 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class TapEncounterWidget extends StatefulWidget {
-  final Function onSuccess;
+  final Function? onSuccess;
   final int maxTapCount;
   final Widget child;
 
-  const TapEncounterWidget({
-    this.onSuccess,
-    @required this.maxTapCount,
-    @required this.child,
-  });
+  const TapEncounterWidget(this.maxTapCount, this.child, {this.onSuccess});
 
   @override
   _TapEncounterWidgetState createState() => _TapEncounterWidgetState();
 }
 
 class _TapEncounterWidgetState extends State<TapEncounterWidget> {
-  Timer _debounce;
+  Timer? _debounce;
   int tapCount = 0;
 
   @override
@@ -31,7 +27,7 @@ class _TapEncounterWidgetState extends State<TapEncounterWidget> {
 
   _launch() {
     if (tapCount == widget.maxTapCount) {
-      _debounce.cancel();
+      _debounce?.cancel();
       _resetCount();
       widget.onSuccess?.call();
       return;
@@ -39,7 +35,7 @@ class _TapEncounterWidgetState extends State<TapEncounterWidget> {
 
     if (_debounce?.isActive ?? false) {
       _incrementCount();
-      _debounce.cancel();
+      _debounce?.cancel();
     }
     _debounce = Timer(const Duration(milliseconds: 500), _resetCount);
   }
