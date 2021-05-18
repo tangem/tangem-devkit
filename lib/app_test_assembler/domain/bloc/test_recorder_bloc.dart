@@ -11,7 +11,7 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 class TestRecorderBlock extends DisposableBloc {
   final bsRecordingState = StatedBehaviorSubject<bool>(false);
 
-  final TestStorageRepository _testStoreRepository;
+  final TestStorageRepository _testStorageRepository;
   final _stepRecordsList = <StepRecord>[];
   final _subscriptions = <StreamSubscription>[];
   final _subjects = <Subject>[];
@@ -20,8 +20,8 @@ class TestRecorderBlock extends DisposableBloc {
 
   StepRecord? _currentRecord;
 
-  TestRecorderBlock(this._testStoreRepository) {
-    _testAssembler = TestAssembler(_testStoreRepository);
+  TestRecorderBlock(this._testStorageRepository) {
+    _testAssembler = TestAssembler(_testStorageRepository);
     _subjects.add(bsRecordingState.subject);
     _subscriptions.add(bsRecordingState.stream.listen(_listenRecordingState));
   }
@@ -33,8 +33,8 @@ class TestRecorderBlock extends DisposableBloc {
     // if record is stopped and _recordingList is not empty -> create jsonTest and store it to the testsStorage
     final jsonTest = _testAssembler.assembleTest(_stepRecordsList);
     final name = jsonTest.setup.name;
-    _testStoreRepository.testsStorage.set(name, jsonTest);
-    _testStoreRepository.testsStorage.save(name: name);
+    _testStorageRepository.testsStorage.set(name, jsonTest);
+    _testStorageRepository.testsStorage.save(name: name);
     _stepRecordsList.clear();
   }
 

@@ -12,14 +12,14 @@ import 'package:share/share.dart';
 class JsonTestListBloc extends DisposableBloc {
   final bsRecords = BehaviorSubject<List<JsonTest>>();
 
-  final TestStorageRepository _testStoreRepository;
+  final TestStorageRepository _testStorageRepository;
   late final JsonTestsStorage _jsonTestsStorage;
   final _storedJsonTests = <JsonTest>[];
   final _subscriptions = <StreamSubscription>[];
   final _subjects = <Subject>[];
 
-  JsonTestListBloc(this._testStoreRepository) {
-    this._jsonTestsStorage = _testStoreRepository.testsStorage;
+  JsonTestListBloc(this._testStorageRepository) {
+    this._jsonTestsStorage = _testStorageRepository.testsStorage;
     _subjects.add(bsRecords);
     _subscriptions.add(_jsonTestsStorage.isReadyToUseStream.listen(_listenStorageReady));
     _subscriptions.add(_jsonTestsStorage.onStorageModifiedStream.listen(_listenStorageModification));

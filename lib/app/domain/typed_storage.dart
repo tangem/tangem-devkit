@@ -128,14 +128,14 @@ abstract class MapToTypeConvertible<T> {
 }
 
 abstract class ConfigSharedPrefsStorage<T> extends ConfigStorage<T> with MapToTypeConvertible<T> {
-  final String _storeKey;
+  final String _storageKey;
   final SharedPreferences _shPref = AppSharedPreferences.shPref;
 
-  ConfigSharedPrefsStorage(this._storeKey) : super();
+  ConfigSharedPrefsStorage(this._storageKey) : super();
 
   @override
   restore(VoidCallback onComplete) {
-    String? jsonString = _shPref.getString(_storeKey);
+    String? jsonString = _shPref.getString(_storageKey);
     if (jsonString == null) {
       super.restore(onComplete);
       return;
@@ -149,7 +149,7 @@ abstract class ConfigSharedPrefsStorage<T> extends ConfigStorage<T> with MapToTy
   @override
   save({String? name, VoidCallback? onComplete}) {
     if (name == null) {
-      _shPref.setString(_storeKey, json.encode(_storage));
+      _shPref.setString(_storageKey, json.encode(_storage));
     } else {
       _storage[name]?.let((it) => _shPref.setString(name, json.encode(it)));
     }
