@@ -37,7 +37,7 @@ extension OnString on String? {
 
 // iterables
 extension OnIterableNullSafe<E> on Iterable<E> {
-  E? firstWhereOrNull(bool test(E element)) {
+  E? firstWhereOrNull(bool test(E e)) {
     for (E element in this) {
       if (test(element)) return element;
     }

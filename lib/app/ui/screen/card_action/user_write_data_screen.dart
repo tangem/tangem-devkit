@@ -77,7 +77,7 @@ class _WriteUserDataBodyState extends State<WriteUserDataBody> {
     return Column(
       children: <Widget>[
         HiddenResponseHandlerWidget(_bloc),
-        HiddenSnackbarHandlerWidget([_bloc.snackbarMessageStream]),
+        HiddenSnackBarHandlerWidget([_bloc]),
         HiddenTestRecorderWidget(_bloc),
         SizedBox(height: 8),
         InputCidWidget(

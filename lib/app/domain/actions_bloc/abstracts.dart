@@ -5,7 +5,7 @@ import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
-abstract class ActionBloc<T> extends DisposableBloc {
+abstract class ActionBloc<T> extends BaseBloc {
   final bsCid = BehaviorSubject<String>();
 
   String? _cid;
@@ -14,7 +14,6 @@ abstract class ActionBloc<T> extends DisposableBloc {
   final PublishSubject<CommandDataModel> _commandDataIsReady = PublishSubject<CommandDataModel>();
   final PublishSubject<T> _successResponse = PublishSubject<T>();
   final PublishSubject<TangemSdkBaseError?> _errorResponse = PublishSubject<TangemSdkBaseError?>();
-  final PublishSubject<dynamic> _snackbarMessage = PublishSubject<dynamic>();
   List<StreamSubscription> subscriptions = [];
 
   ActionBloc() {
@@ -27,8 +26,6 @@ abstract class ActionBloc<T> extends DisposableBloc {
 
   Stream<TangemSdkBaseError?> get errorResponseStream => _errorResponse.stream;
 
-  Stream<dynamic> get snackbarMessageStream => _snackbarMessage.stream;
-
   Callback get callback => Callback((success) => sendSuccess(success), (error) => sendError(error));
 
   sendSuccess(T success) {
@@ -37,10 +34,6 @@ abstract class ActionBloc<T> extends DisposableBloc {
 
   sendError(TangemSdkBaseError? error) {
     _errorResponse.add(error);
-  }
-
-  sendSnackbarMessage(dynamic message) {
-    _snackbarMessage.add(message);
   }
 
   bool hasCid() => !_cid.isNullOrEmpty();

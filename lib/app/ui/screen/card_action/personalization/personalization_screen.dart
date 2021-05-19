@@ -99,7 +99,7 @@ class PersonalizeBody extends StatelessWidget {
         child: ListBody(
           children: <Widget>[
             HiddenResponseHandlerWidget(bloc),
-            HiddenSnackbarHandlerWidget([bloc.snackbarMessageStream]),
+            HiddenSnackBarHandlerWidget([bloc]),
             CardNumberSegmentWidget(),
             CommonSegmentWidget(),
             SigningMethodSegmentWidget(),

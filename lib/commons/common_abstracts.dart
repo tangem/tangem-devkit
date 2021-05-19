@@ -61,12 +61,24 @@ abstract class Disposable {
 
 abstract class DisposableBloc extends Disposable {}
 
+abstract class BaseBloc extends DisposableBloc with SnackBarStreamHolder {}
+
+abstract class SnackBarStreamHolder {
+  final PublishSubject<dynamic> _snackbarMessage = PublishSubject<dynamic>();
+
+  Stream<dynamic> get snackbarMessageStream => _snackbarMessage.stream;
+
+  sendSnackbarMessage(dynamic message) {
+    _snackbarMessage.add(message);
+  }
+}
+
 class StatedBehaviorSubject<T> extends Disposable {
   final BehaviorSubject<T> _subject;
   late StreamSubscription _subscription;
-  T _state;
+  T? _state;
 
-  StatedBehaviorSubject(T initialState)
+  StatedBehaviorSubject([T? initialState])
       : this._subject = initialState == null ? BehaviorSubject<T>() : BehaviorSubject<T>.seeded(initialState),
         this._state = initialState {
     _subscription = _subject.stream.listen((event) => _state = event);
@@ -76,7 +88,7 @@ class StatedBehaviorSubject<T> extends Disposable {
 
   Sink<T> get sink => _subject.sink;
 
-  T get state => _state;
+  T? get state => _state;
 
   BehaviorSubject get subject => _subject;
 

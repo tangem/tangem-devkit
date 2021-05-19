@@ -67,7 +67,7 @@ class _ScanBodyState extends State<ScanBody> {
   Widget build(BuildContext context) {
     return Stack(children: <Widget>[
       HiddenResponseHandlerWidget(_bloc),
-      HiddenSnackbarHandlerWidget([_bloc.snackbarMessageStream]),
+      HiddenSnackBarHandlerWidget([_bloc]),
       HiddenTestRecorderWidget(_bloc),
       Center(
         child: Padding(

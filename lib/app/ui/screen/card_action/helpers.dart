@@ -5,6 +5,7 @@ import 'package:devkit/app/ui/screen/response/response_screen.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_recorder_bloc.dart';
 import 'package:devkit/application.dart';
+import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,24 +45,26 @@ class HiddenResponseHandlerWidget extends StatelessWidget {
   }
 }
 
-class HiddenSnackbarHandlerWidget extends StatefulWidget {
-  final List<Stream> messageStreams;
+class HiddenSnackBarHandlerWidget extends StatefulWidget {
+  final List<SnackBarStreamHolder> streamHolders;
 
-  const HiddenSnackbarHandlerWidget(this.messageStreams);
+  const HiddenSnackBarHandlerWidget(this.streamHolders);
 
   @override
-  _HiddenSnackbarHandlerWidgetState createState() => _HiddenSnackbarHandlerWidgetState();
+  _HiddenSnackBarHandlerWidgetState createState() => _HiddenSnackBarHandlerWidgetState();
 }
 
-class _HiddenSnackbarHandlerWidgetState extends State<HiddenSnackbarHandlerWidget> {
+class _HiddenSnackBarHandlerWidgetState extends State<HiddenSnackBarHandlerWidget> {
   List<StreamSubscription> _subscriptions = [];
 
   @override
   void initState() {
     super.initState();
-    widget.messageStreams.forEach((element) => _subscriptions.add(element.listen(
-          (event) => showJsonSnackbar(context, event),
-        )));
+    widget.streamHolders.forEach((streamHolder) {
+      _subscriptions.add(streamHolder.snackbarMessageStream.listen((event) {
+        showJsonSnackbar(context, event);
+      }));
+    });
   }
 
   @override

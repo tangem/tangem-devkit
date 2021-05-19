@@ -8,10 +8,10 @@ import 'package:tangem_sdk/model/command_data.dart';
 import 'package:tangem_sdk/sdk_plugin.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
-class TestRecorderBlock extends DisposableBloc {
-  final bsRecordingState = StatedBehaviorSubject<bool>(false);
+class TestRecorderBlock extends BaseBloc {
+  final bsRecordingState = StatedBehaviorSubject<bool>();
 
-  final TestStorageRepository _testStorageRepository;
+  final TestStorageRepository _storageRepo;
   final _stepRecordsList = <StepRecord>[];
   final _subscriptions = <StreamSubscription>[];
   final _subjects = <Subject>[];
@@ -20,29 +20,37 @@ class TestRecorderBlock extends DisposableBloc {
 
   StepRecord? _currentRecord;
 
-  TestRecorderBlock(this._testStorageRepository) {
-    _testAssembler = TestAssembler(_testStorageRepository);
+  TestRecorderBlock(this._storageRepo) {
+    _testAssembler = TestAssembler(_storageRepo);
     _subjects.add(bsRecordingState.subject);
     _subscriptions.add(bsRecordingState.stream.listen(_listenRecordingState));
   }
 
   _listenRecordingState(bool isRecording) {
-    if (isRecording) return;
-    if (_stepRecordsList.isEmpty) return;
+    if (isRecording) {
+      sendSnackbarMessage("Starting record");
+      return;
+    }
+    if (_stepRecordsList.isEmpty) {
+      sendSnackbarMessage("No one records has been recorded");
+      return;
+    }
 
+    sendSnackbarMessage("Recording is success");
     // if record is stopped and _recordingList is not empty -> create jsonTest and store it to the testsStorage
     final jsonTest = _testAssembler.assembleTest(_stepRecordsList);
     final name = jsonTest.setup.name;
-    _testStorageRepository.testsStorage.set(name, jsonTest);
-    _testStorageRepository.testsStorage.save(name: name);
+    _storageRepo.testsStorage.set(name, jsonTest);
+    _storageRepo.testsStorage.save(name: name);
     _stepRecordsList.clear();
   }
 
   toggleRecordState() {
-    bsRecordingState.subject.add(!bsRecordingState.state);
+    final newState = bsRecordingState.state ?? false;
+    bsRecordingState.subject.add(!newState);
   }
 
-  bool recordIsActive() => bsRecordingState.state;
+  bool recordIsActive() => bsRecordingState.state ?? false;
 
   handleCommand(CommandDataModel commandData) {
     _currentRecord = StepRecord(commandData);
@@ -76,21 +84,21 @@ class TestStorageRepository {
 typedef ErrorHandler = Function(String);
 
 class TestAssembler {
-  final TestStorageRepository _testStorageRepository;
+  final TestStorageRepository _storageRepo;
 
   ErrorHandler? onErrorListener;
 
-  TestAssembler(this._testStorageRepository);
+  TestAssembler(this._storageRepo);
 
   JsonTest assembleTest(List<StepRecord> records) {
-    final testsCount = _testStorageRepository.testsStorage.size();
-    final currentSetup = _testStorageRepository.setupConfigStorage.getCurrent();
+    final testsCount = _storageRepo.testsStorage.size();
+    final currentSetup = _storageRepo.setupConfigStorage.getCurrent();
     final setup = currentSetup.copyWith(name: "${currentSetup.name}_$testsCount");
     return JsonTest(setup, _createSteps(setup.name, records));
   }
 
   List<TestStep> _createSteps(String testName, List<StepRecord> records) {
-    final stepConfig = _testStorageRepository.stepConfigStorage.getCurrent();
+    final stepConfig = _storageRepo.stepConfigStorage.getCurrent();
     return records.mapIndexed((index, e) => _createStep(e, index, stepConfig)).toNullSafe();
   }
 

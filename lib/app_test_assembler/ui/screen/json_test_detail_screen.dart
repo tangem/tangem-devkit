@@ -1,4 +1,6 @@
-import 'package:devkit/app_test_assembler/domain/bloc/json_test_detail_bloc.dart';
+import 'package:devkit/app_test_assembler/domain/bloc/test_setup_detail_bloc.dart';
+import 'package:devkit/app_test_assembler/ui/screen/test_setup_detail_screen.dart';
+import 'package:devkit/app_test_assembler/ui/screen/test_step_list_screen.dart';
 import 'package:devkit/app_test_assembler/ui/widgets/widgets.dart';
 import 'package:devkit/application.dart';
 import 'package:devkit/navigation/routes.dart';
@@ -10,22 +12,33 @@ class JsonTestDetailScreen extends StatefulWidget {
   @override
   _JsonTestDetailScreenState createState() => _JsonTestDetailScreenState();
 
-  static navigate(BuildContext context, String data) {
+  static navigate(BuildContext context, JsonTestDetailScreenData data) {
     Navigator.pushNamed(context, Routes.JSON_TEST_DETAIL, arguments: data);
   }
 }
 
+class JsonTestDetailScreenData {
+  final String testName;
+  final int index;
+
+  JsonTestDetailScreenData(this.testName, this.index);
+}
+
 class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
-  late JsonTestDetailBloc _bloc;
+  late TestSetupDetailBloc _setupBloc;
+  TestStepListBloc? _stepListBloc;
 
   @override
   Widget build(BuildContext context) {
-    final name = ModalRoute.of(context)!.settings.arguments as String;
-    final testStorageRepository = context.read<ApplicationContext>().testStorageRepository;
+    final screenData = ModalRoute.of(context)!.settings.arguments as JsonTestDetailScreenData;
+    final storageRepo = context.read<ApplicationContext>().testStorageRepository;
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(
-          create: (context) => JsonTestDetailBloc(testStorageRepository, name).apply((it) => _bloc = it),
+          create: (context) => TestSetupDetailBloc(storageRepo, screenData).apply((it) => _setupBloc = it),
+        ),
+        RepositoryProvider(
+          create: (context) => TestStepListBloc(storageRepo, screenData).apply((it) => _stepListBloc = it),
         )
       ],
       child: JsonTestDetailFrame(),
@@ -34,7 +47,8 @@ class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
 
   @override
   void dispose() {
-    _bloc.dispose();
+    _setupBloc.dispose();
+    _stepListBloc?.dispose();
     super.dispose();
   }
 }
@@ -42,13 +56,24 @@ class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
 class JsonTestDetailFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<JsonTestDetailBloc>();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(bloc.testName),
+    final setupDetailBloc = context.read<TestSetupDetailBloc>();
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(setupDetailBloc.screenData.testName),
+          actions: [
+            IconButton(icon: Icon(Icons.save), onPressed: () => setupDetailBloc.save()),
+          ],
+          bottom: TabBar(
+            tabs: [
+              TabTextIconWidget(Icon(Icons.settings), Text("Setup")),
+              TabTextIconWidget(Icon(Icons.list_alt), Text("Steps")),
+            ],
+          ),
+        ),
+        body: JsonTestDetailBody(),
       ),
-      body: JsonTestDetailBody(),
     );
   }
 }
@@ -56,13 +81,11 @@ class JsonTestDetailFrame extends StatelessWidget {
 class JsonTestDetailBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<JsonTestDetailBloc>();
-    return SimpleFutureBuilder<String>(
-      bloc.readFile(),
-      (context) => CenterLoadingText(),
-      (context, data) => SingleChildScrollView(
-        child: Text(data),
-      ),
+    return TabBarView(
+      children: [
+        TestSetupDetailBody(),
+        TestStepListBody(),
+      ],
     );
   }
 }

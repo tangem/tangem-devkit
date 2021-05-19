@@ -1,5 +1,7 @@
+import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/json_test_list_block.dart';
+import 'package:devkit/app_test_assembler/domain/bloc/test_recorder_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_assembler/ui/screen/json_test_detail_screen.dart';
 import 'package:devkit/app_test_assembler/ui/widgets/widgets.dart';
@@ -21,10 +23,10 @@ class _JsonTestListScreenState extends State<JsonTestListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final testStorageRepository = context.read<ApplicationContext>().testStorageRepository;
+    final storageRepo = context.read<ApplicationContext>().testStorageRepository;
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => JsonTestListBloc(testStorageRepository).apply((it) => _bloc = it))
+        RepositoryProvider(create: (context) => JsonTestListBloc(storageRepo).apply((it) => _bloc = it))
       ],
       child: JsonTestListFrame(),
     );
@@ -56,48 +58,51 @@ class JsonTestListBody extends StatefulWidget {
 }
 
 class _JsonTestListBodyState extends State<JsonTestListBody> {
-  late JsonTestListBloc _bloc;
+  late JsonTestListBloc _jsonTestListBloc;
+  late TestRecorderBlock _testRecorderBlock;
 
   @override
   void initState() {
     super.initState();
 
-    _bloc = context.read<JsonTestListBloc>();
+    _jsonTestListBloc = context.read<JsonTestListBloc>();
+    _testRecorderBlock = context.read<ApplicationContext>().testRecorderBloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<JsonTest>>(
-      stream: _bloc.bsRecords.stream,
-      builder: (context, snapshot) {
-        if (snapshot.data == null) return CenterLoadingText();
-        if (snapshot.data!.isEmpty) return CenterText("Tests not created yet");
-        return ListView.separated(
-          itemCount: snapshot.data!.length,
-          itemBuilder: (context, index) {
-            final item = snapshot.data![index];
-            return ListTile(
-              title: Text(item.setup.name),
-              subtitle: Text(item.setup.description),
-              onTap: () => JsonTestDetailScreen.navigate(context, item.setup.name),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(icon: Icon(Icons.delete_forever), onPressed: () => _bloc.delete(index)),
-                  IconButton(icon: Icon(Icons.ios_share), onPressed: () => _bloc.share(index)),
-                ],
-              ),
+    return Stack(
+      children: [
+        HiddenSnackBarHandlerWidget([_jsonTestListBloc, _testRecorderBlock]),
+        StreamBuilder<List<JsonTest>>(
+          stream: _jsonTestListBloc.bsRecords.stream,
+          builder: (context, snapshot) {
+            if (snapshot.data == null) return CenterLoadingText();
+            if (snapshot.data!.isEmpty) return CenterText("Tests not created yet");
+
+            return ListView.separated(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final item = snapshot.data![index];
+                return ListTile(
+                  title: Text(item.setup.name),
+                  subtitle: Text(item.setup.description),
+                  onTap: () => JsonTestDetailScreen.navigate(context, JsonTestDetailScreenData(item.setup.name, index)),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(icon: Icon(Icons.delete_forever), onPressed: () => _jsonTestListBloc.delete(index)),
+                      IconButton(icon: Icon(Icons.ios_share), onPressed: () => _jsonTestListBloc.share(index)),
+                    ],
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) => HorizontalDelimiter(),
             );
           },
-          separatorBuilder: (context, index) => HorizontalDelimiter(),
-        );
-      },
+        )
+      ],
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 
@@ -108,11 +113,8 @@ class StartStopRecordWidget extends StatelessWidget {
     return StreamBuilder<bool>(
       stream: bloc.bsRecordingState.stream,
       builder: (context, snapshot) {
-        if (snapshot.data == null) return StubWidget();
-
-        final isRecording = snapshot.data!;
+        final isRecording = snapshot.data ?? false;
         return IconButton(
-            iconSize: 22,
             padding: EdgeInsets.only(right: 8),
             icon: Icon(isRecording ? Icons.stop : Icons.fiber_manual_record),
             onPressed: () => bloc.toggleRecordState());

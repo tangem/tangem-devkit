@@ -33,3 +33,21 @@ class CenterText extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(child: Text(text));
 }
+
+class TabTextIconWidget extends StatelessWidget {
+  final Icon icon;
+  final Text text;
+
+  const TabTextIconWidget(this.icon, this.text, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Tab(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [icon, SizedBox(width: 8), text],
+      ),
+    );
+  }
+}
