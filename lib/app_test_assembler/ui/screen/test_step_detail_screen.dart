@@ -61,7 +61,9 @@ class TestStepDetailFrame extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(testStepDetailBloc.screenData.stepName),
-        actions: [StateRecordingWidget(IconButton(icon: Icon(Icons.save), onPressed: () => testStepDetailBloc.save()))],
+        actions: [
+          StateRecordingWidget(inactive: IconButton(icon: Icon(Icons.save), onPressed: () => testStepDetailBloc.save()))
+        ],
       ),
       body: TestStepDetailBody(),
     );

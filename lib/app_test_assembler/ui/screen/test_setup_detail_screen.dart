@@ -79,7 +79,10 @@ class _TestSetupDetailBodyState extends State<TestSetupDetailBody> {
 
   @override
   Widget build(BuildContext context) {
-    return StateRecordingWidget(_immutableSetup(context), _mutableSetup(context));
+    return StateRecordingWidget(
+      active: _immutableSetup(context),
+      inactive: _mutableSetup(context),
+    );
   }
 
   ListView _mutableSetup(BuildContext context) {

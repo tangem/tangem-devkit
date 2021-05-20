@@ -90,8 +90,9 @@ class StateRecordingWidget extends StatelessWidget {
   final Widget recordActiveWidget;
   final Widget recordInActiveWidget;
 
-  StateRecordingWidget(this.recordActiveWidget, [Widget? recordInActiveWidget, Key? key])
-      : this.recordInActiveWidget = recordInActiveWidget ?? StubWidget(),
+  StateRecordingWidget({Widget? active, Widget? inactive, Key? key})
+      : this.recordActiveWidget = active ?? StubWidget(),
+        this.recordInActiveWidget = inactive ?? StubWidget(),
         super(key: key);
 
   @override

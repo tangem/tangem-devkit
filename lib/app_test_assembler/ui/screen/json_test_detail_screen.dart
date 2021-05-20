@@ -81,7 +81,9 @@ class _JsonTestDetailFrameState extends State<JsonTestDetailFrame> with SingleTi
       child: Scaffold(
         appBar: AppBar(
           title: Text(setupDetailBloc.screenData.testName),
-          actions: [StateRecordingWidget(IconButton(icon: Icon(Icons.save), onPressed: () => setupDetailBloc.save()))],
+          actions: [
+            StateRecordingWidget(inactive: IconButton(icon: Icon(Icons.save), onPressed: () => setupDetailBloc.save()))
+          ],
           bottom: TabBar(
             controller: _tabController,
             tabs: [
