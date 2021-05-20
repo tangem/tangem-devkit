@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:devkit/app/domain/typed_storage.dart';
@@ -12,17 +11,15 @@ import 'package:share/share.dart';
 class JsonTestListBloc extends BaseBloc {
   final bsRecords = BehaviorSubject<List<JsonTest>>();
 
-  final TestStorageRepository _storageRepo;
+  final StorageRepository _storageRepo;
   late final JsonTestsStorage _jsonTestsStorage;
   final _storedJsonTests = <JsonTest>[];
-  final _subscriptions = <StreamSubscription>[];
-  final _subjects = <Subject>[];
 
   JsonTestListBloc(this._storageRepo) {
     this._jsonTestsStorage = _storageRepo.testsStorage;
-    _subjects.add(bsRecords);
-    _subscriptions.add(_jsonTestsStorage.isReadyToUseStream.listen(_listenStorageReady));
-    _subscriptions.add(_jsonTestsStorage.onStorageModifiedStream.listen(_listenStorageModification));
+    addSubject(bsRecords);
+    addSubscription(_jsonTestsStorage.isReadyToUseStream.listen(_listenStorageReady));
+    addSubscription(_jsonTestsStorage.onStorageModifiedStream.listen(_listenStorageModification));
   }
 
   _listenStorageReady(bool isReady) {
@@ -59,11 +56,5 @@ class JsonTestListBloc extends BaseBloc {
   _notifyRecordListChanged() {
     _storedJsonTests.sort((a, b) => a.setup.creationDateMs.compareTo(b.setup.creationDateMs));
     bsRecords.add(_storedJsonTests);
-  }
-
-  @override
-  dispose() {
-    _subscriptions.forEach((element) => element.cancel());
-    _subjects.forEach((element) => element.close());
   }
 }

@@ -23,7 +23,7 @@ class _JsonTestListScreenState extends State<JsonTestListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final storageRepo = context.read<ApplicationContext>().testStorageRepository;
+    final storageRepo = context.read<ApplicationContext>().storageRepo;
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => JsonTestListBloc(storageRepo).apply((it) => _bloc = it))

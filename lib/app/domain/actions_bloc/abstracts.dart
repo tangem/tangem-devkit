@@ -14,10 +14,9 @@ abstract class ActionBloc<T> extends BaseBloc {
   final PublishSubject<CommandDataModel> _commandDataIsReady = PublishSubject<CommandDataModel>();
   final PublishSubject<T> _successResponse = PublishSubject<T>();
   final PublishSubject<TangemSdkBaseError?> _errorResponse = PublishSubject<TangemSdkBaseError?>();
-  List<StreamSubscription> subscriptions = [];
 
   ActionBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
+    addSubscription(bsCid.stream.listen((event) => _cid = event));
   }
 
   Stream<CommandDataModel> get commandDataStream => _commandDataIsReady.stream;
@@ -79,11 +78,6 @@ abstract class ActionBloc<T> extends BaseBloc {
   }
 
   CommandDataModel? createCommandData();
-
-  @override
-  dispose() {
-    subscriptions.forEach((element) => element.cancel());
-  }
 }
 
 String parseCidFromSuccessScan(CardResponse card) {

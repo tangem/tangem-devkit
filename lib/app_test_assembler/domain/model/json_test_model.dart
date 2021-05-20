@@ -15,6 +15,11 @@ class JsonTest {
   factory JsonTest.fromJson(Map<String, dynamic> json) => _$JsonTestFromJson(json);
 
   Map<String, dynamic> toJson() => _$JsonTestToJson(this);
+
+  JsonTest copyWith({TestSetup? setup, List<TestStep>? steps}) => JsonTest(
+      setup ?? this.setup,
+      steps ?? this.steps,
+    );
 }
 
 @JsonSerializable()

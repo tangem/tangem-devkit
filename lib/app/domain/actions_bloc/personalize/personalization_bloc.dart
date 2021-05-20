@@ -39,9 +39,8 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
 
   Sink<bool> get scrollingStateSink => _scrollingState.sink;
 
-  PersonalizationBloc() {
+  PersonalizationBloc(this._storage) {
     logD(this, "new instance");
-    _storage = PersonalizationConfigStorage();
     _initSegments();
     _updateConfigIntoTheSegments(_storage.getCurrent());
   }
@@ -164,7 +163,6 @@ class PersonalizationConfigStorage extends ConfigSharedPrefsStorage<Personalizat
 
   @override
   set(String name, PersonalizationConfig? config) {
-    if (config == null) return;
     super.set(_replaceSpaces(name), config);
   }
 

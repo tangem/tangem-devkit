@@ -31,7 +31,7 @@ class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final screenData = ModalRoute.of(context)!.settings.arguments as JsonTestDetailScreenData;
-    final storageRepo = context.read<ApplicationContext>().testStorageRepository;
+    final storageRepo = context.read<ApplicationContext>().storageRepo;
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(

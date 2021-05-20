@@ -47,10 +47,10 @@ class AppNavigatorObservers {
 }
 
 class ApplicationContext {
-  final TestStorageRepository testStorageRepository = TestStorageRepository();
+  final StorageRepository storageRepo = StorageRepository();
   late final TestRecorderBlock testRecorderBloc;
 
   ApplicationContext() {
-    testRecorderBloc = TestRecorderBlock(testStorageRepository);
+    testRecorderBloc = TestRecorderBlock(storageRepo);
   }
 }

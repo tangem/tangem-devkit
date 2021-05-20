@@ -1,9 +1,7 @@
-import 'dart:async';
-
+import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_assembler/domain/test_storages.dart';
 import 'package:devkit/commons/common_abstracts.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/model/command_data.dart';
 import 'package:tangem_sdk/sdk_plugin.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
@@ -11,10 +9,8 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 class TestRecorderBlock extends BaseBloc {
   final bsRecordingState = StatedBehaviorSubject<bool>();
 
-  final TestStorageRepository _storageRepo;
+  final StorageRepository _storageRepo;
   final _stepRecordsList = <StepRecord>[];
-  final _subscriptions = <StreamSubscription>[];
-  final _subjects = <Subject>[];
 
   late final TestAssembler _testAssembler;
 
@@ -22,8 +18,8 @@ class TestRecorderBlock extends BaseBloc {
 
   TestRecorderBlock(this._storageRepo) {
     _testAssembler = TestAssembler(_storageRepo);
-    _subjects.add(bsRecordingState.subject);
-    _subscriptions.add(bsRecordingState.stream.listen(_listenRecordingState));
+    addSubject(bsRecordingState.subject);
+    addSubscription(bsRecordingState.stream.listen(_listenRecordingState));
   }
 
   _listenRecordingState(bool isRecording) {
@@ -67,15 +63,10 @@ class TestRecorderBlock extends BaseBloc {
   handleCommandError(TangemSdkBaseError? error) {
     _currentRecord = null;
   }
-
-  @override
-  dispose() {
-    _subscriptions.forEach((element) => element.cancel());
-    _subjects.forEach((element) => element.close());
-  }
 }
 
-class TestStorageRepository {
+class StorageRepository {
+  final personalizationConfigStorage = PersonalizationConfigStorage();
   final testsStorage = JsonTestsStorage();
   final setupConfigStorage = TestSetupConfigStorage();
   final stepConfigStorage = TestStepConfigStorage();
@@ -84,7 +75,7 @@ class TestStorageRepository {
 typedef ErrorHandler = Function(String);
 
 class TestAssembler {
-  final TestStorageRepository _storageRepo;
+  final StorageRepository _storageRepo;
 
   ErrorHandler? onErrorListener;
 

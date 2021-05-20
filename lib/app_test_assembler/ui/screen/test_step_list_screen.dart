@@ -24,7 +24,7 @@ class _TestStepListScreenState extends State<TestStepListScreen> {
   @override
   Widget build(BuildContext context) {
     final screenData = ModalRoute.of(context)!.settings.arguments as JsonTestDetailScreenData;
-    final storageRepo = context.read<ApplicationContext>().testStorageRepository;
+    final storageRepo = context.read<ApplicationContext>().storageRepo;
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => TestStepListBloc(storageRepo, screenData).apply((it) => _bloc = it))
@@ -92,7 +92,7 @@ class _TestStepListBodyState extends State<TestStepListBody> {
 }
 
 class TestStepListBloc extends BaseBloc {
-  final TestStorageRepository _storageRepo;
+  final StorageRepository _storageRepo;
   final JsonTestDetailScreenData screenData;
   final List<TestStep> stepsList;
 
@@ -102,7 +102,4 @@ class TestStepListBloc extends BaseBloc {
   List<TestStep> getSteps() {
     return stepsList;
   }
-
-  @override
-  dispose() {}
 }

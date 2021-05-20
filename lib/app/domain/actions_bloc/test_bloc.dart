@@ -16,7 +16,7 @@ class TestBlock extends ActionBloc<dynamic> {
   Subject<String> get inputCommandSubject => _bsInputCommand;
 
   TestBlock() {
-    subscriptions.add(_bsInputCommand.stream.listen((event) => _inputedCommand = event));
+    addSubscription(_bsInputCommand.stream.listen((event) => _inputedCommand = event));
   }
 
   invokeAction() async{

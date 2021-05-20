@@ -1,4 +1,35 @@
+import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
+
+class TestInputWidget extends StatelessWidget {
+  final TextEditingController controller;
+  final TextInputType inputType;
+  final String? hint;
+  final double minHeight;
+
+  const TestInputWidget(
+    this.controller, {
+    this.hint,
+    this.inputType = TextInputType.text,
+    this.minHeight = 58,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: minHeight),
+        child: TextField(
+          controller: controller,
+          keyboardType: inputType,
+          decoration: InputDecoration(contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 5), labelText: hint, isDense: true),
+          style: TextStyle(fontSize: AppDimen.itemTextSize),
+        ),
+      ),
+    );
+  }
+}
 
 class SimpleFutureBuilder<T> extends StatelessWidget {
   final Future<T> future;

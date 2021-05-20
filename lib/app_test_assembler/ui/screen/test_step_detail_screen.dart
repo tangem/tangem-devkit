@@ -35,7 +35,7 @@ class _TestStepDetailScreenState extends State<TestStepDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final screenData = ModalRoute.of(context)!.settings.arguments as TestStepDetailScreenData;
-    final storageRepo = context.read<ApplicationContext>().testStorageRepository;
+    final storageRepo = context.read<ApplicationContext>().storageRepo;
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(
@@ -102,7 +102,7 @@ class _TestStepDetailBodyState extends State<TestStepDetailBody> {
 }
 
 class TestStepDetailBloc extends BaseBloc {
-  final TestStorageRepository _storageRepo;
+  final StorageRepository _storageRepo;
   final TestStepDetailScreenData screenData;
 
   TestStepDetailBloc(this._storageRepo, this.screenData);
@@ -121,7 +121,4 @@ class TestStepDetailBloc extends BaseBloc {
   save() {
     sendSnackbarMessage("Not implemented yet");
   }
-
-  @override
-  dispose() {}
 }

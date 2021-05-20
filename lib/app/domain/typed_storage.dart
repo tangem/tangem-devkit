@@ -79,10 +79,10 @@ class StorageModifyEvent<T> {
 }
 
 abstract class ConfigStorage<T> extends TypedStorage<T> {
-  static final String hidden = "hidden";
   static final String defaultKey = "default";
 
-  final String current = "$hidden.current";
+  final String _hidden = "hidden";
+  final String _current = "hidden.current";
 
   @override
   restore(VoidCallback onComplete) {
@@ -102,22 +102,22 @@ abstract class ConfigStorage<T> extends TypedStorage<T> {
 
   bool hasDefault() => has(defaultKey);
 
-  bool hasCurrent() => has(current);
+  bool hasCurrent() => has(_current);
 
   T getDefault() => get(defaultKey)!;
 
-  T getCurrent() => get(current) ?? getDefault();
+  T getCurrent() => get(_current) ?? getDefault();
 
   setDefault(T value) {
     set(defaultKey, value);
   }
 
   setCurrent(T value) {
-    set(current, value);
+    set(_current, value);
   }
 
   List<String> names() {
-    return _storage.keys.toList().where((e) => !e.contains(hidden)).toList();
+    return _storage.keys.toList().where((e) => !e.contains(_hidden)).toList();
   }
 
   T getDefaultValue();
@@ -153,6 +153,7 @@ abstract class ConfigSharedPrefsStorage<T> extends ConfigStorage<T> with MapToTy
     } else {
       _storage[name]?.let((it) => _shPref.setString(name, json.encode(it)));
     }
+    onComplete?.call();
   }
 }
 
@@ -193,13 +194,9 @@ abstract class FileStorage<T> extends TypedStorage<T> with MapToTypeConvertible<
 
   @override
   remove(String name) {
+    super.remove(name);
     final file = File(_assembleFilePath(name));
-    if (file.existsSync()) {
-      file.delete().then((value) {
-        final removedValue = _storage.remove(name);
-        _notifyRemove(removedValue);
-      });
-    }
+    if (file.existsSync()) file.deleteSync();
   }
 
   String _assembleFilePath(String key) {
