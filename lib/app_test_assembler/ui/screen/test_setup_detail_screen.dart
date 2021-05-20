@@ -54,6 +54,10 @@ class TestSetupDetailFrame extends StatelessWidget {
 }
 
 class TestSetupDetailBody extends StatefulWidget {
+  final bool attachSnackBarHandler;
+
+  const TestSetupDetailBody({Key? key, this.attachSnackBarHandler = true}) : super(key: key);
+
   @override
   _TestSetupDetailBodyState createState() => _TestSetupDetailBodyState();
 }
@@ -79,7 +83,7 @@ class _TestSetupDetailBodyState extends State<TestSetupDetailBody> {
     return Container(
       child: ListView(
         children: <Widget>[
-          HiddenSnackBarHandlerWidget([_bloc]),
+          widget.attachSnackBarHandler ? HiddenSnackBarHandlerWidget([_bloc]) : StubWidget(),
           SizedBox(height: 16),
           TestInputWidget(
             _nameController.controller,

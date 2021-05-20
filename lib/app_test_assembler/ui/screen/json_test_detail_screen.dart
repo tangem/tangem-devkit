@@ -1,3 +1,5 @@
+import 'package:devkit/app/ui/screen/card_action/helpers.dart';
+import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_setup_detail_bloc.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_setup_detail_screen.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_step_list_screen.dart';
@@ -53,39 +55,68 @@ class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
   }
 }
 
-class JsonTestDetailFrame extends StatelessWidget {
+class JsonTestDetailFrame extends StatefulWidget {
+  const JsonTestDetailFrame({Key? key}) : super(key: key);
+
+  @override
+  _JsonTestDetailFrameState createState() => _JsonTestDetailFrameState();
+}
+
+class _JsonTestDetailFrameState extends State<JsonTestDetailFrame> with SingleTickerProviderStateMixin {
+  final int _tabLength = 2;
+  late final TabController _tabController;
+  bool _showSaveMenuItem = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _tabLength, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
     final setupDetailBloc = context.read<TestSetupDetailBloc>();
     return DefaultTabController(
-      length: 2,
+      length: _tabLength,
       child: Scaffold(
         appBar: AppBar(
           title: Text(setupDetailBloc.screenData.testName),
           actions: [
-            IconButton(icon: Icon(Icons.save), onPressed: () => setupDetailBloc.save()),
+            _showSaveMenuItem
+                ? IconButton(icon: Icon(Icons.save), onPressed: () => setupDetailBloc.save())
+                : StubWidget(),
           ],
           bottom: TabBar(
+            controller: _tabController,
             tabs: [
               TabTextIconWidget(Icon(Icons.settings), Text("Setup")),
               TabTextIconWidget(Icon(Icons.list_alt), Text("Steps")),
             ],
           ),
         ),
-        body: JsonTestDetailBody(),
+        body: NotificationListener(
+          onNotification: (scrollNotification) {
+            if (scrollNotification is ScrollEndNotification) _onTabChanged();
+            return false;
+          },
+          child: Stack(
+            children: [
+              HiddenSnackBarHandlerWidget([context.read<TestSetupDetailBloc>(), context.read<TestStepListBloc>()]),
+              TabBarView(
+                controller: _tabController,
+                children: [
+                  TestSetupDetailBody(attachSnackBarHandler: false),
+                  TestStepListBody(attachSnackBarHandler: false),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
-}
 
-class JsonTestDetailBody extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return TabBarView(
-      children: [
-        TestSetupDetailBody(),
-        TestStepListBody(),
-      ],
-    );
+  void _onTabChanged() {
+    setState(() => _showSaveMenuItem = _tabController.index == 0);
   }
 }

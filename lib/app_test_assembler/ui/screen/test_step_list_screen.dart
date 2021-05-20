@@ -51,7 +51,9 @@ class TestStepListFrame extends StatelessWidget {
 }
 
 class TestStepListBody extends StatefulWidget {
-  const TestStepListBody({Key? key}) : super(key: key);
+  final bool attachSnackBarHandler;
+
+  const TestStepListBody({Key? key, this.attachSnackBarHandler = true}) : super(key: key);
 
   @override
   _TestStepListBodyState createState() => _TestStepListBodyState();
@@ -70,7 +72,7 @@ class _TestStepListBodyState extends State<TestStepListBody> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        HiddenSnackBarHandlerWidget([_bloc]),
+        widget.attachSnackBarHandler ? HiddenSnackBarHandlerWidget([_bloc]) : StubWidget(),
         ListView.separated(
           separatorBuilder: (BuildContext context, int index) => HorizontalDelimiter(),
           itemCount: _bloc.stepsList.length,
