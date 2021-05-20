@@ -61,8 +61,14 @@ class TestSetupDetailBloc extends BaseBloc {
     final oldName = _jsonTest.setup.name;
     final newSetup = _jsonTest.setup.copyWith(name: _name, description: _description, iterations: _iterations);
     _jsonTest = _jsonTest.copyWith(setup: newSetup);
-    _testsStorage.remove(oldName);
-    _testsStorage.set(_jsonTest.setup.name, _jsonTest);
+
+    if (oldName == _name) {
+      // The name has not changed. No need to remove it from the file system
+      _testsStorage.set(oldName, _jsonTest);
+    } else {
+      _testsStorage.remove(oldName);
+      _testsStorage.add(_jsonTest.setup.name, _jsonTest);
+    }
     _testsStorage.save(name: _jsonTest.setup.name);
     _updateSetupJsonValue();
   }
