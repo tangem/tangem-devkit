@@ -36,7 +36,7 @@ class TestRecorderBlock extends BaseBloc {
     // if record is stopped and _recordingList is not empty -> create jsonTest and store it to the testsStorage
     final jsonTest = _testAssembler.assembleTest(_stepRecordsList);
     final name = jsonTest.setup.name;
-    _storageRepo.testsStorage.set(name, jsonTest);
+    _storageRepo.testsStorage.add(name, jsonTest);
     _storageRepo.testsStorage.save(name: name);
     _stepRecordsList.clear();
   }

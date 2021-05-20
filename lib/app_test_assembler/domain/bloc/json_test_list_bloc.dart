@@ -31,10 +31,23 @@ class JsonTestListBloc extends BaseBloc {
   }
 
   _listenStorageModification(StorageModifyEvent<JsonTest> event) {
-    if (event.type == StorageModification.SET) {
-      _storedJsonTests.add(event.value);
-    } else {
-      _storedJsonTests.remove(event.value);
+    switch (event.type) {
+      case StorageModification.ADD:
+        {
+          _storedJsonTests.add(event.value);
+          break;
+        }
+      case StorageModification.SET:
+        {
+          final index = _storedJsonTests.indexWhere((element) => element.setup.name == event.value.setup.name);
+          if (index != -1) _storedJsonTests[index] = event.value;
+          break;
+        }
+      case StorageModification.REMOVE:
+        {
+          _storedJsonTests.remove(event.value);
+          break;
+        }
     }
     _notifyRecordListChanged();
   }

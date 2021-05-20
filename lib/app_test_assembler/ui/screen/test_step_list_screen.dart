@@ -1,11 +1,10 @@
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app/ui/widgets/basic/semi_widget.dart';
-import 'package:devkit/app_test_assembler/domain/bloc/test_recorder_bloc.dart';
+import 'package:devkit/app_test_assembler/domain/bloc/test_step_list_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_assembler/ui/screen/json_test_detail_screen.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_step_detail_screen.dart';
 import 'package:devkit/application.dart';
-import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,35 +72,30 @@ class _TestStepListBodyState extends State<TestStepListBody> {
     return Stack(
       children: [
         widget.attachSnackBarHandler ? HiddenSnackBarHandlerWidget([_bloc]) : StubWidget(),
-        ListView.separated(
-          separatorBuilder: (BuildContext context, int index) => HorizontalDelimiter(),
-          itemCount: _bloc.stepsList.length,
-          itemBuilder: (context, index) {
-            final item = _bloc.stepsList[index];
-            return ListTile(
-              title: Text(item.name),
-              subtitle: Text(item.method),
-              onTap: () => TestStepDetailScreen.navigate(
-                context,
-                TestStepDetailScreenData(_bloc.screenData.testName, item.name),
-              ),
+        StreamBuilder<List<TestStep>>(
+          initialData: [],
+          stream: _bloc.stepsListStream,
+          builder: (context, snapshot) {
+            final stepList = snapshot.data!;
+            return ListView.separated(
+              itemCount: stepList.length,
+              itemBuilder: (context, index) {
+                final item = stepList[index];
+                return ListTile(
+                  title: Text(item.name),
+                  subtitle: Text(item.method),
+                  onTap: () => TestStepDetailScreen.navigate(
+                    context,
+                    TestStepDetailScreenData(_bloc.screenData.testName, item.name),
+                  ),
+                  trailing: IconButton(icon: Icon(Icons.delete_forever), onPressed: () => _bloc.delete(index)),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) => HorizontalDelimiter(),
             );
           },
         ),
       ],
     );
-  }
-}
-
-class TestStepListBloc extends BaseBloc {
-  final StorageRepository _storageRepo;
-  final JsonTestDetailScreenData screenData;
-  final List<TestStep> stepsList;
-
-  TestStepListBloc(this._storageRepo, this.screenData)
-      : this.stepsList = _storageRepo.testsStorage.get(screenData.testName)?.steps ?? [];
-
-  List<TestStep> getSteps() {
-    return stepsList;
   }
 }

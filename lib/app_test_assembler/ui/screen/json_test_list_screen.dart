@@ -1,6 +1,6 @@
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
-import 'package:devkit/app_test_assembler/domain/bloc/json_test_list_block.dart';
+import 'package:devkit/app_test_assembler/domain/bloc/json_test_list_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_recorder_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_assembler/ui/screen/json_test_detail_screen.dart';

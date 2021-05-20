@@ -38,6 +38,13 @@ abstract class TypedStorage<T> {
 
   T? get(String name) => _storage[name];
 
+  add(String name, T? value) {
+    if (value == null) return;
+
+    _storage[name] = value;
+    _notifyAdd(value);
+  }
+
   set(String name, T? value) {
     if (value == null) return;
 
@@ -56,6 +63,10 @@ abstract class TypedStorage<T> {
 
   int size() => _storage.length;
 
+  _notifyAdd(T? value) {
+    if (value != null && _isChangeListenersActive) _psStorageModified.add(StorageModifyEvent.add(value));
+  }
+
   _notifySet(T? value) {
     if (value != null && _isChangeListenersActive) _psStorageModified.add(StorageModifyEvent.set(value));
   }
@@ -65,13 +76,15 @@ abstract class TypedStorage<T> {
   }
 }
 
-enum StorageModification { SET, REMOVE }
+enum StorageModification { ADD, SET, REMOVE }
 
 class StorageModifyEvent<T> {
   final T value;
   final StorageModification type;
 
   StorageModifyEvent(this.value, this.type);
+
+  factory StorageModifyEvent.add(T value) => StorageModifyEvent(value, StorageModification.ADD);
 
   factory StorageModifyEvent.set(T value) => StorageModifyEvent(value, StorageModification.SET);
 

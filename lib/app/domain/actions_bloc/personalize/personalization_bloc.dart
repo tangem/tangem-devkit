@@ -97,7 +97,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   }
 
   saveNewConfig(String name) {
-    _storage.set(name, _storage.getCurrent());
+    _storage.add(name, _storage.getCurrent());
     _storage.save();
   }
 
@@ -160,6 +160,11 @@ class PersonalizationConfigStorage extends ConfigSharedPrefsStorage<Personalizat
 
   @override
   PersonalizationConfig? get(String name) => super.get(_replaceSpaces(name));
+
+  @override
+  add(String name, PersonalizationConfig? config) {
+    super.add(_replaceSpaces(name), config);
+  }
 
   @override
   set(String name, PersonalizationConfig? config) {
