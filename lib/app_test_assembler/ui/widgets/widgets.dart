@@ -1,5 +1,8 @@
+import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/application.dart';
 import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TestInputWidget extends StatelessWidget {
   final TextEditingController controller;
@@ -79,6 +82,28 @@ class TabTextIconWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [icon, SizedBox(width: 8), text],
       ),
+    );
+  }
+}
+
+class StateRecordingWidget extends StatelessWidget {
+  final Widget recordActiveWidget;
+  final Widget recordInActiveWidget;
+
+  StateRecordingWidget(this.recordActiveWidget, [Widget? recordInActiveWidget, Key? key])
+      : this.recordInActiveWidget = recordInActiveWidget ?? StubWidget(),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final recorder = context.read<ApplicationContext>().testRecorderBloc;
+    return StreamBuilder<bool>(
+      stream: recorder.bsRecordingState.stream,
+      builder: (context, snapshot) {
+        if (snapshot.data == null || !snapshot.data!) return recordInActiveWidget;
+
+        return recordActiveWidget;
+      },
     );
   }
 }

@@ -190,29 +190,42 @@ abstract class FileStorage<T> extends TypedStorage<T> with MapToTypeConvertible<
   }
 
   @override
-  save({String? name, VoidCallback? onComplete}) {
-    saveToFile(String key, T value) {
-      final file = File(_assembleFilePath(key));
-      final encodedContent = json.encode(value);
-      file.writeAsStringSync(encodedContent);
-    }
+  add(String name, T? value) {
+    _saveToFile(name, value);
+    super.add(name, value);
+  }
 
-    if (name == null) {
-      _storage.forEach((key, value) => saveToFile(key, value));
-    } else {
-      _storage[name]?.let((it) => saveToFile(name, it));
-    }
-    onComplete?.call();
+  @override
+  set(String name, T? value) {
+    _saveToFile(name, value);
+    super.set(name, value);
   }
 
   @override
   remove(String name) {
-    super.remove(name);
     final file = File(_assembleFilePath(name));
     if (file.existsSync()) file.deleteSync();
+    super.remove(name);
   }
 
-  String _assembleFilePath(String key) {
-    return setExtension(join(_appDocDir.path, key), _fileExtension);
+  @Deprecated("All modification triggers files modification by default")
+  @override
+  save({String? name, VoidCallback? onComplete}) {
+    if (name == null) {
+      _storage.forEach((key, value) => _saveToFile(key, value));
+    } else {
+      _storage[name]?.let((it) => _saveToFile(name, it));
+    }
+    onComplete?.call();
   }
+
+  _saveToFile(String key, T? value) {
+    if (value == null) return;
+
+    final file = File(_assembleFilePath(key));
+    final encodedContent = json.encode(value);
+    file.writeAsStringSync(encodedContent);
+  }
+
+  String _assembleFilePath(String key) => join(_appDocDir.path, key) + _fileExtension;
 }

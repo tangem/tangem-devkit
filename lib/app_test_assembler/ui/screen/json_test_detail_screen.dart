@@ -1,5 +1,4 @@
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
-import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_setup_detail_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_step_list_bloc.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_setup_detail_screen.dart';
@@ -82,11 +81,7 @@ class _JsonTestDetailFrameState extends State<JsonTestDetailFrame> with SingleTi
       child: Scaffold(
         appBar: AppBar(
           title: Text(setupDetailBloc.screenData.testName),
-          actions: [
-            _showSaveMenuItem
-                ? IconButton(icon: Icon(Icons.save), onPressed: () => setupDetailBloc.save())
-                : StubWidget(),
-          ],
+          actions: [StateRecordingWidget(IconButton(icon: Icon(Icons.save), onPressed: () => setupDetailBloc.save()))],
           bottom: TabBar(
             controller: _tabController,
             tabs: [

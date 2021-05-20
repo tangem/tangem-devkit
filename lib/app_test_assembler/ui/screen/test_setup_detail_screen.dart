@@ -79,37 +79,50 @@ class _TestSetupDetailBodyState extends State<TestSetupDetailBody> {
 
   @override
   Widget build(BuildContext context) {
+    return StateRecordingWidget(_immutableSetup(context), _mutableSetup(context));
+  }
+
+  ListView _mutableSetup(BuildContext context) {
     final transl = Transl.of(context);
-    return Container(
-      child: ListView(
-        children: <Widget>[
-          widget.attachSnackBarHandler ? HiddenSnackBarHandlerWidget([_bloc]) : StubWidget(),
-          SizedBox(height: 16),
-          TestInputWidget(
-            _nameController.controller,
-            hint: transl.get("Name"),
-          ),
-          TestInputWidget(
-            _descriptionController.controller,
-            hint: transl.get("Description"),
-          ),
-          TestInputWidget(
-            _iterationCountController.controller,
-            hint: transl.get("Iterations"),
-            inputType: TextInputType.number,
-          ),
-          StubWidget().withUnderline(),
-          StreamBuilder<String>(
-            stream: _bloc.setupJsonValueStream,
-            builder: (context, snapshot) {
-              if (snapshot.data == null)
-                return StubWidget();
-              else
-                return Text(snapshot.data!);
-            },
-          ),
-        ],
-      ),
+    return ListView(
+      children: <Widget>[
+        widget.attachSnackBarHandler ? HiddenSnackBarHandlerWidget([_bloc]) : StubWidget(),
+        SizedBox(height: 16),
+        TestInputWidget(
+          _nameController.controller,
+          hint: transl.get("Name"),
+        ),
+        TestInputWidget(
+          _descriptionController.controller,
+          hint: transl.get("Description"),
+        ),
+        TestInputWidget(
+          _iterationCountController.controller,
+          hint: transl.get("Iterations"),
+          inputType: TextInputType.number,
+        ),
+        StubWidget().withUnderline(),
+        StreamBuilder<String>(
+          stream: _bloc.setupJsonValueStream,
+          builder: (context, snapshot) {
+            if (snapshot.data == null)
+              return StubWidget();
+            else
+              return Text(snapshot.data!);
+          },
+        ),
+      ],
+    );
+  }
+
+  ListView _immutableSetup(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        StreamBuilder<String>(
+          stream: _bloc.setupJsonValueStream,
+          builder: (context, snapshot) => snapshot.data == null ? StubWidget() : Text(snapshot.data!),
+        ),
+      ],
     );
   }
 

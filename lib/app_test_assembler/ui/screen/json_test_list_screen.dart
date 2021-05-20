@@ -25,9 +25,7 @@ class _JsonTestListScreenState extends State<JsonTestListScreen> {
   Widget build(BuildContext context) {
     final storageRepo = context.read<ApplicationContext>().storageRepo;
     return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider(create: (context) => JsonTestListBloc(storageRepo).apply((it) => _bloc = it))
-      ],
+      providers: [RepositoryProvider(create: (context) => JsonTestListBloc(storageRepo).apply((it) => _bloc = it))],
       child: JsonTestListFrame(),
     );
   }
@@ -91,7 +89,7 @@ class _JsonTestListBodyState extends State<JsonTestListBody> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(icon: Icon(Icons.delete_forever), onPressed: () => _jsonTestListBloc.delete(index)),
+                      _testRecorderBlock.recordIsActive() ? StubWidget() : IconButton(icon: Icon(Icons.delete_forever), onPressed: ()=>_jsonTestListBloc.delete(index)),
                       IconButton(icon: Icon(Icons.ios_share), onPressed: () => _jsonTestListBloc.share(index)),
                     ],
                   ),

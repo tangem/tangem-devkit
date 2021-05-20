@@ -14,7 +14,7 @@ class TestStepListBloc extends BaseBloc {
 
   TestStepListBloc(this._storageRepo, this.screenData) {
     final jsonTest = _storageRepo.testsStorage.get(screenData.testName);
-    if (jsonTest == null) throw Exception("Can't initialize $this. Json test is null");
+    if (jsonTest == null) throw Exception("Can't initialize $this. Json test is null for name ${screenData.testName}");
 
     _jsonTest = jsonTest;
     _updateStepList();
@@ -30,7 +30,6 @@ class TestStepListBloc extends BaseBloc {
     _jsonTest.steps.removeAt(index);
     _jsonTest = _jsonTest.copyWith(steps: _jsonTest.steps);
     _storageRepo.testsStorage.set(_jsonTest.setup.name, _jsonTest);
-    _storageRepo.testsStorage.save(name: _jsonTest.setup.name);
     _updateStepList();
   }
 }

@@ -10,10 +10,9 @@ class TestRecorderBlock extends BaseBloc {
   final bsRecordingState = StatedBehaviorSubject<bool>();
 
   final StorageRepository _storageRepo;
-  final _stepRecordsList = <StepRecord>[];
-
   late final TestAssembler _testAssembler;
 
+  JsonTest? _currentJsonTestRecord;
   StepRecord? _currentRecord;
 
   TestRecorderBlock(this._storageRepo) {
@@ -25,20 +24,23 @@ class TestRecorderBlock extends BaseBloc {
   _listenRecordingState(bool isRecording) {
     if (isRecording) {
       sendSnackbarMessage("Starting record");
-      return;
-    }
-    if (_stepRecordsList.isEmpty) {
-      sendSnackbarMessage("No one records has been recorded");
+      JsonTest jsonTest = _testAssembler.createEmptyJsonTest();
+      _storageRepo.testsStorage.add(jsonTest.setup.name, jsonTest);
+      _currentJsonTestRecord = jsonTest;
       return;
     }
 
+    if (_currentJsonTestRecord == null) return;
+
+    final currentJsonTestRecord = _currentJsonTestRecord!;
+    if (currentJsonTestRecord.steps.isEmpty) {
+      _storageRepo.testsStorage.remove(currentJsonTestRecord.setup.name);
+      _currentJsonTestRecord = null;
+      sendSnackbarMessage("No one records has been recorded");
+      return;
+    }
     sendSnackbarMessage("Recording is success");
-    // if record is stopped and _recordingList is not empty -> create jsonTest and store it to the testsStorage
-    final jsonTest = _testAssembler.assembleTest(_stepRecordsList);
-    final name = jsonTest.setup.name;
-    _storageRepo.testsStorage.add(name, jsonTest);
-    _storageRepo.testsStorage.save(name: name);
-    _stepRecordsList.clear();
+    _storageRepo.testsStorage.set(currentJsonTestRecord.setup.name, currentJsonTestRecord);
   }
 
   toggleRecordState() {
@@ -53,11 +55,14 @@ class TestRecorderBlock extends BaseBloc {
   }
 
   handleCommandResponse(dynamic response) {
-    if (_currentRecord == null) return;
+    if (_currentJsonTestRecord == null || _currentRecord == null) return;
 
-    final record = _currentRecord!;
-    record.response = response;
-    _stepRecordsList.add(record);
+    _currentJsonTestRecord = _testAssembler.addStepRecord(
+      _currentJsonTestRecord!,
+      _currentRecord!..response = response,
+    );
+    _storageRepo.testsStorage.set(_currentJsonTestRecord!.setup.name, _currentJsonTestRecord!);
+    _currentRecord = null;
   }
 
   handleCommandError(TangemSdkBaseError? error) {
@@ -81,16 +86,22 @@ class TestAssembler {
 
   TestAssembler(this._storageRepo);
 
-  JsonTest assembleTest(List<StepRecord> records) {
+  JsonTest createEmptyJsonTest() {
+    final setup = _storageRepo.setupConfigStorage.getCurrent();
     final testsCount = _storageRepo.testsStorage.size();
-    final currentSetup = _storageRepo.setupConfigStorage.getCurrent();
-    final setup = currentSetup.copyWith(name: "${currentSetup.name}_$testsCount");
-    return JsonTest(setup, _createSteps(setup.name, records));
+    return JsonTest(setup.copyWith(name: "${setup.name}_$testsCount"), []);
   }
 
-  List<TestStep> _createSteps(String testName, List<StepRecord> records) {
+  JsonTest addStepRecord(JsonTest jsonTest, StepRecord stepRecord) {
+    final newStepList = List.of(jsonTest.steps);
     final stepConfig = _storageRepo.stepConfigStorage.getCurrent();
-    return records.mapIndexed((index, e) => _createStep(e, index, stepConfig)).toNullSafe();
+    final newStep = _createStep(stepRecord, newStepList.length, stepConfig);
+    if (newStep == null) {
+      return jsonTest;
+    } else {
+      newStepList.add(newStep);
+      return jsonTest.copyWith(steps: newStepList);
+    }
   }
 
   TestStep? _createStep(StepRecord record, int index, TestStep stepConfig) {

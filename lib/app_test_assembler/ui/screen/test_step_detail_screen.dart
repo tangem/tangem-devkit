@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_recorder_bloc.dart';
+import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_assembler/ui/widgets/widgets.dart';
 import 'package:devkit/application.dart';
 import 'package:devkit/commons/common_abstracts.dart';
@@ -60,7 +61,7 @@ class TestStepDetailFrame extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(testStepDetailBloc.screenData.stepName),
-        actions: [IconButton(icon: Icon(Icons.save), onPressed: () => testStepDetailBloc.save())],
+        actions: [StateRecordingWidget(IconButton(icon: Icon(Icons.save), onPressed: () => testStepDetailBloc.save()))],
       ),
       body: TestStepDetailBody(),
     );
@@ -104,14 +105,19 @@ class _TestStepDetailBodyState extends State<TestStepDetailBody> {
 class TestStepDetailBloc extends BaseBloc {
   final StorageRepository _storageRepo;
   final TestStepDetailScreenData screenData;
+  late final JsonTest _jsonTest;
 
-  TestStepDetailBloc(this._storageRepo, this.screenData);
+  TestStepDetailBloc(this._storageRepo, this.screenData) {
+    final jsonTest = _storageRepo.testsStorage.get(screenData.testName);
+    if (jsonTest == null) throw Exception("Can't initialize $this. Json test is null for name ${screenData.testName}");
+
+    _jsonTest = jsonTest;
+  }
 
   String? readStep() {
-    final jsonTest = _storageRepo.testsStorage.get(screenData.testName);
-    if (jsonTest == null || jsonTest.steps.isEmpty) return null;
+    if (_jsonTest.steps.isEmpty) return null;
 
-    final step = jsonTest.steps.firstWhereOrNull((e) => e.name == screenData.stepName);
+    final step = _jsonTest.steps.firstWhereOrNull((e) => e.name == screenData.stepName);
     if (step == null) return null;
 
     final encoder = JsonEncoder.withIndent("  ");

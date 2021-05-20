@@ -36,7 +36,7 @@ class TestSetupDetailBloc extends BaseBloc {
 
   init() {
     final jsonTest = _storageRepository.testsStorage.get(screenData.testName);
-    if (jsonTest == null) throw Exception("Can't initialize $this. Json test is null");
+    if (jsonTest == null) throw Exception("Can't initialize $this. Json test is null for name ${screenData.testName}");
 
     _jsonTest = jsonTest;
     _name = _jsonTest.setup.name;
@@ -69,7 +69,6 @@ class TestSetupDetailBloc extends BaseBloc {
       _testsStorage.remove(oldName);
       _testsStorage.add(_jsonTest.setup.name, _jsonTest);
     }
-    _testsStorage.save(name: _jsonTest.setup.name);
     _updateSetupJsonValue();
   }
 
