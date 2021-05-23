@@ -105,7 +105,7 @@ class TangemSdk {
   ) async {
     Map<String, dynamic> jsonMap = {};
     try {
-      final map = await command.toJson((error) => _sendBackError(callback, error));
+      final map = command.toJson((error) => _sendBackError(callback, error));
       if (map == null) {
         return;
       } else {

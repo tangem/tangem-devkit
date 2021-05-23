@@ -98,7 +98,7 @@ class Routes {
       case FILES_CHANGE_SETTINGS:
         return MaterialPageRoute(builder: (_) => FilesChangeSettingsScreen());
       case RESPONSE:
-        return PageRouteBuilder(pageBuilder: (_, _1, _2) => ResponseScreen(arguments: settings.arguments));
+        return PageRouteBuilder(pageBuilder: (_, __, ___) => ResponseScreen(arguments: settings.arguments));
       case TEST:
         return MaterialPageRoute(builder: (_) => TestScreen());
       case JSON_TEST_LIST:
