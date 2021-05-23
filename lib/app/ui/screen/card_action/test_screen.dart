@@ -41,10 +41,7 @@ class TestFrame extends StatelessWidget {
     final bloc = RepoFinder.createTestBloc(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Auto Testing"),
-        // actions: [Menu.popupDescription()],
-      ),
+      appBar: AppBar(title: Text("Command auto tester")),
       body: TestBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.nfc),
@@ -79,7 +76,7 @@ class _TestBodyState extends State<TestBody> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        TextWidget.center("Input command"),
+        TextWidget.center("Command json"),
         HorizontalDelimiter(),
         Expanded(
           flex: 5,

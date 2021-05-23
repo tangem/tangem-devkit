@@ -27,6 +27,8 @@ class Utils {
     );
   }
 
+  static String _createCardDate() => DateFormat("yyyy-MM-dd").format(DateTime.now());
+
   static ProductMaskSdk createProductMask(PersonalizationConfig config) {
     final isNote = config.cardData.productNote;
     final isTag = config.cardData.productTag;
@@ -43,7 +45,22 @@ class Utils {
     return productMaskBuilder.build();
   }
 
-  static String _createCardDate() => DateFormat("yyyy-MM-dd").format(DateTime.now());
+  static Map<String, dynamic> createPersonalizationCommandConfig(
+    PersonalizationConfig config, [
+    Issuer? issuer,
+    Acquirer? acquirer,
+    Manufacturer? manufacturer,
+  ]) {
+    final safeIssuer = issuer ?? createDefaultIssuer();
+    final safeAcquirer = acquirer ?? createDefaultAcquirer();
+    final safeManufacturer = manufacturer ?? createDefaultManufacturer();
+    return {
+      TangemSdk.cardConfig: json.encode(createCardConfig(config, safeIssuer, safeAcquirer)),
+      TangemSdk.issuer: json.encode(safeIssuer),
+      TangemSdk.acquirer: json.encode(safeAcquirer),
+      TangemSdk.manufacturer: json.encode(safeManufacturer),
+    };
+  }
 
   static CardConfigSdk createCardConfig(PersonalizationConfig config, Issuer issuer, Acquirer acquirer) {
     List<int> convertToSha256(String code) {

@@ -1,31 +1,29 @@
 import 'dart:async';
 
-import 'package:devkit/app/domain/model/signature_data_models.dart';
+import 'package:devkit/app/domain/model/command_data_models.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
-abstract class ActionBloc<T> extends Disposable {
+abstract class ActionBloc<T> extends BaseBloc {
   final bsCid = BehaviorSubject<String>();
 
   String? _cid;
   Message? _initialMessage;
 
+  final PublishSubject<CommandDataModel> _commandDataIsReady = PublishSubject<CommandDataModel>();
+  final PublishSubject<T> _successResponse = PublishSubject<T>();
+  final PublishSubject<TangemSdkBaseError?> _errorResponse = PublishSubject<TangemSdkBaseError?>();
+
   ActionBloc() {
-    subscriptions.add(bsCid.stream.listen((event) => _cid = event));
+    addSubscription(bsCid.stream.listen((event) => _cid = event));
   }
 
-  List<StreamSubscription> subscriptions = [];
-
-  PublishSubject<T> _successResponse = PublishSubject<T>();
-  PublishSubject<TangemSdkBaseError?> _errorResponse = PublishSubject<TangemSdkBaseError?>();
-  PublishSubject<dynamic> _snackbarMessage = PublishSubject<dynamic>();
+  Stream<CommandDataModel> get commandDataStream => _commandDataIsReady.stream;
 
   Stream<T> get successResponseStream => _successResponse.stream;
 
   Stream<TangemSdkBaseError?> get errorResponseStream => _errorResponse.stream;
-
-  Stream<dynamic> get snackbarMessageStream => _snackbarMessage.stream;
 
   Callback get callback => Callback((success) => sendSuccess(success), (error) => sendError(error));
 
@@ -37,10 +35,6 @@ abstract class ActionBloc<T> extends Disposable {
     _errorResponse.add(error);
   }
 
-  sendSnackbarMessage(dynamic message) {
-    _snackbarMessage.add(message);
-  }
-
   bool hasCid() => !_cid.isNullOrEmpty();
 
   scanCard() {
@@ -49,24 +43,41 @@ abstract class ActionBloc<T> extends Disposable {
     }, (error) {
       sendError(error);
     });
-    TangemSdk.runCommand(callback, ScanModel());
+    _prepareCommandAndRun(ScanModel(), callback);
   }
 
-  invokeAction() {
+  invokeAction() async {
     final commandData = createCommandData();
-    if (commandData == null) return;
+    if (commandData == null) {
+      sendSnackbarMessage("Command data is null");
+    } else {
+      _prepareCommandAndRun(commandData, callback);
+    }
+  }
 
+  _prepareCommandAndRun(CommandDataModel commandData, Callback callback) {
     commandData.cardId = _cid;
     commandData.initialMessage = _initialMessage;
+
+    if (commandData.isPrepared()) {
+      _runCommand(commandData, callback);
+    } else {
+      commandData.prepare().then((value) {
+        _runCommand(commandData, callback);
+      }).onError((error, stackTrace) {
+        sendSnackbarMessage(error);
+      });
+    }
+  }
+
+  _runCommand(CommandDataModel commandData, Callback callback) {
+    if (!commandData.isPrepared()) return;
+
+    _commandDataIsReady.add(commandData);
     TangemSdk.runCommand(callback, commandData);
   }
 
-  CommandSignatureData? createCommandData();
-
-  @override
-  dispose() {
-    subscriptions.forEach((element) => element.cancel());
-  }
+  CommandDataModel? createCommandData();
 }
 
 String parseCidFromSuccessScan(CardResponse card) {

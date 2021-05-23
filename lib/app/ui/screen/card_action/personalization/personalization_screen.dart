@@ -4,6 +4,7 @@ import 'package:devkit/app/ui/screen/card_action/personalization/dialogs/import_
 import 'package:devkit/app/ui/screen/card_action/personalization/segment_widgets/sign_hash_ex_prop_segment_widget.dart';
 import 'package:devkit/app/ui/screen/finders.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/application.dart';
 import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,12 +31,10 @@ class _PersonalizationScreenState extends State<PersonalizationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final persConfigStorage = context.read<ApplicationContext>().storageRepo.personalizationConfigStorage;
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) {
-          _bloc = PersonalizationBloc();
-          return _bloc;
-        })
+        RepositoryProvider(create: (context) => PersonalizationBloc(persConfigStorage).apply((it) => _bloc = it))
       ],
       child: PersonalizeFrame(),
     );
@@ -99,7 +98,7 @@ class PersonalizeBody extends StatelessWidget {
         child: ListBody(
           children: <Widget>[
             HiddenResponseHandlerWidget(bloc),
-            HiddenSnackbarHandlerWidget([bloc.snackbarMessageStream]),
+            HiddenSnackBarHandlerWidget([bloc]),
             CardNumberSegmentWidget(),
             CommonSegmentWidget(),
             SigningMethodSegmentWidget(),

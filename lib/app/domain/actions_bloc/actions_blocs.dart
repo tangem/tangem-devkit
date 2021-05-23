@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
-import 'package:devkit/app/domain/model/signature_data_models.dart';
+import 'package:devkit/app/domain/model/command_data_models.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -13,12 +13,12 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 
 class ReadIssuerDataBloc extends ActionBloc<ReadIssuerDataResponse> {
   @override
-  CommandSignatureData? createCommandData() => ReadIssuerDataModel();
+  CommandDataModel? createCommandData() => ReadIssuerDataModel();
 }
 
 class ReadIssuerExDataBloc extends ActionBloc<ReadIssuerExDataResponse> {
   @override
-  CommandSignatureData? createCommandData() => ReadIssuerExDataModel();
+  CommandDataModel? createCommandData() => ReadIssuerExDataModel();
 }
 
 class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
@@ -29,21 +29,21 @@ class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
   int _issuerDataCounter = 1;
 
   WriteIssuerDataBloc() {
-    subscriptions.add(bsIssuerData.stream.listen((event) => _issuerData = event));
-    subscriptions.add(
+    addSubscription(bsIssuerData.stream.listen((event) => _issuerData = event));
+    addSubscription(
         bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = int.tryParse(event) ?? _issuerDataCounter));
     bsIssuerData.add("Data to be written on a card as issuer data");
     bsIssuerDataCounter.add("1");
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     final issuerPrivateKey = Utils.createDefaultIssuer().dataKeyPair.privateKey;
     if (!hasCid()) {
       sendSnackbarMessage("To write an issuer data you must fill the CID field");
       return null;
     }
-    return WriteIssuerDataModel(Utils.cardId, _issuerData, issuerPrivateKey, _issuerDataCounter);
+    return WriteIssuerDataModel("it will be changed in base class", _issuerData, issuerPrivateKey, _issuerDataCounter);
   }
 }
 
@@ -53,13 +53,13 @@ class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
   int _issuerDataCounter = 0;
 
   WriteIssuerExDataBloc() {
-    subscriptions.add(
+    addSubscription(
         bsIssuerDataCounter.stream.listen((event) => _issuerDataCounter = int.tryParse(event) ?? _issuerDataCounter));
     bsIssuerDataCounter.add("1");
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     final issuerPrivateKey = Utils.createDefaultIssuer().dataKeyPair.privateKey;
     if (!hasCid()) {
       sendSnackbarMessage("To write an issuer extra data you must fill the CID field");
@@ -71,7 +71,7 @@ class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
 
 class ReadUserDataBloc extends ActionBloc<ReadUserDataResponse> {
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     return ReadUserDataModel();
   }
 }
@@ -84,14 +84,14 @@ class WriteUserDataBloc extends ActionBloc<WriteUserDataResponse> {
   int? _userCounter;
 
   WriteUserDataBloc() {
-    subscriptions.add(bsUserData.stream.listen((event) => _userData = event));
-    subscriptions.add(bsUserCounter.stream.listen((event) => _userCounter = event.isEmpty ? null : int.parse(event)));
+    addSubscription(bsUserData.stream.listen((event) => _userData = event));
+    addSubscription(bsUserCounter.stream.listen((event) => _userCounter = event.isEmpty ? null : int.parse(event)));
     bsUserData.add("User data to be written on a card");
     bsUserCounter.add("1");
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     return WriteUserDataModel(_userData, _userCounter);
   }
 }
@@ -104,29 +104,29 @@ class WriteUserProtectedDataBloc extends ActionBloc<WriteUserDataResponse> {
   int? _userProtectedCounter;
 
   WriteUserProtectedDataBloc() {
-    subscriptions.add(bsUserProtectedData.stream.listen((event) => _userProtectedData = event));
-    subscriptions.add(bsUserProtectedCounter.stream
+    addSubscription(bsUserProtectedData.stream.listen((event) => _userProtectedData = event));
+    addSubscription(bsUserProtectedCounter.stream
         .listen((event) => _userProtectedCounter = event.isEmpty ? null : int.parse(event)));
     bsUserProtectedData.add("Protected user data to be written on a card");
     bsUserProtectedCounter.add("1");
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     return WriteUserProtectedDataModel(_userProtectedData, _userProtectedCounter);
   }
 }
 
 class CreateWalletBloc extends ActionBloc<CreateWalletResponse> {
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     return CreateWalletModel();
   }
 }
 
 class PurgeWalletBloc extends ActionBloc<PurgeWalletResponse> {
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     return PurgeWalletModel();
   }
 }
@@ -138,11 +138,11 @@ class SetPinBlock extends ActionBloc<SetPinResponse> {
   String? _pinCode;
 
   SetPinBlock(this.pinType) {
-    subscriptions.add(bsPinCode.stream.listen((event) => _pinCode = event));
+    addSubscription(bsPinCode.stream.listen((event) => _pinCode = event));
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     final code = _pinCode.isNullOrEmpty() ? null : _pinCode;
     return pinType == PinType.PIN1 ? SetPin1Model(code) : SetPin2Model(code);
   }
@@ -170,7 +170,7 @@ class FilesWriteBloc extends ActionBloc<WriteFilesResponse> {
   Stream<int> get photoFileSizeStream => _bsFilePhotoSize.stream;
 
   FilesWriteBloc() {
-    subscriptions.add(bsProtectionType.listen((value) => _protectionType = value.b));
+    addSubscription(bsProtectionType.listen((value) => _protectionType = value.b));
   }
 
   setPhotoFile(File? file) async {
@@ -210,7 +210,7 @@ class FilesWriteBloc extends ActionBloc<WriteFilesResponse> {
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     if (_writeFileData == null) {
       sendSnackbarMessage("Writing data is empty");
       return null;
@@ -240,12 +240,12 @@ class FilesReadBloc extends ActionBloc<ReadFilesResponse> {
   String? _indices;
 
   FilesReadBloc() {
-    subscriptions.add(bsReadProtectedFiles.listen((value) => _readProtectionFiles = value));
-    subscriptions.add(bsIndices.listen((value) => _indices = value));
+    addSubscription(bsReadProtectedFiles.listen((value) => _readProtectionFiles = value));
+    addSubscription(bsIndices.listen((value) => _indices = value));
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     final indices = _indices?.splitToList().toIntList();
     return FilesReadModel(_readProtectionFiles ?? false, indices);
   }
@@ -257,11 +257,11 @@ class FilesDeleteBloc extends ActionBloc<DeleteFilesResponse> {
   String? _indices;
 
   FilesDeleteBloc() {
-    subscriptions.add(bsIndices.listen((value) => _indices = value));
+    addSubscription(bsIndices.listen((value) => _indices = value));
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     List<int>? indices = _indices?.splitToList().toIntList();
     return FilesDeleteModel(indices);
   }
@@ -280,12 +280,12 @@ class FilesChangeSettingsBloc extends ActionBloc<ChangeFilesSettingsResponse> {
   FileSettings _fileSettings = FileSettings.Public;
 
   FilesChangeSettingsBloc() {
-    subscriptions.add(bsIndices.listen((value) => _indices = value));
-    subscriptions.add(bsFileSettings.listen((value) => _fileSettings = value.b));
+    addSubscription(bsIndices.listen((value) => _indices = value));
+    addSubscription(bsFileSettings.listen((value) => _fileSettings = value.b));
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     if (_indices == null) {
       sendSnackbarMessage("Indices is empty");
       return null;
@@ -299,12 +299,12 @@ class FilesChangeSettingsBloc extends ActionBloc<ChangeFilesSettingsResponse> {
 
 class DepersonalizationBloc extends ActionBloc<DepersonalizeResponse> {
   @override
-  CommandSignatureData? createCommandData() => DepersonalizeModel();
+  CommandDataModel? createCommandData() => DepersonalizeModel();
 }
 
 class ScanBloc extends ActionBloc<CardResponse> {
   @override
-  CommandSignatureData? createCommandData() => ScanModel();
+  CommandDataModel? createCommandData() => ScanModel();
 }
 
 class SignBloc extends ActionBloc<SignResponse> {
@@ -313,12 +313,12 @@ class SignBloc extends ActionBloc<SignResponse> {
   String _dataForHashing = "";
 
   SignBloc() {
-    subscriptions.add(bsDataForHashing.stream.listen((event) => _dataForHashing = event));
+    addSubscription(bsDataForHashing.stream.listen((event) => _dataForHashing = event));
     bsDataForHashing.add("Data used for hashing");
   }
 
   @override
-  CommandSignatureData? createCommandData() {
+  CommandDataModel? createCommandData() {
     final data = _dataForHashing.splitToList().toStringList();
     return SignModel(data);
   }

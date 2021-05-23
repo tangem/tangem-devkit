@@ -37,7 +37,7 @@ extension OnString on String? {
 
 // iterables
 extension OnIterableNullSafe<E> on Iterable<E> {
-  E? firstWhereOrNull(bool test(E element)) {
+  E? firstWhereOrNull(bool test(E e)) {
     for (E element in this) {
       if (test(element)) return element;
     }
@@ -45,7 +45,7 @@ extension OnIterableNullSafe<E> on Iterable<E> {
   }
 
   E? firstOrNull() {
-      return this.isEmpty ? null : this.first;
+    return this.isEmpty ? null : this.first;
   }
 }
 
@@ -101,6 +101,14 @@ extension OnList<E> on List<E?> {
 }
 
 extension OnListNullSafe<E> on List<E> {
+  List<T> mapIndexed<T>(T transform(int index, E e)) {
+    final newList = <T>[];
+    for (int i = 0; i < length; i++) {
+      newList.add(transform(i, this[i]));
+    }
+    return newList;
+  }
+
   safeAdd(E? element) {
     if (element != null) this.add(element);
   }

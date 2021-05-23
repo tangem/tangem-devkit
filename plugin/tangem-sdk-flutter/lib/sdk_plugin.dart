@@ -3,7 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
-import 'package:tangem_sdk/model/command_signature_data.dart';
+import 'package:tangem_sdk/model/command_data.dart';
+import 'package:tangem_sdk/model/json_rpc.dart';
 
 import 'card_responses/other_responses.dart';
 import 'model/sdk.dart';
@@ -14,6 +15,7 @@ import 'model/sdk.dart';
 class TangemSdk {
   static const commandType = "commandType";
 
+  static const cStartSessionWithJsonRunnable = 'startSessionWithJsonRunnable';
   static const cScanCard = 'scanCard';
   static const cSign = 'sign';
   static const cPersonalize = 'personalize';
@@ -75,26 +77,51 @@ class TangemSdk {
     return _channel.invokeMethod("allowsOnlyDebugCards", {isAllowedOnlyDebugCards: isAllowed});
   }
 
-  static Future runCommand(Callback callback, CommandSignatureData commandSignatureData) async {
-    Map<String, dynamic>? signatureData = {};
+  static Future runCommand(Callback callback, CommandDataModel command) async {
+    await prepareCommandData(command, callback, (commandJsonMap) {
+      final type = commandJsonMap[commandType];
+      _channel
+          .invokeMethod(type, commandJsonMap)
+          .then((result) => callback.onSuccess(_createResponse(type, result)))
+          .catchError((error) => _sendBackError(callback, error));
+    });
+  }
+
+  static Future runCommandAsJson(Callback callback, CommandDataModel command) async {
+    await prepareCommandData(command, callback, (commandJsonMap) {
+      final type = commandJsonMap[commandType];
+      final jsonRpc = JsonRpcRequest.fromCommandDataJson(commandJsonMap);
+      _channel
+          .invokeMethod(cStartSessionWithJsonRunnable, jsonRpc.toJson())
+          .then((result) => callback.onSuccess(_createResponse(type, result)))
+          .catchError((error) => _sendBackError(callback, error));
+    });
+  }
+
+  static Future prepareCommandData(
+    CommandDataModel command,
+    Callback callback,
+    Function(Map<String, dynamic> commandJsonMap) onPrepareComplete,
+  ) async {
+    Map<String, dynamic> jsonMap = {};
     try {
-      signatureData = await commandSignatureData.toSignatureData((error) => _sendBackError(callback, error));
-      if (signatureData == null) return;
+      final map = command.toJson((error) => _sendBackError(callback, error));
+      if (map == null) {
+        return;
+      } else {
+        jsonMap = map;
+      }
     } catch (exception) {
-      _sendBackError(callback, TangemSdkError("Can't get signature data. Error: ${exception.toString()}"));
+      _sendBackError(callback, TangemSdkError("Can't get command json data. Error: ${exception.toString()}"));
       return;
     }
 
-    final type = signatureData[commandType];
+    final type = jsonMap[commandType];
     if (type == null) {
-      _sendBackError(callback, TangemSdkError("Can't execute the task. Missing the '$type' field"));
+      _sendBackError(callback, TangemSdkError("Can't execute the task. Missing the '$commandType' field"));
       return;
     }
-
-    _channel
-        .invokeMethod(type, signatureData)
-        .then((result) => callback.onSuccess(_createResponse(type, result)))
-        .catchError((error) => _sendBackError(callback, error));
+    onPrepareComplete(jsonMap);
   }
 
   static Future scanCard(Callback callback, [Map<String, dynamic> valuesToExport = const {}]) async {
@@ -348,4 +375,11 @@ class Callback {
   final Function(dynamic error) onError;
 
   Callback(this.onSuccess, this.onError);
+}
+
+class TangemSdkJson {
+  static const keyMethod = "method";
+  static const keyParams = "parameters";
+
+  static const methodScan = "SCAN_TASK";
 }

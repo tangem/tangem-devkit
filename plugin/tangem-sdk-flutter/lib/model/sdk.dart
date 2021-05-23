@@ -136,6 +136,20 @@ class Manufacturer {
   Map<String, dynamic> toJson() => _$ManufacturerToJson(this);
 }
 
+class Message {
+  final String body;
+  final String header;
+
+  Message(this.body, this.header);
+
+  factory Message.fromJson(Map<String, dynamic> json) => Message(json["body"], json["header"]);
+
+  Map<String, dynamic> toJson() => {
+        "body": body,
+        "header": header,
+      };
+}
+
 @JsonSerializable()
 class KeyPairHex {
   final String publicKey;

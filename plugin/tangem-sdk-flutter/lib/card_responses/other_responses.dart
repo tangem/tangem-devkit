@@ -1,9 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:tangem_sdk/card_responses/card_response.dart';
 
 part 'other_responses.g.dart';
 
 @JsonSerializable()
-class SignResponse {
+class SignResponse extends TangemSdkResponse {
   String cardId;
   String signature;
   int walletRemainingSignatures;
@@ -17,7 +18,7 @@ class SignResponse {
 }
 
 @JsonSerializable()
-class DepersonalizeResponse {
+class DepersonalizeResponse extends TangemSdkResponse {
   bool success;
 
   DepersonalizeResponse(this.success);
@@ -28,7 +29,7 @@ class DepersonalizeResponse {
 }
 
 @JsonSerializable()
-class CreateWalletResponse {
+class CreateWalletResponse extends TangemSdkResponse {
   final String cardId;
   final String status;
   final String walletPublicKey;
@@ -41,7 +42,7 @@ class CreateWalletResponse {
 }
 
 @JsonSerializable()
-class PurgeWalletResponse {
+class PurgeWalletResponse extends TangemSdkResponse {
   final String cardId;
   final String status;
 
@@ -53,7 +54,7 @@ class PurgeWalletResponse {
 }
 
 @JsonSerializable()
-class ReadIssuerDataResponse {
+class ReadIssuerDataResponse extends TangemSdkResponse {
   final String cardId;
   final String issuerData;
   final String issuerDataSignature;
@@ -67,7 +68,7 @@ class ReadIssuerDataResponse {
 }
 
 @JsonSerializable()
-class WriteIssuerDataResponse {
+class WriteIssuerDataResponse extends TangemSdkResponse {
   final String cardId;
 
   WriteIssuerDataResponse(this.cardId);
@@ -78,7 +79,7 @@ class WriteIssuerDataResponse {
 }
 
 @JsonSerializable()
-class ReadIssuerExDataResponse {
+class ReadIssuerExDataResponse extends TangemSdkResponse {
   final String cardId;
   final int size;
   final String issuerData;
@@ -93,7 +94,7 @@ class ReadIssuerExDataResponse {
 }
 
 @JsonSerializable()
-class WriteIssuerExDataResponse {
+class WriteIssuerExDataResponse extends TangemSdkResponse {
   final String cardId;
 
   WriteIssuerExDataResponse(this.cardId);
@@ -104,7 +105,7 @@ class WriteIssuerExDataResponse {
 }
 
 @JsonSerializable()
-class ReadUserDataResponse {
+class ReadUserDataResponse extends TangemSdkResponse {
   final String cardId;
   final String userData;
   final int userCounter;
@@ -119,7 +120,7 @@ class ReadUserDataResponse {
 }
 
 @JsonSerializable()
-class WriteUserDataResponse {
+class WriteUserDataResponse extends TangemSdkResponse {
   final String cardId;
 
   WriteUserDataResponse(this.cardId);
@@ -130,7 +131,7 @@ class WriteUserDataResponse {
 }
 
 @JsonSerializable()
-class SetPinResponse {
+class SetPinResponse extends TangemSdkResponse {
   final String cardId;
   final String status;
 
@@ -142,7 +143,7 @@ class SetPinResponse {
 }
 
 @JsonSerializable()
-class FileHashDataHex {
+class FileHashDataHex extends TangemSdkResponse {
   final String startingHash;
   final String finalizingHash;
   final String? startingSignature;
@@ -156,7 +157,7 @@ class FileHashDataHex {
 }
 
 @JsonSerializable()
-class WriteFilesResponse {
+class WriteFilesResponse extends TangemSdkResponse {
   final String cardId;
   final int fileIndex;
 
@@ -168,7 +169,7 @@ class WriteFilesResponse {
 }
 
 @JsonSerializable()
-class ReadFilesResponse {
+class ReadFilesResponse extends TangemSdkResponse {
   final List<FileHex> files;
 
   ReadFilesResponse(this.files);
@@ -176,6 +177,29 @@ class ReadFilesResponse {
   factory ReadFilesResponse.fromJson(Map<String, dynamic> json) => _$ReadFilesResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ReadFilesResponseToJson(this);
+}
+
+@JsonSerializable()
+class DeleteFilesResponse extends TangemSdkResponse {
+  final String cardId;
+
+  DeleteFilesResponse(this.cardId);
+
+  factory DeleteFilesResponse.fromJson(Map<String, dynamic> json) => _$DeleteFilesResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DeleteFilesResponseToJson(this);
+}
+
+@JsonSerializable()
+class ChangeFilesSettingsResponse extends TangemSdkResponse {
+  final String cardId;
+
+  ChangeFilesSettingsResponse(this.cardId);
+
+  factory ChangeFilesSettingsResponse.fromJson(Map<String, dynamic> json) =>
+      _$ChangeFilesSettingsResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChangeFilesSettingsResponseToJson(this);
 }
 
 @JsonSerializable()
@@ -212,27 +236,4 @@ extension FileSettingsCode on FileSettings {
   };
 
   int get code => codes[this]!;
-}
-
-@JsonSerializable()
-class DeleteFilesResponse {
-  final String cardId;
-
-  DeleteFilesResponse(this.cardId);
-
-  factory DeleteFilesResponse.fromJson(Map<String, dynamic> json) => _$DeleteFilesResponseFromJson(json);
-
-  Map<String, dynamic> toJson() => _$DeleteFilesResponseToJson(this);
-}
-
-@JsonSerializable()
-class ChangeFilesSettingsResponse {
-  final String cardId;
-
-  ChangeFilesSettingsResponse(this.cardId);
-
-  factory ChangeFilesSettingsResponse.fromJson(Map<String, dynamic> json) =>
-      _$ChangeFilesSettingsResponseFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ChangeFilesSettingsResponseToJson(this);
 }

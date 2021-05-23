@@ -72,7 +72,8 @@ class _PurgeWalletBodyState extends State<PurgeWalletBody> {
     return Column(
       children: <Widget>[
         HiddenResponseHandlerWidget(_bloc),
-        HiddenSnackbarHandlerWidget([_bloc.snackbarMessageStream]),
+        HiddenSnackBarHandlerWidget([_bloc]),
+        HiddenTestRecorderWidget(_bloc),
         SizedBox(height: 8),
         InputCidWidget(
           ItemName.cid,

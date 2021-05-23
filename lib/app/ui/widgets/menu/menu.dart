@@ -3,6 +3,7 @@ import 'package:devkit/app/resources/localization.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 import 'package:devkit/commons/global/show_description.dart';
+import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ enum MenuItem {
   personalizationImport,
   personalizationExport,
   navigateToTestScreen,
+  navigateToJsonTestAssembler,
 }
 
 class Menu {
@@ -26,7 +28,10 @@ class Menu {
             DescriptionState.toggle();
             break;
           case MenuItem.navigateToTestScreen:
-            Navigator.of(temporaryContext).pushNamed("/test");
+            Navigator.of(temporaryContext).pushNamed(Routes.TEST);
+            break;
+          case MenuItem.navigateToJsonTestAssembler:
+            Navigator.of(temporaryContext).pushNamed(Routes.JSON_TEST_LIST);
             break;
         }
       },
@@ -38,9 +43,15 @@ class Menu {
           final testScreenItem = PopupMenuItem(
             key: ItemId.btnFrom(ItemName.navigateToTestScreen),
             value: MenuItem.navigateToTestScreen,
-            child: TextWidget("Test screen"),
+            child: TextWidget("Command auto tester"),
+          );
+          final jsonTestAssemblerScreenItem = PopupMenuItem(
+            key: ItemId.btnFrom(ItemName.navigateToJsonTestAssembler),
+            value: MenuItem.navigateToJsonTestAssembler,
+            child: TextWidget("Json tests assembler"),
           );
           menuItemList.add(testScreenItem);
+          menuItemList.add(jsonTestAssemblerScreenItem);
         }
         return menuItemList;
       },

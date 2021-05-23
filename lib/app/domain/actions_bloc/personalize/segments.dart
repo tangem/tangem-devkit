@@ -11,7 +11,7 @@ import 'package:tangem_sdk/model/sdk.dart';
 import 'personalization_bloc.dart';
 import 'personalization_values.dart';
 
-abstract class BaseSegment {
+abstract class BaseSegment extends Disposable {
   final PersonalizationBloc _bloc;
   final List<StreamSubscription> _subscriptions = [];
 
@@ -28,6 +28,7 @@ abstract class BaseSegment {
 
   bool isCustom(Pair pair) => pair.a == PersonalizationValues.CUSTOM && pair.b == PersonalizationValues.CUSTOM;
 
+  @override
   dispose() {
     _subscriptions.forEach((element) => element.cancel());
   }

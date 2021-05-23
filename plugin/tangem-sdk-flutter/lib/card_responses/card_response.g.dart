@@ -53,11 +53,10 @@ Map<String, dynamic> _$CardResponseToJson(CardResponse instance) =>
 
 FirmwareVersion _$FirmwareVersionFromJson(Map<String, dynamic> json) {
   return FirmwareVersion(
-    json['hotFix'] as int,
     json['major'] as int,
     json['minor'] as int,
+    json['hotFix'] as int,
     json['type'] as String,
-    json['version'] as String,
   );
 }
 
