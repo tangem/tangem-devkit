@@ -47,15 +47,10 @@ abstract class ActionBloc<T> extends BaseBloc {
   }
 
   invokeAction() async {
-    final commandData = createCommandData();
-    if (commandData == null) {
-      sendSnackbarMessage("Command data is null");
-    } else {
-      _prepareCommandAndRun(commandData, callback);
-    }
+    createCommandData((commandData) => _prepareCommandAndRun(commandData, callback), sendSnackbarMessage);
   }
 
-  _prepareCommandAndRun(CommandDataModel commandData, Callback callback) {
+  _prepareCommandAndRun(CommandDataModel commandData, Callback callback) async {
     commandData.cardId = _cid;
     commandData.initialMessage = _initialMessage;
 
@@ -71,13 +66,16 @@ abstract class ActionBloc<T> extends BaseBloc {
   }
 
   _runCommand(CommandDataModel commandData, Callback callback) {
-    if (!commandData.isPrepared()) return;
+    if (!commandData.isPrepared()) {
+      sendSnackbarMessage("Command is not prepared");
+      return;
+    }
 
     _commandDataIsReady.add(commandData);
     TangemSdk.runCommand(callback, commandData);
   }
 
-  CommandDataModel? createCommandData();
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError);
 }
 
 String parseCidFromSuccessScan(CardResponse card) {

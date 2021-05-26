@@ -90,7 +90,7 @@ class TangemSdk {
   static Future runCommandAsJson(Callback callback, CommandDataModel command) async {
     await prepareCommandData(command, callback, (commandJsonMap) {
       final type = commandJsonMap[commandType];
-      final jsonRpc = JsonRpcRequest.fromCommandDataJson(commandJsonMap);
+      final jsonRpc = JSONRPCRequest.fromCommandDataJson(commandJsonMap);
       _channel
           .invokeMethod(cStartSessionWithJsonRunnable, jsonRpc.toJson())
           .then((result) => callback.onSuccess(_createResponse(type, result)))

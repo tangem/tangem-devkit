@@ -123,7 +123,7 @@ class TestAssembler {
       return null;
     }
 
-    final jsonRpc = JsonRpcRequest.fromCommandDataJson(jsonData);
+    final jsonRpc = JSONRPCRequest.fromCommandDataJson(jsonData);
     final expectedResult = (record.response as TangemSdkResponse).toJson();
     return TestStep(
       "$index.${stepConfig.name}.${jsonRpc.method}",

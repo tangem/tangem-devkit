@@ -5,93 +5,93 @@ import 'package:tangem_sdk/sdk_plugin.dart';
 
 part 'json_rpc.g.dart';
 
-abstract class JsonRpc {
+abstract class JSONRPC {
   final dynamic id;
   final String jsonrpc;
 
-  JsonRpc(this.id, [this.jsonrpc = "2.0"]);
+  JSONRPC(this.id, this.jsonrpc);
 
   static String? getJsonRpcMethod(String commandType) {
     switch (commandType) {
       case TangemSdk.cScanCard:
         {
-          return TangemSdkJson.methodScan;
+          return TangemSdk.cScanCard;
         }
       case TangemSdk.cSign:
         {
-          return "";
+          return TangemSdk.cSign;
         }
       case TangemSdk.cPersonalize:
         {
-          return "";
+          return TangemSdk.cPersonalize;
         }
       case TangemSdk.cDepersonalize:
         {
-          return "";
+          return TangemSdk.cDepersonalize;
         }
       case TangemSdk.cCreateWallet:
         {
-          return "";
+          return TangemSdk.cCreateWallet;
         }
       case TangemSdk.cPurgeWallet:
         {
-          return "";
+          return TangemSdk.cPurgeWallet;
         }
       case TangemSdk.cReadIssuerData:
         {
-          return "";
+          return TangemSdk.cReadIssuerData;
         }
       case TangemSdk.cWriteIssuerData:
         {
-          return "";
+          return TangemSdk.cWriteIssuerData;
         }
       case TangemSdk.cReadIssuerExData:
         {
-          return "";
+          return TangemSdk.cReadIssuerExData;
         }
       case TangemSdk.cWriteIssuerExData:
         {
-          return "";
+          return TangemSdk.cWriteIssuerExData;
         }
       case TangemSdk.cReadUserData:
         {
-          return "";
+          return TangemSdk.cReadUserData;
         }
       case TangemSdk.cWriteUserData:
         {
-          return "";
+          return TangemSdk.cWriteUserData;
         }
       case TangemSdk.cWriteUserProtectedData:
         {
-          return "";
+          return TangemSdk.cWriteUserProtectedData;
         }
       case TangemSdk.cSetPin1:
         {
-          return "";
+          return TangemSdk.cSetPin1;
         }
       case TangemSdk.cSetPin2:
         {
-          return "";
+          return TangemSdk.cSetPin2;
         }
       case TangemSdk.cWriteFiles:
         {
-          return "";
+          return TangemSdk.cWriteFiles;
         }
       case TangemSdk.cReadFiles:
         {
-          return "";
+          return TangemSdk.cReadFiles;
         }
       case TangemSdk.cDeleteFiles:
         {
-          return "";
+          return TangemSdk.cDeleteFiles;
         }
       case TangemSdk.cChangeFilesSettings:
         {
-          return "";
+          return TangemSdk.cChangeFilesSettings;
         }
       case TangemSdk.cPrepareHashes:
         {
-          return "";
+          return TangemSdk.cPrepareHashes;
         }
     }
     return null;
@@ -99,30 +99,30 @@ abstract class JsonRpc {
 }
 
 @JsonSerializable()
-class JsonRpcRequest extends JsonRpc {
+class JSONRPCRequest extends JSONRPC {
   final String method;
   final Map<String, dynamic> parameters;
 
-  JsonRpcRequest(this.method, this.parameters, [dynamic id]) : super(id);
+  JSONRPCRequest(this.method, this.parameters, [dynamic id, String jsonrpc = "2.0"]) : super(id, jsonrpc);
 
   Map<String, dynamic> toJson() => _$JsonRpcRequestToJson(this);
 
-  factory JsonRpcRequest.fromJson(Map<String, dynamic> json) => _$JsonRpcRequestFromJson(json);
+  factory JSONRPCRequest.fromJson(Map<String, dynamic> json) => _$JsonRpcRequestFromJson(json);
 
-  factory JsonRpcRequest.fromCommandDataJson(Map<String, dynamic> commandDataJson) {
-    final method = JsonRpc.getJsonRpcMethod(commandDataJson.remove(TangemSdk.commandType)) ?? "";
-    return JsonRpcRequest(method, commandDataJson);
+  factory JSONRPCRequest.fromCommandDataJson(Map<String, dynamic> commandDataJson) {
+    final method = JSONRPC.getJsonRpcMethod(commandDataJson.remove(TangemSdk.commandType)) ?? "";
+    return JSONRPCRequest(method, commandDataJson);
   }
 }
 
 @JsonSerializable()
-class JsonRpcResponse extends JsonRpc {
+class JSONRPCResponse extends JSONRPC {
   final dynamic result;
   final dynamic error;
 
-  JsonRpcResponse(this.result, this.error, [dynamic id]) : super(id);
+  JSONRPCResponse(this.result, this.error, [dynamic id, String jsonrpc = "2.0"]) : super(id, jsonrpc);
 
   Map<String, dynamic> toJson() => _$JsonRpcResponseToJson(this);
 
-  factory JsonRpcResponse.fromJson(Map<String, dynamic> json) => _$JsonRpcResponseFromJson(json);
+  factory JSONRPCResponse.fromJson(Map<String, dynamic> json) => _$JsonRpcResponseFromJson(json);
 }
