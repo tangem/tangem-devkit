@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
+import 'package:devkit/main.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class ScanModel extends CommandDataModel {
@@ -99,14 +100,14 @@ class WriteIssuerDataModel extends CommandDataModel {
     final callback = Callback((success) {
       if (success is! FileHashDataHex) {
         completer.completeError(Exception("PrepareHashes success, but type of result isn't the FileHashData"));
-        return;
+        return completer.future;
       }
       _finalizingSignature = success.finalizingSignature;
       completer.complete();
     }, (error) => completer.completeError(error));
 
     TangemSdk.prepareHashes(callback, cardId!, issuerData.toHexString(), issuerDataCounter, issuerPrivateKeyHex);
-    return completer;
+    return completer.future;
   }
 
   @override
@@ -171,7 +172,7 @@ class WriteIssuerExDataModel extends CommandDataModel {
     }, (error) => completer.completeError(error));
     TangemSdk.prepareHashes(callback, cardId!, issuerExData.toHexString(), issuerDataCounter, issuerPrivateKeyHex);
 
-    return completer;
+    return completer.future;
   }
 
   @override
@@ -322,16 +323,16 @@ class FilesWriteModel extends CommandDataModel {
 
   @override
   Future prepare() async {
-    final mainCompleter = Completer<Map<String, dynamic>>();
+    final mainCompleter = Completer();
     if (_isProtectedByIssuer() && (issuer == null || cardId == null)) {
       mainCompleter.completeError(Exception("Can't write files protected by issuer without issuerData or cardId"));
-      return;
+      return mainCompleter.future;
     }
 
     if (_isProtectedByIssuer()) {
       if (filesData.hasNull((e) => e.counter)) {
         mainCompleter.completeError(Exception("All files data must contains the counter value"));
-        return;
+        return mainCompleter.future;
       }
 
       final issuerPk = issuer!.dataKeyPair.privateKey;
@@ -353,7 +354,7 @@ class FilesWriteModel extends CommandDataModel {
       await Future.wait(prepareHashesFutures);
       if (hashDataAssociation.hasNull()) {
         mainCompleter.completeError(Exception("Prepare hashes failed"));
-        return;
+        return mainCompleter.future;
       }
 
       _filesSignatureData = filesData.map((fileData) {
@@ -376,7 +377,7 @@ class FilesWriteModel extends CommandDataModel {
   }
 
   @override
-  bool isPrepared() => _filesSignatureData != null;
+  bool isPrepared() => _isProtectedByIssuer() ? _filesSignatureData != null : true;
 
   @override
   Map<String, dynamic>? toJson(ConversionError onError) {

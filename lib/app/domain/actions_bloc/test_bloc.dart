@@ -19,7 +19,7 @@ class TestBlock extends ActionBloc<dynamic> {
     addSubscription(_bsInputCommand.stream.listen((event) => _inputedCommand = event));
   }
 
-  invokeAction() async{
+  invokeAction() async {
     _clearFields();
     if (_inputedCommand.isNullOrEmpty()) {
       sendError(TangemSdkError("Input the command json first"));
@@ -40,22 +40,32 @@ class TestBlock extends ActionBloc<dynamic> {
     }
 
     try {
-      final commandData = createCommandData();
-      if (commandData == null) {
-        sendError(TangemSdkError("Command data signature not created"));
-        return;
-      }
-      TangemSdk.runCommand(callback, commandData);
+      createCommandData((commandData) {
+        TangemSdk.runCommand(callback, commandData);
+      }, (errorMessage) {
+        sendError(TangemSdkError("Command data signature not created. Cause: $errorMessage"));
+      });
     } catch (e) {
       sendError(TangemSdkError("Can't create the command data: $e"));
     }
   }
 
   @override
-  CommandDataModel? createCommandData() {
-    if (_command == null || _commandType == null) return null;
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
+    if (_command == null || _commandType == null) {
+      onError("Command or command type is missed");
+      return;
+    }
 
-    final command = _command!;
+    final model = createCommandByType(_commandType!, _command!);
+    if (model == null) {
+      onError("Can't create a CommandDataModel. Realization is missed for type: $_commandType");
+    } else {
+      onSuccess(model);
+    }
+  }
+
+  CommandDataModel? createCommandByType(String type, Map<String, dynamic> command) {
     switch (_commandType) {
       case TangemSdk.cScanCard:
         return ScanModel();

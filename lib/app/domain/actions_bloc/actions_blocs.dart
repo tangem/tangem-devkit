@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
-import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/app/domain/model/command_data_models.dart';
+import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -13,12 +13,16 @@ import 'package:tangem_sdk/tangem_sdk.dart';
 
 class ReadIssuerDataBloc extends ActionBloc<ReadIssuerDataResponse> {
   @override
-  CommandDataModel? createCommandData() => ReadIssuerDataModel();
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
+    onSuccess(ReadIssuerDataModel());
+  }
 }
 
 class ReadIssuerExDataBloc extends ActionBloc<ReadIssuerExDataResponse> {
   @override
-  CommandDataModel? createCommandData() => ReadIssuerExDataModel();
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
+    onSuccess(ReadIssuerExDataModel());
+  }
 }
 
 class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
@@ -37,13 +41,18 @@ class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     final issuerPrivateKey = Utils.createDefaultIssuer().dataKeyPair.privateKey;
-    if (!hasCid()) {
-      sendSnackbarMessage("To write an issuer data you must fill the CID field");
-      return null;
+    if (hasCid()) {
+      onSuccess(WriteIssuerDataModel(
+        "it will be changed in base class",
+        _issuerData,
+        issuerPrivateKey,
+        _issuerDataCounter,
+      ));
+    } else {
+      onError("To write the issuer data you must fill the CID field");
     }
-    return WriteIssuerDataModel("it will be changed in base class", _issuerData, issuerPrivateKey, _issuerDataCounter);
   }
 }
 
@@ -59,20 +68,20 @@ class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     final issuerPrivateKey = Utils.createDefaultIssuer().dataKeyPair.privateKey;
-    if (!hasCid()) {
-      sendSnackbarMessage("To write an issuer extra data you must fill the CID field");
-      return null;
+    if (hasCid()) {
+      onSuccess(WriteIssuerExDataModel(Utils.cardId, "issuerData", issuerPrivateKey, _issuerDataCounter));
+    } else {
+      onError("To write the issuer extra data you must fill the CID field");
     }
-    return WriteIssuerExDataModel(Utils.cardId, "issuerData", issuerPrivateKey, _issuerDataCounter);
   }
 }
 
 class ReadUserDataBloc extends ActionBloc<ReadUserDataResponse> {
   @override
-  CommandDataModel? createCommandData() {
-    return ReadUserDataModel();
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
+    onSuccess(ReadUserDataModel());
   }
 }
 
@@ -91,8 +100,8 @@ class WriteUserDataBloc extends ActionBloc<WriteUserDataResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
-    return WriteUserDataModel(_userData, _userCounter);
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
+    onSuccess(WriteUserDataModel(_userData, _userCounter));
   }
 }
 
@@ -112,22 +121,22 @@ class WriteUserProtectedDataBloc extends ActionBloc<WriteUserDataResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
-    return WriteUserProtectedDataModel(_userProtectedData, _userProtectedCounter);
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
+    onSuccess(WriteUserProtectedDataModel(_userProtectedData, _userProtectedCounter));
   }
 }
 
 class CreateWalletBloc extends ActionBloc<CreateWalletResponse> {
   @override
-  CommandDataModel? createCommandData() {
-    return CreateWalletModel();
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
+    onSuccess(CreateWalletModel());
   }
 }
 
 class PurgeWalletBloc extends ActionBloc<PurgeWalletResponse> {
   @override
-  CommandDataModel? createCommandData() {
-    return PurgeWalletModel();
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
+    onSuccess(PurgeWalletModel());
   }
 }
 
@@ -142,9 +151,9 @@ class SetPinBlock extends ActionBloc<SetPinResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     final code = _pinCode.isNullOrEmpty() ? null : _pinCode;
-    return pinType == PinType.PIN1 ? SetPin1Model(code) : SetPin2Model(code);
+    onSuccess(pinType == PinType.PIN1 ? SetPin1Model(code) : SetPin2Model(code));
   }
 }
 
@@ -210,24 +219,26 @@ class FilesWriteBloc extends ActionBloc<WriteFilesResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     if (_writeFileData == null) {
-      sendSnackbarMessage("Writing data is empty");
-      return null;
+      onError("Writing data is empty");
+      return;
     }
 
     WriteFileData writeFileData = _writeFileData!;
     switch (_protectionType) {
       case FileProtectionType.ISSUER:
-        if (!hasCid()) {
-          sendSnackbarMessage("For Issuer protection you must fill the CID field");
-          return null;
+        if (hasCid()) {
+          onSuccess(FilesWriteModel([writeFileData], Utils.createDefaultIssuer()));
+        } else {
+          onError("For Issuer protection you must fill the CID field");
         }
-        return FilesWriteModel([writeFileData], Utils.createDefaultIssuer());
+        break;
       case FileProtectionType.PASSCODE:
-        return FilesWriteModel([writeFileData]);
+        onSuccess(FilesWriteModel([writeFileData]));
+        break;
       default:
-        return null;
+        onError("FileProtectionType is missed");
     }
   }
 }
@@ -245,9 +256,9 @@ class FilesReadBloc extends ActionBloc<ReadFilesResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     final indices = _indices?.splitToList().toIntList();
-    return FilesReadModel(_readProtectionFiles ?? false, indices);
+    onSuccess(FilesReadModel(_readProtectionFiles ?? false, indices));
   }
 }
 
@@ -261,9 +272,9 @@ class FilesDeleteBloc extends ActionBloc<DeleteFilesResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     List<int>? indices = _indices?.splitToList().toIntList();
-    return FilesDeleteModel(indices);
+    onSuccess(FilesDeleteModel(indices));
   }
 }
 
@@ -285,26 +296,29 @@ class FilesChangeSettingsBloc extends ActionBloc<ChangeFilesSettingsResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     if (_indices == null) {
-      sendSnackbarMessage("Indices is empty");
-      return null;
+      onError("Indices is empty");
+    } else {
+      List<int> indices = _indices!.splitToList().toIntList();
+      final changes = indices.map((e) => ChangeFileSettings(e, _fileSettings)).toList();
+      onSuccess(FilesChangeSettingsModel(changes));
     }
-
-    List<int> indices = _indices!.splitToList().toIntList();
-    final changes = indices.map((e) => ChangeFileSettings(e, _fileSettings)).toList();
-    return FilesChangeSettingsModel(changes);
   }
 }
 
 class DepersonalizationBloc extends ActionBloc<DepersonalizeResponse> {
   @override
-  CommandDataModel? createCommandData() => DepersonalizeModel();
+  createCommandData(Function(CommandDataModel p1) onSuccess, Function(String p1) onError) {
+    onSuccess(DepersonalizeModel());
+  }
 }
 
 class ScanBloc extends ActionBloc<CardResponse> {
   @override
-  CommandDataModel? createCommandData() => ScanModel();
+  createCommandData(Function(CommandDataModel p1) onSuccess, Function(String p1) onError) {
+    onSuccess(ScanModel());
+  }
 }
 
 class SignBloc extends ActionBloc<SignResponse> {
@@ -318,8 +332,8 @@ class SignBloc extends ActionBloc<SignResponse> {
   }
 
   @override
-  CommandDataModel? createCommandData() {
+  void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     final data = _dataForHashing.splitToList().toStringList();
-    return SignModel(data);
+    onSuccess(SignModel(data));
   }
 }
