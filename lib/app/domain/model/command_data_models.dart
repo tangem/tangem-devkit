@@ -319,13 +319,13 @@ class FilesWriteModel extends CommandDataModel {
     return CommandDataModel.attachBaseData(model, json);
   }
 
-  bool _isProtectedByIssuer() => issuer != null || cardId != null;
+  bool _isProtectedByIssuer() => issuer != null;
 
   @override
   Future prepare() async {
     final mainCompleter = Completer();
-    if (_isProtectedByIssuer() && (issuer == null || cardId == null)) {
-      mainCompleter.completeError(Exception("Can't write files protected by issuer without issuerData or cardId"));
+    if (_isProtectedByIssuer() && cardId == null) {
+      mainCompleter.completeError(Exception("Can't write files protected by issuer without cardId"));
       return mainCompleter.future;
     }
 
