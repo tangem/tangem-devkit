@@ -81,7 +81,9 @@ class _TestStepListBodyState extends State<TestStepListBody> {
         StreamBuilder<JsonTest>(
           stream: _bloc.stepsListStream,
           builder: (context, snapshot) {
-            if (snapshot.data == null || snapshot.data!.steps.isEmpty) return CenterText("Steps not created yet");
+            if (snapshot.data == null || snapshot.data!.steps.isEmpty) {
+              return CenterText("No test steps have been created yet");
+            }
 
             final jsonTest = snapshot.data!;
             return ListView.separated(
@@ -95,7 +97,7 @@ class _TestStepListBodyState extends State<TestStepListBody> {
                     context,
                     TestStepDetailScreenData(jsonTest.setup.name, item.name),
                   ),
-                  trailing: IconButton(icon: Icon(Icons.delete_forever), onPressed: () => _bloc.delete(index)),
+                  trailing: IconButton(icon: Icon(Icons.delete_outline), onPressed: () => _bloc.delete(index)),
                 );
               },
               separatorBuilder: (BuildContext context, int index) => HorizontalDelimiter(),

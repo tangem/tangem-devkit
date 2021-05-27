@@ -1,6 +1,7 @@
 export 'package:devkit/app/ui/widgets/basic/button.dart';
 export 'package:devkit/app/ui/widgets/basic/semi_widget.dart';
 export 'package:devkit/app/ui/widgets/basic/snackbar.dart';
+export 'package:devkit/app/ui/widgets/basic/stream_future.dart';
 export 'package:devkit/app/ui/widgets/basic/text_widget.dart';
 export 'package:devkit/app/ui/widgets/dialog/dialog.dart';
 export 'package:devkit/app/ui/widgets/menu/menu.dart';

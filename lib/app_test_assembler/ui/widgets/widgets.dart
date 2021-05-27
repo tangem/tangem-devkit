@@ -34,26 +34,6 @@ class TestInputWidget extends StatelessWidget {
   }
 }
 
-class SimpleFutureBuilder<T> extends StatelessWidget {
-  final Future<T> future;
-  final Widget Function(BuildContext context) stubBuilder;
-  final Widget Function(BuildContext context, T data) builder;
-  final T? initialData;
-
-  const SimpleFutureBuilder(this.future, this.stubBuilder, this.builder, {Key? key, this.initialData})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<T>(
-        future: future,
-        initialData: initialData,
-        builder: (context, snapshot) => (snapshot.connectionState != ConnectionState.done && !snapshot.hasData)
-            ? stubBuilder(context)
-            : builder(context, snapshot.data!));
-  }
-}
-
 class CenterLoadingText extends StatelessWidget {
   @override
   Widget build(BuildContext context) => CenterText("Loading...");
@@ -98,14 +78,8 @@ class StateRecordingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recorder = context.read<ApplicationContext>().testRecorderBloc;
-    return StreamBuilder<bool>(
-      stream: recorder.bsRecordingState.stream,
-      builder: (context, snapshot) {
-        if (snapshot.data == null) return StubWidget();
-        if (!snapshot.data!) return recordInActiveWidget;
-
-        return recordActiveWidget;
-      },
-    );
+    return StubStreamBuilder<bool>(recorder.bsRecordingState.stream, (context, data) {
+      return data ? recordActiveWidget : recordInActiveWidget;
+    });
   }
 }

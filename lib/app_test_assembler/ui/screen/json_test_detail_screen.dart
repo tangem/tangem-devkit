@@ -1,4 +1,5 @@
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
+import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/app/ui/widgets/basic/semi_widget.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_setup_detail_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_step_list_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:devkit/application.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tangem_sdk/extensions.dart';
 
 class JsonTestDetailScreen extends StatefulWidget {
   @override
@@ -34,12 +36,14 @@ class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
     final screenData = ModalRoute.of(context)!.settings.arguments as JsonTestDetailScreenData;
     final storageRepo = context.read<ApplicationContext>().storageRepo;
     _setupBloc = TestSetupDetailBloc(storageRepo, screenData);
-    _stepListBloc = TestStepListBloc(storageRepo, _setupBloc.jsonTestNameStream);
 
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(create: (context) => _setupBloc),
-        RepositoryProvider(create: (context) => _stepListBloc)
+        RepositoryProvider(
+          create: (context) =>
+              TestStepListBloc(storageRepo, _setupBloc.jsonTestNameStream).apply((it) => _stepListBloc = it),
+        )
       ],
       child: JsonTestDetailFrame(),
     );
@@ -78,7 +82,7 @@ class _JsonTestDetailFrameState extends State<JsonTestDetailFrame> with SingleTi
       length: _tabLength,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(setupDetailBloc.screenData.testName),
+          title: StubStreamBuilder<String>(setupDetailBloc.jsonTestNameStream, (context, data) => Text(data)),
           actions: [
             _showSaveMenuItem
                 ? StateRecordingWidget(
