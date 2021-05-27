@@ -101,7 +101,8 @@ class StateRecordingWidget extends StatelessWidget {
     return StreamBuilder<bool>(
       stream: recorder.bsRecordingState.stream,
       builder: (context, snapshot) {
-        if (snapshot.data == null || !snapshot.data!) return recordInActiveWidget;
+        if (snapshot.data == null) return StubWidget();
+        if (!snapshot.data!) return recordInActiveWidget;
 
         return recordActiveWidget;
       },
