@@ -9,7 +9,6 @@ import 'package:devkit/application.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tangem_sdk/extensions.dart';
 
 class JsonTestDetailScreen extends StatefulWidget {
   @override
@@ -22,9 +21,8 @@ class JsonTestDetailScreen extends StatefulWidget {
 
 class JsonTestDetailScreenData {
   final String testName;
-  final int index;
 
-  JsonTestDetailScreenData(this.testName, this.index);
+  JsonTestDetailScreenData(this.testName);
 }
 
 class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
@@ -35,14 +33,13 @@ class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
   Widget build(BuildContext context) {
     final screenData = ModalRoute.of(context)!.settings.arguments as JsonTestDetailScreenData;
     final storageRepo = context.read<ApplicationContext>().storageRepo;
+    _setupBloc = TestSetupDetailBloc(storageRepo, screenData);
+    _stepListBloc = TestStepListBloc(storageRepo, _setupBloc.jsonTestNameStream);
+
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(
-          create: (context) => TestSetupDetailBloc(storageRepo, screenData).apply((it) => _setupBloc = it),
-        ),
-        RepositoryProvider(
-          create: (context) => TestStepListBloc(storageRepo, screenData).apply((it) => _stepListBloc = it),
-        )
+        RepositoryProvider(create: (context) => _setupBloc),
+        RepositoryProvider(create: (context) => _stepListBloc)
       ],
       child: JsonTestDetailFrame(),
     );

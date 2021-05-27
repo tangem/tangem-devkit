@@ -85,7 +85,7 @@ class _JsonTestListBodyState extends State<JsonTestListBody> {
                 return ListTile(
                   title: Text(item.setup.name),
                   subtitle: Text(item.setup.description),
-                  onTap: () => JsonTestDetailScreen.navigate(context, JsonTestDetailScreenData(item.setup.name, index)),
+                  onTap: () => JsonTestDetailScreen.navigate(context, JsonTestDetailScreenData(item.setup.name)),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

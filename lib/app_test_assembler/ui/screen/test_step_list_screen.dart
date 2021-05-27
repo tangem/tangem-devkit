@@ -4,7 +4,9 @@ import 'package:devkit/app_test_assembler/domain/bloc/test_step_list_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_assembler/ui/screen/json_test_detail_screen.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_step_detail_screen.dart';
+import 'package:devkit/app_test_assembler/ui/widgets/widgets.dart';
 import 'package:devkit/application.dart';
+import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,14 +24,18 @@ class _TestStepListScreenState extends State<TestStepListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenData = ModalRoute.of(context)!.settings.arguments as JsonTestDetailScreenData;
-    final storageRepo = context.read<ApplicationContext>().storageRepo;
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => TestStepListBloc(storageRepo, screenData).apply((it) => _bloc = it))
+        RepositoryProvider(create: (context) => _createTestStepListBloc(context).apply((it) => _bloc = it)),
       ],
       child: TestStepListFrame(),
     );
+  }
+
+  TestStepListBloc _createTestStepListBloc(BuildContext context) {
+    final screenData = ModalRoute.of(context)!.settings.arguments as JsonTestDetailScreenData;
+    final bsTestName = StatedBehaviorSubject(screenData.testName);
+    return TestStepListBloc(context.read<ApplicationContext>().storageRepo, bsTestName.stream);
   }
 
   @override
@@ -72,21 +78,22 @@ class _TestStepListBodyState extends State<TestStepListBody> {
     return Stack(
       children: [
         widget.attachSnackBarHandler ? HiddenSnackBarHandlerWidget([_bloc]) : StubWidget(),
-        StreamBuilder<List<TestStep>>(
-          initialData: [],
+        StreamBuilder<JsonTest>(
           stream: _bloc.stepsListStream,
           builder: (context, snapshot) {
-            final stepList = snapshot.data!;
+            if (snapshot.data == null || snapshot.data!.steps.isEmpty) return CenterText("Steps not created yet");
+
+            final jsonTest = snapshot.data!;
             return ListView.separated(
-              itemCount: stepList.length,
+              itemCount: jsonTest.steps.length,
               itemBuilder: (context, index) {
-                final item = stepList[index];
+                final item = jsonTest.steps[index];
                 return ListTile(
                   title: Text(item.name),
                   subtitle: Text(item.method),
                   onTap: () => TestStepDetailScreen.navigate(
                     context,
-                    TestStepDetailScreenData(_bloc.screenData.testName, item.name),
+                    TestStepDetailScreenData(jsonTest.setup.name, item.name),
                   ),
                   trailing: IconButton(icon: Icon(Icons.delete_forever), onPressed: () => _bloc.delete(index)),
                 );
