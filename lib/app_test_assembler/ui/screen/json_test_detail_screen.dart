@@ -1,4 +1,6 @@
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
+import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/app/ui/widgets/basic/semi_widget.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_setup_detail_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_step_list_bloc.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_setup_detail_screen.dart';
@@ -21,9 +23,8 @@ class JsonTestDetailScreen extends StatefulWidget {
 
 class JsonTestDetailScreenData {
   final String testName;
-  final int index;
 
-  JsonTestDetailScreenData(this.testName, this.index);
+  JsonTestDetailScreenData(this.testName);
 }
 
 class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
@@ -34,13 +35,14 @@ class _JsonTestDetailScreenState extends State<JsonTestDetailScreen> {
   Widget build(BuildContext context) {
     final screenData = ModalRoute.of(context)!.settings.arguments as JsonTestDetailScreenData;
     final storageRepo = context.read<ApplicationContext>().storageRepo;
+    _setupBloc = TestSetupDetailBloc(storageRepo, screenData);
+
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider(create: (context) => _setupBloc),
         RepositoryProvider(
-          create: (context) => TestSetupDetailBloc(storageRepo, screenData).apply((it) => _setupBloc = it),
-        ),
-        RepositoryProvider(
-          create: (context) => TestStepListBloc(storageRepo, screenData).apply((it) => _stepListBloc = it),
+          create: (context) =>
+              TestStepListBloc(storageRepo, _setupBloc.jsonTestNameStream).apply((it) => _stepListBloc = it),
         )
       ],
       child: JsonTestDetailFrame(),
@@ -80,9 +82,16 @@ class _JsonTestDetailFrameState extends State<JsonTestDetailFrame> with SingleTi
       length: _tabLength,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(setupDetailBloc.screenData.testName),
+          title: StubStreamBuilder<String>(setupDetailBloc.jsonTestNameStream, (context, data) => Text(data)),
           actions: [
-            StateRecordingWidget(inactive: IconButton(icon: Icon(Icons.save), onPressed: () => setupDetailBloc.save()))
+            _showSaveMenuItem
+                ? StateRecordingWidget(
+                    inactive: IconButton(
+                      icon: Icon(Icons.save),
+                      onPressed: () => setupDetailBloc.save(),
+                    ),
+                  )
+                : StubWidget(),
           ],
           bottom: TabBar(
             controller: _tabController,

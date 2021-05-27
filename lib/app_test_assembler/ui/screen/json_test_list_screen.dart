@@ -76,7 +76,7 @@ class _JsonTestListBodyState extends State<JsonTestListBody> {
           stream: _jsonTestListBloc.bsRecords.stream,
           builder: (context, snapshot) {
             if (snapshot.data == null) return CenterLoadingText();
-            if (snapshot.data!.isEmpty) return CenterText("Tests not created yet");
+            if (snapshot.data!.isEmpty) return CenterText("No tests have been created yet");
 
             return ListView.separated(
               itemCount: snapshot.data!.length,
@@ -85,11 +85,14 @@ class _JsonTestListBodyState extends State<JsonTestListBody> {
                 return ListTile(
                   title: Text(item.setup.name),
                   subtitle: Text(item.setup.description),
-                  onTap: () => JsonTestDetailScreen.navigate(context, JsonTestDetailScreenData(item.setup.name, index)),
+                  onTap: () => JsonTestDetailScreen.navigate(context, JsonTestDetailScreenData(item.setup.name)),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _testRecorderBlock.recordIsActive() ? StubWidget() : IconButton(icon: Icon(Icons.delete_forever), onPressed: ()=>_jsonTestListBloc.delete(index)),
+                      IconButton(
+                        icon: Icon(Icons.delete_outline),
+                        onPressed: _testRecorderBlock.recordIsActive() ? null : () => _jsonTestListBloc.delete(index),
+                      ),
                       IconButton(icon: Icon(Icons.ios_share), onPressed: () => _jsonTestListBloc.share(index)),
                     ],
                   ),

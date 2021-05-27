@@ -7,7 +7,7 @@ import 'package:tangem_sdk/sdk_plugin.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class TestRecorderBlock extends BaseBloc {
-  final bsRecordingState = StatedBehaviorSubject<bool>();
+  final bsRecordingState = StatedBehaviorSubject<bool>(false);
 
   final StorageRepository _storageRepo;
   late final TestAssembler _testAssembler;

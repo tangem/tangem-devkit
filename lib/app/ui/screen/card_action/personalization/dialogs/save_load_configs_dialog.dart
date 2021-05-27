@@ -152,7 +152,7 @@ class ConfigListWidget extends StatelessWidget {
       title: TextWidget(configName),
       trailing: IconButton(
         key: ItemId.btnFrom(itemName),
-        icon: Icon(Icons.delete),
+        icon: Icon(Icons.delete_outline),
         onPressed: () {
           _bloc.deleteConfig(configName);
           _bloc.fetchSavedConfigNames();

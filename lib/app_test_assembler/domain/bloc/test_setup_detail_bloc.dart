@@ -14,6 +14,7 @@ class TestSetupDetailBloc extends BaseBloc {
   final JsonTestsStorage _testsStorage;
   final JsonTestDetailScreenData screenData;
 
+  final _bsJsonTestName = BehaviorSubject<String>();
   final _bsSetupJsonValue = BehaviorSubject<String>();
   final bsName = BehaviorSubject<String>();
   final bsDescription = BehaviorSubject<String>();
@@ -32,6 +33,8 @@ class TestSetupDetailBloc extends BaseBloc {
     _updateSetupJsonValue();
   }
 
+  Stream<String> get jsonTestNameStream => _bsJsonTestName.stream;
+
   Stream<String> get setupJsonValueStream => _bsSetupJsonValue.stream;
 
   init() {
@@ -46,6 +49,7 @@ class TestSetupDetailBloc extends BaseBloc {
     bsName.add(_name);
     bsDescription.add(_description);
     bsIterationCount.add(_iterations.toString());
+    _bsJsonTestName.add(_name);
   }
 
   _updateSetupJsonValue() {
@@ -68,6 +72,7 @@ class TestSetupDetailBloc extends BaseBloc {
     } else {
       _testsStorage.remove(oldName);
       _testsStorage.add(_jsonTest.setup.name, _jsonTest);
+      _bsJsonTestName.add(_jsonTest.setup.name);
     }
     _updateSetupJsonValue();
   }
