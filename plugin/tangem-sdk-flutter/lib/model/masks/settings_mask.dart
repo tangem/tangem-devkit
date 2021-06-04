@@ -65,8 +65,3 @@ class SettingsMaskBuilder {
 
   int build() => settingsMaskValue;
 }
-
-class SettingsMaskHelper {
-  static bool valueContains(int rawValue, Settings settings) => (rawValue & settings.code) != 0;
-  static SettingsMaskBuilder get createBuilder => SettingsMaskBuilder();
-}

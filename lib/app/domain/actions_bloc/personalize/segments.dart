@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:devkit/app/domain/model/personalization/signing_method_mask.dart';
 import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/extensions.dart';
 import 'package:tangem_sdk/model/sdk.dart';
+import 'package:tangem_sdk/tangem_sdk.dart';
 
 import 'personalization_bloc.dart';
 import 'personalization_values.dart';
@@ -137,7 +136,8 @@ class SigningMethodSegment extends BaseSegment {
     bsRawTx.add(method.contains(SigningMethod.SignRaw));
     bsHashSignedByIssuer.add(method.contains(SigningMethod.SignHashSignedByIssuer));
     bsRawSignedByIssuer.add(method.contains(SigningMethod.SignRawSignedByIssuer));
-    bsHashSignedByIsseruAndUpdateIssuerData.add(method.contains(SigningMethod.SignHashSignedByIssuerAndUpdateIssuerData));
+    bsHashSignedByIsseruAndUpdateIssuerData
+        .add(method.contains(SigningMethod.SignHashSignedByIssuerAndUpdateIssuerData));
     bsRawSignedByIssuerAndUpdateIssuerData.add(method.contains(SigningMethod.SignRawSignedByIssuerAndUpdateIssuerData));
     bsExternalHash.add(method.contains(SigningMethod.SignPos));
   }

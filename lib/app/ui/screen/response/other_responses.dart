@@ -2,7 +2,7 @@ import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
+import 'package:tangem_sdk/card_responses/card_response.dart';
 
 import 'base_widgets.dart';
 
@@ -15,28 +15,9 @@ class SignResponseBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
     return Column(
-      children: <Widget>[
-        ResponseTextWidget(
-          transl.response_sign_cid,
-          _response.cardId,
-          transl.desc_response_sign_cid,
-        ),
-        ResponseTextWidget(
-          transl.response_sign_wallet_signed_hashes,
-          _response.walletSignedHashes,
-          transl.desc_response_sign_wallet_signed_hashes,
-        ),
-        ResponseTextWidget(
-          transl.response_sign_wallet_remaining_signatures,
-          _response.walletRemainingSignatures,
-          transl.desc_response_sign_wallet_remaining_signatures,
-        ),
-        ResponseTextWidget(
-          transl.response_sign_signature,
-          _response.signature,
-          transl.desc_response_sign_signature,
-        ),
-      ],
+      children: _response.signedHashes
+          .map((hash) => ResponseTextWidget(transl.response_sign_signature, hash, transl.desc_response_sign_signature))
+          .toList(),
     );
   }
 }
@@ -314,6 +295,7 @@ class WriteFilesResponseBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
+
     return Column(
       children: <Widget>[
         ResponseTextWidget(
@@ -322,9 +304,9 @@ class WriteFilesResponseBody extends StatelessWidget {
           transl.desc_response_card_cid,
         ),
         ResponseTextWidget(
-          transl.response_files_write_index,
-          _response.fileIndex,
-          transl.response_files_write_index,
+          transl.response_files_write_indices,
+          _response.fileIndices.join(", ").wrapBrackets(),
+          transl.response_files_write_indices,
         ),
       ],
     );

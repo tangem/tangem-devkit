@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/extensions.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
 class TextStreamController {
   final TextEditingController controller = TextEditingController();

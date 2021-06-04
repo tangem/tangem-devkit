@@ -7,8 +7,7 @@ import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:tangem_sdk/extensions.dart';
-import 'package:tangem_sdk/sdk_plugin.dart';
+import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../finders.dart';
 

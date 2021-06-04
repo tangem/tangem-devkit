@@ -9,6 +9,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart' as PathProvider;
 import 'package:rxdart/rxdart.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class ReadIssuerDataBloc extends ActionBloc<ReadIssuerDataResponse> {
@@ -136,7 +137,9 @@ class CreateWalletBloc extends ActionBloc<CreateWalletResponse> {
 class PurgeWalletBloc extends ActionBloc<PurgeWalletResponse> {
   @override
   void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
-    onSuccess(PurgeWalletModel());
+    //TODO: before trying to purgeWallet, must read the card and fetch walletPubKey (v.<4) -  by 0 index, (v.>=4) - by using slider
+    //TODO: for now (implements v4) we can use index. Later we must change it by walletPubKey
+    onSuccess(PurgeWalletModel(0));
   }
 }
 
@@ -323,17 +326,22 @@ class ScanBloc extends ActionBloc<CardResponse> {
 
 class SignBloc extends ActionBloc<SignResponse> {
   final bsDataForHashing = BehaviorSubject<String>();
+  final bsWalletPublicKey = BehaviorSubject<String>();
 
   String _dataForHashing = "";
+  String _walletPublicKey = "";
 
   SignBloc() {
     addSubscription(bsDataForHashing.stream.listen((event) => _dataForHashing = event));
+    addSubscription(bsWalletPublicKey.stream.listen((event) => _walletPublicKey = event));
     bsDataForHashing.add("Data used for hashing");
+    //TODO: before trying to sign, must read the card and fetch walletPubKey (v.<4) -  by 0 index, (v.>=4) - by using slider
+    bsWalletPublicKey.add("04B2A74E1E502A3E5C4B03B53412A5891F270752543D77B5FE685F3125196610E43C880E29ADA29B2D9641FEAB37A699355863F920DE98937B426B1F303A4752C5");
   }
 
   @override
   void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     final data = _dataForHashing.splitToList().toStringList();
-    onSuccess(SignModel(data));
+    onSuccess(SignModel(data, _walletPublicKey));
   }
 }

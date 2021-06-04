@@ -1,6 +1,6 @@
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:intl/intl.dart';
-import 'package:tangem_sdk/extensions.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
 class PersonalizationValues {
   static final String CUSTOM = "--- CUSTOM ---";

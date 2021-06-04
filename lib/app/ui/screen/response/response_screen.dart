@@ -7,7 +7,6 @@ import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
-import 'package:tangem_sdk/card_responses/other_responses.dart';
 
 import 'other_responses.dart';
 import 'scan_personalize_response.dart';

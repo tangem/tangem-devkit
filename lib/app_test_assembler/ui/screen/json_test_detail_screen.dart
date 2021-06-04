@@ -10,7 +10,7 @@ import 'package:devkit/application.dart';
 import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tangem_sdk/extensions.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
 class JsonTestDetailScreen extends StatefulWidget {
   @override

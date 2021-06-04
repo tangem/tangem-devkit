@@ -6,7 +6,6 @@ import 'package:tangem_sdk/card_responses/card_response.dart';
 import 'package:tangem_sdk/model/command_data.dart';
 import 'package:tangem_sdk/model/json_rpc.dart';
 
-import 'card_responses/other_responses.dart';
 import 'model/sdk.dart';
 
 /// Flutter TangemSdk is an interface which provides access to platform specific TangemSdk library.
@@ -38,11 +37,15 @@ class TangemSdk {
   static const cPrepareHashes = "prepareHashes";
 
   static const isAllowedOnlyDebugCards = "isAllowedOnlyDebugCards";
-  static const cid = "cid";
+  static const cid = "cardId";
   static const initialMessage = "initialMessage";
   static const initialMessageHeader = "header";
   static const initialMessageBody = "body";
   static const hashes = "hashes";
+  static const walletPublicKey = "walletPublicKey";
+  //TODO: replace by walletPublicKey
+  @Deprecated("replace by walletPublicKey")
+  static const walletIndex = "walletIndex";
   static const cardConfig = "cardConfig";
   static const issuer = "issuer";
   static const manufacturer = "manufacturer";
@@ -290,7 +293,7 @@ class TangemSdk {
       case cScanCard:
         return CardResponse.fromJson(jsonResponse);
       case cSign:
-        return SignResponse.fromJson(jsonResponse);
+        return SignResponse.fromJson({"signedHashes": jsonResponse});
       case cPersonalize:
         return CardResponse.fromJson(jsonResponse);
       case cDepersonalize:

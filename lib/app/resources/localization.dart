@@ -5,7 +5,7 @@ import 'package:devkit/app/resources/lang/languages.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:tangem_sdk/extensions.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
 class AppLocalization {
   static const LocalizationsDelegate<Transl> delegate = _LocalizationDelegate();
@@ -851,9 +851,9 @@ class Transl {
 
   String get desc_files_data_protection => get("desc_files_data_protection");
 
-  String get response_files_write_index => get("response_files_write_index");
+  String get response_files_write_indices => get("response_files_write_indices");
 
-  String get desc_response_files_write_index => get("desc_response_files_write_index");
+  String get desc_response_files_write_indices => get("desc_response_files_write_indices");
 
   String get files_read_indices => get("files_read_indices");
 
