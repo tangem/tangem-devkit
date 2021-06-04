@@ -15,31 +15,17 @@ buildscript {
 }
 
 rootProject.allprojects {
-  def nexusUser = "viewer"
-  def nexusPass = "smartcash124"
   repositories {
     google()
     jcenter()
-    maven {
-      credentials {
-        username = nexusUser
-        password = nexusPass
-      }
-      url "https://nexus.tangem.com/repository/maven-releases/"
-    }
-    maven {
-      credentials {
-        username = nexusUser
-        password = nexusPass
-      }
-      url "https://nexus.tangem.com/repository/maven-snapshots/"
-    }
-    maven { url 'https://jitpack.io' }
+//    maven {url "https://nexus.tangem.com/repository/maven-releases/"}
+    maven {url 'https://jitpack.io'}
   }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion 29
@@ -66,12 +52,15 @@ android {
 dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-  implementation 'com.tangem:core:1.101.0'
-  implementation 'com.tangem:sdk:1.101.0'
+  implementation 'com.github.tangem.tangem-sdk-android:tangem-sdk-android:3.2.2'
+  implementation 'com.github.tangem.tangem-sdk-android:tangem-sdk-core:3.2.2'
 
   implementation "com.squareup.sqldelight:android-driver:1.4.0"
 
-  implementation 'com.google.code.gson:gson:2.8.6'
+  implementation 'com.squareup.moshi:moshi:1.12.0'
+  implementation "com.squareup.moshi:moshi-kotlin:1.12.0"
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.12.0")
+
   implementation 'androidx.appcompat:appcompat:1.3.0'
   implementation 'androidx.core:core-ktx:1.5.0'
 }
