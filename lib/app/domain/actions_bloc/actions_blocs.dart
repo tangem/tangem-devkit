@@ -200,7 +200,7 @@ class FilesWriteBloc extends ActionBloc<WriteFilesResponse> {
   Future<File?> _reducePhotoFileSize(File file) async {
     final dir = await PathProvider.getTemporaryDirectory();
     int fileLength = await file.length();
-    while (fileLength > 15000) {
+    while (fileLength > 2000) {
       final decodedImage = await decodeImageFromList(file.readAsBytesSync());
       final width = decodedImage.width;
       final height = decodedImage.height;
@@ -209,7 +209,7 @@ class FilesWriteBloc extends ActionBloc<WriteFilesResponse> {
         Path.join(dir.path, "temp_photo_${width}_$height.jpg"),
         minWidth: width ~/ 1.5,
         minHeight: height ~/ 1.5,
-        quality: 80,
+        quality: 20,
       );
       if (reducedFile == null) return null;
 
