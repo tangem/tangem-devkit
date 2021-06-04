@@ -120,10 +120,10 @@ class CommonSegment extends BaseSegment {
 class SigningMethodSegment extends BaseSegment {
   final bsTxHashes = BehaviorSubject<bool>();
   final bsRawTx = BehaviorSubject<bool>();
-  final bsValidatedTxHashes = BehaviorSubject<bool>();
-  final bsValidatedRawTx = BehaviorSubject<bool>();
-  final bsValidatedTxHashesWithIssuerData = BehaviorSubject<bool>();
-  final bsValidatedRawTxWithIssuerData = BehaviorSubject<bool>();
+  final bsHashSignedByIssuer = BehaviorSubject<bool>();
+  final bsRawSignedByIssuer = BehaviorSubject<bool>();
+  final bsHashSignedByIsseruAndUpdateIssuerData = BehaviorSubject<bool>();
+  final bsRawSignedByIssuerAndUpdateIssuerData = BehaviorSubject<bool>();
   final bsExternalHash = BehaviorSubject<bool>();
 
   final maskBuilder = SigningMethodMaskBuilder();
@@ -133,45 +133,45 @@ class SigningMethodSegment extends BaseSegment {
   @override
   _configWasUpdated() {
     final method = _config.SigningMethod;
-    bsTxHashes.add(SigningMethodMaskBuilder.maskContainsMethod(method, 0));
-    bsRawTx.add(SigningMethodMaskBuilder.maskContainsMethod(method, 1));
-    bsValidatedTxHashes.add(SigningMethodMaskBuilder.maskContainsMethod(method, 2));
-    bsValidatedRawTx.add(SigningMethodMaskBuilder.maskContainsMethod(method, 3));
-    bsValidatedTxHashesWithIssuerData.add(SigningMethodMaskBuilder.maskContainsMethod(method, 4));
-    bsValidatedRawTxWithIssuerData.add(SigningMethodMaskBuilder.maskContainsMethod(method, 5));
-    bsExternalHash.add(SigningMethodMaskBuilder.maskContainsMethod(method, 6));
+    bsTxHashes.add(method.contains(SigningMethod.SignHash));
+    bsRawTx.add(method.contains(SigningMethod.SignRaw));
+    bsHashSignedByIssuer.add(method.contains(SigningMethod.SignHashSignedByIssuer));
+    bsRawSignedByIssuer.add(method.contains(SigningMethod.SignRawSignedByIssuer));
+    bsHashSignedByIsseruAndUpdateIssuerData.add(method.contains(SigningMethod.SignHashSignedByIssuerAndUpdateIssuerData));
+    bsRawSignedByIssuerAndUpdateIssuerData.add(method.contains(SigningMethod.SignRawSignedByIssuerAndUpdateIssuerData));
+    bsExternalHash.add(method.contains(SigningMethod.SignPos));
   }
 
   @override
   _initSubscriptions() {
     _subscriptions.add(bsTxHashes.listen((isChecked) {
-      _handleMethodChanges(isChecked, 0);
+      _handleMethodChanges(isChecked, SigningMethod.SignHash);
     }));
     _subscriptions.add(bsRawTx.listen((isChecked) {
-      _handleMethodChanges(isChecked, 1);
+      _handleMethodChanges(isChecked, SigningMethod.SignRaw);
     }));
-    _subscriptions.add(bsValidatedTxHashes.listen((isChecked) {
-      _handleMethodChanges(isChecked, 2);
+    _subscriptions.add(bsHashSignedByIssuer.listen((isChecked) {
+      _handleMethodChanges(isChecked, SigningMethod.SignHashSignedByIssuer);
     }));
-    _subscriptions.add(bsValidatedRawTx.listen((isChecked) {
-      _handleMethodChanges(isChecked, 3);
+    _subscriptions.add(bsRawSignedByIssuer.listen((isChecked) {
+      _handleMethodChanges(isChecked, SigningMethod.SignRawSignedByIssuer);
     }));
-    _subscriptions.add(bsValidatedTxHashesWithIssuerData.listen((isChecked) {
-      _handleMethodChanges(isChecked, 4);
+    _subscriptions.add(bsHashSignedByIsseruAndUpdateIssuerData.listen((isChecked) {
+      _handleMethodChanges(isChecked, SigningMethod.SignHashSignedByIssuerAndUpdateIssuerData);
     }));
-    _subscriptions.add(bsValidatedRawTxWithIssuerData.listen((isChecked) {
-      _handleMethodChanges(isChecked, 5);
+    _subscriptions.add(bsRawSignedByIssuerAndUpdateIssuerData.listen((isChecked) {
+      _handleMethodChanges(isChecked, SigningMethod.SignRawSignedByIssuerAndUpdateIssuerData);
     }));
     _subscriptions.add(bsExternalHash.listen((isChecked) {
-      _handleMethodChanges(isChecked, 6);
+      _handleMethodChanges(isChecked, SigningMethod.SignPos);
     }));
   }
 
-  _handleMethodChanges(bool isChecked, int method) {
+  _handleMethodChanges(bool isChecked, SigningMethod method) {
     if (isChecked)
-      maskBuilder.addMethod(method);
+      maskBuilder.addMethod(method.code);
     else
-      maskBuilder.removeMethod(method);
+      maskBuilder.removeMethod(method.code);
     _config.SigningMethod = maskBuilder.build();
   }
 }
