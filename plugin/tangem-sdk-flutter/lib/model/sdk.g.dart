@@ -8,16 +8,15 @@ part of 'sdk.dart';
 
 CardConfigSdk _$CardConfigSdkFromJson(Map<String, dynamic> json) {
   return CardConfigSdk(
-    (json['pin'] as List<dynamic>).map((e) => e as int).toList(),
-    (json['pin2'] as List<dynamic>).map((e) => e as int).toList(),
-    (json['pin3'] as List<dynamic>).map((e) => e as int).toList(),
+    json['pin'] as String,
+    json['pin2'] as String,
+    json['pin3'] as String,
     json['hexCrExKey'] as String,
     json['cvc'] as String,
     json['pauseBeforePin2'] as int,
     json['smartSecurityDelay'] as bool,
     json['curveID'] as String,
-    SigningMethodMaskSdk.fromJson(
-        json['signingMethods'] as Map<String, dynamic>),
+    (json['signingMethods'] as List<dynamic>).map((e) => e as String).toList(),
     json['maxSignatures'] as int,
     json['isReusable'] as bool,
     json['allowSetPIN1'] as bool,
@@ -44,10 +43,8 @@ CardConfigSdk _$CardConfigSdkFromJson(Map<String, dynamic> json) {
     json['checkPIN3OnCard'] as bool,
     json['createWallet'] as bool,
     json['walletsCount'] as int,
-    CardDataSdk.fromJson(json['cardData'] as Map<String, dynamic>),
-    (json['ndefRecords'] as List<dynamic>)
-        .map((e) => NdefRecordSdk.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    CardData.fromJson(json['cardData'] as Map<String, dynamic>),
+    (json['ndefRecords'] as List<dynamic>).map((e) => NdefRecordSdk.fromJson(e as Map<String, dynamic>)).toList(),
     issuerName: json['issuerName'] as String?,
     acquirerName: json['acquirerName'] as String?,
     series: json['series'] as String?,
@@ -56,8 +53,7 @@ CardConfigSdk _$CardConfigSdkFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$CardConfigSdkToJson(CardConfigSdk instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CardConfigSdkToJson(CardConfigSdk instance) => <String, dynamic>{
       'issuerName': instance.issuerName,
       'acquirerName': instance.acquirerName,
       'series': instance.series,
@@ -89,21 +85,17 @@ Map<String, dynamic> _$CardConfigSdkToJson(CardConfigSdk instance) =>
       'protectIssuerDataAgainstReplay': instance.protectIssuerDataAgainstReplay,
       'prohibitDefaultPIN1': instance.prohibitDefaultPIN1,
       'disablePrecomputedNDEF': instance.disablePrecomputedNDEF,
-      'skipSecurityDelayIfValidatedByIssuer':
-          instance.skipSecurityDelayIfValidatedByIssuer,
-      'skipCheckPIN2CVCIfValidatedByIssuer':
-          instance.skipCheckPIN2CVCIfValidatedByIssuer,
-      'skipSecurityDelayIfValidatedByLinkedTerminal':
-          instance.skipSecurityDelayIfValidatedByLinkedTerminal,
-      'restrictOverwriteIssuerExtraData':
-          instance.restrictOverwriteIssuerExtraData,
+      'skipSecurityDelayIfValidatedByIssuer': instance.skipSecurityDelayIfValidatedByIssuer,
+      'skipCheckPIN2CVCIfValidatedByIssuer': instance.skipCheckPIN2CVCIfValidatedByIssuer,
+      'skipSecurityDelayIfValidatedByLinkedTerminal': instance.skipSecurityDelayIfValidatedByLinkedTerminal,
+      'restrictOverwriteIssuerExtraData': instance.restrictOverwriteIssuerExtraData,
       'requireTerminalTxSignature': instance.requireTerminalTxSignature,
       'requireTerminalCertSignature': instance.requireTerminalCertSignature,
       'checkPIN3OnCard': instance.checkPIN3OnCard,
       'createWallet': instance.createWallet,
       'walletsCount': instance.walletsCount,
-      'cardData': instance.cardData,
-      'ndefRecords': instance.ndefRecords,
+      'cardData': instance.cardData.toJson(),
+      'ndefRecords': instance.ndefRecords.map((e) => e.toJson()).toList(),
     };
 
 Issuer _$IssuerFromJson(Map<String, dynamic> json) {
@@ -118,8 +110,8 @@ Issuer _$IssuerFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$IssuerToJson(Issuer instance) => <String, dynamic>{
       'name': instance.name,
       'id': instance.id,
-      'dataKeyPair': instance.dataKeyPair,
-      'transactionKeyPair': instance.transactionKeyPair,
+      'dataKeyPair': instance.dataKeyPair.toJson(),
+      'transactionKeyPair': instance.transactionKeyPair.toJson(),
     };
 
 Acquirer _$AcquirerFromJson(Map<String, dynamic> json) {
@@ -133,7 +125,7 @@ Acquirer _$AcquirerFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$AcquirerToJson(Acquirer instance) => <String, dynamic>{
       'name': instance.name,
       'id': instance.id,
-      'keyPair': instance.keyPair,
+      'keyPair': instance.keyPair.toJson(),
     };
 
 Manufacturer _$ManufacturerFromJson(Map<String, dynamic> json) {
@@ -143,46 +135,75 @@ Manufacturer _$ManufacturerFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$ManufacturerToJson(Manufacturer instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ManufacturerToJson(Manufacturer instance) => <String, dynamic>{
       'name': instance.name,
-      'keyPair': instance.keyPair,
+      'keyPair': instance.keyPair.toJson(),
     };
 
-KeyPairHex _$KeyPairHexFromJson(Map<String, dynamic> json) {
-  return KeyPairHex(
-    json['publicKey'] as String,
-    json['privateKey'] as String,
+Message _$MessageFromJson(Map<String, dynamic> json) {
+  return Message(
+    json['body'] as String?,
+    json['header'] as String?,
   );
 }
 
-Map<String, dynamic> _$KeyPairHexToJson(KeyPairHex instance) =>
-    <String, dynamic>{
-      'publicKey': instance.publicKey,
-      'privateKey': instance.privateKey,
+Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
+      'body': instance.body,
+      'header': instance.header,
     };
 
-CardDataSdk _$CardDataSdkFromJson(Map<String, dynamic> json) {
-  return CardDataSdk(
-    json['issuerName'] as String,
-    json['batchId'] as String,
-    json['blockchainName'] as String,
-    json['manufactureDateTime'] as String,
-    ProductMaskSdk.fromJson(json['productMask'] as Map<String, dynamic>),
-    manufacturerSignature: (json['manufacturerSignature'] as List<dynamic>?)
-        ?.map((e) => e as int)
-        .toList(),
-    tokenSymbol: json['tokenSymbol'] as String?,
+CardWallet _$CardWalletFromJson(Map<String, dynamic> json) {
+  return CardWallet(
+    json['index'] as int,
+    json['status'] as String,
+    json['curve'] as String?,
+    (json['settingsMask'] as List<dynamic>?)?.map((e) => e as String).toList(),
+    json['publicKey'] as String?,
+    json['signedHashes'] as int?,
+    json['remainingSignatures'] as int?,
+  );
+}
+
+Map<String, dynamic> _$CardWalletToJson(CardWallet instance) => <String, dynamic>{
+      'index': instance.index,
+      'status': instance.status,
+      'curve': instance.curve,
+      'settingsMask': instance.settingsMask,
+      'publicKey': instance.publicKey,
+      'signedHashes': instance.signedHashes,
+      'remainingSignatures': instance.remainingSignatures,
+    };
+
+FirmwareVersion _$FirmwareVersionFromJson(Map<String, dynamic> json) {
+  return FirmwareVersion(
+    json['version'] as String,
+  );
+}
+
+Map<String, dynamic> _$FirmwareVersionToJson(FirmwareVersion instance) => <String, dynamic>{
+      'version': instance.version,
+    };
+
+CardData _$CardDataFromJson(Map<String, dynamic> json) {
+  return CardData(
+    json['batchId'] as String?,
+    json['blockchainName'] as String?,
+    json['issuerName'] as String?,
+    json['manufacturerSignature'] as String?,
+    json['manufactureDateTime'] as String?,
+    (json['productMask'] as List<dynamic>?)?.map((e) => e as String).toList(),
     tokenContractAddress: json['tokenContractAddress'] as String?,
+    tokenSymbol: json['tokenSymbol'] as String?,
     tokenDecimal: json['tokenDecimal'] as int?,
   );
 }
 
-Map<String, dynamic> _$CardDataSdkToJson(CardDataSdk instance) {
+Map<String, dynamic> _$CardDataToJson(CardData instance) {
   final val = <String, dynamic>{
-    'issuerName': instance.issuerName,
     'batchId': instance.batchId,
     'blockchainName': instance.blockchainName,
+    'issuerName': instance.issuerName,
+    'manufacturerSignature': instance.manufacturerSignature,
     'manufactureDateTime': instance.manufactureDateTime,
     'productMask': instance.productMask,
   };
@@ -193,34 +214,22 @@ Map<String, dynamic> _$CardDataSdkToJson(CardDataSdk instance) {
     }
   }
 
-  writeNotNull('tokenSymbol', instance.tokenSymbol);
   writeNotNull('tokenContractAddress', instance.tokenContractAddress);
+  writeNotNull('tokenSymbol', instance.tokenSymbol);
   writeNotNull('tokenDecimal', instance.tokenDecimal);
-  writeNotNull('manufacturerSignature', instance.manufacturerSignature);
   return val;
 }
 
-SigningMethodMaskSdk _$SigningMethodMaskSdkFromJson(Map<String, dynamic> json) {
-  return SigningMethodMaskSdk(
-    json['rawValue'] as int,
+KeyPairHex _$KeyPairHexFromJson(Map<String, dynamic> json) {
+  return KeyPairHex(
+    json['publicKey'] as String,
+    json['privateKey'] as String,
   );
 }
 
-Map<String, dynamic> _$SigningMethodMaskSdkToJson(
-        SigningMethodMaskSdk instance) =>
-    <String, dynamic>{
-      'rawValue': instance.rawValue,
-    };
-
-ProductMaskSdk _$ProductMaskSdkFromJson(Map<String, dynamic> json) {
-  return ProductMaskSdk(
-    json['rawValue'] as int,
-  );
-}
-
-Map<String, dynamic> _$ProductMaskSdkToJson(ProductMaskSdk instance) =>
-    <String, dynamic>{
-      'rawValue': instance.rawValue,
+Map<String, dynamic> _$KeyPairHexToJson(KeyPairHex instance) => <String, dynamic>{
+      'publicKey': instance.publicKey,
+      'privateKey': instance.privateKey,
     };
 
 NdefRecordSdk _$NdefRecordSdkFromJson(Map<String, dynamic> json) {
@@ -230,27 +239,22 @@ NdefRecordSdk _$NdefRecordSdkFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$NdefRecordSdkToJson(NdefRecordSdk instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$NdefRecordSdkToJson(NdefRecordSdk instance) => <String, dynamic>{
       'type': instance.type,
       'value': instance.value,
     };
 
-DataProtectedByPasscodeHex _$DataProtectedByPasscodeHexFromJson(
-    Map<String, dynamic> json) {
+DataProtectedByPasscodeHex _$DataProtectedByPasscodeHexFromJson(Map<String, dynamic> json) {
   return DataProtectedByPasscodeHex(
     json['data'] as String,
   );
 }
 
-Map<String, dynamic> _$DataProtectedByPasscodeHexToJson(
-        DataProtectedByPasscodeHex instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$DataProtectedByPasscodeHexToJson(DataProtectedByPasscodeHex instance) => <String, dynamic>{
       'data': instance.data,
     };
 
-DataProtectedBySignatureHex _$DataProtectedBySignatureHexFromJson(
-    Map<String, dynamic> json) {
+DataProtectedBySignatureHex _$DataProtectedBySignatureHexFromJson(Map<String, dynamic> json) {
   return DataProtectedBySignatureHex(
     json['data'] as String,
     json['counter'] as int,
@@ -259,12 +263,10 @@ DataProtectedBySignatureHex _$DataProtectedBySignatureHexFromJson(
   );
 }
 
-Map<String, dynamic> _$DataProtectedBySignatureHexToJson(
-        DataProtectedBySignatureHex instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$DataProtectedBySignatureHexToJson(DataProtectedBySignatureHex instance) => <String, dynamic>{
       'data': instance.data,
       'counter': instance.counter,
-      'signature': instance.signature,
+      'signature': instance.signature.toJson(),
       'issuerPublicKey': instance.issuerPublicKey,
     };
 
@@ -275,9 +277,91 @@ FileDataSignatureHex _$FileDataSignatureHexFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$FileDataSignatureHexToJson(
-        FileDataSignatureHex instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$FileDataSignatureHexToJson(FileDataSignatureHex instance) => <String, dynamic>{
+      'startingSignature': instance.startingSignature,
+      'finalizingSignature': instance.finalizingSignature,
+    };
+
+FileHex _$FileHexFromJson(Map<String, dynamic> json) {
+  return FileHex(
+    json['fileIndex'] as int,
+    json['fileData'] as String,
+    _$enumDecodeNullable(_$FileSettingsEnumMap, json['fileSettings']),
+  );
+}
+
+Map<String, dynamic> _$FileHexToJson(FileHex instance) => <String, dynamic>{
+      'fileIndex': instance.fileIndex,
+      'fileData': instance.fileData,
+      'fileSettings': _$FileSettingsEnumMap[instance.fileSettings],
+    };
+
+K _$enumDecode<K, V>(
+  Map<K, V> enumValues,
+  Object? source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError(
+      'A value must be provided. Supported values: '
+      '${enumValues.values.join(', ')}',
+    );
+  }
+
+  return enumValues.entries.singleWhere(
+    (e) => e.value == source,
+    orElse: () {
+      if (unknownValue == null) {
+        throw ArgumentError(
+          '`$source` is not one of the supported values: '
+          '${enumValues.values.join(', ')}',
+        );
+      }
+      return MapEntry(unknownValue, enumValues.values.first);
+    },
+  ).key;
+}
+
+K? _$enumDecodeNullable<K, V>(
+  Map<K, V> enumValues,
+  dynamic source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
+}
+
+const _$FileSettingsEnumMap = {
+  FileSettings.Public: 'Public',
+  FileSettings.Private: 'Private',
+};
+
+ChangeFileSettings _$ChangeFileSettingsFromJson(Map<String, dynamic> json) {
+  return ChangeFileSettings(
+    json['fileIndex'] as int,
+    _$enumDecode(_$FileSettingsEnumMap, json['settings']),
+  );
+}
+
+Map<String, dynamic> _$ChangeFileSettingsToJson(ChangeFileSettings instance) => <String, dynamic>{
+      'fileIndex': instance.fileIndex,
+      'settings': _$FileSettingsEnumMap[instance.settings],
+    };
+
+FileHashDataHex _$FileHashDataHexFromJson(Map<String, dynamic> json) {
+  return FileHashDataHex(
+    json['startingHash'] as String,
+    json['finalizingHash'] as String,
+    json['startingSignature'] as String?,
+    json['finalizingSignature'] as String?,
+  );
+}
+
+Map<String, dynamic> _$FileHashDataHexToJson(FileHashDataHex instance) => <String, dynamic>{
+      'startingHash': instance.startingHash,
+      'finalizingHash': instance.finalizingHash,
       'startingSignature': instance.startingSignature,
       'finalizingSignature': instance.finalizingSignature,
     };

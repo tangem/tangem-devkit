@@ -1,6 +1,6 @@
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:tangem_sdk/extensions.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
 class AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {
   @override
@@ -9,7 +9,6 @@ class AnalyticsRouteObserver extends RouteObserver<PageRoute<dynamic>> {
     if (route is PageRoute) {
       _handleScreenChanges(route);
     }
-
   }
 
   @override

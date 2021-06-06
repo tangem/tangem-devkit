@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
 part 'sdk.g.dart';
 
@@ -9,15 +10,15 @@ class CardConfigSdk {
   final String? series;
   final int startNumber;
   final int count;
-  final List<int> pin;
-  final List<int> pin2;
-  final List<int> pin3;
+  final String pin;
+  final String pin2;
+  final String pin3;
   final String hexCrExKey;
   final String cvc;
   final int pauseBeforePin2;
   final bool smartSecurityDelay;
   final String curveID;
-  final SigningMethodMaskSdk signingMethods;
+  final List<String> signingMethods;
   final int maxSignatures;
   final bool isReusable;
   final bool allowSetPIN1;
@@ -44,7 +45,7 @@ class CardConfigSdk {
   final bool checkPIN3OnCard;
   final bool createWallet;
   final int walletsCount;
-  final CardDataSdk cardData;
+  final CardData cardData;
   final List<NdefRecordSdk> ndefRecords;
 
   CardConfigSdk(
@@ -55,7 +56,7 @@ class CardConfigSdk {
     this.cvc,
     this.pauseBeforePin2,
     this.smartSecurityDelay,
-    this.curveID,
+    String curveID,
     this.signingMethods,
     this.maxSignatures,
     this.isReusable,
@@ -90,7 +91,7 @@ class CardConfigSdk {
     this.series,
     this.startNumber = 0,
     this.count = 0,
-  });
+  }) : this.curveID = curveID.capitalize();
 
   factory CardConfigSdk.fromJson(Map<String, dynamic> json) => _$CardConfigSdkFromJson(json);
 
@@ -136,18 +137,132 @@ class Manufacturer {
   Map<String, dynamic> toJson() => _$ManufacturerToJson(this);
 }
 
+@JsonSerializable()
 class Message {
-  final String body;
-  final String header;
+  final String? body;
+  final String? header;
 
   Message(this.body, this.header);
 
-  factory Message.fromJson(Map<String, dynamic> json) => Message(json["body"], json["header"]);
+  factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        "body": body,
-        "header": header,
-      };
+  Map<String, dynamic> toJson() => _$MessageToJson(this);
+}
+
+@JsonSerializable()
+class CardWallet {
+  final int index;
+  final String status;
+  final String? curve;
+  final List<String>? settingsMask;
+  final String? publicKey;
+  final int? signedHashes;
+  final int? remainingSignatures;
+
+  CardWallet(
+    this.index,
+    this.status, [
+    this.curve,
+    this.settingsMask,
+    this.publicKey,
+    this.signedHashes,
+    this.remainingSignatures,
+  ]);
+
+  factory CardWallet.fromJson(Map<String, dynamic> json) => _$CardWalletFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardWalletToJson(this);
+}
+
+@JsonSerializable()
+class FirmwareVersion {
+  @JsonKey(ignore: true)
+  late final int major;
+  @JsonKey(ignore: true)
+  late final int minor;
+  @JsonKey(ignore: true)
+  late final int hotFix;
+  @JsonKey(ignore: true)
+  late final FirmwareType? type;
+  late final String version;
+
+  FirmwareVersion(this.version) {
+    final code = "\u0000";
+    final versionCleaned = version.endsWith(code) ? version.substring(0, version.length - code.length) : version;
+
+    final cardType = versionCleaned.replaceAll(RegExp("[\\d.]"), "").trim();
+    final result = versionCleaned.replaceAll(cardType, "").trim();
+    final separated = result.split(".");
+
+    this.major = int.parse(separated.removeFirstOrNull() ?? "0");
+    this.minor = int.parse(separated.removeFirstOrNull() ?? "0");
+    this.hotFix = int.parse(separated.removeFirstOrNull() ?? "0");
+    this.type = _getFirmwareType(cardType);
+  }
+
+  FirmwareVersion.separated(this.major, this.minor, [int? hotFix, FirmwareType? type])
+      : this.hotFix = hotFix ?? 0,
+        this.type = type,
+        this.version = StringBuffer("$major.$minor").apply((it) {
+          if (hotFix != 0) it.write("$hotFix");
+          if (type != null) it.write(type.type);
+        }).toString();
+
+  FirmwareType? _getFirmwareType(String? type) {
+    return FirmwareType.values.firstWhereOrNull((e) => e.type == type);
+  }
+
+  factory FirmwareVersion.fromJson(String version) => _$FirmwareVersionFromJson({"version": version});
+
+  Map<String, dynamic> toJson() => _$FirmwareVersionToJson(this);
+}
+
+enum FirmwareType {
+  Sdk,
+  Release,
+  Sprecial,
+}
+
+extension OnFirmwareType on FirmwareType {
+  static const types = {
+    FirmwareType.Sdk: "d SDK",
+    FirmwareType.Release: "r",
+    FirmwareType.Sprecial: null,
+  };
+
+  String? get type => types[this];
+}
+
+@JsonSerializable()
+class CardData {
+  final String? batchId;
+  final String? blockchainName;
+  final String? issuerName;
+  final String? manufacturerSignature;
+  final String? manufactureDateTime;
+  final List<String>? productMask;
+  @JsonKey(includeIfNull: false)
+  final String? tokenContractAddress;
+  @JsonKey(includeIfNull: false)
+  final String? tokenSymbol;
+  @JsonKey(includeIfNull: false)
+  final int? tokenDecimal;
+
+  CardData(
+    this.batchId,
+    this.blockchainName,
+    this.issuerName,
+    this.manufacturerSignature,
+    this.manufactureDateTime,
+    this.productMask, {
+    this.tokenContractAddress,
+    this.tokenSymbol,
+    this.tokenDecimal,
+  });
+
+  factory CardData.fromJson(Map<String, dynamic> json) => _$CardDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardDataToJson(this);
 }
 
 @JsonSerializable()
@@ -160,65 +275,6 @@ class KeyPairHex {
   factory KeyPairHex.fromJson(Map<String, dynamic> json) => _$KeyPairHexFromJson(json);
 
   Map<String, dynamic> toJson() => _$KeyPairHexToJson(this);
-}
-
-@JsonSerializable()
-class CardDataSdk {
-  final String issuerName;
-  final String batchId;
-  final String blockchainName;
-  final String manufactureDateTime;
-  final ProductMaskSdk productMask;
-  @JsonKey(includeIfNull: false)
-  final String? tokenSymbol;
-  @JsonKey(includeIfNull: false)
-  final String? tokenContractAddress;
-  @JsonKey(includeIfNull: false)
-  final int? tokenDecimal;
-  @JsonKey(includeIfNull: false)
-  final List<int>? manufacturerSignature;
-
-  CardDataSdk(
-    String issuerName,
-    String batchId,
-    String blockchainName,
-    String manufactureDateTime,
-    ProductMaskSdk productMask, {
-    this.manufacturerSignature,
-    this.tokenSymbol,
-    this.tokenContractAddress,
-    this.tokenDecimal,
-  })  : this.productMask = productMask,
-        this.issuerName = issuerName,
-        this.batchId = batchId,
-        this.blockchainName = blockchainName,
-        this.manufactureDateTime = manufactureDateTime;
-
-  factory CardDataSdk.fromJson(Map<String, dynamic> json) => _$CardDataSdkFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CardDataSdkToJson(this);
-}
-
-@JsonSerializable()
-class SigningMethodMaskSdk {
-  final int rawValue;
-
-  SigningMethodMaskSdk(this.rawValue);
-
-  factory SigningMethodMaskSdk.fromJson(Map<String, dynamic> json) => _$SigningMethodMaskSdkFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SigningMethodMaskSdkToJson(this);
-}
-
-@JsonSerializable()
-class ProductMaskSdk {
-  final int rawValue;
-
-  ProductMaskSdk(this.rawValue);
-
-  factory ProductMaskSdk.fromJson(Map<String, dynamic> json) => _$ProductMaskSdkFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ProductMaskSdkToJson(this);
 }
 
 @JsonSerializable()
@@ -274,4 +330,54 @@ class FileDataSignatureHex {
   factory FileDataSignatureHex.fromJson(Map<String, dynamic> json) => _$FileDataSignatureHexFromJson(json);
 
   Map<String, dynamic> toJson() => _$FileDataSignatureHexToJson(this);
+}
+
+@JsonSerializable()
+class FileHex {
+  final int fileIndex;
+  final String fileData;
+  final FileSettings? fileSettings;
+
+  FileHex(this.fileIndex, this.fileData, [this.fileSettings]);
+
+  factory FileHex.fromJson(Map<String, dynamic> json) => _$FileHexFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FileHexToJson(this);
+}
+
+@JsonSerializable()
+class ChangeFileSettings {
+  final int fileIndex;
+  final FileSettings settings;
+
+  ChangeFileSettings(this.fileIndex, this.settings);
+
+  factory ChangeFileSettings.fromJson(Map<String, dynamic> json) => _$ChangeFileSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChangeFileSettingsToJson(this);
+}
+
+enum FileSettings { Public, Private }
+
+extension FileSettingsCode on FileSettings {
+  static const codes = {
+    FileSettings.Public: 0x0001,
+    FileSettings.Private: 0x0000,
+  };
+
+  int get code => codes[this]!;
+}
+
+@JsonSerializable()
+class FileHashDataHex {
+  final String startingHash;
+  final String finalizingHash;
+  final String? startingSignature;
+  final String? finalizingSignature;
+
+  FileHashDataHex(this.startingHash, this.finalizingHash, [this.startingSignature, this.finalizingSignature]);
+
+  factory FileHashDataHex.fromJson(Map<String, dynamic> json) => _$FileHashDataHexFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FileHashDataHexToJson(this);
 }

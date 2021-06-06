@@ -9,7 +9,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:prefs/prefs.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tangem_sdk/extensions.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
 abstract class TypedStorage<T> {
   final _bsIsReadyToUse = BehaviorSubject<bool>();

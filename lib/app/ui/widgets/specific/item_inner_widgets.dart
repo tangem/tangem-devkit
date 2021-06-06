@@ -4,7 +4,7 @@ import 'package:devkit/commons/extensions/widgets.dart';
 import 'package:devkit/commons/global/show_description.dart';
 import 'package:devkit/commons/utils/app_attributes.dart';
 import 'package:flutter/material.dart';
-import 'package:tangem_sdk/extensions.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
 class TitleWidget extends StatelessWidget {
   final String title;

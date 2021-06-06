@@ -2,25 +2,23 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:devkit/app/domain/model/personalization/json.dart';
+import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:intl/intl.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
-
-import 'product_mask.dart';
-import 'support_classes.dart';
 
 class Utils {
   static String cardId = "BB03000000000004";
 
-  static CardDataSdk createCardDataSdk(PersonalizationConfig config, Issuer issuer) {
+  static CardData createCardData(PersonalizationConfig config, Issuer issuer) {
     final cardData = config.cardData;
     final date = cardData.date.isNullOrEmpty() ? _createCardDate() : cardData.date!;
-    return CardDataSdk(
-      issuer.name,
+    return CardData(
       cardData.batch,
       cardData.blockchain,
+      issuer.name,
+      null,
       date,
       createProductMask(config),
-      manufacturerSignature: null,
       tokenSymbol: cardData.tokenSymbol,
       tokenContractAddress: cardData.tokenContractAddress,
       tokenDecimal: cardData.tokenDecimal,
@@ -29,20 +27,15 @@ class Utils {
 
   static String _createCardDate() => DateFormat("yyyy-MM-dd").format(DateTime.now());
 
-  static ProductMaskSdk createProductMask(PersonalizationConfig config) {
-    final isNote = config.cardData.productNote;
-    final isTag = config.cardData.productTag;
-    final isIdCard = config.cardData.productIdCard;
-    final isIdIssuer = config.cardData.productIdIssuer;
-    final isTwinCard = config.cardData.productTwinCard;
+  static List<String>? createProductMask(PersonalizationConfig config) {
+    final productMaskList = <Product>[];
+    if (config.cardData.productNote) productMaskList.add(Product.Note);
+    if (config.cardData.productTag) productMaskList.add(Product.Tag);
+    if (config.cardData.productIdCard) productMaskList.add(Product.IdCard);
+    if (config.cardData.productIdIssuer) productMaskList.add(Product.IdIssuer);
+    if (config.cardData.productTwinCard) productMaskList.add(Product.TwinCard);
 
-    final productMaskBuilder = ProductMaskBuilder();
-    if (isNote) productMaskBuilder.add(Product.Note);
-    if (isTag) productMaskBuilder.add(Product.Tag);
-    if (isIdCard) productMaskBuilder.add(Product.IdCard);
-    if (isIdIssuer) productMaskBuilder.add(Product.IdIssuer);
-    if (isTwinCard) productMaskBuilder.add(Product.TwinCard);
-    return productMaskBuilder.build();
+    return productMaskList.enumToStringList();
   }
 
   static Map<String, dynamic> createPersonalizationCommandConfig(
@@ -55,10 +48,10 @@ class Utils {
     final safeAcquirer = acquirer ?? createDefaultAcquirer();
     final safeManufacturer = manufacturer ?? createDefaultManufacturer();
     return {
-      TangemSdk.cardConfig: json.encode(createCardConfig(config, safeIssuer, safeAcquirer)),
-      TangemSdk.issuer: json.encode(safeIssuer),
-      TangemSdk.acquirer: json.encode(safeAcquirer),
-      TangemSdk.manufacturer: json.encode(safeManufacturer),
+      TangemSdk.cardConfig: createCardConfig(config, safeIssuer, safeAcquirer).toJson(),
+      TangemSdk.issuer: safeIssuer.toJson(),
+      TangemSdk.acquirer: safeAcquirer.toJson(),
+      TangemSdk.manufacturer: safeManufacturer.toJson(),
     };
   }
 
@@ -68,15 +61,15 @@ class Utils {
     }
 
     return CardConfigSdk(
-      convertToSha256(config.PIN),
-      convertToSha256(config.PIN2),
-      convertToSha256(config.PIN3),
+      config.PIN,
+      config.PIN2,
+      config.PIN3,
       config.hexCrExKey,
       config.CVC,
       config.pauseBeforePIN2,
       config.smartSecurityDelay,
       config.curveID,
-      SigningMethodMaskSdk(config.SigningMethod),
+      config.SigningMethod.toList().enumToStringList(),
       config.MaxSignatures,
       config.isReusable,
       config.allowSetPIN1,
@@ -103,7 +96,7 @@ class Utils {
       config.checkPIN3OnCard,
       config.createWallet == 1,
       config.walletsCount,
-      createCardDataSdk(config, issuer),
+      createCardData(config, issuer),
       config.ndef,
       issuerName: issuer.name,
       acquirerName: acquirer.name,
@@ -159,7 +152,7 @@ class CommandJsonTest {
         "some,data 1",
         "some data 2"
       ],
-      "cid":"BB03000000000004",
+      "cardId":"BB03000000000004",
       "initialMessage": {
         "body":"Body message",
         "header":"Header Message"
@@ -172,7 +165,7 @@ class CommandJsonTest {
 
   static String readIssuerData = "{\"commandType\":\"readIssuerData\"}";
   static String writeIssuerData = '''{
-      "cid":"${Utils.cardId}",
+      "cardId":"${Utils.cardId}",
       "issuerData":"Some issuer data",
       "issuerDataCounter:1,
       "privateKey":"${Utils.createDefaultIssuer().dataKeyPair.privateKey}",
@@ -181,7 +174,7 @@ class CommandJsonTest {
 
   static String readIssuerExData = "{\"commandType\":\"readIssuerExData\"}";
   static String writeIssuerExData = '''{
-      "cid":"${Utils.cardId}",
+      "cardId":"${Utils.cardId}",
       "issuerData":"Some issuer extra data",
       "issuerDataCounter":1,"
       "privateKey":"${Utils.createDefaultIssuer().dataKeyPair.privateKey}",
@@ -209,7 +202,7 @@ class CommandJsonTest {
   }''';
 
   static String writeFilesIssuer = '''{
-    "cid":"${Utils.cardId}",
+    "cardId":"${Utils.cardId}",
     "issuer":${jsonEncode(Utils.createDefaultIssuer().toJson())},
     "files": [
       {

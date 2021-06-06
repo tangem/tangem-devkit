@@ -12,7 +12,7 @@ class ItemName {
   static final menuImport = "menuImport";
   static final menuExport = "menuExport";
 
-  static final cid = "cid";
+  static final cid = "cardId";
 
   //sign screen
   static final dataForHashing = "dataForHashing";

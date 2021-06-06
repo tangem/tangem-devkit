@@ -24,7 +24,7 @@ TestSetup _$TestSetupFromJson(Map<String, dynamic> json) {
     json['description'] as String,
     json['personalizationConfig'] as Map<String, dynamic>,
     json['sdkConfig'] == null ? null : ConfigSdk.fromJson(json['sdkConfig'] as Map<String, dynamic>),
-    json['minimalFirmware'] == null ? null : FirmwareVersion.fromJson(json['minimalFirmware'] as Map<String, dynamic>),
+    json['minimalFirmware'] == null ? null : FirmwareVersion.fromJson(json['minimalFirmware']),
     json['platform'] as String?,
     json['iterations'] as int?,
     json['creationDateMs'] as int,

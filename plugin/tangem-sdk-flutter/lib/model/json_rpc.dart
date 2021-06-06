@@ -105,9 +105,9 @@ class JSONRPCRequest extends JSONRPC {
 
   JSONRPCRequest(this.method, this.parameters, [dynamic id, String jsonrpc = "2.0"]) : super(id, jsonrpc);
 
-  Map<String, dynamic> toJson() => _$JsonRpcRequestToJson(this);
+  Map<String, dynamic> toJson() => _$JSONRPCRequestToJson(this);
 
-  factory JSONRPCRequest.fromJson(Map<String, dynamic> json) => _$JsonRpcRequestFromJson(json);
+  factory JSONRPCRequest.fromJson(Map<String, dynamic> json) => _$JSONRPCRequestFromJson(json);
 
   factory JSONRPCRequest.fromCommandDataJson(Map<String, dynamic> commandDataJson) {
     final method = JSONRPC.getJsonRpcMethod(commandDataJson.remove(TangemSdk.commandType)) ?? "";
@@ -122,7 +122,7 @@ class JSONRPCResponse extends JSONRPC {
 
   JSONRPCResponse(this.result, this.error, [dynamic id, String jsonrpc = "2.0"]) : super(id, jsonrpc);
 
-  Map<String, dynamic> toJson() => _$JsonRpcResponseToJson(this);
+  Map<String, dynamic> toJson() => _$JSONRPCResponseToJson(this);
 
-  factory JSONRPCResponse.fromJson(Map<String, dynamic> json) => _$JsonRpcResponseFromJson(json);
+  factory JSONRPCResponse.fromJson(Map<String, dynamic> json) => _$JSONRPCResponseFromJson(json);
 }

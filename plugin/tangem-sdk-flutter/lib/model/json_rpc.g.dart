@@ -6,34 +6,34 @@ part of 'json_rpc.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-JSONRPCRequest _$JsonRpcRequestFromJson(Map<String, dynamic> json) {
+JSONRPCRequest _$JSONRPCRequestFromJson(Map<String, dynamic> json) {
   return JSONRPCRequest(
     json['method'] as String,
     json['parameters'] as Map<String, dynamic>,
     json['id'],
-    json['jsonRpc'] as String,
+    json['jsonrpc'] as String,
   );
 }
 
-Map<String, dynamic> _$JsonRpcRequestToJson(JSONRPCRequest instance) => <String, dynamic>{
+Map<String, dynamic> _$JSONRPCRequestToJson(JSONRPCRequest instance) => <String, dynamic>{
       'id': instance.id,
+      'jsonrpc': instance.jsonrpc,
       'method': instance.method,
       'parameters': instance.parameters,
-      'jsonRpc': instance.jsonrpc,
     };
 
-JSONRPCResponse _$JsonRpcResponseFromJson(Map<String, dynamic> json) {
+JSONRPCResponse _$JSONRPCResponseFromJson(Map<String, dynamic> json) {
   return JSONRPCResponse(
     json['result'],
     json['error'],
     json['id'],
-    json['jsonRpc'] as String,
+    json['jsonrpc'] as String,
   );
 }
 
-Map<String, dynamic> _$JsonRpcResponseToJson(JSONRPCResponse instance) => <String, dynamic>{
+Map<String, dynamic> _$JSONRPCResponseToJson(JSONRPCResponse instance) => <String, dynamic>{
       'id': instance.id,
+      'jsonrpc': instance.jsonrpc,
       'result': instance.result,
       'error': instance.error,
-      'jsonRpc': instance.jsonrpc,
     };

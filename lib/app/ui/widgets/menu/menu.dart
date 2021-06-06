@@ -45,14 +45,14 @@ class Menu {
             value: MenuItem.navigateToTestScreen,
             child: TextWidget("Command auto tester"),
           );
-          final jsonTestAssemblerScreenItem = PopupMenuItem(
-            key: ItemId.btnFrom(ItemName.navigateToJsonTestAssembler),
-            value: MenuItem.navigateToJsonTestAssembler,
-            child: TextWidget("Json tests assembler"),
-          );
           menuItemList.add(testScreenItem);
-          menuItemList.add(jsonTestAssemblerScreenItem);
         }
+        final jsonTestAssemblerScreenItem = PopupMenuItem(
+          key: ItemId.btnFrom(ItemName.navigateToJsonTestAssembler),
+          value: MenuItem.navigateToJsonTestAssembler,
+          child: TextWidget("Json tests assembler"),
+        );
+        menuItemList.add(jsonTestAssemblerScreenItem);
         return menuItemList;
       },
     );

@@ -402,8 +402,8 @@ class Languages {
   "desc_action_files_write": "This command allows to write data up to [MAX_SIZE] to a card. There are two secure ways to write files. Data can be signed by Issuer and Data can be protected by Passcode (PIN2).",
   "files_data_protection": "Protection type",
   "desc_files_data_protection": "Files can be signed by Issuer (specified on card during personalization) or files can be written using PIN2 (Passcode)",
-  "response_files_write_index": "File index",
-  "desc_response_files_write_index": "Index of the file stored in the file system",
+  "response_files_write_indices": "File indices",
+  "desc_response_files_write_indices": "Indices of files stored in the file system",
   
   "screen_files_read": "Read files",
   "action_files_read": "Read files",

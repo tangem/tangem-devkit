@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
-import 'package:devkit/main.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class ScanModel extends CommandDataModel {
@@ -14,17 +12,25 @@ class ScanModel extends CommandDataModel {
 
 class SignModel extends CommandDataModel {
   final List<String> dataForHashing;
+  final String walletPublicKey;
 
-  SignModel(this.dataForHashing) : super(TangemSdk.cSign);
+  SignModel(this.dataForHashing, this.walletPublicKey) : super(TangemSdk.cSign);
 
   factory SignModel.fromJson(Map<String, dynamic> json) {
-    final listDataForHashing = (json["dataForHashing"] as List).toStringList();
-    return CommandDataModel.attachBaseData(SignModel(listDataForHashing), json);
+    final model = SignModel(
+      (json["dataForHashing"] as List).toStringList(),
+      json["walletPublicKey"],
+    );
+    return CommandDataModel.attachBaseData(model, json);
   }
 
   @override
-  Map<String, dynamic>? toJson(ConversionError onError) =>
-      {TangemSdk.hashes: dataForHashing.map((e) => e.toHexString()).toList()}..addAll(getBaseData());
+  Map<String, dynamic>? toJson(ConversionError onError) {
+    return {
+      TangemSdk.hashes: dataForHashing.map((e) => e.toHexString()).toList(),
+      TangemSdk.walletPublicKey: walletPublicKey,
+    }..addAll(getBaseData());
+  }
 }
 
 class PersonalizationModel extends CommandDataModel {
@@ -63,10 +69,19 @@ class CreateWalletModel extends CommandDataModel {
 }
 
 class PurgeWalletModel extends CommandDataModel {
-  PurgeWalletModel() : super(TangemSdk.cPurgeWallet);
+  final int walletIndex;
 
-  factory PurgeWalletModel.fromJson(Map<String, dynamic> json) =>
-      CommandDataModel.attachBaseData(PurgeWalletModel(), json);
+  PurgeWalletModel(this.walletIndex) : super(TangemSdk.cPurgeWallet);
+
+  factory PurgeWalletModel.fromJson(Map<String, dynamic> json) {
+    final model = PurgeWalletModel(json["walletIndex"] as int);
+    return CommandDataModel.attachBaseData(model, json);
+  }
+
+  @override
+  Map<String, dynamic> toJson(ConversionError onError) {
+    return <String, dynamic>{TangemSdk.walletIndex: this.walletIndex}..addAll(getBaseData());
+  }
 }
 
 class WriteIssuerDataModel extends CommandDataModel {
@@ -305,7 +320,7 @@ class WriteFileData {
 class FilesWriteModel extends CommandDataModel {
   final List<WriteFileData> filesData;
   final Issuer? issuer;
-  List<Map<String, dynamic>>? _filesSignatureData;
+  List<Map<String, dynamic>>? _issuerFilesSignatureData;
 
   FilesWriteModel(this.filesData, [this.issuer]) : super(TangemSdk.cWriteFiles);
 
@@ -357,7 +372,7 @@ class FilesWriteModel extends CommandDataModel {
         return mainCompleter.future;
       }
 
-      _filesSignatureData = filesData.map((fileData) {
+      _issuerFilesSignatureData = filesData.map((fileData) {
         final hashData = hashDataAssociation[fileData.counter]!;
         final signature = FileDataSignatureHex(hashData.startingSignature!, hashData.finalizingSignature!);
         final protectedFileData = DataProtectedBySignatureHex(
@@ -377,20 +392,22 @@ class FilesWriteModel extends CommandDataModel {
   }
 
   @override
-  bool isPrepared() => _isProtectedByIssuer() ? _filesSignatureData != null : true;
+  bool isPrepared() => _isProtectedByIssuer() ? _issuerFilesSignatureData != null : true;
 
   @override
   Map<String, dynamic>? toJson(ConversionError onError) {
     if (_isProtectedByIssuer()) {
-      if (_filesSignatureData == null) {
+      if (_issuerFilesSignatureData == null) {
         onError(notPrepared);
         return null;
       } else {
-        return {TangemSdk.files: jsonEncode(_filesSignatureData)}..addAll(getBaseData());
+        return {TangemSdk.files: _issuerFilesSignatureData}..addAll(getBaseData());
       }
     } else {
-      final filesDataHex = this.filesData.map((e) => DataProtectedByPasscodeHex(e.data.toHexString())).toList();
-      return {TangemSdk.files: jsonEncode(filesDataHex)}..addAll(getBaseData());
+      final filesDataHex = this.filesData.map((e) {
+        return DataProtectedByPasscodeHex(e.data.toHexString()).toJson();
+      }).toList();
+      return {TangemSdk.files: filesDataHex}..addAll(getBaseData());
     }
   }
 }
@@ -452,7 +469,7 @@ class FilesChangeSettingsModel extends CommandDataModel {
       return null;
     }
     return {
-      TangemSdk.changes: jsonEncode(changes),
+      TangemSdk.changes: changes.map((e) => e.toJson()).toList(),
     }..addAll(getBaseData());
   }
 }
