@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../helpers.dart';
 import 'dialogs/save_load_configs_dialog.dart';
-import 'segment_widgets/card_number_segment_widget.dart';
+import 'segment_widgets/card_segment_widget.dart';
 import 'segment_widgets/common_segment_widget.dart';
 import 'segment_widgets/pins_segment_widget.dart';
 import 'segment_widgets/product_mask_segment_widget.dart';

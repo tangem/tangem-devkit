@@ -34,8 +34,10 @@ class _CardNumberSegmentWidgetState extends State<CardNumberSegmentWidget> {
     final transl = Transl.of(context);
     return Column(
       children: <Widget>[
-        SegmentHeader(transl.pers_segment_card_number, description: transl.desc_pers_segment_card_number)
-            .visibilityHandler(_bloc.statedFieldsVisibility),
+        SegmentHeader(
+          transl.pers_segment_card_number,
+          description: transl.desc_pers_segment_card_number,
+        ).visibilityHandler(_bloc.statedFieldsVisibility),
         InputWidget(
           ItemName.series,
           _seriesController.controller,
@@ -44,6 +46,13 @@ class _CardNumberSegmentWidgetState extends State<CardNumberSegmentWidget> {
           scrollStream: _bloc.scrollingStateStream,
         ).gone(),
         InputWidget(
+          ItemName.batchId,
+          _batchIdController.controller,
+          hint: transl.pers_item_batch_id,
+          description: transl.desc_pers_item_batch_id,
+          scrollStream: _bloc.scrollingStateStream,
+        ).visibilityHandler(_bloc.statedFieldsVisibility),
+        InputWidget(
           ItemName.number,
           _numberController.controller,
           hint: transl.pers_item_number,
@@ -51,13 +60,6 @@ class _CardNumberSegmentWidgetState extends State<CardNumberSegmentWidget> {
           inputType: TextInputType.number,
           scrollStream: _bloc.scrollingStateStream,
         ).withUnderline().visibilityHandler(_bloc.statedFieldsVisibility),
-        InputWidget(
-          ItemName.batchId,
-          _batchIdController.controller,
-          hint: transl.pers_item_batch_id,
-          description: transl.desc_pers_item_batch_id,
-          scrollStream: _bloc.scrollingStateStream,
-        ).gone(),
       ],
     );
   }
