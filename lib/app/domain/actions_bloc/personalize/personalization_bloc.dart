@@ -24,7 +24,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
 
   late PersonalizationConfigStorage _storage;
 
-  late CardNumberSegment cardNumber;
+  late CardSegment cardNumber;
   late CommonSegment common;
   late SigningMethodSegment signingMethod;
   late SignHashExPropSegment signHashExProperties;
@@ -47,7 +47,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
 
   _initSegments() {
     final currentConfig = _storage.getCurrent();
-    cardNumber = CardNumberSegment(this, currentConfig);
+    cardNumber = CardSegment(this, currentConfig);
     common = CommonSegment(this, currentConfig);
     signingMethod = SigningMethodSegment(this, currentConfig);
     signHashExProperties = SignHashExPropSegment(this, currentConfig);

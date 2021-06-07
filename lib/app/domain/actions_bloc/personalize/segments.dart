@@ -37,12 +37,12 @@ abstract class BaseSegment extends Disposable {
   _configWasUpdated();
 }
 
-class CardNumberSegment extends BaseSegment {
+class CardSegment extends BaseSegment {
   final bsSeries = BehaviorSubject<String>();
   final bsNumber = BehaviorSubject<String>();
   final bsBatchId = BehaviorSubject<String>();
 
-  CardNumberSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  CardSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
 
   @override
   _initSubscriptions() {

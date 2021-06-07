@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../helpers.dart';
 import 'dialogs/save_load_configs_dialog.dart';
-import 'segment_widgets/card_number_segment_widget.dart';
+import 'segment_widgets/card_segment_widget.dart';
 import 'segment_widgets/common_segment_widget.dart';
 import 'segment_widgets/pins_segment_widget.dart';
 import 'segment_widgets/product_mask_segment_widget.dart';
@@ -56,6 +56,7 @@ class PersonalizeFrame extends StatelessWidget {
       appBar: AppBar(
         title: Text(Transl.of(context).screen_personalize),
         actions: [
+          RareFieldsSwitchWidget(),
           Menu.popupPersonalization((MenuItem item) {
             switch (item) {
               case MenuItem.personalizationConfigs:
@@ -109,20 +110,27 @@ class PersonalizeBody extends StatelessWidget {
             SettingsMaskProtocolEncryptionSegmentWidget().visibilityHandler(bloc.statedFieldsVisibility),
             SettingsMaskNdefSegmentWidget(),
             PinsSegmentWidget().gone(),
-            Container(
-              child: StreamBuilder<bool>(
-                initialData: false,
-                stream: bloc.statedFieldsVisibility.stream,
-                builder: (context, snapshot) {
-                  final data = snapshot.data ?? false;
-                  final text = data ? Transl.of(context).hide_rare_fields : Transl.of(context).show_rare_fields;
-                  return Button(text, onPressed: () => bloc.statedFieldsVisibility.sink.add(!data)).padding16();
-                },
-              ),
-            )
           ],
         ),
       ),
+    );
+  }
+}
+
+class RareFieldsSwitchWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final bloc = RepoFinder.personalizationBloc(context);
+    return StreamBuilder<bool>(
+      initialData: false,
+      stream: bloc.statedFieldsVisibility.stream,
+      builder: (context, snapshot) {
+        final data = snapshot.data ?? false;
+        return IconButton(
+            padding: EdgeInsets.only(right: 8),
+            icon: Icon(data ? Icons.filter_alt_outlined : Icons.filter_alt),
+            onPressed: () => bloc.statedFieldsVisibility.sink.add(!data));
+      },
     );
   }
 }
