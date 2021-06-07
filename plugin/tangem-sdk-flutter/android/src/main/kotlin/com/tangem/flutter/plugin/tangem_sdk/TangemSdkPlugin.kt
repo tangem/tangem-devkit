@@ -39,7 +39,7 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private lateinit var wActivity: WeakReference<Activity>
 
   private lateinit var sdk: TangemSdk
-  private var replyAlreadySubmit = false;
+  private var replyAlreadySubmit = false
 
   override fun onAttachedToActivity(pluginBinding: ActivityPluginBinding) {
     val activity = pluginBinding.activity
@@ -82,8 +82,8 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    val channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "tangemSdk")
-    channel.setMethodCallHandler(this);
+    val channel = MethodChannel(flutterPluginBinding.flutterEngine.dartExecutor, "tangemSdk")
+    channel.setMethodCallHandler(this)
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
