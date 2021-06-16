@@ -8,7 +8,7 @@ part 'json_test_model.g.dart';
 @JsonSerializable()
 class JsonTest {
   final TestSetup setup;
-  final List<TestStep> steps;
+  final List<StepModel> steps;
 
   JsonTest(this.setup, this.steps);
 
@@ -16,10 +16,10 @@ class JsonTest {
 
   Map<String, dynamic> toJson() => _$JsonTestToJson(this);
 
-  JsonTest copyWith({TestSetup? setup, List<TestStep>? steps}) => JsonTest(
-      setup ?? this.setup,
-      steps ?? this.steps,
-    );
+  JsonTest copyWith({TestSetup? setup, List<StepModel>? steps}) => JsonTest(
+        setup ?? this.setup,
+        steps ?? this.steps,
+      );
 }
 
 @JsonSerializable()
@@ -92,34 +92,39 @@ class ConfigSdk {
 }
 
 @JsonSerializable()
-class TestStep {
+class StepModel {
   final String name;
   final String method;
-  final Map<String, dynamic> parameters;
+  final Map<String, dynamic> params;
   final Map<String, dynamic> expectedResult;
   final List<TestAssert> asserts;
   final String actionType;
   final int? iterations;
 
-  TestStep(
+  Map<String, dynamic> _rawParams = {};
+  Map<String, dynamic> get rawParams => {}..addAll(_rawParams);
+
+  StepModel(
     this.name,
     this.method,
-    this.parameters,
+    this.params,
     this.expectedResult,
     this.asserts,
     this.actionType,
     this.iterations,
-  );
-
-  factory TestStep.getDefault() {
-    return TestStep("stepName", "methodName", {}, {}, [], "NFC_SESSION_RUNNABLE", 1);
+  ) {
+    this._rawParams.addAll(params);
   }
 
-  factory TestStep.empty(String name, String method) {
-    return TestStep(name, method, {}, {}, [], "NFC_SESSION_RUNNABLE", 1);
+  factory StepModel.getDefault() {
+    return StepModel("stepName", "methodName", {}, {}, [], "NFC_SESSION_RUNNABLE", 1);
   }
 
-  factory TestStep.fromJson(Map<String, dynamic> json) => _$TestStepFromJson(json);
+  factory StepModel.empty(String name, String method) {
+    return StepModel(name, method, {}, {}, [], "NFC_SESSION_RUNNABLE", 1);
+  }
+
+  factory StepModel.fromJson(Map<String, dynamic> json) => _$TestStepFromJson(json);
 
   Map<String, dynamic> toJson() => _$TestStepToJson(this);
 }

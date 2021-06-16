@@ -104,7 +104,7 @@ class TestAssembler {
     }
   }
 
-  TestStep? _createStep(StepRecord record, int index, TestStep stepConfig) {
+  StepModel? _createStep(StepRecord record, int index, StepModel stepConfig) {
     final errorMessage = "Can't create a test step for the command: ${record.commandData.type}";
     if (!record.commandData.isPrepared()) {
       onErrorListener?.call("$errorMessage. Command isn't prepared.");
@@ -125,7 +125,7 @@ class TestAssembler {
 
     final jsonRpc = JSONRPCRequest.fromCommandDataJson(jsonData);
     final expectedResult = (record.response as TangemSdkResponse).toJson();
-    return TestStep(
+    return StepModel(
       "$index.${stepConfig.name}.${jsonRpc.method}",
       jsonRpc.method,
       jsonRpc.parameters,

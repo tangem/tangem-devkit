@@ -16,12 +16,12 @@ class TestSetupConfigStorage extends ConfigSharedPrefsStorage<TestSetup> {
   TestSetup convertFrom(Map<String, dynamic> json) => TestSetup.fromJson(json);
 }
 
-class TestStepConfigStorage extends ConfigSharedPrefsStorage<TestStep> {
+class TestStepConfigStorage extends ConfigSharedPrefsStorage<StepModel> {
   TestStepConfigStorage() : super("testStepConfigStorage");
 
   @override
-  TestStep getDefaultValue() => TestStep.getDefault();
+  StepModel getDefaultValue() => StepModel.getDefault();
 
   @override
-  TestStep convertFrom(Map<String, dynamic> json) => TestStep.fromJson(json);
+  StepModel convertFrom(Map<String, dynamic> json) => StepModel.fromJson(json);
 }

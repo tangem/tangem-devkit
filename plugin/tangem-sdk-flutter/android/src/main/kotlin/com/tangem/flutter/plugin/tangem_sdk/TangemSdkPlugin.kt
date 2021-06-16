@@ -10,7 +10,7 @@ import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.tangem.*
 import com.tangem.commands.common.card.FirmwareType
 import com.tangem.commands.common.jsonConverter.MoshiJsonConverter
-import com.tangem.commands.file.FileData
+import com.tangem.commands.file.DataToWrite
 import com.tangem.commands.file.FileSettingsChange
 import com.tangem.common.CardValuesDbStorage
 import com.tangem.common.CardValuesStorage
@@ -39,6 +39,8 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private lateinit var wActivity: WeakReference<Activity>
 
   private lateinit var sdk: TangemSdk
+  private var cardSession: CardSession? = null
+
   private var replyAlreadySubmit = false
 
   override fun onAttachedToActivity(pluginBinding: ActivityPluginBinding) {
@@ -112,6 +114,7 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "readFiles" -> readFiles(call, result)
       "deleteFiles" -> deleteFiles(call, result)
       "changeFilesSettings" -> changeFilesSettings(call, result)
+      "startSession" -> startSession(call, result)
       "prepareHashes" -> prepareHashes(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
@@ -355,12 +358,36 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       handleException(result, ex)
     }
   }
+  
+  private fun startSession(call: MethodCall, result: Result) {
+    if (cardSession != null) {
+      handleResult(result, CompletionResult.Success<Any>(true))
+      return
+    }
+    
+    try {
+      sdk.startSession(
+          call.extract("cardId"),
+          call.extract("initialMessage"),
+      ) { session, error ->
+        if (error == null) {
+          cardSession = session
+          handleResult(result, CompletionResult.Success<Any>(true))
+        }else {
+          cardSession = null
+          handleResult(result, CompletionResult.Failure<Any>(error))
+        }
+      }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
 
   private fun prepareHashes(call: MethodCall, result: Result) {
     try {
       val fileHasData = sdk.prepareHashes(
           call.extract("cardId"),
-          call.extract("fileData"),
+          call.extract("DataToWrite"),
           call.extract("fileCounter"),
           call.extract("privateKey"),
       )
@@ -457,7 +484,7 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   sealed class FileCommand {
     data class Read(val readPrivateFiles: Boolean = false, val indices: List<Int>? = null)
-    data class Write(val files: List<FileData>)
+    data class Write(val files: List<DataToWrite>)
     data class Delete(val indices: List<Int>?)
     data class ChangeSettings(val changes: List<FileSettingsChange>)
   }
@@ -467,15 +494,15 @@ class MoshiAdapters {
 
   class DataToWriteAdapter {
     @ToJson
-    fun toJson(src: FileData): String {
+    fun toJson(src: DataToWrite): String {
       return when (src) {
-        is FileData.DataProtectedBySignature -> DataProtectedBySignatureAdapter().toJson(src)
-        is FileData.DataProtectedByPasscode -> DataProtectedByPasscodeAdapter().toJson(src)
+        is DataToWrite.DataProtectedBySignature -> DataProtectedBySignatureAdapter().toJson(src)
+        is DataToWrite.DataProtectedByPasscode -> DataProtectedByPasscodeAdapter().toJson(src)
       }
     }
 
     @FromJson
-    fun fromJson(map: MutableMap<String, Any>): FileData {
+    fun fromJson(map: MutableMap<String, Any>): DataToWrite {
       return if (map.containsKey("signature")) {
         DataProtectedBySignatureAdapter().fromJson(map)
       } else {
@@ -486,10 +513,10 @@ class MoshiAdapters {
 
   class DataProtectedBySignatureAdapter {
     @ToJson
-    fun toJson(src: FileData.DataProtectedBySignature): String = MoshiJsonConverter.default().toJson(src)
+    fun toJson(src: DataToWrite.DataProtectedBySignature): String = MoshiJsonConverter.default().toJson(src)
 
     @FromJson
-    fun fromJson(map: MutableMap<String, Any>): FileData.DataProtectedBySignature {
+    fun fromJson(map: MutableMap<String, Any>): DataToWrite.DataProtectedBySignature {
       val converter = MoshiJsonConverter.default()
       return converter.fromJson(converter.toJson(map)) !!
     }
@@ -497,10 +524,10 @@ class MoshiAdapters {
 
   class DataProtectedByPasscodeAdapter {
     @ToJson
-    fun toJson(src: FileData.DataProtectedByPasscode): String = MoshiJsonConverter.default().toJson(src)
+    fun toJson(src: DataToWrite.DataProtectedByPasscode): String = MoshiJsonConverter.default().toJson(src)
 
     @FromJson
-    fun fromJson(map: MutableMap<String, Any>): FileData.DataProtectedByPasscode {
+    fun fromJson(map: MutableMap<String, Any>): DataToWrite.DataProtectedByPasscode {
       val converter = MoshiJsonConverter.default()
       return converter.fromJson(converter.toJson(map)) !!
     }
