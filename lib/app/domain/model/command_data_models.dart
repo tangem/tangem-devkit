@@ -62,10 +62,19 @@ class DepersonalizeModel extends CommandDataModel {
 }
 
 class CreateWalletModel extends CommandDataModel {
-  CreateWalletModel() : super(TangemSdk.cCreateWallet);
+  final WalletConfig _walletConfig;
 
-  factory CreateWalletModel.fromJson(Map<String, dynamic> json) =>
-      CommandDataModel.attachBaseData(CreateWalletModel(), json);
+  CreateWalletModel(this._walletConfig) : super(TangemSdk.cCreateWallet);
+
+  factory CreateWalletModel.fromJson(Map<String, dynamic> json) {
+    final model = CreateWalletModel(WalletConfig.fromJson(json[TangemSdk.walletConfig]));
+    return CommandDataModel.attachBaseData(model, json);
+  }
+
+  @override
+  Map<String, dynamic> toJson(ConversionError onError) {
+    return <String, dynamic>{TangemSdk.walletConfig: this._walletConfig.toJson()}..addAll(getBaseData());
+  }
 }
 
 class PurgeWalletModel extends CommandDataModel {

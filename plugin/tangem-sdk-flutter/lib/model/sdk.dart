@@ -1,6 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
+import 'masks/signing_method_mask.dart';
+
 part 'sdk.g.dart';
 
 @JsonSerializable()
@@ -380,4 +382,18 @@ class FileHashDataHex {
   factory FileHashDataHex.fromJson(Map<String, dynamic> json) => _$FileHashDataHexFromJson(json);
 
   Map<String, dynamic> toJson() => _$FileHashDataHexToJson(this);
+}
+
+@JsonSerializable()
+class WalletConfig {
+  final bool? isReusable;
+  final bool? prohibitPurgeWallet;
+  final String? curveId;
+  final SigningMethod? signingMethods;
+
+  WalletConfig([this.isReusable, this.prohibitPurgeWallet, this.curveId, this.signingMethods]);
+
+  factory WalletConfig.fromJson(Map<String, dynamic> json) => _$WalletConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WalletConfigToJson(this);
 }

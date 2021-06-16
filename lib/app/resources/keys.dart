@@ -24,6 +24,7 @@ class ItemName {
   static final blockchain = "blockchain";
   static final customBlockchain = "customBlockchain";
   static final curve = "curve";
+  static final signingMethod = "signingMethod";
   static final maxSignatures = "maxSignatures";
   static final createWallet = "createWallet";
   static final walletsCount = "walletsCount";

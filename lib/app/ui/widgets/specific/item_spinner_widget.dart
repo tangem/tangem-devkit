@@ -12,19 +12,21 @@ class SpinnerWidget extends StatelessWidget {
   final String description;
   final List<Pair>? items;
   final BehaviorSubject<Pair> subject;
+  final double minHeight;
 
   const SpinnerWidget(
     this.keyName,
     this.items,
     this.subject,
     this.title,
-    this.description,
-  );
+    this.description, {
+    this.minHeight = AppDimen.itemMinHeight,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: AppDimen.itemMinHeight),
+      constraints: BoxConstraints(minHeight: minHeight),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -52,7 +54,11 @@ class SpinnerWidget extends StatelessWidget {
                       items: items
                           ?.map((Pair pair) => DropdownMenuItem<Pair>(
                                 value: pair,
-                                child: Text(Transl.of(context).get(pair.a)),
+                                child: Text(
+                                  Transl.of(context).get(pair.a),
+                                  softWrap: false,
+                                  overflow: TextOverflow.fade,
+                                ),
                               ))
                           .toList(),
                       onChanged: (pair) {

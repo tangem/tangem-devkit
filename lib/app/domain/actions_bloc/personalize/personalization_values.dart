@@ -8,6 +8,7 @@ class PersonalizationValues {
 
   List<Pair<String, String>> _curves = [
     Pair("secp256k1", "secp256k1"),
+    Pair("secp256r1", "secp256r1"),
     Pair("ed25519", "ed25519"),
   ];
 
@@ -55,7 +56,8 @@ class PersonalizationValues {
 
   List<Pair<String, int>> get pauseBeforePin => _pauseBeforePin;
 
-  bool has(Pair pair, List<Pair> into) => into.firstWhereOrNull((element) => element.a == pair.a && element.b == pair.b) != null;
+  bool has(Pair pair, List<Pair> into) =>
+      into.firstWhereOrNull((element) => element.a == pair.a && element.b == pair.b) != null;
 
   bool hasValue(dynamic value, List<Pair> into) => into.firstWhereOrNull((element) => element.b == value) != null;
 
@@ -71,13 +73,11 @@ class PersonalizationValues {
 
   bool hasPauseBeforePin(dynamic value) => hasValue(value, pauseBeforePin);
 
-
-
   Pair<String, String>? getBlockchain(dynamic value) => getOrNull(value, blockchain) as Pair<String, String>?;
 
   Pair<String, String>? getCurve(String value) {
     Pair? curve = getOrNull(value, curves) ?? getOrNull(toBeginningOfSentenceCase(value), _curves);
-    if (curve == null) return _curves[0]; else return curve as Pair<String, String>?;
+    return curve == null ? _curves[0] : curve as Pair<String, String>?;
   }
 
   Pair<String, String>? getAar(dynamic value) => getOrNull(value, aar) as Pair<String, String>?;

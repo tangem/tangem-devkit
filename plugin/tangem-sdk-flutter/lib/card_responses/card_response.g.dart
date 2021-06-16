@@ -61,7 +61,9 @@ Map<String, dynamic> _$CardResponseToJson(CardResponse instance) => <String, dyn
     };
 
 SignResponse _$SignResponseFromJson(Map<String, dynamic> json) {
-  return SignResponse((json['signedHashes'] as List<dynamic>).map((e) => e as String).toList());
+  return SignResponse(
+    (json['signedHashes'] as List<dynamic>).map((e) => e as String).toList(),
+  );
 }
 
 Map<String, dynamic> _$SignResponseToJson(SignResponse instance) => <String, dynamic>{
