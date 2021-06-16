@@ -46,6 +46,7 @@ class TangemSdk {
   //TODO: replace by walletPublicKey
   @Deprecated("replace by walletPublicKey")
   static const walletIndex = "walletIndex";
+  static const walletConfig = "config";
   static const cardConfig = "cardConfig";
   static const issuer = "issuer";
   static const manufacturer = "manufacturer";

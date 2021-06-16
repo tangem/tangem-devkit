@@ -92,7 +92,7 @@ class Languages {
   "pers_item_batch_id": "Batch ID",
   "desc_pers_item_batch_id": "",
   "pers_item_curve": "Curve",
-  "desc_pers_item_curve": "Elliptic curve used for all wallet key operations. Supported curves: ‘secp256k1’, ‘ed25519’.",
+  "desc_pers_item_curve": "Elliptic curve used for all wallet key operations. Supported curves: ‘secp256k1’, ‘secp256r1‘, ‘ed25519’.",
   "pers_item_blockchain": "Blockchain",
   "desc_pers_item_blockchain": "Name of the blockchain. It's just a textfield in the card. It's needed for host app to tell what blockchain should it use. ",
   "pers_item_custom_blockchain": "Custom blockchain",

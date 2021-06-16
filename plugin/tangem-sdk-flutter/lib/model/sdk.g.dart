@@ -365,3 +365,29 @@ Map<String, dynamic> _$FileHashDataHexToJson(FileHashDataHex instance) => <Strin
       'startingSignature': instance.startingSignature,
       'finalizingSignature': instance.finalizingSignature,
     };
+
+WalletConfig _$WalletConfigFromJson(Map<String, dynamic> json) {
+  return WalletConfig(
+    json['isReusable'] as bool?,
+    json['prohibitPurgeWallet'] as bool?,
+    json['curveId'] as String?,
+    _$enumDecodeNullable(_$SigningMethodEnumMap, json['signingMethods']),
+  );
+}
+
+Map<String, dynamic> _$WalletConfigToJson(WalletConfig instance) => <String, dynamic>{
+      'isReusable': instance.isReusable,
+      'prohibitPurgeWallet': instance.prohibitPurgeWallet,
+      'curveId': instance.curveId,
+      'signingMethods': _$SigningMethodEnumMap[instance.signingMethods],
+    };
+
+const _$SigningMethodEnumMap = {
+  SigningMethod.SignHash: 'SignHash',
+  SigningMethod.SignRaw: 'SignRaw',
+  SigningMethod.SignHashSignedByIssuer: 'SignHashSignedByIssuer',
+  SigningMethod.SignRawSignedByIssuer: 'SignRawSignedByIssuer',
+  SigningMethod.SignHashSignedByIssuerAndUpdateIssuerData: 'SignHashSignedByIssuerAndUpdateIssuerData',
+  SigningMethod.SignRawSignedByIssuerAndUpdateIssuerData: 'SignRawSignedByIssuerAndUpdateIssuerData',
+  SigningMethod.SignPos: 'SignPos',
+};

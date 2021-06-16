@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
+import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
 import 'package:devkit/app/domain/model/command_data_models.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/commons/common_abstracts.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart' as PathProvider;
 import 'package:rxdart/rxdart.dart';
@@ -128,9 +131,38 @@ class WriteUserProtectedDataBloc extends ActionBloc<WriteUserDataResponse> {
 }
 
 class CreateWalletBloc extends ActionBloc<CreateWalletResponse> {
+  final bsIsReusable = BehaviorSubject<bool>.seeded(true);
+  final bsProhibitPurgeWallet = BehaviorSubject<bool>();
+  final bsCurve = BehaviorSubject<Pair<String, String>>();
+  final bsSigningMethods = BehaviorSubject<Pair<String, int>>();
+
+  bool? _isReusable;
+  bool? _prohibitPurgeWallet;
+  String? _curveId;
+  SigningMethod? _signingMethod;
+  static String _nullValue = "null";
+
+  List<Pair<String, int>> get signingMethods => _signingMethods;
+  List<Pair<String, int>> _signingMethods = List.generate(SigningMethod.values.length, (index) {
+    return Pair(describeEnum(SigningMethod.values[index]), SigningMethod.values[index].code);
+  })
+    ..insert(0, Pair(_nullValue, -1));
+
+  List<Pair<String, String>> get curves => _curves;
+  List<Pair<String, String>> _curves = PersonalizationValues().curves..insert(0, Pair(_nullValue, ""));
+
+  CreateWalletBloc() {
+    addSubscription(bsIsReusable.listen((value) => _isReusable = value));
+    addSubscription(bsProhibitPurgeWallet.listen((value) => _prohibitPurgeWallet = value));
+    addSubscription(
+        bsCurve.listen((value) => _curveId = value.a == _nullValue ? null : toBeginningOfSentenceCase(value.b)));
+    addSubscription(
+        bsSigningMethods.listen((value) => _signingMethod = value.a == _nullValue ? null : value.b.toList()[0]));
+  }
+
   @override
   void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
-    onSuccess(CreateWalletModel());
+    onSuccess(CreateWalletModel(WalletConfig(_isReusable, _prohibitPurgeWallet, _curveId, _signingMethod)));
   }
 }
 
@@ -336,7 +368,8 @@ class SignBloc extends ActionBloc<SignResponse> {
     addSubscription(bsWalletPublicKey.stream.listen((event) => _walletPublicKey = event));
     bsDataForHashing.add("Data used for hashing");
     //TODO: before trying to sign, must read the card and fetch walletPubKey (v.<4) -  by 0 index, (v.>=4) - by using slider
-    bsWalletPublicKey.add("04B2A74E1E502A3E5C4B03B53412A5891F270752543D77B5FE685F3125196610E43C880E29ADA29B2D9641FEAB37A699355863F920DE98937B426B1F303A4752C5");
+    bsWalletPublicKey.add(
+        "04B2A74E1E502A3E5C4B03B53412A5891F270752543D77B5FE685F3125196610E43C880E29ADA29B2D9641FEAB37A699355863F920DE98937B426B1F303A4752C5");
   }
 
   @override

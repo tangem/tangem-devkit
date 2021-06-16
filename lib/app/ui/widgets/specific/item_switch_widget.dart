@@ -11,7 +11,9 @@ class SwitchWidget extends StatelessWidget {
   final String title;
   final String description;
   final BehaviorSubject<bool> bSubject;
+  // the value of initialData doesn't trigger the bSubject
   final bool initialData;
+  final double minHeight;
 
   const SwitchWidget(
     this.keyName,
@@ -19,12 +21,13 @@ class SwitchWidget extends StatelessWidget {
     this.description,
     this.bSubject, {
     this.initialData = false,
+    this.minHeight = AppDimen.itemMinHeight,
   });
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: AppDimen.itemMinHeight),
+      constraints: BoxConstraints(minHeight: minHeight),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
