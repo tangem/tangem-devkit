@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 extension OnIterableNullSafe<E> on Iterable<E> {
   E? firstWhereOrNull(bool test(E e)) {
     for (E element in this) {
@@ -17,5 +19,11 @@ extension OnIterable<E> on Iterable<E?>? {
       return true;
     else
       return this!.isEmpty;
+  }
+}
+
+extension OnQueue<E> on Queue<E> {
+  E? poll() {
+    return isEmpty ? null : this.removeFirst();
   }
 }

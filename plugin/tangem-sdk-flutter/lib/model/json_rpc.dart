@@ -15,7 +15,7 @@ abstract class JSONRPC {
     switch (commandType) {
       case TangemSdk.cScanCard:
         {
-          return TangemSdk.cScanCard;
+          return "SCAN_TASK";
         }
       case TangemSdk.cSign:
         {
@@ -101,9 +101,9 @@ abstract class JSONRPC {
 @JsonSerializable()
 class JSONRPCRequest extends JSONRPC {
   final String method;
-  final Map<String, dynamic> parameters;
+  final Map<String, dynamic> params;
 
-  JSONRPCRequest(this.method, this.parameters, [dynamic id, String jsonrpc = "2.0"]) : super(id, jsonrpc);
+  JSONRPCRequest(this.method, this.params, [dynamic id, String jsonrpc = "2.0"]) : super(id, jsonrpc);
 
   Map<String, dynamic> toJson() => _$JSONRPCRequestToJson(this);
 

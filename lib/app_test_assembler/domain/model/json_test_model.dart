@@ -97,7 +97,7 @@ class StepModel {
   final String method;
   final Map<String, dynamic> params;
   final Map<String, dynamic> expectedResult;
-  final List<TestAssert> asserts;
+  final List<AssertModel> asserts;
   final String actionType;
   final int? iterations;
 
@@ -130,13 +130,13 @@ class StepModel {
 }
 
 @JsonSerializable()
-class TestAssert {
+class AssertModel {
   final String type;
   final List<String> fields;
 
-  TestAssert(this.type, this.fields);
+  AssertModel(this.type, this.fields);
 
-  factory TestAssert.fromJson(Map<String, dynamic> json) => _$TestAssertFromJson(json);
+  factory AssertModel.fromJson(Map<String, dynamic> json) => _$TestAssertFromJson(json);
 
   Map<String, dynamic> toJson() => _$TestAssertToJson(this);
 }

@@ -1,4 +1,4 @@
-import 'package:devkit/app_tester/domain/common/typedefs.dart';
+import 'package:devkit/app_test_launcher/domain/common/typedefs.dart';
 import 'package:tangem_sdk/extensions/exp_extensions.dart';
 import 'package:tangem_sdk/model/json_rpc.dart';
 
@@ -19,7 +19,10 @@ class VariableService {
 
   static void registerResult(String name, JSONRPCResponse response) {
     final stepMap = _stepValues[name];
-    if (stepMap == null) return;
+    if (stepMap == null) {
+      //  Step is not registered
+      return;
+    }
 
     stepMap[_result] = response.result;
   }

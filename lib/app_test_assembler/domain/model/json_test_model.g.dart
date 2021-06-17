@@ -54,7 +54,7 @@ StepModel _$TestStepFromJson(Map<String, dynamic> json) {
     json['method'] as String,
     json['parameters'] as Map<String, dynamic>,
     json['expectedResult'] as Map<String, dynamic>,
-    (json['asserts'] as List<dynamic>).map((e) => TestAssert.fromJson(e as Map<String, dynamic>)).toList(),
+    (json['asserts'] as List<dynamic>).map((e) => AssertModel.fromJson(e as Map<String, dynamic>)).toList(),
     json['actionType'] as String,
     json['iterations'] as int?,
   );
@@ -70,14 +70,14 @@ Map<String, dynamic> _$TestStepToJson(StepModel instance) => <String, dynamic>{
       'iterations': instance.iterations,
     };
 
-TestAssert _$TestAssertFromJson(Map<String, dynamic> json) {
-  return TestAssert(
+AssertModel _$TestAssertFromJson(Map<String, dynamic> json) {
+  return AssertModel(
     json['type'] as String,
     (json['fields'] as List<dynamic>).map((e) => e as String).toList(),
   );
 }
 
-Map<String, dynamic> _$TestAssertToJson(TestAssert instance) => <String, dynamic>{
+Map<String, dynamic> _$TestAssertToJson(AssertModel instance) => <String, dynamic>{
       'type': instance.type,
       'fields': instance.fields,
     };

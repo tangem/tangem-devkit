@@ -112,6 +112,7 @@ class ItemName {
   //hidden
   static final navigateToTestScreen = "navigateToTestScreen";
   static final navigateToJsonTestAssembler = "navigateToJsonTestAssembler";
+  static final navigateToJsonTestLauncher = "navigateToJsonTestLauncher";
   static final commandJson = "commandJson";
   static final responseSuccessJson = "responseSuccessJson";
   static final responseErrorJson = "responseErrorJson";

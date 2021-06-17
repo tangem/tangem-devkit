@@ -9,7 +9,7 @@ part of 'json_rpc.dart';
 JSONRPCRequest _$JSONRPCRequestFromJson(Map<String, dynamic> json) {
   return JSONRPCRequest(
     json['method'] as String,
-    json['parameters'] as Map<String, dynamic>,
+    json['params'] as Map<String, dynamic>,
     json['id'],
     json['jsonrpc'] as String,
   );
@@ -19,7 +19,7 @@ Map<String, dynamic> _$JSONRPCRequestToJson(JSONRPCRequest instance) => <String,
       'id': instance.id,
       'jsonrpc': instance.jsonrpc,
       'method': instance.method,
-      'parameters': instance.parameters,
+      'params': instance.params,
     };
 
 JSONRPCResponse _$JSONRPCResponseFromJson(Map<String, dynamic> json) {

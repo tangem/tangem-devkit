@@ -1,7 +1,5 @@
-import 'package:devkit/app_tester/domain/common/test_error.dart';
-import 'package:sealed_class/sealed_class.dart';
+import 'error.dart';
 
-@Sealed([EqualsError])
 abstract class TestAssertError implements TestFrameworkError {}
 
 class EqualsError extends TestAssertError {

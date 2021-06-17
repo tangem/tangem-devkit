@@ -10,6 +10,7 @@ import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.tangem.*
 import com.tangem.commands.common.card.FirmwareType
 import com.tangem.commands.common.jsonConverter.MoshiJsonConverter
+import com.tangem.commands.common.jsonRpc.JSONRPCResponse
 import com.tangem.commands.file.DataToWrite
 import com.tangem.commands.file.FileSettingsChange
 import com.tangem.common.CardValuesDbStorage
@@ -29,6 +30,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.lang.IllegalStateException
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -84,8 +86,9 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    val channel = MethodChannel(flutterPluginBinding.flutterEngine.dartExecutor, "tangemSdk")
-    channel.setMethodCallHandler(this)
+    val messenger = flutterPluginBinding.binaryMessenger
+    MethodChannel(messenger, "tangemSdk").setMethodCallHandler(this)
+    MethodChannel(messenger, "tangemSdk_JSONRPC").setMethodCallHandler(this)
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -114,8 +117,10 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "readFiles" -> readFiles(call, result)
       "deleteFiles" -> deleteFiles(call, result)
       "changeFilesSettings" -> changeFilesSettings(call, result)
-      "startSession" -> startSession(call, result)
       "prepareHashes" -> prepareHashes(call, result)
+      "startSession" -> startSession(call, result)
+      "stopSession" -> stopSession(call, result)
+      "JSONRPCRequest" -> runJSONRPCRequest(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
     }
@@ -358,30 +363,6 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       handleException(result, ex)
     }
   }
-  
-  private fun startSession(call: MethodCall, result: Result) {
-    if (cardSession != null) {
-      handleResult(result, CompletionResult.Success<Any>(true))
-      return
-    }
-    
-    try {
-      sdk.startSession(
-          call.extract("cardId"),
-          call.extract("initialMessage"),
-      ) { session, error ->
-        if (error == null) {
-          cardSession = session
-          handleResult(result, CompletionResult.Success<Any>(true))
-        }else {
-          cardSession = null
-          handleResult(result, CompletionResult.Failure<Any>(error))
-        }
-      }
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
-  }
 
   private fun prepareHashes(call: MethodCall, result: Result) {
     try {
@@ -487,6 +468,63 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     data class Write(val files: List<DataToWrite>)
     data class Delete(val indices: List<Int>?)
     data class ChangeSettings(val changes: List<FileSettingsChange>)
+  }
+
+  private fun startSession(call: MethodCall, result: Result) {
+    try {
+      if (cardSession != null && cardSession!!.state == CardSessionState.Active)
+        throw IllegalStateException("Session already started")
+
+      sdk.startSession(
+          call.extractOptional("cardId"),
+          call.extractOptional("initialMessage"),
+      ) { session, error ->
+        if (error == null) {
+          cardSession = session
+          handleResult(result, CompletionResult.Success<Any>(true))
+        } else {
+          cardSession = null
+          handleResult(result, CompletionResult.Failure<Any>(error))
+        }
+      }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun stopSession(call: MethodCall, result: Result) {
+    try {
+      val session = cardSession ?: throw UnsupportedOperationException("Session is not started")
+      session.stop()
+      cardSession = null
+      handleResult(result, CompletionResult.Success<Any>(true))
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun runJSONRPCRequest(call: MethodCall, result: Result) {
+    try {
+      val session = cardSession ?: throw UnsupportedOperationException("Session not started")
+
+      val jsonRpcRequest = call.extract<String>("JSONRPCRequest")
+      session.run(jsonRpcRequest) { response ->
+        if (replyAlreadySubmit) return@run
+        replyAlreadySubmit = true
+
+        val jsonRpcResponse = converter.fromJson<JSONRPCResponse>(response)
+            ?: throw IllegalArgumentException("Can't convert string response to JSONRPCResponse")
+
+        if (jsonRpcResponse.error == null) {
+          handler.post { result.success(response) }
+        } else {
+          val error = jsonRpcResponse.error !!
+          handler.post { result.error("${error.code}", error.message, response) }
+        }
+      }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
   }
 }
 

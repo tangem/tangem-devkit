@@ -128,7 +128,7 @@ class TestAssembler {
     return StepModel(
       "$index.${stepConfig.name}.${jsonRpc.method}",
       jsonRpc.method,
-      jsonRpc.parameters,
+      jsonRpc.params,
       expectedResult,
       stepConfig.asserts,
       stepConfig.actionType,
