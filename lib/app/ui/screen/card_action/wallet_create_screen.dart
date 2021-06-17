@@ -1,6 +1,7 @@
 import 'package:devkit/app/domain/actions_bloc/exp_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,6 +70,7 @@ class _CreateWalletBodyState extends State<CreateWalletBody> {
 
   @override
   Widget build(BuildContext context) {
+    final _transl = Transl.of(context);
     return Column(
       children: <Widget>[
         HiddenResponseHandlerWidget(_bloc),
@@ -80,7 +82,37 @@ class _CreateWalletBodyState extends State<CreateWalletBody> {
           _cidController.controller,
           _bloc.scanCard,
           padding: EdgeInsets.symmetric(horizontal: 16),
-        ),
+        ).withUnderline(),
+        SwitchWidget(
+          ItemName.isReusable,
+          _transl.pers_item_is_reusable,
+          _transl.desc_pers_item_is_reusable,
+          _bloc.bsIsReusable,
+          minHeight: 0,
+        ).withUnderline(),
+        SwitchWidget(
+          ItemName.prohibitPurgeWallet,
+          _transl.pers_item_forbid_purge,
+          _transl.desc_pers_item_forbid_purge,
+          _bloc.bsProhibitPurgeWallet,
+          minHeight: 0,
+        ).withUnderline(),
+        SpinnerWidget(
+          ItemName.curve,
+          _bloc.curves,
+          _bloc.bsCurve,
+          _transl.pers_item_curve,
+          _transl.desc_pers_item_curve,
+          minHeight: 0,
+        ).withUnderline(),
+        SpinnerWidget(
+          ItemName.signingMethod,
+          _bloc.signingMethods,
+          _bloc.bsSigningMethods,
+          _transl.pers_segment_signing_method,
+          _transl.desc_pers_segment_signing_method,
+          minHeight: 0,
+        ).withUnderline(),
       ],
     );
   }
