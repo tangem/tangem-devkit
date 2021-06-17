@@ -368,7 +368,7 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     try {
       val fileHasData = sdk.prepareHashes(
           call.extract("cardId"),
-          call.extract("DataToWrite"),
+          call.extract("fileData"),
           call.extract("fileCounter"),
           call.extract("privateKey"),
       )
@@ -473,7 +473,7 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private fun startSession(call: MethodCall, result: Result) {
     try {
       if (cardSession != null && cardSession!!.state == CardSessionState.Active)
-        throw IllegalStateException("Session already started")
+        throw IllegalStateException("The CardSession has already started")
 
       sdk.startSession(
           call.extractOptional("cardId"),
@@ -494,7 +494,7 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun stopSession(call: MethodCall, result: Result) {
     try {
-      val session = cardSession ?: throw UnsupportedOperationException("Session is not started")
+      val session = cardSession ?: throw UnsupportedOperationException("Session not started")
       session.stop()
       cardSession = null
       handleResult(result, CompletionResult.Success<Any>(true))
@@ -507,13 +507,13 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     try {
       val session = cardSession ?: throw UnsupportedOperationException("Session not started")
 
-      val jsonRpcRequest = call.extract<String>("JSONRPCRequest")
-      session.run(jsonRpcRequest) { response ->
+      val stringOfJSONRPCRequest = call.extract<String>("JSONRPCRequest")
+      session.run(stringOfJSONRPCRequest) { response ->
         if (replyAlreadySubmit) return@run
         replyAlreadySubmit = true
 
         val jsonRpcResponse = converter.fromJson<JSONRPCResponse>(response)
-            ?: throw IllegalArgumentException("Can't convert string response to JSONRPCResponse")
+            ?: throw IllegalArgumentException("Can't convert the string response to JSONRPCResponse")
 
         if (jsonRpcResponse.error == null) {
           handler.post { result.success(response) }
