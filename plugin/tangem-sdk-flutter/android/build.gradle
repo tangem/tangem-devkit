@@ -53,8 +53,8 @@ android {
 dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-  implementation 'com.tangem.tangem-sdk-kotlin:core:develop-42'
-  implementation 'com.tangem.tangem-sdk-kotlin:android:develop-42'
+  implementation 'com.tangem.tangem-sdk-kotlin:core:develop-43'
+  implementation 'com.tangem.tangem-sdk-kotlin:android:develop-43'
 
   implementation "com.squareup.sqldelight:android-driver:1.4.0"
 

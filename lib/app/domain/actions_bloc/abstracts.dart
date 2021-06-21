@@ -13,7 +13,7 @@ abstract class ActionBloc<T> extends BaseBloc {
 
   final PublishSubject<CommandDataModel> _commandDataIsReady = PublishSubject<CommandDataModel>();
   final PublishSubject<T> _successResponse = PublishSubject<T>();
-  final PublishSubject<TangemSdkBaseError?> _errorResponse = PublishSubject<TangemSdkBaseError?>();
+  final PublishSubject<TangemSdkPluginError?> _errorResponse = PublishSubject<TangemSdkPluginError?>();
 
   ActionBloc() {
     addSubscription(bsCid.stream.listen((event) => _cid = event));
@@ -23,7 +23,7 @@ abstract class ActionBloc<T> extends BaseBloc {
 
   Stream<T> get successResponseStream => _successResponse.stream;
 
-  Stream<TangemSdkBaseError?> get errorResponseStream => _errorResponse.stream;
+  Stream<TangemSdkPluginError?> get errorResponseStream => _errorResponse.stream;
 
   Callback get callback => Callback((success) => sendSuccess(success), (error) => sendError(error));
 
@@ -31,7 +31,7 @@ abstract class ActionBloc<T> extends BaseBloc {
     _successResponse.add(success);
   }
 
-  sendError(TangemSdkBaseError? error) {
+  sendError(TangemSdkPluginError? error) {
     _errorResponse.add(error);
   }
 

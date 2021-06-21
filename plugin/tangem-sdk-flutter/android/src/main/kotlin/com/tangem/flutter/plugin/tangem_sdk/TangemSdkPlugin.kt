@@ -30,7 +30,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import java.lang.IllegalStateException
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -420,17 +419,22 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     if (replyAlreadySubmit) return
     replyAlreadySubmit = true
 
+    val exception = ex as? PluginException ?: TangemSdkException(ex)
     handler.post {
-      val code = 9999
-      val localizedDescription: String = ex.toString()
-      result.error("$code".capitalize(), localizedDescription,
+      val code = 1000
+      val localizedDescription: String = exception.toString()
+      result.error("$code", localizedDescription,
           converter.toJson(PluginError(code, localizedDescription)))
     }
   }
 
-  @Throws(Exception::class)
+  @Throws(PluginException::class)
   inline fun <reified T> MethodCall.extract(name: String): T {
-    return this.extractOptional(name) ?: throw NoSuchFieldException(name)
+    return try {
+      this.extractOptional(name) ?: throw PluginException("MethodCall.extract: no such field: $name, or field is NULL")
+    } catch (ex: Exception) {
+      throw ex as? PluginException ?: PluginException("MethodCall.extractOptional", ex)
+    }
   }
 
   inline fun <reified T> MethodCall.extractOptional(name: String): T? {
@@ -472,8 +476,8 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun startSession(call: MethodCall, result: Result) {
     try {
-      if (cardSession != null && cardSession!!.state == CardSessionState.Active)
-        throw IllegalStateException("The CardSession has already started")
+      if (cardSession != null && cardSession !!.state == CardSessionState.Active)
+        throw PluginException("The CardSession has already started")
 
       sdk.startSession(
           call.extractOptional("cardId"),
@@ -494,7 +498,7 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun stopSession(call: MethodCall, result: Result) {
     try {
-      val session = cardSession ?: throw UnsupportedOperationException("Session not started")
+      val session = cardSession ?: throw PluginException("Session not started")
       session.stop()
       cardSession = null
       handleResult(result, CompletionResult.Success<Any>(true))
@@ -505,7 +509,7 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun runJSONRPCRequest(call: MethodCall, result: Result) {
     try {
-      val session = cardSession ?: throw UnsupportedOperationException("Session not started")
+      val session = cardSession ?: throw PluginException("Session not started")
 
       val stringOfJSONRPCRequest = call.extract<String>("JSONRPCRequest")
       session.run(stringOfJSONRPCRequest) { response ->
@@ -513,7 +517,7 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         replyAlreadySubmit = true
 
         val jsonRpcResponse = converter.fromJson<JSONRPCResponse>(response)
-            ?: throw IllegalArgumentException("Can't convert the string response to JSONRPCResponse")
+            ?: throw PluginException("Can't convert the string response to JSONRPCResponse")
 
         if (jsonRpcResponse.error == null) {
           handler.post { result.success(response) }
@@ -572,4 +576,15 @@ class MoshiAdapters {
   }
 }
 
-data class PluginError(val code: Int, val localizedDescription: String)
+data class PluginError(
+    // code = 1000 - it's the plugin or it's the tangemSdk internal exception
+    // any other value in code greater than 10000 - it's the tangemSdk internal error
+    val code: Int,
+    val localizedDescription: String
+)
+
+class PluginException(
+    message: String, cause: Throwable? = null
+): Exception("TangemSdkPlugin exception. Message: $message", cause)
+
+class TangemSdkException(cause: Throwable): Exception("TangemSdk internal exception", cause)

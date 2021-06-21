@@ -3,7 +3,6 @@ import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_assembler/domain/test_storages.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:tangem_sdk/model/command_data.dart';
-import 'package:tangem_sdk/sdk_plugin.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class TestRecorderBlock extends BaseBloc {
@@ -65,7 +64,7 @@ class TestRecorderBlock extends BaseBloc {
     _currentRecord = null;
   }
 
-  handleCommandError(TangemSdkBaseError? error) {
+  handleCommandError(TangemSdkPluginError? error) {
     _currentRecord = null;
   }
 }
@@ -125,8 +124,9 @@ class TestAssembler {
 
     final jsonRpc = JSONRPCRequest.fromCommandDataJson(jsonData);
     final expectedResult = (record.response as TangemSdkResponse).toJson();
+    final modelName = ["$index", jsonRpc.method].join("_");
     return StepModel(
-      "$index.${stepConfig.name}.${jsonRpc.method}",
+      modelName,
       jsonRpc.method,
       jsonRpc.params,
       expectedResult,

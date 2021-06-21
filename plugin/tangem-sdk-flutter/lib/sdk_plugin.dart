@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
 import 'package:tangem_sdk/model/command_data.dart';
 import 'package:tangem_sdk/model/json_rpc.dart';
+import 'package:tangem_sdk/plugin_error.dart';
 
 import 'model/sdk.dart';
 
@@ -45,6 +46,7 @@ class TangemSdk {
   static const initialMessageBody = "body";
   static const hashes = "hashes";
   static const walletPublicKey = "walletPublicKey";
+
   //TODO: replace by walletPublicKey
   @Deprecated("replace by walletPublicKey")
   static const walletIndex = "walletIndex";
@@ -130,13 +132,13 @@ class TangemSdk {
         jsonMap = map;
       }
     } catch (exception) {
-      _sendBackError(callback, TangemSdkError("Can't get command json data. Error: ${exception.toString()}"));
+      _sendBackError(callback, PluginFlutterError("Can't get command json data. Error: ${exception.toString()}"));
       return;
     }
 
     final type = jsonMap[commandType];
     if (type == null) {
-      _sendBackError(callback, TangemSdkError("Can't execute the task. Missing the '$commandType' field"));
+      _sendBackError(callback, PluginFlutterError("Can't execute the task. Missing the '$commandType' field"));
       return;
     }
     onPrepareComplete(jsonMap);
@@ -350,27 +352,10 @@ class TangemSdk {
   }
 
   static _sendBackError(Callback callback, dynamic error) {
-    if (error is TangemSdkBaseError) {
-      callback.onError(error);
-    } else if (error is PlatformException) {
-      final jsonString = error.details;
-      final map = json.decode(jsonString);
-      if (map["code"] == 50002) {
-        callback.onError(UserCancelledError(map['localizedDescription']));
-      } else if (map["jsonrpc"] != null) {
-        callback.onError(SdkPluginError(jsonString));
-      }else {
-        callback.onError(SdkPluginError(map['localizedDescription']));
-      }
-    } else if (error is Exception) {
-      callback.onError(SdkPluginError(error.toString()));
-    } else {
-      callback.onError(SdkPluginError("Unknown plugin error: ${error.toString()}"));
-    }
+    callback.onError(TangemSdkPluginError.createError(error));
   }
 
-
-  static Future runJSONRPCRequest(Callback callback, JSONRPCRequest request) async{
+  static Future runJSONRPCRequest(Callback callback, JSONRPCRequest request) async {
     final mapWithRequest = {"JSONRPCRequest": jsonEncode(request.toJson())};
     _channelJSONRPC
         .invokeMethod(cJsonRpcRequest, mapWithRequest)
@@ -384,36 +369,9 @@ class TangemSdk {
   }
 }
 
-abstract class TangemSdkBaseError implements Exception {
-  final String message;
-
-  TangemSdkBaseError(this.message);
-
-  String toString() => "${this.runtimeType}: $message";
-}
-
-class SdkPluginError extends TangemSdkBaseError {
-  SdkPluginError(String message) : super(message);
-}
-
-class TangemSdkError extends TangemSdkBaseError {
-  TangemSdkError(String message) : super(message);
-}
-
-class UserCancelledError extends SdkPluginError {
-  UserCancelledError(String message) : super(message);
-}
-
 class Callback {
   final Function(dynamic success) onSuccess;
   final Function(dynamic error) onError;
 
   Callback(this.onSuccess, this.onError);
-}
-
-class TangemSdkJson {
-  static const keyMethod = "method";
-  static const keyParams = "parameters";
-
-  static const methodScan = "SCAN_TASK";
 }

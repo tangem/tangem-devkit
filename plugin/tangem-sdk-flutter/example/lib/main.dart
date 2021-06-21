@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:tangem_sdk/plugin_error.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import 'app_widgets.dart';
@@ -46,7 +47,7 @@ class _CommandListWidgetState extends State<CommandListWidget> {
       final prettyJson = _jsonEncoder.convert(success.toJson());
       prettyJson.split("\n").forEach((element) => print(element));
     }, (error) {
-      if (error is SdkPluginError) {
+      if (error is TangemSdkPluginError) {
         print(error.message);
       } else {
         print(error);
