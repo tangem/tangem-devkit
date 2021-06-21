@@ -1,18 +1,10 @@
-import 'dart:async';
-import 'dart:collection';
-import 'dart:convert';
-
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
-import 'package:devkit/app_test_assembler/domain/test_storages.dart';
 import 'package:devkit/app_test_launcher/domain/common/test_result.dart';
-import 'package:devkit/app_test_launcher/domain/common/typedefs.dart';
-import 'package:devkit/app_test_launcher/domain/error/error.dart';
-import 'package:devkit/app_test_launcher/domain/error/test_error.dart';
 import 'package:devkit/app_test_launcher/domain/executable/assert/assert.dart';
-import 'package:devkit/app_test_launcher/domain/executable/step/step_launcher.dart';
-import 'package:devkit/app_test_launcher/domain/variable_service.dart';
+import 'package:devkit/app_test_launcher/domain/repository/repositories.dart';
+import 'package:devkit/app_test_launcher/domain/test_launcher.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -152,136 +144,5 @@ class JsonTestLauncherBloc extends BaseBloc {
 
   void _handleError(dynamic error) {
     sendSnackbarMessage(error);
-  }
-}
-
-class TestLauncher {
-  final JsonTest _jsonTest;
-  final AssertsFactory _assertsFactory;
-
-  OnComplete? onTestComplete;
-
-  Queue _testQueue = Queue<JsonTest>();
-  Queue _stepQueue = Queue<StepModel>();
-
-  TestLauncher(this._jsonTest, this._assertsFactory);
-
-  void launch() {
-    _testQueue = _generateTestQueue();
-
-    final nextTest = _testQueue.poll();
-    if (nextTest == null) {
-      onTestComplete?.call(Failure(TestIsEmptyError()));
-    } else {
-      _runTest(nextTest);
-    }
-  }
-
-  void _runTest(JsonTest test) {
-    VariableService.reset();
-    _prepare().then((value) {
-      _stepQueue = Queue.from(test.steps);
-      final nextStep = _stepQueue.poll();
-      if (nextStep == null) {
-        _onStepSequenceComplete(Success(test.setup.name));
-      } else {
-        _runStep(nextStep);
-      }
-    }).onError((error, stackTrace) {
-      _handleError(error);
-    });
-  }
-
-  void _onStepComplete(TestResult result) {
-    if (result is Success) {
-      final nextStep = _stepQueue.poll();
-      if (nextStep == null) {
-        _onStepSequenceComplete(result);
-      } else {
-        _runStep(nextStep);
-      }
-    } else {
-      _onStepSequenceComplete(result);
-    }
-  }
-
-  void _runStep(StepModel step) {
-    StepLauncher(step, _assertsFactory).run(_onStepComplete);
-  }
-
-  void _onStepSequenceComplete(TestResult result) {
-    if (result is Success) {
-      final nextTest = _testQueue.poll();
-      if (nextTest == null) {
-        onTestComplete?.call(Success(_jsonTest.setup.name));
-      } else {
-        _runTest(nextTest);
-      }
-    } else {
-      _handleError(result);
-    }
-  }
-
-  void _handleError(dynamic error) {
-    onTestComplete?.call(Failure(CustomError(jsonEncode(error))));
-  }
-
-  Queue<JsonTest> _generateTestQueue() {
-    final tests = [];
-    if (_jsonTest.setup.iterations == null) {
-      tests.add(_jsonTest);
-    } else {
-      _jsonTest.setup.iterations?.foreach((e) => tests.add(_jsonTest));
-    }
-    return Queue.from(tests);
-  }
-
-  Future _prepare() {
-    final completer = Completer();
-    _configureSdk(() {
-      _rePersonalize(() {
-        completer.complete();
-      }, _handleError);
-    }, _handleError);
-    return completer.future;
-  }
-
-  void _configureSdk(Function onSuccess, Function(dynamic error) onError) {
-    onSuccess();
-  }
-
-  void _rePersonalize(Function onSuccess, Function(dynamic error) onError) {
-    onSuccess();
-  }
-}
-
-abstract class JsonTestsRepository {
-  Future init();
-
-  List<JsonTest> getList();
-
-  JsonTest? get(String name);
-}
-
-class JsonTestRepository implements JsonTestsRepository {
-  final JsonTestsStorage storage = JsonTestsStorage();
-
-  @override
-  Future init() {
-    final completer = Completer();
-    storage.isReadyToUseStream.listen((event) {
-      if (event) completer.complete();
-    });
-    return completer.future;
-  }
-
-  @override
-  JsonTest? get(String name) {
-    return storage.get(name);
-  }
-
-  @override
-  List<JsonTest> getList() {
-    return storage.names().map((e) => storage.get(e)).toList().toNullSafe();
   }
 }
