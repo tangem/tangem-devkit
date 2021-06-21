@@ -9,7 +9,7 @@ class VariableService {
   static final _bracketRight = "}";
   static final _stepPointer = "#";
   static final _parent = "#parent";
-  static final _result = "result";
+  static final _actualResult = "actualResult";
 
   static final _stepValues = <String, SourceMap>{};
 
@@ -24,7 +24,7 @@ class VariableService {
       return;
     }
 
-    stepMap[_result] = response.result;
+    stepMap[_actualResult] = response.result;
   }
 
   static void registerStep(String name, SourceMap source) {

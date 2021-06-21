@@ -5,6 +5,7 @@ import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_launcher/domain/common/test_result.dart';
 import 'package:devkit/app_test_launcher/domain/common/typedefs.dart';
 import 'package:devkit/app_test_launcher/domain/error/error.dart';
+import 'package:devkit/app_test_launcher/domain/error/test_assert_error.dart';
 import 'package:devkit/app_test_launcher/domain/error/test_executable_error.dart';
 import 'package:devkit/app_test_launcher/domain/executable/assert/assert.dart';
 import 'package:devkit/app_test_launcher/domain/executable/assert/assert_launcher.dart';
@@ -25,6 +26,11 @@ class StepLauncher implements Executable {
     _fetchVariables();
 
     final jsonRpcRequestCallback = Callback((result) {
+      final error = _checkExpectedWithActualResult(_model.expectedResult, result);
+      if (error != null) {
+        callback(Failure(error));
+        return;
+      }
       VariableService.registerResult(_model.name, result);
       _executeAsserts(callback);
     }, (error) {
@@ -63,5 +69,29 @@ class StepLauncher implements Executable {
     });
 
     AssertsLauncher(assertsQueue).run(callback);
+  }
+
+  TestAssertError? _checkExpectedWithActualResult(Map<String, dynamic> expResult, dynamic actualResult) {
+    if (actualResult is! Map<String, dynamic>) return ExpectedAndActualResultError("Actual result is not a map");
+
+    final jsonRpcResult = actualResult as Map<String, dynamic>;
+    final jsonRpcResponse = JSONRPCResponse.fromJson(jsonRpcResult);
+    if (jsonRpcResponse.result is! Map<String, dynamic>)
+      return ExpectedAndActualResultError("JsonRpc result is not a map");
+
+    final result = jsonRpcResponse.result as Map<String, dynamic>;
+
+    if (expResult.length != result.length) return ExpectedAndActualResultError("Results length doesn't match");
+
+    final missedKeys = expResult.keys.toList()..removeWhere((element) => result.containsKey(element));
+    final unexpectedKeys = result.keys.toList()..removeWhere((element) => expResult.containsKey(element));
+
+    if (missedKeys.isNotEmpty || unexpectedKeys.isNotEmpty) {
+      final missed = "Missed keys in the actual result: [${missedKeys.join(", ")}]";
+      final unexpected = "Unexpected keys in the actual result: [${unexpectedKeys.join(", ")}]";
+      return ExpectedAndActualResultError("$missed. $unexpected");
+    }
+
+    return null;
   }
 }
