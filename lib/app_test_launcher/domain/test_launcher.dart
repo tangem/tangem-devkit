@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:tangem_sdk/extensions/exp_extensions.dart';
+import 'package:tangem_sdk/tangem_sdk.dart';
 
 import 'common/test_result.dart';
 import 'common/typedefs.dart';
@@ -25,14 +26,28 @@ class TestLauncher {
   TestLauncher(this._jsonTest, this._assertsFactory);
 
   void launch() {
-    _testQueue = _generateTestQueue();
+    _startSession(() {
+      _testQueue = _generateTestQueue();
+      final nextTest = _testQueue.poll();
+      if (nextTest == null) {
+        onTestComplete?.call(Failure(TestIsEmptyError()));
+      } else {
+        _runTest(nextTest);
+      }
+    }, (startingSessionError) {
+      onTestComplete?.call(Failure(startingSessionError));
+    });
+  }
 
-    final nextTest = _testQueue.poll();
-    if (nextTest == null) {
-      onTestComplete?.call(Failure(TestIsEmptyError()));
-    } else {
-      _runTest(nextTest);
-    }
+  void _startSession(Function onSuccess, Function(dynamic error) onError) {
+    TangemSdk.startSession(Callback((success) => onSuccess(), onError), {
+      TangemSdk.initialMessage: _jsonTest.setup.sdkConfig[TangemSdk.initialMessage],
+      TangemSdk.cardId: _jsonTest.setup.sdkConfig[TangemSdk.cardId],
+    });
+  }
+
+  void _stopSession(Function onSuccess, Function(dynamic error) onError) {
+    TangemSdk.stopSession(Callback((success) => onSuccess(), (error) => onError(error)));
   }
 
   void _runTest(JsonTest test) {
@@ -71,7 +86,11 @@ class TestLauncher {
     if (result is Success) {
       final nextTest = _testQueue.poll();
       if (nextTest == null) {
-        onTestComplete?.call(Success(_jsonTest.setup.name));
+        _stopSession((){
+          onTestComplete?.call(Success(_jsonTest.setup.name));
+        }, (error) {
+          _handleError(error);
+        });
       } else {
         _runTest(nextTest);
       }

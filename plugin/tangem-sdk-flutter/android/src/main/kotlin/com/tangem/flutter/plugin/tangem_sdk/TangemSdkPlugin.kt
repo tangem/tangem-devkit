@@ -509,13 +509,12 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun runJSONRPCRequest(call: MethodCall, result: Result) {
     try {
-      val session = cardSession ?: throw PluginException("Session not started")
-
       val stringOfJSONRPCRequest = call.extract<String>("JSONRPCRequest")
-      session.run(stringOfJSONRPCRequest) { response ->
-        if (replyAlreadySubmit) return@run
-        replyAlreadySubmit = true
 
+      val callback = callbackWithResult@{ response: String ->
+        if (replyAlreadySubmit) return@callbackWithResult
+
+        replyAlreadySubmit = true
         val jsonRpcResponse = converter.fromJson<JSONRPCResponse>(response)
             ?: throw PluginException("Can't convert the string response to JSONRPCResponse")
 
@@ -525,6 +524,17 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           val error = jsonRpcResponse.error !!
           handler.post { result.error("${error.code}", error.message, response) }
         }
+      }
+
+      if (cardSession == null) {
+        sdk.startSessionWithJsonRequest(
+            stringOfJSONRPCRequest,
+            call.extractOptional("cardId"),
+            call.extractOptional("initialMessage"),
+            callback
+        )
+      } else {
+        cardSession !!.run(stringOfJSONRPCRequest, callback)
       }
     } catch (ex: Exception) {
       handleException(result, ex)

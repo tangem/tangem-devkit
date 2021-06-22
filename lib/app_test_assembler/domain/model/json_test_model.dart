@@ -27,7 +27,7 @@ class TestSetup {
   final String name;
   final String description;
   final Map<String, dynamic> personalizationConfig;
-  final ConfigSdk? sdkConfig;
+  final Map<String, dynamic> sdkConfig;
   final FirmwareVersion? minimalFirmware;
   final String? platform;
   final int? iterations;
@@ -36,8 +36,8 @@ class TestSetup {
   TestSetup(
     this.name,
     this.description,
-    this.personalizationConfig, [
-    this.sdkConfig,
+    this.personalizationConfig,
+    this.sdkConfig, [
     this.minimalFirmware,
     this.platform,
     this.iterations,
@@ -51,7 +51,7 @@ class TestSetup {
       "Simple test",
       "It shows what we can do with a card",
       persCommandConfig,
-      null,
+      {},
       null,
       null,
       1,
@@ -66,7 +66,7 @@ class TestSetup {
     String? name,
     String? description,
     Map<String, dynamic>? personalizationConfig,
-    ConfigSdk? sdkConfig,
+    Map<String, dynamic>? sdkConfig,
     FirmwareVersion? minimalFirmware,
     String? platform,
     int? iterations,
@@ -83,15 +83,6 @@ class TestSetup {
 }
 
 @JsonSerializable()
-class ConfigSdk {
-  ConfigSdk();
-
-  factory ConfigSdk.fromJson(Map<String, dynamic> json) => ConfigSdk();
-
-  Map<String, dynamic> toJson() => {};
-}
-
-@JsonSerializable()
 class StepModel {
   final String name;
   final String method;
@@ -102,6 +93,7 @@ class StepModel {
   final int? iterations;
 
   Map<String, dynamic> _rawParams = {};
+
   Map<String, dynamic> get rawParams => {}..addAll(_rawParams);
 
   StepModel(

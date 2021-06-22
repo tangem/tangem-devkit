@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/extensions/exp_extensions.dart';
-import 'package:tangem_sdk/sdk_plugin.dart';
 
 class JsonTestLauncherScreen extends StatefulWidget {
   const JsonTestLauncherScreen({Key? key}) : super(key: key);
@@ -114,32 +113,16 @@ class JsonTestLauncherBloc extends BaseBloc {
   }
 
   void launch(JsonTest jsonTest) {
-    _startSession(() async {
-      final launcher = TestLauncher(jsonTest, AssertsFactory());
-      launcher.onTestComplete = (result) {
-        if (result is Success) {
-          final message = result.name ?? "Unknown test";
-          sendSnackbarMessage("$message is completed");
-        } else {
-          sendSnackbarMessage(result);
-        }
-        _stopSession(() {}, _handleError);
-      };
-      launcher.launch();
-    }, _handleError);
-  }
-
-  void _startSession(Function onSuccess, Function(dynamic error) onError) {
-    TangemSdk.startSession(Callback((success) => onSuccess(), onError), {
-      TangemSdk.initialMessage: {
-        TangemSdk.initialMessageHeader: "Session is started",
-        TangemSdk.initialMessageBody: "COME ON !!!"
+    final launcher = TestLauncher(jsonTest, AssertsFactory());
+    launcher.onTestComplete = (result) {
+      if (result is Success) {
+        final message = result.name ?? "Unknown test";
+        sendSnackbarMessage("$message is completed");
+      } else {
+        sendSnackbarMessage(result);
       }
-    });
-  }
-
-  void _stopSession(Function onSuccess, Function(dynamic error) onError) {
-    TangemSdk.stopSession(Callback((success) => onSuccess(), _handleError));
+    };
+    launcher.launch();
   }
 
   void _handleError(dynamic error) {

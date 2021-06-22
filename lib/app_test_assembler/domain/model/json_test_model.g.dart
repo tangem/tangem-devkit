@@ -23,7 +23,7 @@ TestSetup _$TestSetupFromJson(Map<String, dynamic> json) {
     json['name'] as String,
     json['description'] as String,
     json['personalizationConfig'] as Map<String, dynamic>,
-    json['sdkConfig'] == null ? null : ConfigSdk.fromJson(json['sdkConfig'] as Map<String, dynamic>),
+    json['sdkConfig'] as Map<String, dynamic>,
     json['minimalFirmware'] == null ? null : FirmwareVersion.fromJson(json['minimalFirmware'] as String),
     json['platform'] as String?,
     json['iterations'] as int?,
@@ -41,12 +41,6 @@ Map<String, dynamic> _$TestSetupToJson(TestSetup instance) => <String, dynamic>{
       'iterations': instance.iterations,
       'creationDateMs': instance.creationDateMs,
     };
-
-ConfigSdk _$ConfigSdkFromJson(Map<String, dynamic> json) {
-  return ConfigSdk();
-}
-
-Map<String, dynamic> _$ConfigSdkToJson(ConfigSdk instance) => <String, dynamic>{};
 
 StepModel _$TestStepFromJson(Map<String, dynamic> json) {
   return StepModel(

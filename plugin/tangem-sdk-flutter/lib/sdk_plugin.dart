@@ -40,7 +40,7 @@ class TangemSdk {
   static const cJsonRpcRequest = 'JSONRPCRequest';
 
   static const isAllowedOnlyDebugCards = "isAllowedOnlyDebugCards";
-  static const cid = "cardId";
+  static const cardId = "cardId";
   static const initialMessage = "initialMessage";
   static const initialMessageHeader = "header";
   static const initialMessageBody = "body";
@@ -289,10 +289,10 @@ class TangemSdk {
         .catchError((error) => _sendBackError(callback, error));
   }
 
-  static Future prepareHashes(Callback callback, String cardId, String fileDataHex, int counter,
+  static Future prepareHashes(Callback callback, String cid, String fileDataHex, int counter,
       [String? privateKeyHex]) async {
     final valuesToExport = <String, dynamic>{
-      cid: cardId,
+      cid: cid,
       fileData: fileDataHex,
       fileCounter: counter,
       privateKey: privateKeyHex,

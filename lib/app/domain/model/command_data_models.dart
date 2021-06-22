@@ -110,7 +110,7 @@ class WriteIssuerDataModel extends CommandDataModel {
 
   factory WriteIssuerDataModel.fromJson(Map<String, dynamic> json) {
     final model = WriteIssuerDataModel(
-      json[TangemSdk.cid],
+      json[TangemSdk.cardId],
       json[TangemSdk.issuerData],
       json[TangemSdk.privateKey],
       json[TangemSdk.issuerDataCounter],
@@ -175,7 +175,7 @@ class WriteIssuerExDataModel extends CommandDataModel {
 
   factory WriteIssuerExDataModel.fromJson(Map<String, dynamic> json) {
     final model = WriteIssuerExDataModel(
-      json[TangemSdk.cid],
+      json[TangemSdk.cardId],
       json[TangemSdk.issuerData],
       json[TangemSdk.privateKey],
       json[TangemSdk.issuerDataCounter],
