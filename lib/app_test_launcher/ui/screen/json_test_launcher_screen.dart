@@ -25,7 +25,8 @@ class _JsonTestLauncherScreenState extends State<JsonTestLauncherScreen> {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => JsonTestLauncherBloc().apply((it) => _bloc = it)),
+        RepositoryProvider(
+            create: (context) => JsonTestLauncherBloc(JsonTestAssetsRepository()).apply((it) => _bloc = it)),
       ],
       child: JsonTestLauncherFrame(),
     );
@@ -99,10 +100,10 @@ class _JsonTestLauncherBodyState extends State<JsonTestLauncherBody> {
 }
 
 class JsonTestLauncherBloc extends BaseBloc {
-  final JsonTestRepository repo = JsonTestRepository();
+  final JsonTestsRepository repo;
   final bsJsonTests = BehaviorSubject<List<JsonTest>>();
 
-  JsonTestLauncherBloc() {
+  JsonTestLauncherBloc(this.repo) {
     addSubject(bsJsonTests);
     initRepository();
   }

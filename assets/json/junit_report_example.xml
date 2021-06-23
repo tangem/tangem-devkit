@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="New_configuration (14/06/12 17:05:19)" failures="1262" id="20140612_170519" tests="225" time="0.001">
+  <testsuite name="COBOL Code Review" failures="17" id="codereview.cobol.analysisProvider" tests="45" time="0.001">
+    <testcase name="Use a program name that matches the source file name" id="codereview.cobol.rules.ProgramIdRule"
+      time="0.001">
+      <failure message="PROGRAM.cbl:2 Use a program name that matches the source file name" type="WARNING">
+        WARNING: Use a program name that matches the source file name
+        Category: COBOL Code Review – Naming Conventions
+        File: /project/PROGRAM.cbl
+        Line: 2
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>
