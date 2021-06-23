@@ -1,6 +1,6 @@
 import 'error.dart';
 
-abstract class TestAssertError implements TestFrameworkError {}
+abstract class TestAssertError extends TestFrameworkError {}
 
 class ExpectedAndActualResultError extends TestAssertError {
   final String? message;

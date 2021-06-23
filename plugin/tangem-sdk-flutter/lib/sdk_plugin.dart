@@ -7,6 +7,7 @@ import 'package:tangem_sdk/model/command_data.dart';
 import 'package:tangem_sdk/model/json_rpc.dart';
 import 'package:tangem_sdk/plugin_error.dart';
 
+import 'extensions/exp_extensions.dart';
 import 'model/sdk.dart';
 
 /// Flutter TangemSdk is an interface which provides access to platform specific TangemSdk library.
@@ -37,7 +38,7 @@ class TangemSdk {
   static const cDeleteFiles = 'deleteFiles';
   static const cChangeFilesSettings = 'changeFilesSettings';
   static const cPrepareHashes = "prepareHashes";
-  static const cJsonRpcRequest = 'JSONRPCRequest';
+  static const cJsonRpcRequest = 'runJSONRPCRequest';
 
   static const isAllowedOnlyDebugCards = "isAllowedOnlyDebugCards";
   static const cardId = "cardId";
@@ -51,7 +52,7 @@ class TangemSdk {
   @Deprecated("replace by walletPublicKey")
   static const walletIndex = "walletIndex";
   static const walletConfig = "config";
-  static const cardConfig = "cardConfig";
+  static const cardConfig = "config";
   static const issuer = "issuer";
   static const manufacturer = "manufacturer";
   static const acquirer = "acquirer";
@@ -75,6 +76,32 @@ class TangemSdk {
   static const privateKey = "privateKey";
   static const jsonRpcRequest = 'JSONRPCRequest';
   static const jsonRpcResponse = 'JSONRPCResponse';
+
+  static const _jsonRpcCommands = {
+    cScanCard: 'SCAN_TASK',
+    cSign: 'SIGN_COMMAND',
+    cPersonalize: 'PERSONALIZE_COMMAND',
+    cDepersonalize: 'DEPERSONALIZE_COMMAND',
+    cCreateWallet: 'createWallet',
+    cPurgeWallet: 'purgeWallet',
+    cReadIssuerData: 'readIssuerData',
+    cWriteIssuerData: 'writeIssuerData',
+    cReadIssuerExData: 'readIssuerExData',
+    cWriteIssuerExData: 'writeIssuerExData',
+    cReadUserData: 'readUserData',
+    cWriteUserData: 'writeUserData',
+    cWriteUserProtectedData: 'writeUserProtectedData',
+    cSetPin1: 'setPin1',
+    cSetPin2: 'setPin2',
+    cWriteFiles: 'writeFiles',
+    cReadFiles: 'readFiles',
+    cDeleteFiles: 'deleteFiles',
+    cChangeFilesSettings: 'changeFilesSettings',
+  };
+
+  static String? getJsonRpcMethod(String commandType) {
+    return _jsonRpcCommands[commandType];
+  }
 
   static const MethodChannel _channel = const MethodChannel('tangemSdk');
   static const MethodChannel _channelJSONRPC = const MethodChannel('tangemSdk_JSONRPC');
@@ -355,13 +382,22 @@ class TangemSdk {
     callback.onError(TangemSdkPluginError.createError(error));
   }
 
-  static Future runJSONRPCRequest(Callback callback, JSONRPCRequest request) async {
-    final mapWithRequest = {"JSONRPCRequest": jsonEncode(request.toJson())};
+  static Future runJSONRPCRequest(
+    Callback callback,
+    JSONRPCRequest request, [
+    String? cardId,
+    Message? initialMessage,
+  ]) async {
+    final valuesToExport = <String, dynamic>{TangemSdk.jsonRpcRequest: jsonEncode(request.toJson())};
+    cardId?.let((it) => valuesToExport[TangemSdk.cardId] = it);
+    initialMessage?.let((it) => valuesToExport[TangemSdk.initialMessage] = it.toJson());
+
     _channelJSONRPC
-        .invokeMethod(cJsonRpcRequest, mapWithRequest)
+        .invokeMethod(cJsonRpcRequest, valuesToExport)
         .then((result) => callback.onSuccess(_createJSONRPCResponse(result)))
         .catchError((error) => _sendBackError(callback, error));
   }
+  // все ошибки перехваченные этим методом должны прерывать выполнение теста
 
   static dynamic _createJSONRPCResponse(dynamic response) {
     final jsonResponse = jsonDecode(response);

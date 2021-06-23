@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/services.dart';
 
 abstract class TangemSdkPluginError implements Exception {
@@ -9,6 +7,8 @@ abstract class TangemSdkPluginError implements Exception {
   TangemSdkPluginError(this.code, this.message);
 
   String toString() => "${this.runtimeType}. Code: $code, message: $message";
+
+  String toJson() => toString();
 
   static const int unknownCode = -1;
   static const int pluginFlutter = 100;
@@ -27,10 +27,10 @@ abstract class TangemSdkPluginError implements Exception {
         case pluginKotlin:
           return PluginKotlinError(message);
         default:
-          return PluginTangemSdkError(code, message);
+          return PluginTangemSdkError(code, "$message. Detail: ${error.details}");
       }
     }
-    return PluginUnknownError("", jsonEncode(error));
+    return PluginUnknownError(error.toString(), error.toString());
   }
 }
 

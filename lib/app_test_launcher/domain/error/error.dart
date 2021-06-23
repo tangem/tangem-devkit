@@ -1,12 +1,29 @@
+import 'package:tangem_sdk/model/json_rpc.dart';
+import 'package:tangem_sdk/plugin_error.dart';
+
 abstract class TestFrameworkError {
   String get errorMessage;
 }
 
-class CustomError implements TestFrameworkError {
-  final String _customError;
+class TangemSdkPluginWrappedError extends TestFrameworkError {
+  final TangemSdkPluginError error;
 
-  CustomError(this._customError);
+  TangemSdkPluginWrappedError(this.error);
 
   @override
-  String get errorMessage => _customError;
+  String get errorMessage => "TangemSdkPluginError: ${error.toString()}";
+}
+
+extension OnJSONRPCError on JSONRPCError {
+  bool isInterruptTest() {
+    switch (code) {
+      case 1000:
+        return true;
+      case 50002:
+        return true;
+      case 50003:
+        return true;
+    }
+    return false;
+  }
 }

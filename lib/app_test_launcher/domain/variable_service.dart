@@ -1,6 +1,5 @@
 import 'package:devkit/app_test_launcher/domain/common/typedefs.dart';
 import 'package:tangem_sdk/extensions/exp_extensions.dart';
-import 'package:tangem_sdk/model/json_rpc.dart';
 
 class VariableService {
   static final _variablePattern = RegExp("\\{[^\\{\\}]*\\}");
@@ -10,6 +9,7 @@ class VariableService {
   static final _stepPointer = "#";
   static final _parent = "#parent";
   static final _actualResult = "actualResult";
+  static final _error = "error";
 
   static final _stepValues = <String, SourceMap>{};
 
@@ -17,14 +17,24 @@ class VariableService {
     _stepValues.clear();
   }
 
-  static void registerResult(String name, JSONRPCResponse response) {
+  static void registerActualResult(String name, dynamic result) {
     final stepMap = _stepValues[name];
     if (stepMap == null) {
       //  Step is not registered
       return;
     }
 
-    stepMap[_actualResult] = response.result;
+    stepMap[_actualResult] = result;
+  }
+
+  static void registerError(String name, dynamic result) {
+    final stepMap = _stepValues[name];
+    if (stepMap == null) {
+      //  Step is not registered
+      return;
+    }
+
+    stepMap[_error] = result;
   }
 
   static void registerStep(String name, SourceMap source) {

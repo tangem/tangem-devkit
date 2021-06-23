@@ -119,6 +119,26 @@ class StepModel {
   factory StepModel.fromJson(Map<String, dynamic> json) => _$TestStepFromJson(json);
 
   Map<String, dynamic> toJson() => _$TestStepToJson(this);
+
+  StepModel copyWith({
+    String? name,
+    String? method,
+    Map<String, dynamic>? params,
+    Map<String, dynamic>? expectedResult,
+    List<AssertModel>? asserts,
+    String? actionType,
+    int? iterations,
+  }) {
+    return StepModel(
+      name ?? this.name,
+      method ?? this.method,
+      params ?? this.params,
+      expectedResult ?? this.expectedResult,
+      asserts ?? this.asserts,
+      actionType ?? this.actionType,
+      iterations ?? this.iterations,
+    );
+  }
 }
 
 @JsonSerializable()

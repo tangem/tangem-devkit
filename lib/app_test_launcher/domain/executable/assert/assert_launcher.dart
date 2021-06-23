@@ -22,7 +22,7 @@ class AssertsLauncher implements Executable {
       callback(Success());
     } else {
       testAssert.run((result) {
-        if (result is Success) {
+        if (result is AssertSuccess) {
           _executeAssert(_assertsQueue.poll(), callback);
         } else {
           callback(result);

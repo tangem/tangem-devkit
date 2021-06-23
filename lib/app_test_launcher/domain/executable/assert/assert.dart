@@ -41,9 +41,9 @@ class EqualsAssert extends TestAssert {
     final firstValue = getFieldValue(fields[0]);
     final secondValue = getFieldValue(fields[1]);
     if (firstValue == secondValue) {
-      callback(Success(_type));
+      callback(AssertSuccess(_type));
     } else {
-      callback(Failure(EqualsError(firstValue, secondValue)));
+      callback(AssertFailure(_type, EqualsError(firstValue, secondValue)));
     }
   }
 }

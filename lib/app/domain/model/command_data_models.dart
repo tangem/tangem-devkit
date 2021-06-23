@@ -36,13 +36,22 @@ class SignModel extends CommandDataModel {
 class PersonalizationModel extends CommandDataModel {
   final PersonalizationConfig config;
   final Issuer issuer;
+  final Manufacturer manufacturer;
+  final Acquirer? acquirer;
 
-  PersonalizationModel(this.config, this.issuer) : super(TangemSdk.cPersonalize);
+  PersonalizationModel(
+    this.config,
+    this.issuer,
+    this.manufacturer, [
+    this.acquirer,
+  ]) : super(TangemSdk.cPersonalize);
 
   factory PersonalizationModel.fromJson(Map<String, dynamic> json) {
     final model = PersonalizationModel(
       PersonalizationConfig.fromJson(json["config"]),
       Issuer.fromJson(json["issuer"]),
+      Manufacturer.fromJson(json["manufacturer"]),
+      Acquirer.fromJson(json["acquirer"]),
     );
     return CommandDataModel.attachBaseData(model, json);
   }

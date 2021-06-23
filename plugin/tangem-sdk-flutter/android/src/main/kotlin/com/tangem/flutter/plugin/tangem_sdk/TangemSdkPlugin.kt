@@ -10,7 +10,6 @@ import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.tangem.*
 import com.tangem.commands.common.card.FirmwareType
 import com.tangem.commands.common.jsonConverter.MoshiJsonConverter
-import com.tangem.commands.common.jsonRpc.JSONRPCResponse
 import com.tangem.commands.file.DataToWrite
 import com.tangem.commands.file.FileSettingsChange
 import com.tangem.common.CardValuesDbStorage
@@ -96,6 +95,9 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     replyAlreadySubmit = false
     when (call.method) {
+      "startSession" -> startSession(call, result)
+      "stopSession" -> stopSession(call, result)
+      "runJSONRPCRequest" -> runJSONRPCRequest(call, result)
       "allowsOnlyDebugCards" -> allowsOnlyDebugCards(call, result)
       "scanCard" -> scanCard(call, result)
       "sign" -> sign(call, result)
@@ -117,11 +119,105 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "deleteFiles" -> deleteFiles(call, result)
       "changeFilesSettings" -> changeFilesSettings(call, result)
       "prepareHashes" -> prepareHashes(call, result)
-      "startSession" -> startSession(call, result)
-      "stopSession" -> stopSession(call, result)
-      "JSONRPCRequest" -> runJSONRPCRequest(call, result)
       "getPlatformVersion" -> result.success("Android ${android.os.Build.VERSION.RELEASE}")
       else -> result.notImplemented()
+    }
+  }
+
+  private fun startSession(call: MethodCall, result: Result) {
+    try {
+      if (cardSession != null && cardSession !!.state == CardSessionState.Active)
+        throw PluginException("The CardSession has already started")
+
+      sdk.startSession(
+          call.extractOptional("cardId"),
+          call.extractOptional("initialMessage"),
+      ) { session, error ->
+        if (error == null) {
+          cardSession = session
+          handleResult(result, CompletionResult.Success<Any>(true))
+        } else {
+          cardSession = null
+          handleResult(result, CompletionResult.Failure<Any>(error))
+        }
+      }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun stopSession(call: MethodCall, result: Result) {
+    try {
+      val session = cardSession ?: throw PluginException("Session not started")
+      session.stop()
+      cardSession = null
+      handleResult(result, CompletionResult.Success<Any>(true))
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun runJSONRPCRequest(call: MethodCall, result: Result) {
+    try {
+      replyAlreadySubmit = false
+      val stringOfJSONRPCRequest = call.extract<String>("JSONRPCRequest")
+
+      val callback = callbackWithResult@{ response: String ->
+        if (! replyAlreadySubmit) {
+          replyAlreadySubmit = true
+          handler.post { result.success(response) }
+        }
+      }
+
+      if (cardSession == null) {
+        sdk.startSessionWithJsonRequest(
+            stringOfJSONRPCRequest,
+            call.extractOptional("cardId"),
+            call.extractOptional("initialMessage"),
+            callback
+        )
+      } else {
+        cardSession !!.run(stringOfJSONRPCRequest, callback)
+      }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun handleResult(result: Result, completionResult: CompletionResult<*>) {
+    if (replyAlreadySubmit) return
+    replyAlreadySubmit = true
+
+    when (completionResult) {
+      is CompletionResult.Success -> {
+        handler.post { result.success(converter.toJson(completionResult.data)) }
+      }
+      is CompletionResult.Failure -> {
+        val error = completionResult.error
+        val errorMessage = if (error is TangemSdkError) {
+          val activity = wActivity.get()
+          if (activity == null) error.customMessage else error.localizedDescription(activity)
+        } else {
+          error.customMessage
+        }
+        val pluginError = PluginError(error.code, errorMessage)
+        handler.post {
+          result.error("${error.code}", errorMessage, converter.toJson(pluginError))
+        }
+      }
+    }
+  }
+
+  private fun handleException(result: Result, ex: Exception) {
+    if (replyAlreadySubmit) return
+    replyAlreadySubmit = true
+
+    val exception = ex as? PluginException ?: TangemSdkException(ex)
+    handler.post {
+      val code = 1000
+      val localizedDescription: String = exception.toString()
+      result.error("$code", localizedDescription,
+          converter.toJson(PluginError(code, localizedDescription)))
     }
   }
 
@@ -151,10 +247,10 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private fun personalize(call: MethodCall, result: Result) {
     try {
       sdk.personalize(
-          call.extract("cardConfig"),
+          call.extract("config"),
           call.extract("issuer"),
           call.extract("manufacturer"),
-          call.extract("acquirer"),
+          call.extractOptional("acquirer"),
           call.extractOptional("initialMessage")
       ) { handleResult(result, it) }
     } catch (ex: Exception) {
@@ -391,43 +487,6 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
   }
 
-  private fun handleResult(result: Result, completionResult: CompletionResult<*>) {
-    if (replyAlreadySubmit) return
-    replyAlreadySubmit = true
-
-    when (completionResult) {
-      is CompletionResult.Success -> {
-        handler.post { result.success(converter.toJson(completionResult.data)) }
-      }
-      is CompletionResult.Failure -> {
-        val error = completionResult.error
-        val errorMessage = if (error is TangemSdkError) {
-          val activity = wActivity.get()
-          if (activity == null) error.customMessage else error.localizedDescription(activity)
-        } else {
-          error.customMessage
-        }
-        val pluginError = PluginError(error.code, errorMessage)
-        handler.post {
-          result.error("${error.code}", errorMessage, converter.toJson(pluginError))
-        }
-      }
-    }
-  }
-
-  private fun handleException(result: Result, ex: Exception) {
-    if (replyAlreadySubmit) return
-    replyAlreadySubmit = true
-
-    val exception = ex as? PluginException ?: TangemSdkException(ex)
-    handler.post {
-      val code = 1000
-      val localizedDescription: String = exception.toString()
-      result.error("$code", localizedDescription,
-          converter.toJson(PluginError(code, localizedDescription)))
-    }
-  }
-
   @Throws(PluginException::class)
   inline fun <reified T> MethodCall.extract(name: String): T {
     return try {
@@ -472,73 +531,6 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     data class Write(val files: List<DataToWrite>)
     data class Delete(val indices: List<Int>?)
     data class ChangeSettings(val changes: List<FileSettingsChange>)
-  }
-
-  private fun startSession(call: MethodCall, result: Result) {
-    try {
-      if (cardSession != null && cardSession !!.state == CardSessionState.Active)
-        throw PluginException("The CardSession has already started")
-
-      sdk.startSession(
-          call.extractOptional("cardId"),
-          call.extractOptional("initialMessage"),
-      ) { session, error ->
-        if (error == null) {
-          cardSession = session
-          handleResult(result, CompletionResult.Success<Any>(true))
-        } else {
-          cardSession = null
-          handleResult(result, CompletionResult.Failure<Any>(error))
-        }
-      }
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
-  }
-
-  private fun stopSession(call: MethodCall, result: Result) {
-    try {
-      val session = cardSession ?: throw PluginException("Session not started")
-      session.stop()
-      cardSession = null
-      handleResult(result, CompletionResult.Success<Any>(true))
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
-  }
-
-  private fun runJSONRPCRequest(call: MethodCall, result: Result) {
-    try {
-      val stringOfJSONRPCRequest = call.extract<String>("JSONRPCRequest")
-
-      val callback = callbackWithResult@{ response: String ->
-        if (replyAlreadySubmit) return@callbackWithResult
-
-        replyAlreadySubmit = true
-        val jsonRpcResponse = converter.fromJson<JSONRPCResponse>(response)
-            ?: throw PluginException("Can't convert the string response to JSONRPCResponse")
-
-        if (jsonRpcResponse.error == null) {
-          handler.post { result.success(response) }
-        } else {
-          val error = jsonRpcResponse.error !!
-          handler.post { result.error("${error.code}", error.message, response) }
-        }
-      }
-
-      if (cardSession == null) {
-        sdk.startSessionWithJsonRequest(
-            stringOfJSONRPCRequest,
-            call.extractOptional("cardId"),
-            call.extractOptional("initialMessage"),
-            callback
-        )
-      } else {
-        cardSession !!.run(stringOfJSONRPCRequest, callback)
-      }
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
   }
 }
 
