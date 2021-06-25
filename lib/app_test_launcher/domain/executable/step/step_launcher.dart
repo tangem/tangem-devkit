@@ -53,10 +53,10 @@ class StepLauncher implements Executable {
   void _fetchVariables() {
     _model.params.clear();
     _model.rawParams.forEach((key, value) {
-      _model.params[key] = VariableService.getValue(_model.name, value);
+      _model.params[key] = VariableService.getStepValue(_model.name, value);
     });
     _model.expectedResult.forEach((key, value) {
-      _model.expectedResult[key] = VariableService.getValue(_model.name, value);
+      _model.expectedResult[key] = VariableService.getStepValue(_model.name, value);
     });
   }
 

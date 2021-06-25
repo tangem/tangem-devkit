@@ -29,7 +29,7 @@ abstract class TestAssert implements Executable {
   void run(OnComplete callback);
 
   dynamic getFieldValue(String pointer) {
-    return VariableService.getValue(parentName, pointer);
+    return VariableService.getStepValue(parentName, pointer);
   }
 }
 
