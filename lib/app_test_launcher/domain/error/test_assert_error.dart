@@ -20,3 +20,11 @@ class EqualsError extends TestAssertError {
   @override
   String get errorMessage => "Fields doesn't match. f1: $firstValue, f2: $secondValue";
 }
+
+class IsNotEmptyError extends TestAssertError {
+  final String fieldName;
+
+  IsNotEmptyError(this.fieldName);
+  @override
+  String get errorMessage => "Field $fieldName is empty";
+}

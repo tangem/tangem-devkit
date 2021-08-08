@@ -52,6 +52,9 @@ class TestLauncher {
       return;
     }
 
+    VariableService.reset();
+    VariableService.registerSetup(test.setup.toJson());
+
     print("");
     print("Test: ${test.setup.name}: Start");
     _prepare(() async {
@@ -75,8 +78,8 @@ class TestLauncher {
     }
   }
 
-  void _runStep(StepModel step, [bool isNewIteration = true]) async{
-    await Future.delayed(Duration(milliseconds: 300));
+  void _runStep(StepModel step, [bool isNewIteration = true]) async {
+    await Future.delayed(Duration(milliseconds: 500));
     if (isNewIteration) {
       _stepTemplate = step.copyWith();
       _stepIterationsLeft = step.iterations ?? defaultIterationsCount;
@@ -113,33 +116,36 @@ class TestLauncher {
         _startNewTest(_testTemplate);
       });
     } else {
+      final failure = result as StepFailure;
       _stopSession(() {
-        _onStepError(result as StepFailure);
-      });
+        _onStepError(failure);
+      }, _extractErrorMessage(failure));
     }
   }
 
   void _prepare(Function onSuccess) {
     print("Test: Prepare");
-    VariableService.reset();
     _stepFailure = null;
     _rePersonalize(onSuccess);
   }
 
   void _rePersonalize(Function onSuccess) {
-    final depersonalize = JSONRPCRequest(TangemSdk.getJsonRpcMethod(TangemSdk.cDepersonalize)!, {});
-    final personalize = JSONRPCRequest(
-      TangemSdk.getJsonRpcMethod(TangemSdk.cPersonalize)!,
-      _jsonTest.setup.personalizationConfig,
-    );
+    final config = _jsonTest.setup.personalizationConfig;
+    final personalizationRequest = JSONRPCRequest(TangemSdk.getJsonRpcMethod(TangemSdk.cPersonalize)!, config);
+    final onPersonalizeCallback = Callback((result) {
+      print("Test: Prepare: PERSONALIZE complete");
+      _stopSession(onSuccess);
+    }, _onSdkError);
+
+    final depersonalizeRequest = JSONRPCRequest(TangemSdk.getJsonRpcMethod(TangemSdk.cDepersonalize)!, {});
+    final onDepersonalizeCallback = Callback((result) {
+      print("Test: Prepare: DEPERSONALIZE complete");
+      TangemSdk.runJSONRPCRequest(onPersonalizeCallback, personalizationRequest);
+    }, _onSdkError);
 
     _startSession(() {
       print("Test: Prepare: Run: DE/PERSONALIZE");
-      TangemSdk.runJSONRPCRequest(
-          Callback((_) {
-            TangemSdk.runJSONRPCRequest(Callback((_) => _stopSession(onSuccess), _onSdkError), personalize);
-          }, _onSdkError),
-          depersonalize);
+      TangemSdk.runJSONRPCRequest(onDepersonalizeCallback, depersonalizeRequest);
     });
   }
 
@@ -153,35 +159,44 @@ class TestLauncher {
 
   _onStepError(StepFailure failure) {
     _stepFailure = failure;
+    final message = _extractErrorMessage(failure);
+    print(message);
+    print(jsonEncode(failure.error));
+  }
+
+  String _extractErrorMessage(StepFailure failure) {
     if (failure.error is TangemSdkPluginWrappedError) {
+      return "TangemSdkPluginWrappedError: ${failure.error.errorMessage}";
     } else if (failure.error is TestAssertError) {
-      print("Assert failure: ${failure.error.runtimeType.toString()}");
-      print(jsonEncode(failure.error));
+      return "${failure.error.runtimeType.toString()}. ${failure.error.errorMessage}";
     } else if (failure.error is TestStepError) {
-      print("Step failure: ${failure.error.runtimeType.toString()}");
-      print(jsonEncode(failure.error));
+      return "Step failure: ${failure.error.runtimeType.toString()}";
     } else {
-      print("Some undefined failure: ${failure.error.runtimeType.toString()}");
-      print(jsonEncode(failure.error));
+      return "Some undefined failure: ${failure.error.runtimeType.toString()}";
     }
   }
 
   void _startSession(Function onSuccess) {
     // print("Starting session...");
-    TangemSdk.startSession(Callback((success) {
-      print("Session started +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-      onSuccess();
-    }, _onSdkError), {
-      TangemSdk.initialMessage: _jsonTest.setup.sdkConfig[TangemSdk.initialMessage],
-      TangemSdk.cardId: _jsonTest.setup.sdkConfig[TangemSdk.cardId],
-    });
+    TangemSdk.startSession(
+        Callback((success) {
+          print("Session started +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+          onSuccess();
+        }, _onSdkError),
+        {
+          TangemSdk.initialMessage: _jsonTest.setup.sdkConfig[TangemSdk.initialMessage],
+          TangemSdk.cardId: _jsonTest.setup.sdkConfig[TangemSdk.cardId],
+        });
   }
 
-  void _stopSession([Function? onSuccess]) {
+  //TODO: останавливать сессию только при ошибке ассертов
+  void _stopSession([Function? onSuccess, String? error]) {
     // print("Stopping session...");
-    TangemSdk.stopSession(Callback((success) {
-      print("Session stopped ---------------------------------------------------------------------");
-      onSuccess?.call();
-    }, _onSdkError));
+    TangemSdk.stopSession(
+        Callback((success) {
+          print("Session stopped ---------------------------------------------------------------------");
+          onSuccess?.call();
+        }, _onSdkError),
+        error != null ? {"error": error} : {});
   }
 }

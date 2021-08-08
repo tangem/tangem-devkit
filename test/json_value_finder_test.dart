@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:devkit/app_test_launcher/domain/JsonValueFinder.dart';
+import 'package:devkit/app_test_launcher/domain/json_value_finder.dart';
 import 'package:test/test.dart';
 
 import 'assets.dart';

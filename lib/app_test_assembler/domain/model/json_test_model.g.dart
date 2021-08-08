@@ -67,7 +67,7 @@ Map<String, dynamic> _$TestStepToJson(StepModel instance) => <String, dynamic>{
 AssertModel _$TestAssertFromJson(Map<String, dynamic> json) {
   return AssertModel(
     json['type'] as String,
-    (json['fields'] as List<dynamic>).map((e) => e as String).toList(),
+    (json['fields'] == null ? null : (json['fields'] as List<dynamic>).map((e) => e).toList()),
   );
 }
 

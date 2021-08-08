@@ -5,6 +5,7 @@ import 'package:devkit/app/domain/actions_bloc/personalize/personalization_value
 import 'package:devkit/app/domain/model/command_data_models.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/commons/common_abstracts.dart';
+import 'package:devkit/main.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -368,8 +369,7 @@ class SignBloc extends ActionBloc<SignResponse> {
     addSubscription(bsWalletPublicKey.stream.listen((event) => _walletPublicKey = event));
     bsDataForHashing.add("Data used for hashing");
     //TODO: before trying to sign, must read the card and fetch walletPubKey (v.<4) -  by 0 index, (v.>=4) - by using slider
-    bsWalletPublicKey.add(
-        "04B2A74E1E502A3E5C4B03B53412A5891F270752543D77B5FE685F3125196610E43C880E29ADA29B2D9641FEAB37A699355863F920DE98937B426B1F303A4752C5");
+    bsWalletPublicKey.add(gWalletPublicKey);
   }
 
   @override

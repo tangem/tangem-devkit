@@ -22,28 +22,28 @@ void prepareTestForVariableService() {
 }
 
 void findInStep() {
-  dynamic resultValue = VariableService.getStepValue(_stepName1, "{expectedResult.cardId}");
+  dynamic resultValue = VariableService.getValue(_stepName1, "{expectedResult.cardId}");
   expect(resultValue, "BB03000000000004");
-  resultValue = VariableService.getStepValue(_stepName1, "{#$_stepName1.expectedResult.cardId}");
+  resultValue = VariableService.getValue(_stepName1, "{#$_stepName1.expectedResult.cardId}");
   expect(resultValue, "BB03000000000004");
-  resultValue = VariableService.getStepValue(_stepName2, "{#$_stepName2.expectedResult.cardId}");
+  resultValue = VariableService.getValue(_stepName2, "{#$_stepName2.expectedResult.cardId}");
   expect(resultValue, "BB03000000000005");
 }
 
 void findFromAnotherStep() {
-  dynamic resultValue = VariableService.getStepValue("", "{#$_stepName1.expectedResult.cardId}");
+  dynamic resultValue = VariableService.getValue("", "{#$_stepName1.expectedResult.cardId}");
   expect(resultValue, "BB03000000000004");
-  resultValue = VariableService.getStepValue("any", "{#$_stepName1.expectedResult.cardId}");
+  resultValue = VariableService.getValue("any", "{#$_stepName1.expectedResult.cardId}");
   expect(resultValue, "BB03000000000004");
-  resultValue = VariableService.getStepValue(_stepName2, "{#$_stepName1.expectedResult.cardId}");
+  resultValue = VariableService.getValue(_stepName2, "{#$_stepName1.expectedResult.cardId}");
   expect(resultValue, "BB03000000000004");
 }
 
 void findByParent() {
   // no access to the #parent key from the empty step
-  dynamic resultValue = VariableService.getStepValue(_stepName1, "{#parent.expectedResult.cardId}");
+  dynamic resultValue = VariableService.getValue(_stepName1, "{#parent.expectedResult.cardId}");
   expect(resultValue, "BB03000000000004");
-  resultValue = VariableService.getStepValue("", "{#parent.expectedResult.cardId}");
+  resultValue = VariableService.getValue("", "{#parent.expectedResult.cardId}");
   expect(resultValue, null);
 }
 

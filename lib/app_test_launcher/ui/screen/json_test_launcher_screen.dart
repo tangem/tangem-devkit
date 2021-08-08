@@ -114,7 +114,12 @@ class JsonTestLauncherBloc extends BaseBloc {
   }
 
   void launch(JsonTest jsonTest) {
-    final launcher = TestLauncher(jsonTest, AssertsFactory());
+    final assertsFactory = AssertsFactory().apply((it) {
+      it.registerAssert(TestAssert.equals, () => EqualsAssert());
+      it.registerAssert(TestAssert.isNotEmpty, () => IsNotEmptyAssert());
+      it.registerAssert(TestAssert.success, () => SuccessAssert());
+    });
+    final launcher = TestLauncher(jsonTest, assertsFactory);
     launcher.onTestComplete = (result) {
       if (result is Success) {
         final message = result.name ?? "Unknown test";

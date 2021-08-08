@@ -53,10 +53,9 @@ class StepLauncher implements Executable {
   void _fetchVariables() {
     _model.params.clear();
     _model.rawParams.forEach((key, value) {
-      _model.params[key] = VariableService.getStepValue(_model.name, value);
-    });
-    _model.expectedResult.forEach((key, value) {
-      _model.expectedResult[key] = VariableService.getStepValue(_model.name, value);
+      //TODO: добавить раскрытие переменных во вложенных структурах
+      final extractedValue = VariableService.getValue(_model.name, value);
+      _model.params[key] = extractedValue;
     });
   }
 
@@ -67,7 +66,7 @@ class StepLauncher implements Executable {
     }
 
     final assertsQueue = Queue<TestAssert>();
-    _model.asserts.forEach((element) {
+    for (final element in _model.asserts){
       final testAssert = _assertsFactory.getAssert(element.type);
       if (testAssert == null) {
         callback(StepFailure(_model.name, AssertNotRegisteredError(element.type)));
@@ -76,7 +75,7 @@ class StepLauncher implements Executable {
 
       testAssert.init(_model.name, element.fields);
       assertsQueue.add(testAssert);
-    });
+    }
 
     AssertsLauncher(assertsQueue).run((result) {
       if (result is Success) {

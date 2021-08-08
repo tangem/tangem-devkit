@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:devkit/app/domain/model/command_data_models.dart';
 import 'package:devkit/commons/common_abstracts.dart';
+import 'package:devkit/main.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
@@ -47,7 +48,20 @@ abstract class ActionBloc<T> extends BaseBloc {
   }
 
   invokeAction() async {
-    createCommandData((commandData) => _prepareCommandAndRun(commandData, callback), sendSnackbarMessage);
+    createCommandData((commandData) {
+      if (commandData.type == TangemSdk.cCreateWallet) {
+        _prepareCommandAndRun(
+            commandData,
+            Callback((result) {
+              if (result is CreateWalletResponse) {
+                gWalletPublicKey = result.walletPublicKey;
+              }
+              callback.onSuccess(result);
+            }, callback.onError));
+      } else {
+        _prepareCommandAndRun(commandData, callback);
+      }
+    }, sendSnackbarMessage);
   }
 
   _prepareCommandAndRun(CommandDataModel commandData, Callback callback) async {

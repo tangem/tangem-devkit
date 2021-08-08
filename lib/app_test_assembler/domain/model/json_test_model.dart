@@ -86,7 +86,7 @@ class TestSetup {
 class StepModel {
   final String name;
   final String method;
-  final Map<String, dynamic> params;
+  final Map<String, dynamic> params = {};
   final Map<String, dynamic> expectedResult;
   final List<AssertModel> asserts;
   final String actionType;
@@ -99,14 +99,12 @@ class StepModel {
   StepModel(
     this.name,
     this.method,
-    this.params,
+    Map<String, dynamic> params,
     this.expectedResult,
     this.asserts,
     this.actionType,
     this.iterations,
-  ) {
-    this._rawParams.addAll(params);
-  }
+  ) : this._rawParams = params;
 
   factory StepModel.getDefault() {
     return StepModel("stepName", "methodName", {}, {}, [], "NFC_SESSION_RUNNABLE", 1);
@@ -132,7 +130,7 @@ class StepModel {
     return StepModel(
       name ?? this.name,
       method ?? this.method,
-      params ?? this.params,
+      params ?? this._rawParams,
       expectedResult ?? this.expectedResult,
       asserts ?? this.asserts,
       actionType ?? this.actionType,
@@ -144,7 +142,7 @@ class StepModel {
 @JsonSerializable()
 class AssertModel {
   final String type;
-  final List<String> fields;
+  final List<dynamic>? fields;
 
   AssertModel(this.type, this.fields);
 

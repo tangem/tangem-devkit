@@ -8,3 +8,5 @@ void main() async {
   final launcher = App.isDebug ? DebugLauncher() : ReleaseLauncher();
   await launcher.launch();
 }
+
+String gWalletPublicKey = "";

@@ -17,6 +17,8 @@ class TangemSdkPluginWrappedError extends TestFrameworkError {
 extension OnJSONRPCError on JSONRPCError {
   bool isInterruptTest() {
     switch (code) {
+      case -32000:
+        return data != null && data!.contains("code: 50002");
       case 1000:
         return true;
       case 50002:
