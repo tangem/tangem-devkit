@@ -11,106 +11,57 @@ abstract class JSONRPC {
 
   JSONRPC(this.id, this.jsonrpc);
 
+  static final _methods = {
+    TangemSdk.cScanCard: "SCAN",
+    TangemSdk.cPreflightRead: "PREFLIGHT_READ",
+    TangemSdk.cSignHash: "SIGN_HASH",
+    TangemSdk.cSignHashes: "SIGN_HASHES",
+    TangemSdk.cPersonalize: "PERSONALIZE",
+    TangemSdk.cDepersonalize: "DEPERSONALIZE",
+    TangemSdk.cCreateWallet: "CREATE_WALLET",
+    TangemSdk.cPurgeWallet: "PURGE_WALLET",
+    TangemSdk.cReadIssuerData: TangemSdk.cReadIssuerData,
+    TangemSdk.cWriteIssuerData: TangemSdk.cWriteIssuerData,
+    TangemSdk.cReadIssuerExData: TangemSdk.cReadIssuerExData,
+    TangemSdk.cWriteIssuerExData: TangemSdk.cWriteIssuerExData,
+    TangemSdk.cReadUserData: TangemSdk.cReadUserData,
+    TangemSdk.cWriteUserData: TangemSdk.cWriteUserData,
+    TangemSdk.cWriteUserProtectedData: TangemSdk.cWriteUserProtectedData,
+    TangemSdk.cSetAccessCode: "SET_ACCESSCODE",
+    TangemSdk.cSetPasscode: "SET_PASSCODE",
+    TangemSdk.cResetUserCodes: "RESET_USERCODES",
+    TangemSdk.cWriteFiles: TangemSdk.cWriteFiles,
+    TangemSdk.cReadFiles: TangemSdk.cReadFiles,
+    TangemSdk.cDeleteFiles: TangemSdk.cDeleteFiles,
+    TangemSdk.cChangeFilesSettings: TangemSdk.cChangeFilesSettings,
+    TangemSdk.cPrepareHashes: TangemSdk.cPrepareHashes,
+  };
+
   static String? getJsonRpcMethod(String commandType) {
-    switch (commandType) {
-      case TangemSdk.cScanCard:
-        {
-          return TangemSdk.cScanCard;
-        }
-      case TangemSdk.cSign:
-        {
-          return TangemSdk.cSign;
-        }
-      case TangemSdk.cPersonalize:
-        {
-          return TangemSdk.cPersonalize;
-        }
-      case TangemSdk.cDepersonalize:
-        {
-          return TangemSdk.cDepersonalize;
-        }
-      case TangemSdk.cCreateWallet:
-        {
-          return TangemSdk.cCreateWallet;
-        }
-      case TangemSdk.cPurgeWallet:
-        {
-          return TangemSdk.cPurgeWallet;
-        }
-      case TangemSdk.cReadIssuerData:
-        {
-          return TangemSdk.cReadIssuerData;
-        }
-      case TangemSdk.cWriteIssuerData:
-        {
-          return TangemSdk.cWriteIssuerData;
-        }
-      case TangemSdk.cReadIssuerExData:
-        {
-          return TangemSdk.cReadIssuerExData;
-        }
-      case TangemSdk.cWriteIssuerExData:
-        {
-          return TangemSdk.cWriteIssuerExData;
-        }
-      case TangemSdk.cReadUserData:
-        {
-          return TangemSdk.cReadUserData;
-        }
-      case TangemSdk.cWriteUserData:
-        {
-          return TangemSdk.cWriteUserData;
-        }
-      case TangemSdk.cWriteUserProtectedData:
-        {
-          return TangemSdk.cWriteUserProtectedData;
-        }
-      case TangemSdk.cSetPin1:
-        {
-          return TangemSdk.cSetPin1;
-        }
-      case TangemSdk.cSetPin2:
-        {
-          return TangemSdk.cSetPin2;
-        }
-      case TangemSdk.cWriteFiles:
-        {
-          return TangemSdk.cWriteFiles;
-        }
-      case TangemSdk.cReadFiles:
-        {
-          return TangemSdk.cReadFiles;
-        }
-      case TangemSdk.cDeleteFiles:
-        {
-          return TangemSdk.cDeleteFiles;
-        }
-      case TangemSdk.cChangeFilesSettings:
-        {
-          return TangemSdk.cChangeFilesSettings;
-        }
-      case TangemSdk.cPrepareHashes:
-        {
-          return TangemSdk.cPrepareHashes;
-        }
-    }
-    return null;
+    return _methods[commandType];
   }
 }
 
 @JsonSerializable()
 class JSONRPCRequest extends JSONRPC {
   final String method;
-  final Map<String, dynamic> parameters;
+  final Map<String, dynamic> params;
 
-  JSONRPCRequest(this.method, this.parameters, [dynamic id, String jsonrpc = "2.0"]) : super(id, jsonrpc);
+  JSONRPCRequest(this.method, this.params, [dynamic id = 1, String jsonrpc = "2.0"]) : super(id, jsonrpc);
 
   Map<String, dynamic> toJson() => _$JSONRPCRequestToJson(this);
 
   factory JSONRPCRequest.fromJson(Map<String, dynamic> json) => _$JSONRPCRequestFromJson(json);
 
   factory JSONRPCRequest.fromCommandDataJson(Map<String, dynamic> commandDataJson) {
-    final method = JSONRPC.getJsonRpcMethod(commandDataJson.remove(TangemSdk.commandType)) ?? "";
+    final commandType = commandDataJson.remove(TangemSdk.commandType);
+    final method = JSONRPC.getJsonRpcMethod(commandType);
+    if (method == null) {
+      throw UnimplementedError("JSONRPCRequest not implemented yet for the command: $commandType");
+    }
+
+    commandDataJson.remove(TangemSdk.cardId);
+    commandDataJson.remove(TangemSdk.initialMessage);
     return JSONRPCRequest(method, commandDataJson);
   }
 }

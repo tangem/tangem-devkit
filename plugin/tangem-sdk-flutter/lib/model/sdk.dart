@@ -6,51 +6,77 @@ import 'masks/signing_method_mask.dart';
 part 'sdk.g.dart';
 
 @JsonSerializable()
-class CardConfigSdk {
-  final String? issuerName;
-  final String? acquirerName;
-  final String? series;
-  final int startNumber;
-  final int count;
-  final String pin;
-  final String pin2;
-  final String pin3;
-  final String hexCrExKey;
-  final String cvc;
-  final int pauseBeforePin2;
-  final bool smartSecurityDelay;
-  final String curveID;
-  final List<String> signingMethods;
-  final int maxSignatures;
-  final bool isReusable;
-  final bool allowSetPIN1;
-  final bool allowSetPIN2;
-  final bool useActivation;
-  final bool useCvc;
-  final bool useNDEF;
-  final bool useDynamicNDEF;
-  final bool useOneCommandAtTime;
-  final bool useBlock;
-  final bool allowSelectBlockchain;
-  final bool prohibitPurgeWallet;
-  final bool allowUnencrypted;
-  final bool allowFastEncryption;
-  final bool protectIssuerDataAgainstReplay;
-  final bool prohibitDefaultPIN1;
-  final bool disablePrecomputedNDEF;
-  final bool skipSecurityDelayIfValidatedByIssuer;
-  final bool skipCheckPIN2CVCIfValidatedByIssuer;
-  final bool skipSecurityDelayIfValidatedByLinkedTerminal;
-  final bool restrictOverwriteIssuerExtraData;
-  final bool requireTerminalTxSignature;
-  final bool requireTerminalCertSignature;
-  final bool checkPIN3OnCard;
-  final bool createWallet;
-  final int walletsCount;
-  final CardData cardData;
-  final List<NdefRecordSdk> ndefRecords;
+class PersonalizationCardConfig {
+  bool releaseVersion;
+  String issuerName;
+  String? series;
+  int startNumber;
+  int count;
+  String numberFormat;
+  @JsonKey(name: "PIN")
+  String pin;
+  @JsonKey(name: "PIN2")
+  String pin2;
+  @JsonKey(name: "PIN3")
+  String? pin3;
+  String? hexCrExKey;
+  @JsonKey(name: "CVC")
+  String cvc;
+  @JsonKey(name: "pauseBeforePIN2")
+  int pauseBeforePin2;
+  bool smartSecurityDelay;
+  String curveID;
+  @JsonKey(name: "SigningMethod")
+  List<String> signingMethod;
+  @JsonKey(name: "MaxSignatures")
+  int? maxSignatures;
+  @JsonKey(name: "allowSwapPIN")
+  bool allowSetPIN1;
+  @JsonKey(name: "allowSwapPIN2")
+  bool allowSetPIN2;
+  bool useActivation;
+  @JsonKey(name: "useCVC")
+  bool useCvc;
+  @JsonKey(name: "useNDEF")
+  bool useNDEF;
+  bool? useDynamicNDEF;
+  bool? useOneCommandAtTime;
+  bool useBlock;
+  bool allowSelectBlockchain;
+  @JsonKey(name: "forbidPurgeWallet")
+  bool prohibitPurgeWallet;
+  @JsonKey(name: "protocolAllowUnencrypted")
+  bool allowUnencrypted;
+  @JsonKey(name: "protocolAllowStaticEncryption")
+  bool allowFastEncryption;
+  bool? protectIssuerDataAgainstReplay;
+  @JsonKey(name: "forbidDefaultPIN")
+  bool prohibitDefaultPIN1;
+  bool? disablePrecomputedNDEF;
+  bool skipSecurityDelayIfValidatedByIssuer;
+  @JsonKey(name: "skipCheckPIN2andCVCIfValidatedByIssuer")
+  bool skipCheckPIN2CVCIfValidatedByIssuer;
+  bool skipSecurityDelayIfValidatedByLinkedTerminal;
+  bool? restrictOverwriteIssuerDataEx;
+  @JsonKey(includeIfNull: false)
+  bool? disableIssuerData;
+  @JsonKey(includeIfNull: false)
+  bool? disableUserData;
+  @JsonKey(includeIfNull: false)
+  bool? disableFiles;
+  int createWallet;
+  CardConfigData cardData;
+  @JsonKey(name: "NDEF")
+  List<NdefRecordSdk> ndefRecords;
+  int? walletsCount;
 
-  CardConfigSdk(
+  PersonalizationCardConfig(
+    this.releaseVersion,
+    this.issuerName,
+    this.series,
+    this.startNumber,
+    this.count,
+    this.numberFormat,
     this.pin,
     this.pin2,
     this.pin3,
@@ -58,10 +84,9 @@ class CardConfigSdk {
     this.cvc,
     this.pauseBeforePin2,
     this.smartSecurityDelay,
-    String curveID,
-    this.signingMethods,
+    this.curveID,
+    this.signingMethod,
     this.maxSignatures,
-    this.isReusable,
     this.allowSetPIN1,
     this.allowSetPIN2,
     this.useActivation,
@@ -80,63 +105,199 @@ class CardConfigSdk {
     this.skipSecurityDelayIfValidatedByIssuer,
     this.skipCheckPIN2CVCIfValidatedByIssuer,
     this.skipSecurityDelayIfValidatedByLinkedTerminal,
-    this.restrictOverwriteIssuerExtraData,
-    this.requireTerminalTxSignature,
-    this.requireTerminalCertSignature,
-    this.checkPIN3OnCard,
+    this.restrictOverwriteIssuerDataEx,
+    this.disableIssuerData,
+    this.disableUserData,
+    this.disableFiles,
     this.createWallet,
-    this.walletsCount,
     this.cardData,
-    this.ndefRecords, {
-    this.issuerName,
-    this.acquirerName,
-    this.series,
-    this.startNumber = 0,
-    this.count = 0,
-  }) : this.curveID = curveID.capitalize();
+    this.ndefRecords,
+    this.walletsCount,
+  );
 
-  factory CardConfigSdk.fromJson(Map<String, dynamic> json) => _$CardConfigSdkFromJson(json);
+  factory PersonalizationCardConfig.fromJson(Map<String, dynamic> json) => _$PersonalizationCardConfigFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CardConfigSdkToJson(this);
+  Map<String, dynamic> toJson() => _$PersonalizationCardConfigToJson(this);
 }
 
 @JsonSerializable()
-class Issuer {
+class CardConfigData {
+  String? date;
+  String batch;
+  String blockchain;
+  @JsonKey(name: 'product_note', includeIfNull: false)
+  bool? productNote;
+  @JsonKey(name: 'product_tag', includeIfNull: false)
+  bool? productTag;
+  @JsonKey(name: 'product_id_card', includeIfNull: false)
+  bool? productIdCard;
+  @JsonKey(name: 'product_id_issuer', includeIfNull: false)
+  bool? productIdIssuer;
+  @JsonKey(name: 'product_authentication', includeIfNull: false)
+  bool? productAuthentication;
+  @JsonKey(name: 'product_twin_card', includeIfNull: false)
+  bool? productTwin;
+  @JsonKey(name: 'token_symbol', includeIfNull: false)
+  String? tokenSymbol;
+  @JsonKey(name: 'token_contract_address', includeIfNull: false)
+  String? tokenContractAddress;
+  @JsonKey(name: 'token_decimal', includeIfNull: false)
+  int? tokenDecimal;
+
+  CardConfigData(
+    this.date,
+    this.batch,
+    this.blockchain,
+    this.productNote,
+    this.productTag,
+    this.productIdCard,
+    this.productIdIssuer,
+    this.productAuthentication,
+    this.productTwin,
+    this.tokenSymbol,
+    this.tokenContractAddress,
+    this.tokenDecimal,
+  );
+
+  factory CardConfigData.fromJson(Map<String, dynamic> json) => _$CardConfigDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardConfigDataToJson(this);
+}
+
+@JsonSerializable()
+class PersonalizationIssuer {
   final String name;
   final String id;
   final KeyPairHex dataKeyPair;
   final KeyPairHex transactionKeyPair;
 
-  Issuer(this.name, this.id, this.dataKeyPair, this.transactionKeyPair);
+  PersonalizationIssuer(this.name, this.id, this.dataKeyPair, this.transactionKeyPair);
 
-  factory Issuer.fromJson(Map<String, dynamic> json) => _$IssuerFromJson(json);
+  factory PersonalizationIssuer.fromJson(Map<String, dynamic> json) => _$PersonalizationIssuerFromJson(json);
 
-  Map<String, dynamic> toJson() => _$IssuerToJson(this);
+  Map<String, dynamic> toJson() => _$PersonalizationIssuerToJson(this);
 }
 
 @JsonSerializable()
-class Acquirer {
+class PersonalizationAcquirer {
   final String name;
   final String id;
   final KeyPairHex keyPair;
 
-  Acquirer(this.name, this.id, this.keyPair);
+  PersonalizationAcquirer(this.name, this.id, this.keyPair);
 
-  factory Acquirer.fromJson(Map<String, dynamic> json) => _$AcquirerFromJson(json);
+  factory PersonalizationAcquirer.fromJson(Map<String, dynamic> json) => _$PersonalizationAcquirerFromJson(json);
 
-  Map<String, dynamic> toJson() => _$AcquirerToJson(this);
+  Map<String, dynamic> toJson() => _$PersonalizationAcquirerToJson(this);
 }
 
 @JsonSerializable()
-class Manufacturer {
+class PersonalizationManufacturer {
   final String name;
   final KeyPairHex keyPair;
 
-  Manufacturer(this.name, this.keyPair);
+  PersonalizationManufacturer(this.name, this.keyPair);
 
-  factory Manufacturer.fromJson(Map<String, dynamic> json) => _$ManufacturerFromJson(json);
+  factory PersonalizationManufacturer.fromJson(Map<String, dynamic> json) =>
+      _$PersonalizationManufacturerFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ManufacturerToJson(this);
+  Map<String, dynamic> toJson() => _$PersonalizationManufacturerToJson(this);
+}
+
+@JsonSerializable()
+class CardSettings {
+  final int securityDelay;
+  final int maxWalletsCount;
+  final bool isSettingAccessCodeAllowed;
+  final bool isSettingPasscodeAllowed;
+  final bool isRemovingAccessCodeAllowed;
+  final bool isLinkedTerminalEnabled;
+  final List<String> supportedEncryptionModes;
+  final bool isPermanentWallet;
+  final bool isOverwritingIssuerExtraDataRestricted;
+  final List<String>? defaultSigningMethods;
+  final String? defaultCurve;
+  final bool isIssuerDataProtectedAgainstReplay;
+  final bool isSelectBlockchainAllowed;
+
+  CardSettings(
+    this.securityDelay,
+    this.maxWalletsCount,
+    this.isSettingAccessCodeAllowed,
+    this.isSettingPasscodeAllowed,
+    this.isRemovingAccessCodeAllowed,
+    this.isLinkedTerminalEnabled,
+    this.supportedEncryptionModes,
+    this.isPermanentWallet,
+    this.isOverwritingIssuerExtraDataRestricted,
+    this.defaultSigningMethods,
+    this.defaultCurve,
+    this.isIssuerDataProtectedAgainstReplay,
+    this.isSelectBlockchainAllowed,
+  );
+
+  factory CardSettings.fromJson(Map<String, dynamic> json) => _$CardSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardSettingsToJson(this);
+}
+
+@JsonSerializable()
+class CardIssuer {
+  final String name;
+  final String publicKey;
+
+  CardIssuer(this.name, this.publicKey);
+
+  factory CardIssuer.fromJson(Map<String, dynamic> json) => _$CardIssuerFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardIssuerToJson(this);
+}
+
+@JsonSerializable()
+class CardManufacturer {
+  final String name;
+  final String manufactureDate;
+  final String? signature;
+
+  CardManufacturer(this.name, this.manufactureDate, this.signature);
+
+  factory CardManufacturer.fromJson(Map<String, dynamic> json) => _$CardManufacturerFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardManufacturerToJson(this);
+}
+
+@JsonSerializable()
+class CardWallet {
+  final String publicKey;
+  final String curve;
+  final CardWalletSettings settings;
+  final int? totalSignedHashes;
+  final int? remainingSignatures;
+  final int index;
+
+  CardWallet(
+    this.publicKey,
+    this.curve,
+    this.settings,
+    this.totalSignedHashes,
+    this.remainingSignatures,
+    this.index,
+  );
+
+  factory CardWallet.fromJson(Map<String, dynamic> json) => _$CardWalletFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardWalletToJson(this);
+}
+
+@JsonSerializable()
+class CardWalletSettings {
+  final bool isPermanent;
+
+  CardWalletSettings(this.isPermanent);
+
+  factory CardWalletSettings.fromJson(Map<String, dynamic> json) => _$CardWalletSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardWalletSettingsToJson(this);
 }
 
 @JsonSerializable()
@@ -152,31 +313,6 @@ class Message {
 }
 
 @JsonSerializable()
-class CardWallet {
-  final int index;
-  final String status;
-  final String? curve;
-  final List<String>? settingsMask;
-  final String? publicKey;
-  final int? signedHashes;
-  final int? remainingSignatures;
-
-  CardWallet(
-    this.index,
-    this.status, [
-    this.curve,
-    this.settingsMask,
-    this.publicKey,
-    this.signedHashes,
-    this.remainingSignatures,
-  ]);
-
-  factory CardWallet.fromJson(Map<String, dynamic> json) => _$CardWalletFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CardWalletToJson(this);
-}
-
-@JsonSerializable()
 class FirmwareVersion {
   @JsonKey(ignore: true)
   late final int major;
@@ -186,11 +322,12 @@ class FirmwareVersion {
   late final int hotFix;
   @JsonKey(ignore: true)
   late final FirmwareType? type;
-  late final String version;
+  late final String stringValue;
 
-  FirmwareVersion(this.version) {
+  FirmwareVersion(this.stringValue) {
     final code = "\u0000";
-    final versionCleaned = version.endsWith(code) ? version.substring(0, version.length - code.length) : version;
+    final versionCleaned =
+        stringValue.endsWith(code) ? stringValue.substring(0, stringValue.length - code.length) : stringValue;
 
     final cardType = versionCleaned.replaceAll(RegExp("[\\d.]"), "").trim();
     final result = versionCleaned.replaceAll(cardType, "").trim();
@@ -205,7 +342,7 @@ class FirmwareVersion {
   FirmwareVersion.separated(this.major, this.minor, [int? hotFix, FirmwareType? type])
       : this.hotFix = hotFix ?? 0,
         this.type = type,
-        this.version = StringBuffer("$major.$minor").apply((it) {
+        this.stringValue = StringBuffer("$major.$minor").apply((it) {
           if (hotFix != 0) it.write("$hotFix");
           if (type != null) it.write(type.type);
         }).toString();
@@ -214,15 +351,9 @@ class FirmwareVersion {
     return FirmwareType.values.firstWhereOrNull((e) => e.type == type);
   }
 
-  factory FirmwareVersion.fromJson(String version) => _$FirmwareVersionFromJson({"version": version});
+  factory FirmwareVersion.fromJson(Map<String, dynamic> json) => _$FirmwareVersionFromJson(json);
 
   Map<String, dynamic> toJson() => _$FirmwareVersionToJson(this);
-}
-
-enum FirmwareType {
-  Sdk,
-  Release,
-  Sprecial,
 }
 
 extension OnFirmwareType on FirmwareType {
@@ -233,38 +364,6 @@ extension OnFirmwareType on FirmwareType {
   };
 
   String? get type => types[this];
-}
-
-@JsonSerializable()
-class CardData {
-  final String? batchId;
-  final String? blockchainName;
-  final String? issuerName;
-  final String? manufacturerSignature;
-  final String? manufactureDateTime;
-  final List<String>? productMask;
-  @JsonKey(includeIfNull: false)
-  final String? tokenContractAddress;
-  @JsonKey(includeIfNull: false)
-  final String? tokenSymbol;
-  @JsonKey(includeIfNull: false)
-  final int? tokenDecimal;
-
-  CardData(
-    this.batchId,
-    this.blockchainName,
-    this.issuerName,
-    this.manufacturerSignature,
-    this.manufactureDateTime,
-    this.productMask, {
-    this.tokenContractAddress,
-    this.tokenSymbol,
-    this.tokenDecimal,
-  });
-
-  factory CardData.fromJson(Map<String, dynamic> json) => _$CardDataFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CardDataToJson(this);
 }
 
 @JsonSerializable()
@@ -290,8 +389,6 @@ class NdefRecordSdk {
 
   Map<String, dynamic> toJson() => _$NdefRecordSdkToJson(this);
 }
-
-enum PinType { PIN1, PIN2, PIN3 }
 
 abstract class FileDataHex {
   final String data;
@@ -359,8 +456,6 @@ class ChangeFileSettings {
   Map<String, dynamic> toJson() => _$ChangeFileSettingsToJson(this);
 }
 
-enum FileSettings { Public, Private }
-
 extension FileSettingsCode on FileSettings {
   static const codes = {
     FileSettings.Public: 0x0001,
@@ -396,4 +491,33 @@ class WalletConfig {
   factory WalletConfig.fromJson(Map<String, dynamic> json) => _$WalletConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$WalletConfigToJson(this);
+}
+
+enum FirmwareType {
+  Sdk,
+  Release,
+  Sprecial,
+}
+
+enum FileSettings { Public, Private }
+
+enum PinType { ACCESS_CODE, PASSCODE, PIN3 }
+
+enum LinkedTerminalStatus {
+  Current,
+  Other,
+  None,
+}
+
+enum EncryptionMode {
+  None,
+  Fast,
+  Strong,
+}
+
+enum PreflightReadMode {
+  None,
+  ReadCardOnly,
+  ReadWallet,
+  FullCardRead,
 }

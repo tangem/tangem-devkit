@@ -6,21 +6,28 @@ import android.os.Looper
 import androidx.annotation.NonNull
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
-import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.tangem.*
-import com.tangem.commands.common.card.FirmwareType
-import com.tangem.commands.common.jsonConverter.MoshiJsonConverter
-import com.tangem.commands.file.FileData
-import com.tangem.commands.file.FileSettingsChange
-import com.tangem.common.CardValuesDbStorage
-import com.tangem.common.CardValuesStorage
 import com.tangem.common.CompletionResult
+import com.tangem.common.card.FirmwareVersion
+import com.tangem.common.core.CardSession
+import com.tangem.common.core.Config
+import com.tangem.common.core.TangemError
+import com.tangem.common.core.TangemSdkError
 import com.tangem.common.extensions.hexToBytes
+import com.tangem.common.files.DataToWrite
+import com.tangem.common.files.FileDataProtectedByPasscode
+import com.tangem.common.files.FileDataProtectedBySignature
+import com.tangem.common.files.FileSettingsChange
+import com.tangem.common.json.MoshiJsonConverter
+import com.tangem.common.services.secure.SecureStorage
+import com.tangem.operations.PreflightReadMode
+import com.tangem.operations.PreflightReadTask
 import com.tangem.tangem_sdk_new.DefaultSessionViewDelegate
 import com.tangem.tangem_sdk_new.NfcLifecycleObserver
-import com.tangem.tangem_sdk_new.TerminalKeysStorage
+import com.tangem.tangem_sdk_new.extensions.createLogger
 import com.tangem.tangem_sdk_new.extensions.localizedDescription
 import com.tangem.tangem_sdk_new.nfc.NfcManager
+import com.tangem.tangem_sdk_new.storage.create
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -39,6 +46,8 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private lateinit var wActivity: WeakReference<Activity>
 
   private lateinit var sdk: TangemSdk
+  private var cardSession: CardSession? = null
+
   private var replyAlreadySubmit = false
 
   override fun onAttachedToActivity(pluginBinding: ActivityPluginBinding) {
@@ -46,13 +55,17 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     wActivity = WeakReference(activity)
 
     val nfcManager = createNfcManager(pluginBinding)
+    val config = Config().apply {
+      linkedTerminal = false
+      filter.allowedCardTypes = listOf(FirmwareVersion.FirmwareType.Sdk)
+    }
     sdk = TangemSdk(
         nfcManager.reader,
         createViewDelegate(activity, nfcManager),
-        Config(cardFilter = CardFilter(EnumSet.of(FirmwareType.Sdk))),
-        createValueStorage(activity),
-        TerminalKeysStorage(activity.application)
+        SecureStorage.create(activity),
+        config,
     )
+    Log.addLogger(TangemSdk.createLogger())
   }
 
   private fun createNfcManager(pluginBinding: ActivityPluginBinding): NfcManager {
@@ -66,10 +79,6 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private fun createViewDelegate(activity: Activity, nfcManager: NfcManager): SessionViewDelegate =
       DefaultSessionViewDelegate(nfcManager, nfcManager.reader).apply { this.activity = activity }
 
-  private fun createValueStorage(activity: Activity): CardValuesStorage = CardValuesDbStorage(
-      AndroidSqliteDriver(Database.Schema, activity.applicationContext, "flutter_cards.db")
-  )
-
   override fun onDetachedFromActivity() {
   }
 
@@ -82,8 +91,9 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    val channel = MethodChannel(flutterPluginBinding.flutterEngine.dartExecutor, "tangemSdk")
-    channel.setMethodCallHandler(this)
+    val messenger = flutterPluginBinding.binaryMessenger
+    MethodChannel(messenger, "tangemSdk").setMethodCallHandler(this)
+    MethodChannel(messenger, "tangemSdk_JSONRPC").setMethodCallHandler(this)
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -92,11 +102,12 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     replyAlreadySubmit = false
     when (call.method) {
+      "startSession" -> startSession(call, result)
+      "stopSession" -> stopSession(call, result)
+      "runJSONRPCRequest" -> runJSONRPCRequest(call, result)
       "allowsOnlyDebugCards" -> allowsOnlyDebugCards(call, result)
-      "scanCard" -> scanCard(call, result)
-      "sign" -> sign(call, result)
-      "personalize" -> personalize(call, result)
-      "depersonalize" -> depersonalize(call, result)
+      "loadCardInfo" -> loadCardInfo(call, result)
+      "attestCard" -> attestCard(call, result)
       "readIssuerData" -> readIssuerData(call, result)
       "writeIssuerData" -> writeIssuerData(call, result)
       "readIssuerExData" -> readIssuerExtraData(call, result)
@@ -104,10 +115,6 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       "readUserData" -> readUserData(call, result)
       "writeUserData" -> writeUserData(call, result)
       "writeUserProtectedData" -> writeUserProtectedData(call, result)
-      "createWallet" -> createWallet(call, result)
-      "purgeWallet" -> purgeWallet(call, result)
-      "setPin1" -> setPin1(call, result)
-      "setPin2" -> setPin2(call, result)
       "writeFiles" -> writeFiles(call, result)
       "readFiles" -> readFiles(call, result)
       "deleteFiles" -> deleteFiles(call, result)
@@ -118,72 +125,131 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
   }
 
-  private fun scanCard(call: MethodCall, result: Result) {
+  private fun startSession(call: MethodCall, result: Result) {
     try {
-      sdk.scanCard(
-          call.extractOptional("initialMessage")
-      ) { handleResult(result, it) }
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
-  }
+      if (cardSession != null && cardSession !!.state == CardSession.CardSessionState.Active)
+        throw PluginException("The CardSession has already started")
 
-  private fun sign(call: MethodCall, result: Result) {
-    try {
-      sdk.sign(
-          call.extract("hashes") as Array<ByteArray>,
-          call.extract("walletPublicKey"),
+      sdk.startSession(
           call.extractOptional("cardId"),
-          call.extractOptional("initialMessage")
+          call.extractOptional("initialMessage"),
+      ) { session, error ->
+        if (error == null) {
+          cardSession = session
+          handleResult(result, CompletionResult.Success<Any>(true))
+        } else {
+          cardSession = null
+          handleResult(result, CompletionResult.Failure<Any>(error))
+        }
+      }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun stopSession(call: MethodCall, result: Result) {
+    try {
+      val session = cardSession ?: throw PluginException("Session not started")
+      val errorMessage: String? = call.extractOptional("error")
+      if (errorMessage == null) {
+        session.stop()
+      } else {
+        session.stopWithError(CustomTangemSdkError(errorMessage))
+      }
+
+      cardSession = null
+      handleResult(result, CompletionResult.Success<Any>(true))
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun runJSONRPCRequest(call: MethodCall, result: Result) {
+    try {
+      replyAlreadySubmit = false
+      val stringOfJSONRPCRequest = call.extract<String>("JSONRPCRequest")
+
+      val callback = callbackWithResult@{ response: String ->
+        if (! replyAlreadySubmit) {
+          replyAlreadySubmit = true
+          handler.post { result.success(response) }
+        }
+      }
+
+      if (cardSession == null) {
+        sdk.startSessionWithJsonRequest(
+            stringOfJSONRPCRequest,
+            call.extractOptional("cardId"),
+            call.extractOptional("initialMessage"),
+            callback
+        )
+      } else {
+        cardSession !!.run(stringOfJSONRPCRequest, callback)
+      }
+    } catch (ex: Exception) {
+      handleException(result, ex)
+    }
+  }
+
+  private fun handleResult(result: Result, completionResult: CompletionResult<*>) {
+    if (replyAlreadySubmit) return
+    replyAlreadySubmit = true
+
+    when (completionResult) {
+      is CompletionResult.Success -> {
+        handler.post { result.success(converter.toJson(completionResult.data)) }
+      }
+      is CompletionResult.Failure -> {
+        val error = completionResult.error
+        val errorMessage = if (error is TangemSdkError) {
+          val activity = wActivity.get()
+          if (activity == null) error.customMessage else error.localizedDescription(activity)
+        } else {
+          error.customMessage
+        }
+        val pluginError = PluginError(error.code, errorMessage)
+        handler.post {
+          result.error("${error.code}", errorMessage, converter.toJson(pluginError))
+        }
+      }
+    }
+  }
+
+  private fun handleException(result: Result, ex: Exception) {
+    if (replyAlreadySubmit) return
+    replyAlreadySubmit = true
+
+    val exception = ex as? PluginException ?: TangemSdkException(ex)
+    handler.post {
+      val code = 1000
+      val localizedDescription: String = exception.toString()
+      result.error("$code", localizedDescription,
+          converter.toJson(PluginError(code, localizedDescription)))
+    }
+  }
+
+  private fun loadCardInfo(call: MethodCall, result: Result) {
+    try {
+      sdk.loadCardInfo(
+          call.extract("cardPublicKey"),
+          call.extract("cardId"),
       ) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
   }
 
-  private fun personalize(call: MethodCall, result: Result) {
+  private fun attestCard(call: MethodCall, result: Result) {
     try {
-      sdk.personalize(
-          call.extract("cardConfig"),
-          call.extract("issuer"),
-          call.extract("manufacturer"),
-          call.extract("acquirer"),
-          call.extractOptional("initialMessage")
-      ) { handleResult(result, it) }
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
-  }
-
-  private fun depersonalize(call: MethodCall, result: Result) {
-    try {
-      sdk.depersonalize(
-          call.extractOptional("initialMessage")
-      ) { handleResult(result, it) }
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
-  }
-
-  private fun createWallet(call: MethodCall, result: Result) {
-    try {
-      sdk.createWallet(
-          call.extractOptional("config"),
-          call.extractOptional("cardId"),
-          call.extractOptional("initialMessage")
-      ) { handleResult(result, it) }
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
-  }
-
-  private fun purgeWallet(call: MethodCall, result: Result) {
-    try {
-      sdk.purgeWallet(
-          call.extract("walletIndex"),
-          call.extractOptional("cardId"),
-          call.extractOptional("initialMessage")
-      ) { handleResult(result, it) }
+      //      val command = AttestationTask(
+      //          call.extract("mode"),
+      //          trustedCardsRepo = xxx
+      //      )
+      //      sdk.startSessionWithRunnable(
+      //          command,
+      //          call.extractOptional("cardId"),
+      //          call.extractOptional("initialMessage"),
+      //      ) { handleResult(result, it) }
     } catch (ex: Exception) {
       handleException(result, ex)
     }
@@ -254,33 +320,9 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private fun writeUserData(call: MethodCall, result: Result) {
     try {
       sdk.writeUserData(
-          call.extractOptional("cardId"),
           call.extract("userData"),
+          call.extractOptional("cardId"),
           call.extractOptional("userCounter"),
-          call.extractOptional("initialMessage")
-      ) { handleResult(result, it) }
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
-  }
-
-  private fun setPin1(call: MethodCall, result: Result) {
-    try {
-      sdk.changePin1(
-          call.extractOptional("cardId"),
-          call.extractOptional("pin"),
-          call.extractOptional("initialMessage")
-      ) { handleResult(result, it) }
-    } catch (ex: Exception) {
-      handleException(result, ex)
-    }
-  }
-
-  private fun setPin2(call: MethodCall, result: Result) {
-    try {
-      sdk.changePin2(
-          call.extractOptional("cardId"),
-          call.extractOptional("pin"),
           call.extractOptional("initialMessage")
       ) { handleResult(result, it) }
     } catch (ex: Exception) {
@@ -291,8 +333,8 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private fun writeUserProtectedData(call: MethodCall, result: Result) {
     try {
       sdk.writeUserProtectedData(
-          call.extractOptional("cardId"),
           call.extract("userProtectedData"),
+          call.extractOptional("cardId"),
           call.extractOptional("userProtectedCounter"),
           call.extractOptional("initialMessage")
       ) {
@@ -374,55 +416,23 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     try {
       val allowedOnlyDebug: Boolean = call.extract("isAllowedOnlyDebugCards")
       val allowedCardTypes = if (allowedOnlyDebug) {
-        EnumSet.of(FirmwareType.Sdk)
+        listOf(FirmwareVersion.FirmwareType.Sdk)
       } else {
-        EnumSet.allOf(FirmwareType::class.java)
+        FirmwareVersion.FirmwareType.values().toList()
       }
-      sdk.config.cardFilter.allowedCardTypes = allowedCardTypes
+      sdk.config.filter.allowedCardTypes = allowedCardTypes
     } catch (ex: Exception) {
       handleException(result, ex)
     }
   }
 
-  private fun handleResult(result: Result, completionResult: CompletionResult<*>) {
-    if (replyAlreadySubmit) return
-    replyAlreadySubmit = true
-
-    when (completionResult) {
-      is CompletionResult.Success -> {
-        handler.post { result.success(converter.toJson(completionResult.data)) }
-      }
-      is CompletionResult.Failure -> {
-        val error = completionResult.error
-        val errorMessage = if (error is TangemSdkError) {
-          val activity = wActivity.get()
-          if (activity == null) error.customMessage else error.localizedDescription(activity)
-        } else {
-          error.customMessage
-        }
-        val pluginError = PluginError(error.code, errorMessage)
-        handler.post {
-          result.error("${error.code}", errorMessage, converter.toJson(pluginError))
-        }
-      }
-    }
-  }
-
-  private fun handleException(result: Result, ex: Exception) {
-    if (replyAlreadySubmit) return
-    replyAlreadySubmit = true
-
-    handler.post {
-      val code = 9999
-      val localizedDescription: String = ex.toString()
-      result.error("$code".capitalize(), localizedDescription,
-          converter.toJson(PluginError(code, localizedDescription)))
-    }
-  }
-
-  @Throws(Exception::class)
+  @Throws(PluginException::class)
   inline fun <reified T> MethodCall.extract(name: String): T {
-    return this.extractOptional(name) ?: throw NoSuchFieldException(name)
+    return try {
+      this.extractOptional(name) ?: throw PluginException("MethodCall.extract: no such field: $name, or field is NULL")
+    } catch (ex: Exception) {
+      throw ex as? PluginException ?: PluginException("MethodCall.extractOptional", ex)
+    }
   }
 
   inline fun <reified T> MethodCall.extractOptional(name: String): T? {
@@ -449,15 +459,14 @@ class TangemSdkPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       adapters.add(MoshiAdapters.DataToWriteAdapter())
       adapters.add(MoshiAdapters.DataProtectedBySignatureAdapter())
       adapters.add(MoshiAdapters.DataProtectedByPasscodeAdapter())
-      val converter = MoshiJsonConverter(adapters)
-      MoshiJsonConverter.setInstance(converter)
-      return converter
+      val typedAdapters = MoshiJsonConverter.getTangemSdkTypedAdapters()
+      return MoshiJsonConverter(adapters, typedAdapters)
     }
   }
 
   sealed class FileCommand {
     data class Read(val readPrivateFiles: Boolean = false, val indices: List<Int>? = null)
-    data class Write(val files: List<FileData>)
+    data class Write(val files: List<DataToWrite>)
     data class Delete(val indices: List<Int>?)
     data class ChangeSettings(val changes: List<FileSettingsChange>)
   }
@@ -467,15 +476,16 @@ class MoshiAdapters {
 
   class DataToWriteAdapter {
     @ToJson
-    fun toJson(src: FileData): String {
+    fun toJson(src: DataToWrite): String {
       return when (src) {
-        is FileData.DataProtectedBySignature -> DataProtectedBySignatureAdapter().toJson(src)
-        is FileData.DataProtectedByPasscode -> DataProtectedByPasscodeAdapter().toJson(src)
+        is FileDataProtectedBySignature -> DataProtectedBySignatureAdapter().toJson(src)
+        is FileDataProtectedByPasscode -> DataProtectedByPasscodeAdapter().toJson(src)
+        else -> throw UnsupportedOperationException()
       }
     }
 
     @FromJson
-    fun fromJson(map: MutableMap<String, Any>): FileData {
+    fun fromJson(map: MutableMap<String, Any>): DataToWrite {
       return if (map.containsKey("signature")) {
         DataProtectedBySignatureAdapter().fromJson(map)
       } else {
@@ -486,10 +496,10 @@ class MoshiAdapters {
 
   class DataProtectedBySignatureAdapter {
     @ToJson
-    fun toJson(src: FileData.DataProtectedBySignature): String = MoshiJsonConverter.default().toJson(src)
+    fun toJson(src: FileDataProtectedBySignature): String = MoshiJsonConverter.default().toJson(src)
 
     @FromJson
-    fun fromJson(map: MutableMap<String, Any>): FileData.DataProtectedBySignature {
+    fun fromJson(map: MutableMap<String, Any>): FileDataProtectedBySignature {
       val converter = MoshiJsonConverter.default()
       return converter.fromJson(converter.toJson(map)) !!
     }
@@ -497,14 +507,31 @@ class MoshiAdapters {
 
   class DataProtectedByPasscodeAdapter {
     @ToJson
-    fun toJson(src: FileData.DataProtectedByPasscode): String = MoshiJsonConverter.default().toJson(src)
+    fun toJson(src: FileDataProtectedByPasscode): String = MoshiJsonConverter.default().toJson(src)
 
     @FromJson
-    fun fromJson(map: MutableMap<String, Any>): FileData.DataProtectedByPasscode {
+    fun fromJson(map: MutableMap<String, Any>): FileDataProtectedByPasscode {
       val converter = MoshiJsonConverter.default()
       return converter.fromJson(converter.toJson(map)) !!
     }
   }
 }
 
-data class PluginError(val code: Int, val localizedDescription: String)
+data class PluginError(
+    // code = 1000 - it's the plugin or it's the tangemSdk internal exception
+    // any other value in code greater than 10000 - it's the tangemSdk internal error
+    val code: Int,
+    val localizedDescription: String
+)
+
+class PluginException(
+    message: String, cause: Throwable? = null
+): Exception("TangemSdkPlugin exception. Message: $message", cause)
+
+class TangemSdkException(cause: Throwable): Exception("TangemSdk internal exception", cause)
+
+class CustomTangemSdkError(
+    override var customMessage: String,
+    override val code: Int = 5555555,
+    override val messageResId: Int? = null
+): TangemError

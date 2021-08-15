@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 extension Kotlin<T> on T {
   let(Function(T it) func) {
     final notNull = this;
@@ -7,6 +9,14 @@ extension Kotlin<T> on T {
   T apply(Function(T it) bloc) {
     bloc(this);
     return this;
+  }
+}
+
+extension Json<T> on T {
+  String jsonEncode([bool withPrettyPrint = false, int indent = 4]) {
+    final encoder =
+        withPrettyPrint ? JsonEncoder.withIndent(List.generate(indent, (index) => " ").join()) : JsonEncoder();
+    return encoder.convert(this);
   }
 }
 

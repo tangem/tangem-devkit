@@ -86,9 +86,9 @@ class Routes {
       case USER_WRITE_PROTECTED_DATA:
         return MaterialPageRoute(builder: (_) => WriteUserProtectedDataScreen());
       case SET_PIN1:
-        return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.PIN1));
+        return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.ACCESS_CODE));
       case SET_PIN2:
-        return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.PIN2));
+        return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.PASSCODE));
       case FILES_READ:
         return MaterialPageRoute(builder: (_) => FilesReadScreen());
       case FILES_WRITE:

@@ -22,14 +22,14 @@ class ReadIssuerDataBloc extends ActionBloc<ReadIssuerDataResponse> {
   }
 }
 
-class ReadIssuerExDataBloc extends ActionBloc<ReadIssuerExDataResponse> {
+class ReadIssuerExDataBloc extends ActionBloc<ReadIssuerExtraDataResponse> {
   @override
   void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     onSuccess(ReadIssuerExDataModel());
   }
 }
 
-class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
+class WriteIssuerDataBloc extends ActionBloc<SuccessResponse> {
   final bsIssuerData = BehaviorSubject<String>();
   final bsIssuerDataCounter = BehaviorSubject<String>();
 
@@ -60,7 +60,7 @@ class WriteIssuerDataBloc extends ActionBloc<WriteIssuerDataResponse> {
   }
 }
 
-class WriteIssuerExDataBloc extends ActionBloc<WriteIssuerExDataResponse> {
+class WriteIssuerExDataBloc extends ActionBloc<SuccessResponse> {
   final bsIssuerDataCounter = BehaviorSubject<String>();
 
   int _issuerDataCounter = 0;
@@ -89,7 +89,7 @@ class ReadUserDataBloc extends ActionBloc<ReadUserDataResponse> {
   }
 }
 
-class WriteUserDataBloc extends ActionBloc<WriteUserDataResponse> {
+class WriteUserDataBloc extends ActionBloc<SuccessResponse> {
   final bsUserData = BehaviorSubject<String>();
   final bsUserCounter = BehaviorSubject<String>();
 
@@ -109,7 +109,7 @@ class WriteUserDataBloc extends ActionBloc<WriteUserDataResponse> {
   }
 }
 
-class WriteUserProtectedDataBloc extends ActionBloc<WriteUserDataResponse> {
+class WriteUserProtectedDataBloc extends ActionBloc<SuccessResponse> {
   final bsUserProtectedData = BehaviorSubject<String>();
   final bsUserProtectedCounter = BehaviorSubject<String>();
 
@@ -175,7 +175,7 @@ class PurgeWalletBloc extends ActionBloc<PurgeWalletResponse> {
   }
 }
 
-class SetPinBlock extends ActionBloc<SetPinResponse> {
+class SetPinBlock extends ActionBloc<SuccessResponse> {
   final PinType pinType;
   final bsPinCode = BehaviorSubject<String>();
 
@@ -188,7 +188,7 @@ class SetPinBlock extends ActionBloc<SetPinResponse> {
   @override
   void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
     final code = _pinCode.isNullOrEmpty() ? null : _pinCode;
-    onSuccess(pinType == PinType.PIN1 ? SetPin1Model(code) : SetPin2Model(code));
+    onSuccess(pinType == PinType.ACCESS_CODE ? SetPin1Model(code) : SetPin2Model(code));
   }
 }
 
@@ -297,7 +297,7 @@ class FilesReadBloc extends ActionBloc<ReadFilesResponse> {
   }
 }
 
-class FilesDeleteBloc extends ActionBloc<DeleteFilesResponse> {
+class FilesDeleteBloc extends ActionBloc<SuccessResponse> {
   final bsIndices = BehaviorSubject<String>();
 
   String? _indices;
@@ -313,7 +313,7 @@ class FilesDeleteBloc extends ActionBloc<DeleteFilesResponse> {
   }
 }
 
-class FilesChangeSettingsBloc extends ActionBloc<ChangeFilesSettingsResponse> {
+class FilesChangeSettingsBloc extends ActionBloc<SuccessResponse> {
   final fileSettings = [
     Pair("Public", FileSettings.Public),
     Pair("Private", FileSettings.Private),
@@ -349,7 +349,7 @@ class DepersonalizationBloc extends ActionBloc<DepersonalizeResponse> {
   }
 }
 
-class ScanBloc extends ActionBloc<CardResponse> {
+class ScanBloc extends ActionBloc<ReadResponse> {
   @override
   createCommandData(Function(CommandDataModel p1) onSuccess, Function(String p1) onError) {
     onSuccess(ScanModel());
@@ -359,22 +359,37 @@ class ScanBloc extends ActionBloc<CardResponse> {
 class SignBloc extends ActionBloc<SignResponse> {
   final bsDataForHashing = BehaviorSubject<String>();
   final bsWalletPublicKey = BehaviorSubject<String>();
+  final bsCardWalletsList = BehaviorSubject<List<String>>();
 
-  String _dataForHashing = "";
-  String _walletPublicKey = "";
+  String? _dataForHashing;
+  String? _walletPublicKey;
 
   SignBloc() {
     addSubscription(bsDataForHashing.stream.listen((event) => _dataForHashing = event));
     addSubscription(bsWalletPublicKey.stream.listen((event) => _walletPublicKey = event));
+    addSubscription(bsCard.stream.listen((event) {
+      final walletsPublicKeys = event.wallets.map((e) => e.publicKey).toList();
+      bsCardWalletsList.add(walletsPublicKeys);
+    }));
     bsDataForHashing.add("Data used for hashing");
-    //TODO: before trying to sign, must read the card and fetch walletPubKey (v.<4) -  by 0 index, (v.>=4) - by using slider
-    bsWalletPublicKey.add(
-        "04B2A74E1E502A3E5C4B03B53412A5891F270752543D77B5FE685F3125196610E43C880E29ADA29B2D9641FEAB37A699355863F920DE98937B426B1F303A4752C5");
   }
 
   @override
   void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError) {
-    final data = _dataForHashing.splitToList().toStringList();
-    onSuccess(SignModel(data, _walletPublicKey));
+    if (!hasCid()) {
+      onError("CID field required");
+      return;
+    }
+    if (_dataForHashing == null || _walletPublicKey == null) {
+      onError("Date for hashing and wallet publicKey is required");
+      return;
+    }
+
+    final data = _dataForHashing!.splitToList().toStringList();
+    if (data.length == 1) {
+      onSuccess(SignHashModel(data[0], _walletPublicKey!));
+    } else {
+      onSuccess(SignHashesModel(data, _walletPublicKey!));
+    }
   }
 }

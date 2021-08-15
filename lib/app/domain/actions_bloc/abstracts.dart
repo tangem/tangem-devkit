@@ -2,32 +2,47 @@ import 'dart:async';
 
 import 'package:devkit/app/domain/model/command_data_models.dart';
 import 'package:devkit/commons/common_abstracts.dart';
+import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 abstract class ActionBloc<T> extends BaseBloc {
+  final bsCard = BehaviorSubject<ReadResponse>();
   final bsCid = BehaviorSubject<String>();
 
-  String? _cid;
+  ReadResponse? _card;
+  String? _cardId;
   Message? _initialMessage;
 
   final PublishSubject<CommandDataModel> _commandDataIsReady = PublishSubject<CommandDataModel>();
-  final PublishSubject<T> _successResponse = PublishSubject<T>();
+
+  //TODO: restore to T
+  final PublishSubject<dynamic> _successResponse = PublishSubject<dynamic>();
   final PublishSubject<TangemSdkBaseError?> _errorResponse = PublishSubject<TangemSdkBaseError?>();
 
   ActionBloc() {
-    addSubscription(bsCid.stream.listen((event) => _cid = event));
+    addSubscription(bsCard.stream.listen((event) {
+      _card = event;
+      bsCid.add(event.cardId);
+    }));
+    addSubscription(bsCid.stream.listen((event) => _cardId = event));
   }
 
   Stream<CommandDataModel> get commandDataStream => _commandDataIsReady.stream;
 
-  Stream<T> get successResponseStream => _successResponse.stream;
+  //TODO: restore to T
+  Stream<dynamic> get successResponseStream => _successResponse.stream;
 
   Stream<TangemSdkBaseError?> get errorResponseStream => _errorResponse.stream;
 
   Callback get callback => Callback((success) => sendSuccess(success), (error) => sendError(error));
 
-  sendSuccess(T success) {
+  // sendSuccess(T success) {
+  //   _successResponse.add(success);
+  // }
+
+  //TODO: restore to T
+  sendSuccess(dynamic success) {
     _successResponse.add(success);
   }
 
@@ -35,15 +50,28 @@ abstract class ActionBloc<T> extends BaseBloc {
     _errorResponse.add(error);
   }
 
-  bool hasCid() => !_cid.isNullOrEmpty();
+  bool hasCid() => !_cardId.isNullOrEmpty();
 
   scanCard() {
-    final callback = Callback((result) {
-      bsCid.add(parseCidFromSuccessScan(result));
+    final jsonRPCCallback = Callback((response) {
+      if (response is! JSONRPCResponse) {
+        sendSnackbarMessage("It's not a JSONRPCResponse");
+        return;
+      }
+      if (response.result != null) {
+        bsCard.add(ReadResponse.fromJson(response.result));
+      } else {
+        sendSnackbarMessage(response.error.toString());
+      }
     }, (error) {
-      sendError(error);
+      // not used
+      // sendError(error);
     });
-    _prepareCommandAndRun(ScanModel(), callback);
+
+    final commandData = PreflightReadModel(describeEnum(PreflightReadMode.FullCardRead));
+    commandData.cardId = _cardId;
+    commandData.initialMessage = _initialMessage;
+    TangemSdk.runCommandAsJSONRPCRequest(jsonRPCCallback, commandData);
   }
 
   invokeAction() async {
@@ -51,7 +79,7 @@ abstract class ActionBloc<T> extends BaseBloc {
   }
 
   _prepareCommandAndRun(CommandDataModel commandData, Callback callback) async {
-    commandData.cardId = _cid;
+    commandData.cardId = _cardId;
     commandData.initialMessage = _initialMessage;
 
     if (commandData.isPrepared()) {
@@ -72,12 +100,8 @@ abstract class ActionBloc<T> extends BaseBloc {
     }
 
     _commandDataIsReady.add(commandData);
-    TangemSdk.runCommand(callback, commandData);
+    TangemSdk.runCommandAsJSONRPCRequest(callback, commandData);
   }
 
   void createCommandData(Function(CommandDataModel) onSuccess, Function(String) onError);
-}
-
-String parseCidFromSuccessScan(CardResponse card) {
-  return card.cardId;
 }

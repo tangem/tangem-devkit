@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
@@ -10,16 +9,56 @@ class ScanModel extends CommandDataModel {
   factory ScanModel.fromJson(Map<String, dynamic> json) => CommandDataModel.attachBaseData(ScanModel(), json);
 }
 
-class SignModel extends CommandDataModel {
+class PreflightReadModel extends CommandDataModel {
+  final String readMode;
+
+  PreflightReadModel(this.readMode) : super(TangemSdk.cPreflightRead);
+
+  factory PreflightReadModel.fromJson(Map<String, dynamic> json) {
+    return CommandDataModel.attachBaseData(PreflightReadModel(json[TangemSdk.readMode]), json);
+  }
+
+  @override
+  Map<String, dynamic>? toJson(ConversionError onError) {
+    return {
+      TangemSdk.readMode: readMode,
+    }..addAll(getBaseData());
+  }
+}
+
+class SignHashModel extends CommandDataModel {
+  final String dataForHashing;
+  final String walletPublicKey;
+
+  SignHashModel(this.dataForHashing, this.walletPublicKey) : super(TangemSdk.cSignHashes);
+
+  factory SignHashModel.fromJson(Map<String, dynamic> json) {
+    final model = SignHashModel(
+      json["dataForHashing"],
+      json[TangemSdk.walletPublicKey],
+    );
+    return CommandDataModel.attachBaseData(model, json);
+  }
+
+  @override
+  Map<String, dynamic>? toJson(ConversionError onError) {
+    return {
+      TangemSdk.hash: dataForHashing.toHexString(),
+      TangemSdk.walletPublicKey: walletPublicKey,
+    }..addAll(getBaseData());
+  }
+}
+
+class SignHashesModel extends CommandDataModel {
   final List<String> dataForHashing;
   final String walletPublicKey;
 
-  SignModel(this.dataForHashing, this.walletPublicKey) : super(TangemSdk.cSign);
+  SignHashesModel(this.dataForHashing, this.walletPublicKey) : super(TangemSdk.cSignHashes);
 
-  factory SignModel.fromJson(Map<String, dynamic> json) {
-    final model = SignModel(
+  factory SignHashesModel.fromJson(Map<String, dynamic> json) {
+    final model = SignHashesModel(
       (json["dataForHashing"] as List).toStringList(),
-      json["walletPublicKey"],
+      json[TangemSdk.walletPublicKey],
     );
     return CommandDataModel.attachBaseData(model, json);
   }
@@ -34,15 +73,15 @@ class SignModel extends CommandDataModel {
 }
 
 class PersonalizationModel extends CommandDataModel {
-  final PersonalizationConfig config;
-  final Issuer issuer;
+  final PersonalizationCardConfig config;
+  final PersonalizationIssuer issuer;
 
   PersonalizationModel(this.config, this.issuer) : super(TangemSdk.cPersonalize);
 
   factory PersonalizationModel.fromJson(Map<String, dynamic> json) {
     final model = PersonalizationModel(
-      PersonalizationConfig.fromJson(json["config"]),
-      Issuer.fromJson(json["issuer"]),
+      PersonalizationCardConfig.fromJson(json["config"]),
+      PersonalizationIssuer.fromJson(json["issuer"]),
     );
     return CommandDataModel.attachBaseData(model, json);
   }
@@ -110,7 +149,7 @@ class WriteIssuerDataModel extends CommandDataModel {
 
   factory WriteIssuerDataModel.fromJson(Map<String, dynamic> json) {
     final model = WriteIssuerDataModel(
-      json[TangemSdk.cid],
+      json[TangemSdk.cardId],
       json[TangemSdk.issuerData],
       json[TangemSdk.privateKey],
       json[TangemSdk.issuerDataCounter],
@@ -175,7 +214,7 @@ class WriteIssuerExDataModel extends CommandDataModel {
 
   factory WriteIssuerExDataModel.fromJson(Map<String, dynamic> json) {
     final model = WriteIssuerExDataModel(
-      json[TangemSdk.cid],
+      json[TangemSdk.cardId],
       json[TangemSdk.issuerData],
       json[TangemSdk.privateKey],
       json[TangemSdk.issuerDataCounter],
@@ -276,7 +315,7 @@ class WriteUserProtectedDataModel extends CommandDataModel {
 class SetPin1Model extends CommandDataModel {
   final String? pinCode;
 
-  SetPin1Model(this.pinCode) : super(TangemSdk.cSetPin1);
+  SetPin1Model(this.pinCode) : super(TangemSdk.cSetAccessCode);
 
   factory SetPin1Model.fromJson(Map<String, dynamic> json) {
     final model = SetPin1Model(json[TangemSdk.pinCode]);
@@ -294,7 +333,7 @@ class SetPin1Model extends CommandDataModel {
 class SetPin2Model extends CommandDataModel {
   final String? pinCode;
 
-  SetPin2Model(this.pinCode) : super(TangemSdk.cSetPin2);
+  SetPin2Model(this.pinCode) : super(TangemSdk.cSetPasscode);
 
   factory SetPin2Model.fromJson(Map<String, dynamic> json) {
     final model = SetPin2Model(json[TangemSdk.pinCode]);
@@ -328,7 +367,7 @@ class WriteFileData {
 
 class FilesWriteModel extends CommandDataModel {
   final List<WriteFileData> filesData;
-  final Issuer? issuer;
+  final PersonalizationIssuer? issuer;
   List<Map<String, dynamic>>? _issuerFilesSignatureData;
 
   FilesWriteModel(this.filesData, [this.issuer]) : super(TangemSdk.cWriteFiles);
@@ -338,7 +377,7 @@ class FilesWriteModel extends CommandDataModel {
     List<WriteFileData> filesData = dataToWrite.map((e) => WriteFileData.fromJson(e)).toList();
     final model = FilesWriteModel(
       filesData,
-      json.containsKey("issuer") ? Issuer.fromJson(json["issuer"]) : null,
+      json.containsKey("issuer") ? PersonalizationIssuer.fromJson(json["issuer"]) : null,
     );
     return CommandDataModel.attachBaseData(model, json);
   }

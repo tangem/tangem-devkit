@@ -55,6 +55,9 @@ class TestRecorderBlock extends BaseBloc {
   }
 
   handleCommandResponse(dynamic response) {
+    //TODO: remove return;
+    return;
+
     if (_currentJsonTestRecord == null || _currentRecord == null) return;
 
     _currentJsonTestRecord = _testAssembler.addStepRecord(
@@ -128,7 +131,7 @@ class TestAssembler {
     return TestStep(
       "$index.${stepConfig.name}.${jsonRpc.method}",
       jsonRpc.method,
-      jsonRpc.parameters,
+      jsonRpc.params,
       expectedResult,
       stepConfig.asserts,
       stepConfig.actionType,

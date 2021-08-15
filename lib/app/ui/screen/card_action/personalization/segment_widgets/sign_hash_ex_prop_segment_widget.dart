@@ -48,27 +48,27 @@ class _SignHashExPropSegmentWidgetState extends State<SignHashExPropSegmentWidge
           description: transl.desc_pers_item_sign_hash_ex,
           scrollStream: _bloc.scrollingStateStream,
         ).gone(),
-        SwitchWidget(
-          ItemName.requireTerminalCertSignature,
-          transl.pers_item_require_terminal_cert_sig,
-          transl.desc_pers_item_require_terminal_cert_sig,
-          signHashExProperties.requireTerminalCertSignature,
-          initialData: false,
-        ).gone(),
-        SwitchWidget(
-          ItemName.requireTerminalTxSignature,
-          transl.pers_item_require_terminal_tx_sig,
-          transl.desc_pers_item_require_terminal_tx_sig,
-          signHashExProperties.requireTerminalTxSignature,
-          initialData: false,
-        ).gone(),
-        SwitchWidget(
-          ItemName.checkPIN3OnCard,
-          transl.pers_item_check_pin3_on_card,
-          transl.desc_pers_item_check_pin3_on_card,
-          signHashExProperties.checkPIN3OnCard,
-          initialData: false,
-        ).gone(),
+        // SwitchWidget(
+        //   ItemName.requireTerminalCertSignature,
+        //   transl.pers_item_require_terminal_cert_sig,
+        //   transl.desc_pers_item_require_terminal_cert_sig,
+        //   signHashExProperties.requireTerminalCertSignature,
+        //   initialData: false,
+        // ).gone(),
+        // SwitchWidget(
+        //   ItemName.requireTerminalTxSignature,
+        //   transl.pers_item_require_terminal_tx_sig,
+        //   transl.desc_pers_item_require_terminal_tx_sig,
+        //   signHashExProperties.requireTerminalTxSignature,
+        //   initialData: false,
+        // ).gone(),
+        // SwitchWidget(
+        //   ItemName.checkPIN3OnCard,
+        //   transl.pers_item_check_pin3_on_card,
+        //   transl.desc_pers_item_check_pin3_on_card,
+        //   signHashExProperties.checkPIN3OnCard,
+        //   initialData: false,
+        // ).gone(),
       ],
     ).visibilityHandler(_bloc.statedFieldsVisibility);
   }

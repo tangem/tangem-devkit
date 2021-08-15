@@ -47,7 +47,7 @@ class SigningMethodSegmentWidget extends StatelessWidget {
           ItemName.validatedTxHashesWithIssuerData,
           transl.pers_item_sign_validated_tx_hashes_with_iss_data,
           transl.desc_pers_item_sign_validated_tx_hashes_with_iss_data,
-          signingMethod.bsHashSignedByIsseruAndUpdateIssuerData,
+          signingMethod.bsHashSignedByIssuerAndUpdateIssuerData,
           initialData: false,
         ).withUnderline(),
         SwitchWidget(

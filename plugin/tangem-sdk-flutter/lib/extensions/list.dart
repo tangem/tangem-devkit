@@ -23,6 +23,17 @@ extension OnList<E> on List<E?> {
     return nullSafeList;
   }
 
+  List<T> mapNotNull<T>(T? transform(E e)) {
+    var nullSafeList = <T>[];
+    this.forEach((element) {
+      if (element != null) {
+        final result = transform(element);
+        if (result != null) nullSafeList.add(result);
+      }
+    });
+    return nullSafeList;
+  }
+
   E? removeFirstOrNull() => this.isEmpty ? null : removeAt(0);
 
   bool hasNull([dynamic checkForField(E e)?]) {

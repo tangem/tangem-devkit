@@ -40,7 +40,7 @@ class _CommandListWidgetState extends State<CommandListWidget> {
     super.initState();
 
     _callback = Callback((success) {
-      if (success is CardResponse) {
+      if (success is ReadResponse) {
         _cardId = success.cardId;
       }
       final prettyJson = _jsonEncoder.convert(success.toJson());
@@ -114,97 +114,55 @@ class _CommandListWidgetState extends State<CommandListWidget> {
   }
 
   handleScanCard() {
-    TangemSdk.scanCard(_callback);
+    _showToast("Available through CommandData");
   }
 
   handleSign() {
-    final listOfData = List.generate(_utils.randomInt(1, 10), (index) => _utils.randomString(20));
-    final hashes = listOfData.map((e) => e.toHexString()).toList();
-
-    TangemSdk.sign(_callback, hashes, {TangemSdk.cid: _cardId});
+    _showToast("Available through CommandData");
   }
 
   handleReadIssuerData() {
-    TangemSdk.readIssuerData(_callback, {TangemSdk.cid: _cardId});
+    _showToast("Available through CommandData");
   }
 
   handleWriteIssuerData() {
-    if (_cardId == null) {
-      _showToast("CardId required. Scan your card before proceeding");
-      return;
-    }
-
-    final issuerData = "Issuer data to be written on a card";
-    final issuerDataSignature = "(cardId.bytes + issuerData.bytes + counter.bytes(4)).sign(issuerPrivateKey)";
-    final issuerDataCounter = 1;
-
-    TangemSdk.writeIssuerData(_callback, issuerData.toHexString(), issuerDataSignature.toHexString(), {
-      TangemSdk.cid: _cardId,
-      TangemSdk.issuerDataCounter: issuerDataCounter,
-    });
+    _showToast("Available through CommandData");
   }
 
   handleReadIssuerExtraData() {
-    TangemSdk.readIssuerExtraData(_callback, {TangemSdk.cid: _cardId});
+    _showToast("Available through CommandData");
   }
 
   handleWriteIssuerExtraData() {
-    if (_cardId == null) {
-      _showToast("CardId required. Scan your card before proceeding");
-      return;
-    }
-
-    final issuerData = "Issuer extra data to be written on a card";
-    final startingSignature =
-        "(cardId.bytes + counter.bytes(4) + issuerData.bytes.size.bytes(2)).sign(issuerPrivateKey)";
-    final finalizingSignature = "(cardId.bytes + issuerData.bytes + counter.bytes(4)).sign(issuerPrivateKey)";
-    final counter = 1;
-
-    TangemSdk.writeIssuerExtraData(
-        _callback, issuerData.toHexString(), startingSignature.toHexString(), finalizingSignature.toHexString(), {
-      TangemSdk.cid: _cardId,
-      TangemSdk.issuerDataCounter: counter,
-    });
+    _showToast("Available through CommandData");
   }
 
   handleReadUserData() {
-    TangemSdk.readUserData(_callback, {TangemSdk.cid: _cardId});
+    _showToast("Available through CommandData");
   }
 
   handleWriteUserData() {
-    final userData = "User data to be written on a card";
-    final userCounter = 1;
-
-    TangemSdk.writeUserData(_callback, userData.toHexString(), {
-      TangemSdk.cid: _cardId,
-      TangemSdk.userCounter: userCounter,
-    });
+    _showToast("Available through CommandData");
   }
 
   handleWriteUserProtectedData() {
-    final userProtectedData = "Protected user data to be written on a card";
-    final protectedCounter = 1;
-
-    TangemSdk.writeUserProtectedData(_callback, userProtectedData.toHexString(), {
-      TangemSdk.cid: _cardId,
-      TangemSdk.userProtectedCounter: protectedCounter,
-    });
+    _showToast("Available through CommandData");
   }
 
   handleCreateWallet() {
-    TangemSdk.createWallet(_callback, {TangemSdk.cid: _cardId});
+    _showToast("Available through CommandData");
   }
 
   handlePurgeWallet() {
-    TangemSdk.purgeWallet(_callback, {TangemSdk.cid: _cardId});
+    _showToast("Available through CommandData");
   }
 
   handleSetPin1() {
-    TangemSdk.setPinCode(_callback, PinType.PIN1, {TangemSdk.cid: _cardId});
+    _showToast("Available through CommandData");
   }
 
   handleSetPin2() {
-    TangemSdk.setPinCode(_callback, PinType.PIN2, {TangemSdk.cid: _cardId});
+    _showToast("Available through CommandData");
   }
 
   _showToast(String message) {

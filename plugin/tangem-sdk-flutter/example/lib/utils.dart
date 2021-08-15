@@ -2,8 +2,6 @@ import 'dart:math';
 import 'dart:typed_data';
 
 class Utils {
-  final issuerPrivateKeyHex = "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92";
-
   final _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
   final Random _rnd = Random();
 

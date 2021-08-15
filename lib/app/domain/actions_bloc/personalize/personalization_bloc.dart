@@ -3,19 +3,20 @@ import 'dart:convert';
 
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
-import 'package:devkit/app/domain/model/personalization/support_classes.dart';
+import 'package:devkit/app/domain/model/personalization/json.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share/share.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
+import 'package:tangem_sdk/model/sdk.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import '../../typed_storage.dart';
 import 'segments.dart';
 
-class PersonalizationBloc extends ActionBloc<CardResponse> {
+class PersonalizationBloc extends ActionBloc<ReadResponse> {
   final PersonalizationValues values = PersonalizationValues();
   final List<BaseSegment> _configSegments = [];
   final _scrollingState = PublishSubject<bool>();
@@ -78,10 +79,10 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     _restoreConfig(_storage.get(name));
   }
 
-  _restoreConfig(PersonalizationConfig? config) {
+  _restoreConfig(PersonalizationCardConfig? config) {
     if (config == null) return;
 
-    final newCopyOfConfig = PersonalizationConfig.fromJson(json.decode(json.encode(config)));
+    final newCopyOfConfig = PersonalizationCardConfig.fromJson(json.decode(json.encode(config)));
     _storage.setCurrent(newCopyOfConfig);
     _storage.save();
     _updateConfigIntoTheSegments(newCopyOfConfig);
@@ -109,10 +110,10 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   importConfig(String jsonConfig) {
     try {
       final configMap = json.decode(jsonConfig);
-      _restoreConfig(PersonalizationConfig.fromJson(configMap));
+      _restoreConfig(PersonalizationCardConfig.fromJson(configMap));
     } catch (ex) {
       sendSnackbarMessage(ex);
-      _restoreConfig(PersonalizationConfig.getDefault());
+      _restoreConfig(getDefault());
     }
   }
 
@@ -125,7 +126,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     }
   }
 
-  _updateConfigIntoTheSegments(PersonalizationConfig? config) {
+  _updateConfigIntoTheSegments(PersonalizationCardConfig? config) {
     if (config == null) return;
 
     _configSegments.forEach((element) => element.update(config));
@@ -134,7 +135,9 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   @override
   invokeAction() async {
     final personalizationMap = Utils.createPersonalizationCommandConfig(_storage.getCurrent());
-    TangemSdk.personalize(callback, personalizationMap);
+    personalizationMap[TangemSdk.commandType] = TangemSdk.cPersonalize;
+    final jsonRpcRequest = JSONRPCRequest.fromCommandDataJson(personalizationMap);
+    TangemSdk.runJSONRPCRequest(callback, jsonRpcRequest);
   }
 
   @override
@@ -153,21 +156,21 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   }
 }
 
-class PersonalizationConfigStorage extends ConfigSharedPrefsStorage<PersonalizationConfig> {
+class PersonalizationConfigStorage extends ConfigSharedPrefsStorage<PersonalizationCardConfig> {
   final String _spaceKey = "#@%";
 
   PersonalizationConfigStorage() : super("personalizationConfigStorage");
 
   @override
-  PersonalizationConfig? get(String name) => super.get(_replaceSpaces(name));
+  PersonalizationCardConfig? get(String name) => super.get(_replaceSpaces(name));
 
   @override
-  add(String name, PersonalizationConfig? config) {
+  add(String name, PersonalizationCardConfig? config) {
     super.add(_replaceSpaces(name), config);
   }
 
   @override
-  set(String name, PersonalizationConfig? config) {
+  set(String name, PersonalizationCardConfig? config) {
     super.set(_replaceSpaces(name), config);
   }
 
@@ -186,10 +189,10 @@ class PersonalizationConfigStorage extends ConfigSharedPrefsStorage<Personalizat
   String _replaceKey(String withKeys) => withKeys.replaceAll(_spaceKey, " ");
 
   @override
-  PersonalizationConfig getDefaultValue() => PersonalizationConfig.getDefault();
+  PersonalizationCardConfig getDefaultValue() => getDefault();
 
   @override
-  PersonalizationConfig convertFrom(Map<String, dynamic> jsonMap) {
-    return PersonalizationConfig.fromJson(jsonMap);
+  PersonalizationCardConfig convertFrom(Map<String, dynamic> jsonMap) {
+    return PersonalizationCardConfig.fromJson(jsonMap);
   }
 }

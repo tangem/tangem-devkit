@@ -8,3 +8,6 @@ void main() async {
   final launcher = App.isDebug ? DebugLauncher() : ReleaseLauncher();
   await launcher.launch();
 }
+
+//TODO: создать модуль DevKit2 в котором построение UI и общение с tangemSdk будет осуществляться
+//TODO: только через JSON

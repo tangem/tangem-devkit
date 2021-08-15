@@ -9,7 +9,7 @@ import 'package:share/share.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
 
 import 'other_responses.dart';
-import 'scan_personalize_response.dart';
+import 'read_personalize_response.dart';
 
 class ResponseScreen extends StatelessWidget {
   final Object? arguments;
@@ -61,24 +61,21 @@ class ResponseFrame extends StatelessWidget {
     if (arguments == null) {
       return Center(child: TextWidget("Response is null"));
     }
+    //TODO: only for JSON arguments
+    return SingleChildScrollView(child: TextWidget(arguments.jsonEncode(true)));
 
     final args = arguments!;
-    if (args is CardResponse) return ReadResponseBody(args);
+    if (args is SuccessResponse) return SuccessResponseBody(args);
+    if (args is ReadResponse) return ReadResponseBody(args);
     if (args is SignResponse) return SignResponseBody(args);
     if (args is DepersonalizeResponse) return DepersonalizeResponseBody(args);
     if (args is CreateWalletResponse) return CreateWalletResponseBody(args);
     if (args is PurgeWalletResponse) return PurgeWalletResponseBody(args);
     if (args is ReadIssuerDataResponse) return ReadIssuerDataResponseBody(args);
-    if (args is WriteIssuerDataResponse) return WriteIssuerDataResponseBody(args);
-    if (args is ReadIssuerExDataResponse) return ReadIssuerExDataResponseBody(args);
-    if (args is WriteIssuerExDataResponse) return WriteIssuerExDataResponseBody(args);
+    if (args is ReadIssuerExtraDataResponse) return ReadIssuerExDataResponseBody(args);
     if (args is ReadUserDataResponse) return ReadUserDataResponseBody(args);
-    if (args is WriteUserDataResponse) return WriteUserDataResponseBody(args);
-    if (args is SetPinResponse) return SetPinResponseBody(args);
     if (args is WriteFilesResponse) return WriteFilesResponseBody(args);
     if (args is ReadFilesResponse) return ReadFilesResponseBody(args);
-    if (args is DeleteFilesResponse) return DeleteFilesResponseBody(args);
-    if (args is ChangeFilesSettingsResponse) return ChangeFilesSettingsResponseBody(args);
 
     return Center(child: TextWidget("Not implemented yet"));
   }

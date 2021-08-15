@@ -1,8 +1,10 @@
 import 'package:devkit/app/domain/actions_bloc/exp_blocs.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/commons/extensions/app_extensions.dart';
 import 'package:devkit/commons/text_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../finders.dart';
@@ -56,9 +58,13 @@ class SignBody extends StatefulWidget {
 }
 
 class _SignBodyState extends State<SignBody> {
+  final _formKey = GlobalKey<FormState>();
+
   late SignBloc _bloc;
   late TextStreamController _cidController;
   late TextStreamController _dataForHashingController;
+
+  String selectedItem = "1";
 
   @override
   void initState() {
@@ -91,6 +97,13 @@ class _SignBodyState extends State<SignBody> {
           description: transl.desc_transaction_out_hash,
           padding: EdgeInsets.symmetric(horizontal: 16),
         ),
+        StubStreamBuilder<List<String>>(_bloc.bsCardWalletsList.stream, (context, data) {
+          return AutocompleteWidget(
+            data,
+            _bloc.bsWalletPublicKey,
+            description: transl.desc_transaction_out_hash,
+          );
+        }),
       ],
     );
   }
@@ -100,5 +113,32 @@ class _SignBodyState extends State<SignBody> {
     _cidController.dispose();
     _dataForHashingController.dispose();
     super.dispose();
+  }
+}
+
+class AutocompleteWidget extends StatelessWidget {
+  final List<String> items;
+  final Sink<String> sink;
+  final String? description;
+
+  const AutocompleteWidget(this.items, this.sink, {this.description, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final widget = Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Autocomplete<String>(
+          optionsBuilder: (value) => items,
+          onSelected: (value) {
+            sink.add(value);
+          },
+        ),
+        DescriptionWidget(description, EdgeInsets.only(top: 10)),
+      ],
+    );
+    return widget.padding16();
   }
 }

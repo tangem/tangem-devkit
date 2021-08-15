@@ -1,5 +1,8 @@
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
+
 enum SigningMethod {
   SignHash,
   SignRaw,
@@ -47,12 +50,9 @@ class SigningMethodMaskBuilder {
     return value;
   }
 
-  static bool maskContainsMethod(int mask, int method) {
-    if (mask & 0x80 == 0) {
-      return method == mask;
-    } else {
-      return mask & (0x01 << method) != 0;
-    }
+  static SigningMethod? valueOf(String method) {
+    final filtered = SigningMethod.values.filterNotNull((element) => describeEnum(element) == method ? element : null);
+    return filtered.isEmpty ? null : filtered.first;
   }
 }
 

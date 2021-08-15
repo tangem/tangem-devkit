@@ -1,10 +1,30 @@
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/commons/extensions/app_extensions.dart';
-import 'package:devkit/commons/utils/exp_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/card_responses/card_response.dart';
 
 import 'base_widgets.dart';
+
+class SuccessResponseBody extends StatelessWidget {
+  final SuccessResponse _response;
+
+  const SuccessResponseBody(this._response);
+
+  @override
+  Widget build(BuildContext context) {
+    final transl = Transl.of(context);
+    return Column(
+      children: <Widget>[
+        ResponseTextWidget(
+          transl.response_card_cid,
+          _response.cardId,
+          transl.desc_response_card_cid,
+        ),
+      ],
+    );
+  }
+}
 
 class SignResponseBody extends StatelessWidget {
   final SignResponse _response;
@@ -15,7 +35,7 @@ class SignResponseBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final transl = Transl.of(context);
     return Column(
-      children: _response.signedHashes
+      children: _response.signatures
           .map((hash) => ResponseTextWidget(transl.response_sign_signature, hash, transl.desc_response_sign_signature))
           .toList(),
     );
@@ -53,14 +73,14 @@ class CreateWalletResponseBody extends StatelessWidget {
           _response.cardId,
           transl.desc_response_card_cid,
         ),
-        ResponseTextWidget(
-          transl.response_card_status,
-          _response.status,
-          transl.desc_response_card_wallet_public_key,
-        ),
+        // ResponseTextWidget(
+        //   transl.response_card_status,
+        //   _response.status,
+        //   transl.desc_response_card_wallet_public_key,
+        // ),
         ResponseTextWidget(
           transl.response_card_wallet_public_key,
-          _response.walletPublicKey,
+          _response.wallet,
           transl.desc_response_card_wallet_public_key,
         ),
       ],
@@ -128,28 +148,8 @@ class ReadIssuerDataResponseBody extends StatelessWidget {
   }
 }
 
-class WriteIssuerDataResponseBody extends StatelessWidget {
-  final WriteIssuerDataResponse _response;
-
-  const WriteIssuerDataResponseBody(this._response);
-
-  @override
-  Widget build(BuildContext context) {
-    final transl = Transl.of(context);
-    return Column(
-      children: <Widget>[
-        ResponseTextWidget(
-          transl.response_card_cid,
-          _response.cardId,
-          transl.desc_response_card_cid,
-        ),
-      ],
-    );
-  }
-}
-
 class ReadIssuerExDataResponseBody extends StatelessWidget {
-  final ReadIssuerExDataResponse _response;
+  final ReadIssuerExtraDataResponse _response;
 
   const ReadIssuerExDataResponseBody(this._response);
 
@@ -190,22 +190,6 @@ class ReadIssuerExDataResponseBody extends StatelessWidget {
   }
 }
 
-class WriteIssuerExDataResponseBody extends StatelessWidget {
-  final WriteIssuerExDataResponse _response;
-
-  const WriteIssuerExDataResponseBody(this._response);
-
-  @override
-  Widget build(BuildContext context) {
-    final transl = Transl.of(context);
-    return ResponseTextWidget(
-      transl.card_id,
-      _response.cardId,
-      transl.desc_card_id,
-    );
-  }
-}
-
 class ReadUserDataResponseBody extends StatelessWidget {
   final ReadUserDataResponse _response;
 
@@ -240,47 +224,6 @@ class ReadUserDataResponseBody extends StatelessWidget {
           transl.response_user_data_protected_counter,
           _response.userProtectedCounter,
           transl.desc_response_user_data_protected_counter,
-        ),
-      ],
-    );
-  }
-}
-
-class WriteUserDataResponseBody extends StatelessWidget {
-  final WriteUserDataResponse _response;
-
-  const WriteUserDataResponseBody(this._response);
-
-  @override
-  Widget build(BuildContext context) {
-    final transl = Transl.of(context);
-    return ResponseTextWidget(
-      transl.card_id,
-      _response.cardId,
-      transl.desc_card_id,
-    );
-  }
-}
-
-class SetPinResponseBody extends StatelessWidget {
-  final SetPinResponse _response;
-
-  const SetPinResponseBody(this._response);
-
-  @override
-  Widget build(BuildContext context) {
-    final transl = Transl.of(context);
-    return Column(
-      children: <Widget>[
-        ResponseTextWidget(
-          transl.response_card_cid,
-          _response.cardId,
-          transl.desc_response_card_cid,
-        ),
-        ResponseTextWidget(
-          transl.response_set_pin_status,
-          _response.status,
-          transl.desc_response_set_pin_status,
         ),
       ],
     );
@@ -329,7 +272,7 @@ class ReadFilesResponseBody extends StatelessWidget {
       );
     }
     final widgets = _response.files.map((e) {
-      final fileSettings = e.fileSettings == null ? "" : enumToString(e.fileSettings!);
+      final fileSettings = e.fileSettings == null ? "" : describeEnum(e.fileSettings!);
       return Column(
         children: [
           ResponseTextWidget(
@@ -351,37 +294,5 @@ class ReadFilesResponseBody extends StatelessWidget {
       );
     }).toList();
     return SingleChildScrollView(child: Column(children: widgets));
-  }
-}
-
-class DeleteFilesResponseBody extends StatelessWidget {
-  final DeleteFilesResponse _response;
-
-  const DeleteFilesResponseBody(this._response);
-
-  @override
-  Widget build(BuildContext context) {
-    final transl = Transl.of(context);
-    return ResponseTextWidget(
-      transl.card_id,
-      _response.cardId,
-      transl.desc_card_id,
-    );
-  }
-}
-
-class ChangeFilesSettingsResponseBody extends StatelessWidget {
-  final ChangeFilesSettingsResponse _response;
-
-  const ChangeFilesSettingsResponseBody(this._response);
-
-  @override
-  Widget build(BuildContext context) {
-    final transl = Transl.of(context);
-    return ResponseTextWidget(
-      transl.card_id,
-      _response.cardId,
-      transl.desc_card_id,
-    );
   }
 }

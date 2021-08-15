@@ -69,8 +69,8 @@ class TestBlock extends ActionBloc<dynamic> {
     switch (_commandType) {
       case TangemSdk.cScanCard:
         return ScanModel();
-      case TangemSdk.cSign:
-        return SignModel.fromJson(command);
+      case TangemSdk.cSignHashes:
+        return SignHashesModel.fromJson(command);
       case TangemSdk.cPersonalize:
         return PersonalizationModel.fromJson(command);
       case TangemSdk.cDepersonalize:
@@ -93,9 +93,9 @@ class TestBlock extends ActionBloc<dynamic> {
         return WriteUserDataModel.fromJson(command);
       case TangemSdk.cWriteUserProtectedData:
         return WriteUserProtectedDataModel.fromJson(command);
-      case TangemSdk.cSetPin1:
+      case TangemSdk.cSetAccessCode:
         return SetPin1Model.fromJson(command);
-      case TangemSdk.cSetPin2:
+      case TangemSdk.cSetPasscode:
         return SetPin2Model.fromJson(command);
       case TangemSdk.cWriteFiles:
         return FilesWriteModel.fromJson(command);

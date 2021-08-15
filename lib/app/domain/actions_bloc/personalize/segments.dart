@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tangem_sdk/extensions/exp_extensions.dart';
 import 'package:tangem_sdk/model/sdk.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
@@ -14,13 +14,13 @@ abstract class BaseSegment extends Disposable {
   final PersonalizationBloc _bloc;
   final List<StreamSubscription> _subscriptions = [];
 
-  PersonalizationConfig _config;
+  PersonalizationCardConfig _config;
 
   BaseSegment(this._bloc, this._config) {
     _initSubscriptions();
   }
 
-  update(PersonalizationConfig config) {
+  update(PersonalizationCardConfig config) {
     this._config = config;
     _configWasUpdated();
   }
@@ -42,7 +42,7 @@ class CardSegment extends BaseSegment {
   final bsNumber = BehaviorSubject<String>();
   final bsBatchId = BehaviorSubject<String>();
 
-  CardSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  CardSegment(PersonalizationBloc bloc, PersonalizationCardConfig config) : super(bloc, config);
 
   @override
   _initSubscriptions() {
@@ -53,7 +53,7 @@ class CardSegment extends BaseSegment {
 
   @override
   _configWasUpdated() {
-    bsSeries.add(_config.series);
+    bsSeries.add(_config.series ?? "");
     bsNumber.add(_config.startNumber.toString());
     bsBatchId.add(_config.cardData.batch);
   }
@@ -68,19 +68,18 @@ class CommonSegment extends BaseSegment {
   final bsWalletsCount = BehaviorSubject<String>();
   final bsPauseBeforePin = BehaviorSubject<Pair<String, int>>();
 
-  CommonSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  CommonSegment(PersonalizationBloc bloc, PersonalizationCardConfig config) : super(bloc, config);
 
   @override
   _initSubscriptions() {
     _subscriptions.add(bsBlockchain.listen(_listenBlockchain));
     _subscriptions.add(bsCustomBlockchain.listen(_listenCustomBlockchain));
     _subscriptions.add(bsCurve.listen((value) => _config.curveID = value.b));
-    _subscriptions.add(bsMaxSignatures.listen((value) => _config.MaxSignatures = value.isEmpty ? 0 : int.parse(value)));
+    _subscriptions
+        .add(bsMaxSignatures.listen((value) => _config.maxSignatures = value.isNullOrEmpty() ? 0 : int.parse(value)));
     _subscriptions.add(bsCreateWallet.listen((value) => _config.createWallet = value ? 1 : 0));
     _subscriptions.add(bsWalletsCount.listen((value) => _config.walletsCount = int.tryParse(value) ?? 0));
-    _subscriptions.add(bsPauseBeforePin.listen((value) => _config.pauseBeforePIN2 = value.b));
-
-    bsWalletsCount.add("5");
+    _subscriptions.add(bsPauseBeforePin.listen((value) => _config.pauseBeforePin2 = value.b));
   }
 
   _listenBlockchain(Pair<String, String> value) {
@@ -110,8 +109,8 @@ class CommonSegment extends BaseSegment {
 
     bsCurve.add(_bloc.values.getCurve(_config.curveID) ?? _bloc.values.curves[0]);
     bsCreateWallet.add(_config.createWallet == 1);
-    bsPauseBeforePin.add(_bloc.values.getPauseBeforePin(_config.pauseBeforePIN2) ?? _bloc.values.pauseBeforePin[0]);
-    bsMaxSignatures.add(_config.MaxSignatures.toString());
+    bsPauseBeforePin.add(_bloc.values.getPauseBeforePin(_config.pauseBeforePin2) ?? _bloc.values.pauseBeforePin[0]);
+    bsMaxSignatures.add(_config.maxSignatures?.toString() ?? "");
     bsWalletsCount.add(_config.walletsCount == null ? "" : _config.walletsCount.toString());
   }
 }
@@ -121,25 +120,27 @@ class SigningMethodSegment extends BaseSegment {
   final bsRawTx = BehaviorSubject<bool>();
   final bsHashSignedByIssuer = BehaviorSubject<bool>();
   final bsRawSignedByIssuer = BehaviorSubject<bool>();
-  final bsHashSignedByIsseruAndUpdateIssuerData = BehaviorSubject<bool>();
+  final bsHashSignedByIssuerAndUpdateIssuerData = BehaviorSubject<bool>();
   final bsRawSignedByIssuerAndUpdateIssuerData = BehaviorSubject<bool>();
   final bsExternalHash = BehaviorSubject<bool>();
 
   final maskBuilder = SigningMethodMaskBuilder();
 
-  SigningMethodSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  SigningMethodSegment(PersonalizationBloc bloc, PersonalizationCardConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
-    final method = _config.SigningMethod;
-    bsTxHashes.add(method.contains(SigningMethod.SignHash));
-    bsRawTx.add(method.contains(SigningMethod.SignRaw));
-    bsHashSignedByIssuer.add(method.contains(SigningMethod.SignHashSignedByIssuer));
-    bsRawSignedByIssuer.add(method.contains(SigningMethod.SignRawSignedByIssuer));
-    bsHashSignedByIsseruAndUpdateIssuerData
-        .add(method.contains(SigningMethod.SignHashSignedByIssuerAndUpdateIssuerData));
-    bsRawSignedByIssuerAndUpdateIssuerData.add(method.contains(SigningMethod.SignRawSignedByIssuerAndUpdateIssuerData));
-    bsExternalHash.add(method.contains(SigningMethod.SignPos));
+    final methods = _config.signingMethod.mapNotNull((element) => SigningMethodMaskBuilder.valueOf(element));
+    final mask = SigningMethodMaskBuilder().apply((it) {
+      methods.forEach((element) => it.addMethod(element.code));
+    }).build();
+    bsTxHashes.add(mask.contains(SigningMethod.SignHash));
+    bsRawTx.add(mask.contains(SigningMethod.SignRaw));
+    bsHashSignedByIssuer.add(mask.contains(SigningMethod.SignHashSignedByIssuer));
+    bsRawSignedByIssuer.add(mask.contains(SigningMethod.SignRawSignedByIssuer));
+    bsHashSignedByIssuerAndUpdateIssuerData.add(mask.contains(SigningMethod.SignHashSignedByIssuerAndUpdateIssuerData));
+    bsRawSignedByIssuerAndUpdateIssuerData.add(mask.contains(SigningMethod.SignRawSignedByIssuerAndUpdateIssuerData));
+    bsExternalHash.add(mask.contains(SigningMethod.SignPos));
   }
 
   @override
@@ -156,7 +157,7 @@ class SigningMethodSegment extends BaseSegment {
     _subscriptions.add(bsRawSignedByIssuer.listen((isChecked) {
       _handleMethodChanges(isChecked, SigningMethod.SignRawSignedByIssuer);
     }));
-    _subscriptions.add(bsHashSignedByIsseruAndUpdateIssuerData.listen((isChecked) {
+    _subscriptions.add(bsHashSignedByIssuerAndUpdateIssuerData.listen((isChecked) {
       _handleMethodChanges(isChecked, SigningMethod.SignHashSignedByIssuerAndUpdateIssuerData);
     }));
     _subscriptions.add(bsRawSignedByIssuerAndUpdateIssuerData.listen((isChecked) {
@@ -172,26 +173,29 @@ class SigningMethodSegment extends BaseSegment {
       maskBuilder.addMethod(method.code);
     else
       maskBuilder.removeMethod(method.code);
-    _config.SigningMethod = maskBuilder.build();
+    _config.signingMethod = maskBuilder.build().toList().enumToStringList();
   }
 }
 
 class SignHashExPropSegment extends BaseSegment {
   final pinLessFloorLimit = BehaviorSubject<String>();
   final hexCrExKey = BehaviorSubject<String>();
-  final requireTerminalCertSignature = BehaviorSubject<bool>();
-  final requireTerminalTxSignature = BehaviorSubject<bool>();
-  final checkPIN3OnCard = BehaviorSubject<bool>();
 
-  SignHashExPropSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  // final requireTerminalCertSignature = BehaviorSubject<bool>();
+  // final requireTerminalTxSignature = BehaviorSubject<bool>();
+  // final checkPIN3OnCard = BehaviorSubject<bool>();
+
+  SignHashExPropSegment(PersonalizationBloc bloc, PersonalizationCardConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
     pinLessFloorLimit.add("100000");
-    hexCrExKey.add(_config.hexCrExKey);
-    requireTerminalCertSignature.add(_config.requireTerminalCertSignature);
-    requireTerminalTxSignature.add(_config.requireTerminalTxSignature);
-    checkPIN3OnCard.add(_config.checkPIN3OnCard);
+    hexCrExKey.add(_config.hexCrExKey ?? "");
+
+    //TODO: с новыми апдейтом проперти исчезли
+    // requireTerminalCertSignature.add(_config.requireTerminalCertSignature);
+    // requireTerminalTxSignature.add(_config.requireTerminalTxSignature);
+    // checkPIN3OnCard.add(_config.checkPIN3OnCard);
   }
 
   @override
@@ -199,9 +203,9 @@ class SignHashExPropSegment extends BaseSegment {
     _subscriptions
         .add(pinLessFloorLimit.listen((value) => logE(this, "Attribute not implemented in the personalization JSON")));
     _subscriptions.add(hexCrExKey.listen((value) => _config.hexCrExKey = value));
-    _subscriptions.add(requireTerminalCertSignature.listen((value) => _config.requireTerminalCertSignature = value));
-    _subscriptions.add(requireTerminalTxSignature.listen((value) => _config.requireTerminalTxSignature = value));
-    _subscriptions.add(checkPIN3OnCard.listen((value) => _config.checkPIN3OnCard = value));
+    // _subscriptions.add(requireTerminalCertSignature.listen((value) => _config.requireTerminalCertSignature = value));
+    // _subscriptions.add(requireTerminalTxSignature.listen((value) => _config.requireTerminalTxSignature = value));
+    // _subscriptions.add(checkPIN3OnCard.listen((value) => _config.checkPIN3OnCard = value));
   }
 }
 
@@ -211,7 +215,7 @@ class TokenSegment extends BaseSegment {
   final tokenContractAddress = BehaviorSubject<String>();
   final tokenDecimal = BehaviorSubject<String>();
 
-  TokenSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  TokenSegment(PersonalizationBloc bloc, PersonalizationCardConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
@@ -266,17 +270,19 @@ class ProductMaskSegment extends BaseSegment {
   final tag = BehaviorSubject<bool>();
   final idCard = BehaviorSubject<bool>();
   final idIssuer = BehaviorSubject<bool>();
+  final authCard = BehaviorSubject<bool>();
   final twinCard = BehaviorSubject<bool>();
 
-  ProductMaskSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  ProductMaskSegment(PersonalizationBloc bloc, PersonalizationCardConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
-    note.add(_config.cardData.productNote);
-    tag.add(_config.cardData.productTag);
-    idCard.add(_config.cardData.productIdCard);
-    idIssuer.add(_config.cardData.productIdIssuer);
-    twinCard.add(_config.cardData.productTwinCard);
+    _config.cardData.productNote?.let((it) => note.add(it));
+    _config.cardData.productTag?.let((it) => tag.add(it));
+    _config.cardData.productIdCard?.let((it) => idCard.add(it));
+    _config.cardData.productIdIssuer?.let((it) => idIssuer.add(it));
+    _config.cardData.productAuthentication?.let((it) => authCard.add(it));
+    _config.cardData.productTwin?.let((it) => twinCard.add(it));
   }
 
   @override
@@ -285,12 +291,13 @@ class ProductMaskSegment extends BaseSegment {
     _subscriptions.add(tag.listen((isChecked) => _config.cardData.productTag = isChecked));
     _subscriptions.add(idCard.listen((isChecked) => _config.cardData.productIdCard = isChecked));
     _subscriptions.add(idIssuer.listen((isChecked) => _config.cardData.productIdIssuer = isChecked));
-    _subscriptions.add(twinCard.listen((isChecked) => _config.cardData.productTwinCard = isChecked));
+    _subscriptions.add(authCard.listen((isChecked) => _config.cardData.productAuthentication = isChecked));
+    _subscriptions.add(twinCard.listen((isChecked) => _config.cardData.productTwin = isChecked));
   }
 }
 
 class SettingsMaskSegment extends BaseSegment {
-  final isReusable = BehaviorSubject<bool>();
+  // final isReusable = BehaviorSubject<bool>();
   final useActivation = BehaviorSubject<bool>();
   final prohibitPurgeWallet = BehaviorSubject<bool>();
   final allowSelectBlockchain = BehaviorSubject<bool>();
@@ -307,31 +314,31 @@ class SettingsMaskSegment extends BaseSegment {
   final skipSecurityDelayIfValidatedByLinkedTerminal = BehaviorSubject<bool>();
   final restrictOverwriteIssuerExtraData = BehaviorSubject<bool>();
 
-  SettingsMaskSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  SettingsMaskSegment(PersonalizationBloc bloc, PersonalizationCardConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
-    isReusable.add(_config.isReusable);
+    // isReusable.add(_config.isReusable);
     useActivation.add(_config.useActivation);
     prohibitPurgeWallet.add(_config.prohibitPurgeWallet);
     allowSelectBlockchain.add(_config.allowSelectBlockchain);
     useBlock.add(_config.useBlock);
-    useOneCommandAtTime.add(_config.useOneCommandAtTime);
+    _config.useOneCommandAtTime?.let((it) => useOneCommandAtTime.add(it));
     useCvc.add(_config.useCvc);
     allowSetPIN1.add(_config.allowSetPIN1);
     allowSetPIN2.add(_config.allowSetPIN2);
     prohibitDefaultPIN1.add(_config.prohibitDefaultPIN1);
     smartSecurityDelay.add(_config.smartSecurityDelay);
-    protectIssuerDataAgainstReplay.add(_config.protectIssuerDataAgainstReplay);
+    _config.protectIssuerDataAgainstReplay?.let((it) => protectIssuerDataAgainstReplay.add(it));
     skipSecurityDelayIfValidatedByIssuer.add(_config.skipSecurityDelayIfValidatedByIssuer);
     skipCheckPIN2CVCIfValidatedByIssuer.add(_config.skipCheckPIN2CVCIfValidatedByIssuer);
     skipSecurityDelayIfValidatedByLinkedTerminal.add(_config.skipSecurityDelayIfValidatedByLinkedTerminal);
-    restrictOverwriteIssuerExtraData.add(_config.restrictOverwriteIssuerExtraData);
+    _config.restrictOverwriteIssuerDataEx?.let((it) => restrictOverwriteIssuerExtraData.add(it));
   }
 
   @override
   _initSubscriptions() {
-    _subscriptions.add(isReusable.listen((isChecked) => _config.isReusable = isChecked));
+    // _subscriptions.add(isReusable.listen((isChecked) => _config.isReusable = isChecked));
     _subscriptions.add(useActivation.listen((isChecked) => _config.useActivation = isChecked));
     _subscriptions.add(prohibitPurgeWallet.listen((isChecked) => _config.prohibitPurgeWallet = isChecked));
     _subscriptions.add(allowSelectBlockchain.listen((isChecked) => _config.allowSelectBlockchain = isChecked));
@@ -351,7 +358,7 @@ class SettingsMaskSegment extends BaseSegment {
     _subscriptions.add(skipSecurityDelayIfValidatedByLinkedTerminal
         .listen((isChecked) => _config.skipSecurityDelayIfValidatedByLinkedTerminal = isChecked));
     _subscriptions.add(
-        restrictOverwriteIssuerExtraData.listen((isChecked) => _config.restrictOverwriteIssuerExtraData = isChecked));
+        restrictOverwriteIssuerExtraData.listen((isChecked) => _config.restrictOverwriteIssuerDataEx = isChecked));
   }
 }
 
@@ -359,7 +366,8 @@ class SettingMaskProtocolEncryptionSegment extends BaseSegment {
   final allowUnencrypted = BehaviorSubject<bool>();
   final allowFastEncryption = BehaviorSubject<bool>();
 
-  SettingMaskProtocolEncryptionSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  SettingMaskProtocolEncryptionSegment(PersonalizationBloc bloc, PersonalizationCardConfig config)
+      : super(bloc, config);
 
   @override
   _configWasUpdated() {
@@ -385,18 +393,18 @@ class SettingsMaskNdefSegment extends BaseSegment {
   final typeAar = "AAR";
   final typeUri = "URI";
 
-  SettingsMaskNdefSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  SettingsMaskNdefSegment(PersonalizationBloc bloc, PersonalizationCardConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
     useNDEF.add(_config.useNDEF);
-    useDynamicNDEF.add(_config.useDynamicNDEF);
-    disablePrecomputedNDEF.add(_config.disablePrecomputedNDEF);
+    _config.useDynamicNDEF?.let((it) => useDynamicNDEF.add(it));
+    _config.disablePrecomputedNDEF?.let((it) => disablePrecomputedNDEF.add(it));
     _updateNdefRecords();
   }
 
   _updateNdefRecords() {
-    NdefRecordSdk? findNdef(String type) => _config.ndef.firstWhereOrNull((element) => element.type == type);
+    NdefRecordSdk? findNdef(String type) => _config.ndefRecords.firstWhereOrNull((element) => element.type == type);
     final foundAar = findNdef(typeAar);
     if (foundAar == null) {
       final noneAar = _bloc.values.getAar("");
@@ -426,8 +434,8 @@ class SettingsMaskNdefSegment extends BaseSegment {
   }
 
   _initNdefSubscriptions() {
-    removeAll(String type) => _config.ndef.removeWhere((element) => element.type == type);
-    addNdef(String type, String value) => _config.ndef.add(NdefRecordSdk(type, value));
+    removeAll(String type) => _config.ndefRecords.removeWhere((element) => element.type == type);
+    addNdef(String type, String value) => _config.ndefRecords.add(NdefRecordSdk(type, value));
 
     _subscriptions.add(aar.listen((value) {
       if (isCustom(value)) return;
@@ -462,21 +470,21 @@ class PinsSegmentSegment extends BaseSegment {
   final pin3 = BehaviorSubject<String>();
   final cvc = BehaviorSubject<String>();
 
-  PinsSegmentSegment(PersonalizationBloc bloc, PersonalizationConfig config) : super(bloc, config);
+  PinsSegmentSegment(PersonalizationBloc bloc, PersonalizationCardConfig config) : super(bloc, config);
 
   @override
   _configWasUpdated() {
-    pin1.add(_config.PIN.toString());
-    pin2.add(_config.PIN2.toString());
-    pin3.add(_config.PIN3.toString());
-    cvc.add(_config.CVC.toString());
+    pin1.add(_config.pin.toString());
+    pin2.add(_config.pin2.toString());
+    pin3.add(_config.pin3.toString());
+    cvc.add(_config.cvc.toString());
   }
 
   @override
   _initSubscriptions() {
-    _subscriptions.add(pin1.listen((value) => _config.PIN = value));
-    _subscriptions.add(pin2.listen((value) => _config.PIN2 = value));
-    _subscriptions.add(pin3.listen((value) => _config.PIN3 = value));
-    _subscriptions.add(cvc.listen((value) => _config.CVC = value));
+    _subscriptions.add(pin1.listen((value) => _config.pin = value));
+    _subscriptions.add(pin2.listen((value) => _config.pin2 = value));
+    _subscriptions.add(pin3.listen((value) => _config.pin3 = value));
+    _subscriptions.add(cvc.listen((value) => _config.cvc = value));
   }
 }

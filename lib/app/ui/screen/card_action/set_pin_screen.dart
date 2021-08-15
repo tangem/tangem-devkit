@@ -56,9 +56,9 @@ class SetPinFrame extends StatelessWidget {
 
   String _getScreenTitle(Transl transl, PinType pinType) {
     switch (pinType) {
-      case PinType.PIN1:
+      case PinType.ACCESS_CODE:
         return transl.screen_set_pin1;
-      case PinType.PIN2:
+      case PinType.PASSCODE:
         return transl.screen_set_pin2;
       default:
         throw Exception("Unsupported PinType");
@@ -103,8 +103,8 @@ class _SetPinBodyState extends State<SetPinBody> {
         InputWidget(
           ItemName.pinCode,
           _pinCodeController.controller,
-          hint: _bloc.pinType == PinType.PIN1 ? transl.pin1 : transl.pin2,
-          description: _bloc.pinType == PinType.PIN1 ? transl.desc_pin1 : transl.desc_pin2,
+          hint: _bloc.pinType == PinType.ACCESS_CODE ? transl.pin1 : transl.pin2,
+          description: _bloc.pinType == PinType.ACCESS_CODE ? transl.desc_pin1 : transl.desc_pin2,
           padding: EdgeInsets.symmetric(horizontal: 16),
         ),
       ],

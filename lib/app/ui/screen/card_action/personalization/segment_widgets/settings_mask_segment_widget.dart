@@ -16,13 +16,13 @@ class SettingsMaskSegmentWidget extends StatelessWidget {
     return Column(
       children: <Widget>[
         SegmentHeader(transl.pers_segment_settings_mask, description: transl.desc_pers_segment_settings_mask),
-        SwitchWidget(
-          ItemName.isReusable,
-          transl.pers_item_is_reusable,
-          transl.desc_pers_item_is_reusable,
-          settingMask.isReusable,
-          initialData: false,
-        ).withUnderline(),
+        // SwitchWidget(
+        //   ItemName.isReusable,
+        //   transl.pers_item_is_reusable,
+        //   transl.desc_pers_item_is_reusable,
+        //   settingMask.isReusable,
+        //   initialData: false,
+        // ).withUnderline(),
         SwitchWidget(
           ItemName.useActivation,
           transl.pers_item_use_activation,
