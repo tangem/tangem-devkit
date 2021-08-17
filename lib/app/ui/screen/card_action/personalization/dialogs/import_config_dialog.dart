@@ -46,7 +46,11 @@ class _ImportConfigWidgetState extends State<ImportConfigWidget> {
           Container(
             child: TextField(
               key: ItemId.from(ItemName.personalizationImportInput),
-              decoration: InputDecoration(contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 5), labelText: "Paste the configuration", isDense: true),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                labelText: "Paste the configuration",
+                isDense: true,
+              ),
               style: TextStyle(fontSize: AppDimen.itemTextSize),
               onSubmitted: _onSubmit,
               controller: _controller,
@@ -55,10 +59,10 @@ class _ImportConfigWidgetState extends State<ImportConfigWidget> {
           SizedBox(height: 15),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: double.infinity),
-            child: OutlineButton(
+            child: OutlinedButton(
               key: ItemId.btnFrom(ItemName.personalizationImportInput),
               child: TextWidget(Transl.of(context).menu_pers_import),
-              onPressed: () => _onSubmit(_controller.text),
+              onPressed: _controller.text.isEmpty ? null : () => _onSubmit(_controller.text),
             ),
           )
         ],

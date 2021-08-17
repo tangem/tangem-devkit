@@ -78,6 +78,8 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     _restoreConfig(_storage.get(name));
   }
 
+  PersonalizationConfig? getConfig(String name) => _storage.get(name);
+
   _restoreConfig(PersonalizationConfig? config) {
     if (config == null) return;
 
@@ -97,7 +99,8 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   }
 
   saveNewConfig(String name) {
-    _storage.add(name, _storage.getCurrent());
+    final copyOfCurrent = PersonalizationConfig.fromJson(_storage.getCurrent().toJson());
+    _storage.add(name, copyOfCurrent);
     _storage.save();
   }
 
@@ -116,9 +119,22 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     }
   }
 
-  exportCurrentConfig() {
+  shareConfig(String name) {
+    _shareConfig(_storage.get(name));
+  }
+
+  shareCurrentConfig() {
+    _shareConfig(_storage.getCurrent());
+  }
+
+  _shareConfig(PersonalizationConfig? config) {
+    if (config == null) {
+      sendSnackbarMessage("Config not found");
+      return;
+    }
+
     try {
-      final jsonConfig = json.encode(_storage.getCurrent());
+      final jsonConfig = json.encode(config);
       Share.share(jsonConfig);
     } catch (ex) {
       sendSnackbarMessage(ex);

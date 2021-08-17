@@ -378,7 +378,7 @@ class Languages {
   "pin2": "Pin2",
   "desc_pin2": "Hashed user’s PIN2 code for signing and state-changing operations. See Security section for more details.",
 
-  "hint_enter_config_name": "Enter a name for current preset",
+  "hint_enter_config_name": "Enter a name for the current preset",
   "hint_paste": "Paste",
   "show_rare_fields": "Show all fields",
   "hide_rare_fields": "Hide fields",
