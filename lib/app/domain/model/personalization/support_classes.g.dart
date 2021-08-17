@@ -6,8 +6,7 @@ part of 'support_classes.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PersonalizationConfig _$PersonalizationConfigFromJson(
-    Map<String, dynamic> json) {
+PersonalizationConfig _$PersonalizationConfigFromJson(Map<String, dynamic> json) {
   return PersonalizationConfig(
     json['CVC'] as String,
     json['MaxSignatures'] as int,
@@ -30,9 +29,7 @@ PersonalizationConfig _$PersonalizationConfigFromJson(
     json['hexCrExKey'] as String,
     json['isReusable'] as bool,
     json['issuerName'] as String,
-    (json['ndef'] as List<dynamic>)
-        .map((e) => NdefRecordSdk.fromJson(e as Map<String, dynamic>))
-        .toList(),
+    (json['ndef'] as List<dynamic>).map((e) => NdefRecordSdk.fromJson(e as Map<String, dynamic>)).toList(),
     json['numberFormat'] as String,
     json['pauseBeforePIN2'] as int,
     json['protectIssuerDataAgainstReplay'] as bool,
@@ -57,9 +54,7 @@ PersonalizationConfig _$PersonalizationConfigFromJson(
   );
 }
 
-Map<String, dynamic> _$PersonalizationConfigToJson(
-        PersonalizationConfig instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$PersonalizationConfigToJson(PersonalizationConfig instance) => <String, dynamic>{
       'CVC': instance.CVC,
       'MaxSignatures': instance.MaxSignatures,
       'PIN': instance.PIN,
@@ -90,15 +85,11 @@ Map<String, dynamic> _$PersonalizationConfigToJson(
       'releaseVersion': instance.releaseVersion,
       'requireTerminalCertSignature': instance.requireTerminalCertSignature,
       'requireTerminalTxSignature': instance.requireTerminalTxSignature,
-      'restrictOverwriteIssuerExtraData':
-          instance.restrictOverwriteIssuerExtraData,
+      'restrictOverwriteIssuerExtraData': instance.restrictOverwriteIssuerExtraData,
       'series': instance.series,
-      'skipCheckPIN2CVCIfValidatedByIssuer':
-          instance.skipCheckPIN2CVCIfValidatedByIssuer,
-      'skipSecurityDelayIfValidatedByIssuer':
-          instance.skipSecurityDelayIfValidatedByIssuer,
-      'skipSecurityDelayIfValidatedByLinkedTerminal':
-          instance.skipSecurityDelayIfValidatedByLinkedTerminal,
+      'skipCheckPIN2CVCIfValidatedByIssuer': instance.skipCheckPIN2CVCIfValidatedByIssuer,
+      'skipSecurityDelayIfValidatedByIssuer': instance.skipSecurityDelayIfValidatedByIssuer,
+      'skipSecurityDelayIfValidatedByLinkedTerminal': instance.skipSecurityDelayIfValidatedByLinkedTerminal,
       'smartSecurityDelay': instance.smartSecurityDelay,
       'startNumber': instance.startNumber,
       'useActivation': instance.useActivation,
@@ -109,8 +100,7 @@ Map<String, dynamic> _$PersonalizationConfigToJson(
       'useOneCommandAtTime': instance.useOneCommandAtTime,
     };
 
-PersonalizationCardData _$PersonalizationCardDataFromJson(
-    Map<String, dynamic> json) {
+PersonalizationCardData _$PersonalizationCardDataFromJson(Map<String, dynamic> json) {
   return PersonalizationCardData(
     json['batch'] as String,
     json['blockchain'] as String,
@@ -126,8 +116,7 @@ PersonalizationCardData _$PersonalizationCardDataFromJson(
   );
 }
 
-Map<String, dynamic> _$PersonalizationCardDataToJson(
-    PersonalizationCardData instance) {
+Map<String, dynamic> _$PersonalizationCardDataToJson(PersonalizationCardData instance) {
   final val = <String, dynamic>{
     'batch': instance.batch,
     'blockchain': instance.blockchain,
