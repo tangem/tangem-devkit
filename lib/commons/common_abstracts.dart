@@ -59,9 +59,9 @@ abstract class Disposable {
   dispose();
 }
 
-abstract class DisposableBloc extends Disposable {}
+abstract class DisposableBloc implements Disposable {}
 
-abstract class BaseBloc extends DisposableBloc with SnackBarStreamHolder {
+abstract class AsyncBloc implements DisposableBloc {
   final _subscriptions = <StreamSubscription>[];
   final _subjects = <Subject>[];
 
@@ -78,8 +78,8 @@ abstract class BaseBloc extends DisposableBloc with SnackBarStreamHolder {
     _subscriptions.forEach((element) => element.cancel());
     _subjects.forEach((element) => element.close());
   }
-
 }
+abstract class BaseBloc with AsyncBloc, SnackBarStreamHolder {}
 
 abstract class SnackBarStreamHolder {
   final PublishSubject<dynamic> _snackbarMessage = PublishSubject<dynamic>();

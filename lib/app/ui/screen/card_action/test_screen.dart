@@ -113,7 +113,7 @@ class _TestBodyState extends State<TestBody> {
           child: TextWidget.center("Error Response"),
         ),
         HorizontalDelimiter(),
-        StreamBuilder<TangemSdkBaseError?>(
+        StreamBuilder<TangemSdkPluginError?>(
           stream: _bloc.errorResponseStream,
           initialData: null,
           builder: (context, snapshot) {
@@ -121,7 +121,7 @@ class _TestBodyState extends State<TestBody> {
             if (snapshot.data == null) return stub;
 
             final data = snapshot.data!;
-            if (data is TangemSdkError) {
+            if (data is TangemSdkPluginError) {
               Fluttertoast.showToast(msg: data.message, toastLength: Toast.LENGTH_LONG);
               return stub;
             } else {

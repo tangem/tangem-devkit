@@ -19,10 +19,11 @@ import 'package:devkit/app/ui/screen/card_action/wallet_create_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/wallet_purge_screen.dart';
 import 'package:devkit/app/ui/screen/main_screen.dart';
 import 'package:devkit/app/ui/screen/response/response_screen.dart';
+import 'package:devkit/app_test_assembler/ui/screen/json_test_assembler_screen.dart';
 import 'package:devkit/app_test_assembler/ui/screen/json_test_detail_screen.dart';
-import 'package:devkit/app_test_assembler/ui/screen/json_test_list_screen.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_setup_detail_screen.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_step_detail_screen.dart';
+import 'package:devkit/app_test_launcher/ui/screen/json_test_launcher_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/model/sdk.dart';
@@ -30,10 +31,11 @@ import 'package:tangem_sdk/model/sdk.dart';
 class Routes {
   static const MAIN = "/";
   static const TEST = "/test";
-  static const JSON_TEST_LIST = "/json_test_list";
+  static const JSON_TEST_ASSEMBLER = "/json_test_assembler";
   static const JSON_TEST_DETAIL = "/json_test_detail";
   static const TEST_SETUP_DETAIL = "/test_setup_detail";
   static const TEST_STEP_DETAIL = "/test_step_detail";
+  static const JSON_TEST_LAUNCHER = "/json_test_launcher";
   static const SCAN = "/scan";
   static const SIGN = "/sign";
   static const PERSONALIZE = "/personalize";
@@ -101,8 +103,8 @@ class Routes {
         return PageRouteBuilder(pageBuilder: (_, __, ___) => ResponseScreen(arguments: settings.arguments));
       case TEST:
         return MaterialPageRoute(builder: (_) => TestScreen());
-      case JSON_TEST_LIST:
-        return MaterialPageRoute(builder: (_) => JsonTestListScreen());
+      case JSON_TEST_ASSEMBLER:
+        return MaterialPageRoute(builder: (_) => JsonTestAssemblerScreen());
       case JSON_TEST_DETAIL:
         return CupertinoPageRoute(
           builder: (_) => JsonTestDetailScreen(),
@@ -118,6 +120,8 @@ class Routes {
           builder: (_) => TestStepDetailScreen(),
           settings: settings,
         );
+      case JSON_TEST_LAUNCHER:
+        return MaterialPageRoute(builder: (_) => JsonTestLauncherScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

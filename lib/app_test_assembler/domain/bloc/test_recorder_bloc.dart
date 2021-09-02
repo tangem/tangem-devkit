@@ -3,7 +3,6 @@ import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_assembler/domain/test_storages.dart';
 import 'package:devkit/commons/common_abstracts.dart';
 import 'package:tangem_sdk/model/command_data.dart';
-import 'package:tangem_sdk/sdk_plugin.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 class TestRecorderBlock extends BaseBloc {
@@ -65,7 +64,7 @@ class TestRecorderBlock extends BaseBloc {
     _currentRecord = null;
   }
 
-  handleCommandError(TangemSdkBaseError? error) {
+  handleCommandError(TangemSdkPluginError? error) {
     _currentRecord = null;
   }
 }
@@ -104,7 +103,7 @@ class TestAssembler {
     }
   }
 
-  TestStep? _createStep(StepRecord record, int index, TestStep stepConfig) {
+  StepModel? _createStep(StepRecord record, int index, StepModel stepConfig) {
     final errorMessage = "Can't create a test step for the command: ${record.commandData.type}";
     if (!record.commandData.isPrepared()) {
       onErrorListener?.call("$errorMessage. Command isn't prepared.");
@@ -125,10 +124,11 @@ class TestAssembler {
 
     final jsonRpc = JSONRPCRequest.fromCommandDataJson(jsonData);
     final expectedResult = (record.response as TangemSdkResponse).toJson();
-    return TestStep(
-      "$index.${stepConfig.name}.${jsonRpc.method}",
+    final modelName = ["$index", jsonRpc.method].join("_");
+    return StepModel(
+      modelName,
       jsonRpc.method,
-      jsonRpc.parameters,
+      jsonRpc.params,
       expectedResult,
       stepConfig.asserts,
       stepConfig.actionType,

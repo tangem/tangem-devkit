@@ -1,0 +1,183 @@
+{
+  "setup": {
+    "name": "Experiment with fails",
+    "description": "It shows what we can do with a card",
+    "personalizationConfig": {
+      "config": {
+        "issuerName": "TANGEM SDK",
+        "acquirerName": "Smart Cash",
+        "series": "BB",
+        "startNumber": 300000000000,
+        "count": 0,
+        "pin": "000000",
+        "pin2": "000",
+        "pin3": "",
+        "hexCrExKey": "00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA998877665544332211000000111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFF",
+        "cvc": "000",
+        "pauseBeforePin2": 5000,
+        "smartSecurityDelay": true,
+        "curveID": "Secp256k1",
+        "signingMethods": [
+          "SignHash"
+        ],
+        "maxSignatures": 999999,
+        "isReusable": true,
+        "allowSetPIN1": true,
+        "allowSetPIN2": true,
+        "useActivation": false,
+        "useCvc": false,
+        "useNDEF": true,
+        "useDynamicNDEF": true,
+        "useOneCommandAtTime": false,
+        "useBlock": false,
+        "allowSelectBlockchain": true,
+        "prohibitPurgeWallet": false,
+        "allowUnencrypted": true,
+        "allowFastEncryption": true,
+        "protectIssuerDataAgainstReplay": false,
+        "prohibitDefaultPIN1": false,
+        "disablePrecomputedNDEF": false,
+        "skipSecurityDelayIfValidatedByIssuer": true,
+        "skipCheckPIN2CVCIfValidatedByIssuer": true,
+        "skipSecurityDelayIfValidatedByLinkedTerminal": true,
+        "restrictOverwriteIssuerExtraData": false,
+        "requireTerminalTxSignature": false,
+        "requireTerminalCertSignature": false,
+        "checkPIN3OnCard": false,
+        "createWallet": false,
+        "walletsCount": 1,
+        "cardData": {
+          "batchId": "FFFF",
+          "blockchainName": "ETH",
+          "issuerName": "TANGEM SDK",
+          "manufacturerSignature": null,
+          "manufactureDateTime": "2021-06-22",
+          "productMask": [
+            "Note"
+          ]
+        },
+        "ndefRecords": [
+          {
+            "type": "URI",
+            "value": "https://tangem.com"
+          }
+        ]
+      },
+      "issuer": {
+        "name": "TANGEM SDK",
+        "id": "TANGEM SDK",
+        "dataKeyPair": {
+          "publicKey": "045f16bd1d2eafe463e62a335a09e6b2bbcbd04452526885cb679fc4d27af1bd22f553c7deefb54fd3d4f361d14e6dc3f11b7d4ea183250a60720ebdf9e110cd26",
+          "privateKey": "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92"
+        },
+        "transactionKeyPair": {
+          "publicKey": "0484c5192e9bfa6c528a344f442137a92b89ea835bfef1d04cb4362eb906b508c5889846cfea71ba6dc7b3120c2208df9c46127d3d85cb5cfbd1479e97133a39d8",
+          "privateKey": "11121314151617184771ED81F2BACF57479E4735EB1405081918171615141312"
+        }
+      },
+      "acquirer": {
+        "name": "Smart Cash",
+        "id": "Smart Cash",
+        "keyPair": {
+          "publicKey": "0456ad1a82b22bcb40c38fd08939f87e6b80e40dec5b3bdb351c55fcd709e47f9fb2ed00c2304d3a986f79c5ae0ac3c84e88da46dc8f513b7542c716af8c9a2daf",
+          "privateKey": "21222324252627284771ED81F2BACF57479E4735EB1405083927372D40DA9E92"
+        }
+      },
+      "manufacturer": {
+        "name": "TANGEM",
+        "keyPair": {
+          "publicKey": "04bab86d56298c996f564a84fc88e28aed38184b12f07e519113bef48c76f3df3adc303599b08ac05b55ec3df98d9338573a6242f76f5d28f4f0f364e87e8fca2f",
+          "privateKey": "1b48cfd24bbb5b394771ed81f2bacf57479e4735eb1405083927372d40da9e92"
+        }
+      }
+    },
+    "sdkConfig": {},
+    "minimalFirmware": null,
+    "platform": null,
+    "iterations": 1,
+    "creationDateMs": 1626326543961
+  },
+  "steps": [
+    {
+      "name": "0_scan",
+      "method": "SCAN_TASK",
+      "parameters": {},
+      "expectedResult": {
+        "cardId": "BB03000000000004",
+        "manufacturerName": "TANGEM",
+        "status": "Empty"
+      },
+      "asserts": [
+        {
+          "type": "EQUALS",
+          "fields": [
+            "{#parent.actualResult.status}",
+            "Empty"
+          ]
+        },
+        {
+          "type": "EQUALS",
+          "fields": [
+            "{#setup.personalizationConfig.manufacturer.name}",
+            "{#parent.actualResult.manufacturerName}"
+          ]
+        }
+      ],
+      "actionType": "NFC_SESSION_RUNNABLE",
+      "iterations": 1
+    },
+    {
+      "name": "1_createWallet",
+      "method": "CREATE_WALLET_TASK",
+      "parameters": {
+        "config": {
+          "isReusable": true,
+          "prohibitPurgeWallet": null,
+          "curveId": "Secp256k1",
+          "signingMethods": "SignHash"
+        }
+      },
+      "expectedResult": {
+        "cardId": "BB03000000000004",
+        "status": "Loaded",
+        "walletPublicKey": "049AD86A7F7F7696369A39D53CFA619FD1D917608AEF6CAF9F85BC9E7577D28B1C76EFF56384DDB867EFD1A38DE0479240258649A03CB76DF7EB8F8CAE9A8775C0"
+      },
+      "asserts": [
+        {
+          "type": "EQUALS",
+          "fields": [
+            "{#parent.actualResult.status}",
+            "Loaded"
+          ]
+        }
+      ],
+      "actionType": "NFC_SESSION_RUNNABLE",
+      "iterations": 1
+    },
+    {
+      "name": "2_sign",
+      "method": "SIGN_COMMAND",
+      "parameters": {
+        "hashes": [
+          "44617461207573656420666f722068617368696e67"
+        ],
+        "walletPublicKey": "{#1_createWallet.actualResult.walletPublicKey}"
+      },
+      "expectedResult": {
+        "signedHashes": [
+          "2EF25F7E70D4332E4C915A50BA56C3143950DD51130B4723F998AC05A2F5679F03462CCA69E2A3B37372A108CD2BB411FBD00575C9FC30DF4EFB82BB4BF93276"
+        ]
+      },
+      "asserts": [
+        {
+          "type": "IS_NOT_EMPTY",
+          "fields": [
+            "{#parent.actualResult.walletPublicKey}"
+          ]
+        }
+      ],
+      "actionType": "NFC_SESSION_RUNNABLE",
+      "iterations": 2
+    }
+  ]
+}

@@ -9,7 +9,7 @@ part of 'json_test_model.dart';
 JsonTest _$JsonTestFromJson(Map<String, dynamic> json) {
   return JsonTest(
     TestSetup.fromJson(json['setup'] as Map<String, dynamic>),
-    (json['steps'] as List<dynamic>).map((e) => TestStep.fromJson(e as Map<String, dynamic>)).toList(),
+    (json['steps'] as List<dynamic>).map((e) => StepModel.fromJson(e as Map<String, dynamic>)).toList(),
   );
 }
 
@@ -23,11 +23,11 @@ TestSetup _$TestSetupFromJson(Map<String, dynamic> json) {
     json['name'] as String,
     json['description'] as String,
     json['personalizationConfig'] as Map<String, dynamic>,
-    json['sdkConfig'] == null ? null : ConfigSdk.fromJson(json['sdkConfig'] as Map<String, dynamic>),
-    json['minimalFirmware'] == null ? null : FirmwareVersion.fromJson(json['minimalFirmware']),
+    json['sdkConfig'] as Map<String, dynamic>,
+    json['minimalFirmware'] == null ? null : FirmwareVersion.fromJson(json['minimalFirmware'] as String),
     json['platform'] as String?,
     json['iterations'] as int?,
-    json['creationDateMs'] as int,
+    json['creationDateMs'] as int?,
   );
 }
 
@@ -42,42 +42,36 @@ Map<String, dynamic> _$TestSetupToJson(TestSetup instance) => <String, dynamic>{
       'creationDateMs': instance.creationDateMs,
     };
 
-ConfigSdk _$ConfigSdkFromJson(Map<String, dynamic> json) {
-  return ConfigSdk();
-}
-
-Map<String, dynamic> _$ConfigSdkToJson(ConfigSdk instance) => <String, dynamic>{};
-
-TestStep _$TestStepFromJson(Map<String, dynamic> json) {
-  return TestStep(
+StepModel _$TestStepFromJson(Map<String, dynamic> json) {
+  return StepModel(
     json['name'] as String,
     json['method'] as String,
     json['parameters'] as Map<String, dynamic>,
     json['expectedResult'] as Map<String, dynamic>,
-    (json['asserts'] as List<dynamic>).map((e) => TestAssert.fromJson(e as Map<String, dynamic>)).toList(),
+    (json['asserts'] as List<dynamic>).map((e) => AssertModel.fromJson(e as Map<String, dynamic>)).toList(),
     json['actionType'] as String,
     json['iterations'] as int?,
   );
 }
 
-Map<String, dynamic> _$TestStepToJson(TestStep instance) => <String, dynamic>{
+Map<String, dynamic> _$TestStepToJson(StepModel instance) => <String, dynamic>{
       'name': instance.name,
       'method': instance.method,
-      'parameters': instance.parameters,
+      'parameters': instance.params,
       'expectedResult': instance.expectedResult,
       'asserts': instance.asserts,
       'actionType': instance.actionType,
       'iterations': instance.iterations,
     };
 
-TestAssert _$TestAssertFromJson(Map<String, dynamic> json) {
-  return TestAssert(
+AssertModel _$TestAssertFromJson(Map<String, dynamic> json) {
+  return AssertModel(
     json['type'] as String,
-    (json['fields'] as List<dynamic>).map((e) => e as String).toList(),
+    (json['fields'] == null ? null : (json['fields'] as List<dynamic>).map((e) => e).toList()),
   );
 }
 
-Map<String, dynamic> _$TestAssertToJson(TestAssert instance) => <String, dynamic>{
+Map<String, dynamic> _$TestAssertToJson(AssertModel instance) => <String, dynamic>{
       'type': instance.type,
       'fields': instance.fields,
     };

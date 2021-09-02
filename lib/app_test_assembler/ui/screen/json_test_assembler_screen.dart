@@ -1,6 +1,6 @@
 import 'package:devkit/app/ui/screen/card_action/helpers.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
-import 'package:devkit/app_test_assembler/domain/bloc/json_test_list_bloc.dart';
+import 'package:devkit/app_test_assembler/domain/bloc/json_test_assembler_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/bloc/test_recorder_bloc.dart';
 import 'package:devkit/app_test_assembler/domain/model/json_test_model.dart';
 import 'package:devkit/app_test_assembler/ui/screen/json_test_detail_screen.dart';
@@ -11,22 +11,24 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tangem_sdk/extensions/exp_extensions.dart';
 
-class JsonTestListScreen extends StatefulWidget {
-  const JsonTestListScreen({Key? key}) : super(key: key);
+class JsonTestAssemblerScreen extends StatefulWidget {
+  const JsonTestAssemblerScreen({Key? key}) : super(key: key);
 
   @override
-  _JsonTestListScreenState createState() => _JsonTestListScreenState();
+  _JsonTestAssemblerScreenState createState() => _JsonTestAssemblerScreenState();
 }
 
-class _JsonTestListScreenState extends State<JsonTestListScreen> {
-  late JsonTestListBloc _bloc;
+class _JsonTestAssemblerScreenState extends State<JsonTestAssemblerScreen> {
+  late JsonTestAssemblerBloc _bloc;
 
   @override
   Widget build(BuildContext context) {
     final storageRepo = context.read<ApplicationContext>().storageRepo;
     return MultiRepositoryProvider(
-      providers: [RepositoryProvider(create: (context) => JsonTestListBloc(storageRepo).apply((it) => _bloc = it))],
-      child: JsonTestListFrame(),
+      providers: [
+        RepositoryProvider(create: (context) => JsonTestAssemblerBloc(storageRepo).apply((it) => _bloc = it))
+      ],
+      child: JsonTestAssemblerFrame(),
     );
   }
 
@@ -37,7 +39,7 @@ class _JsonTestListScreenState extends State<JsonTestListScreen> {
   }
 }
 
-class JsonTestListFrame extends StatelessWidget {
+class JsonTestAssemblerFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,25 +47,25 @@ class JsonTestListFrame extends StatelessWidget {
         title: Text("Test assembler"),
         actions: [StartStopRecordWidget()],
       ),
-      body: JsonTestListBody(),
+      body: JsonTestAssemblerBody(),
     );
   }
 }
 
-class JsonTestListBody extends StatefulWidget {
+class JsonTestAssemblerBody extends StatefulWidget {
   @override
-  _JsonTestListBodyState createState() => _JsonTestListBodyState();
+  _JsonTestAssemblerBodyState createState() => _JsonTestAssemblerBodyState();
 }
 
-class _JsonTestListBodyState extends State<JsonTestListBody> {
-  late JsonTestListBloc _jsonTestListBloc;
+class _JsonTestAssemblerBodyState extends State<JsonTestAssemblerBody> {
+  late JsonTestAssemblerBloc _jsonTestAssemblerBloc;
   late TestRecorderBlock _testRecorderBlock;
 
   @override
   void initState() {
     super.initState();
 
-    _jsonTestListBloc = context.read<JsonTestListBloc>();
+    _jsonTestAssemblerBloc = context.read<JsonTestAssemblerBloc>();
     _testRecorderBlock = context.read<ApplicationContext>().testRecorderBloc;
   }
 
@@ -71,9 +73,9 @@ class _JsonTestListBodyState extends State<JsonTestListBody> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        HiddenSnackBarHandlerWidget([_jsonTestListBloc, _testRecorderBlock]),
+        HiddenSnackBarHandlerWidget([_jsonTestAssemblerBloc, _testRecorderBlock]),
         StreamBuilder<List<JsonTest>>(
-          stream: _jsonTestListBloc.bsRecords.stream,
+          stream: _jsonTestAssemblerBloc.bsRecords.stream,
           builder: (context, snapshot) {
             if (snapshot.data == null) return CenterLoadingText();
             if (snapshot.data!.isEmpty) return CenterText("No tests have been created yet");
@@ -91,9 +93,10 @@ class _JsonTestListBodyState extends State<JsonTestListBody> {
                     children: [
                       IconButton(
                         icon: Icon(Icons.delete_outline),
-                        onPressed: _testRecorderBlock.recordIsActive() ? null : () => _jsonTestListBloc.delete(index),
+                        onPressed:
+                            _testRecorderBlock.recordIsActive() ? null : () => _jsonTestAssemblerBloc.delete(index),
                       ),
-                      IconButton(icon: Icon(Icons.ios_share), onPressed: () => _jsonTestListBloc.share(index)),
+                      IconButton(icon: Icon(Icons.ios_share), onPressed: () => _jsonTestAssemblerBloc.share(index)),
                     ],
                   ),
                 );

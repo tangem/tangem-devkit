@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:tangem_sdk/plugin_error.dart';
 import 'package:tangem_sdk/tangem_sdk.dart';
 
 import 'app_widgets.dart';
@@ -46,7 +47,7 @@ class _CommandListWidgetState extends State<CommandListWidget> {
       final prettyJson = _jsonEncoder.convert(success.toJson());
       prettyJson.split("\n").forEach((element) => print(element));
     }, (error) {
-      if (error is SdkPluginError) {
+      if (error is TangemSdkPluginError) {
         print(error.message);
       } else {
         print(error);
@@ -121,11 +122,11 @@ class _CommandListWidgetState extends State<CommandListWidget> {
     final listOfData = List.generate(_utils.randomInt(1, 10), (index) => _utils.randomString(20));
     final hashes = listOfData.map((e) => e.toHexString()).toList();
 
-    TangemSdk.sign(_callback, hashes, {TangemSdk.cid: _cardId});
+    TangemSdk.sign(_callback, hashes, {TangemSdk.cardId: _cardId});
   }
 
   handleReadIssuerData() {
-    TangemSdk.readIssuerData(_callback, {TangemSdk.cid: _cardId});
+    TangemSdk.readIssuerData(_callback, {TangemSdk.cardId: _cardId});
   }
 
   handleWriteIssuerData() {
@@ -139,13 +140,13 @@ class _CommandListWidgetState extends State<CommandListWidget> {
     final issuerDataCounter = 1;
 
     TangemSdk.writeIssuerData(_callback, issuerData.toHexString(), issuerDataSignature.toHexString(), {
-      TangemSdk.cid: _cardId,
+      TangemSdk.cardId: _cardId,
       TangemSdk.issuerDataCounter: issuerDataCounter,
     });
   }
 
   handleReadIssuerExtraData() {
-    TangemSdk.readIssuerExtraData(_callback, {TangemSdk.cid: _cardId});
+    TangemSdk.readIssuerExtraData(_callback, {TangemSdk.cardId: _cardId});
   }
 
   handleWriteIssuerExtraData() {
@@ -162,13 +163,13 @@ class _CommandListWidgetState extends State<CommandListWidget> {
 
     TangemSdk.writeIssuerExtraData(
         _callback, issuerData.toHexString(), startingSignature.toHexString(), finalizingSignature.toHexString(), {
-      TangemSdk.cid: _cardId,
+      TangemSdk.cardId: _cardId,
       TangemSdk.issuerDataCounter: counter,
     });
   }
 
   handleReadUserData() {
-    TangemSdk.readUserData(_callback, {TangemSdk.cid: _cardId});
+    TangemSdk.readUserData(_callback, {TangemSdk.cardId: _cardId});
   }
 
   handleWriteUserData() {
@@ -176,7 +177,7 @@ class _CommandListWidgetState extends State<CommandListWidget> {
     final userCounter = 1;
 
     TangemSdk.writeUserData(_callback, userData.toHexString(), {
-      TangemSdk.cid: _cardId,
+      TangemSdk.cardId: _cardId,
       TangemSdk.userCounter: userCounter,
     });
   }
@@ -186,25 +187,25 @@ class _CommandListWidgetState extends State<CommandListWidget> {
     final protectedCounter = 1;
 
     TangemSdk.writeUserProtectedData(_callback, userProtectedData.toHexString(), {
-      TangemSdk.cid: _cardId,
+      TangemSdk.cardId: _cardId,
       TangemSdk.userProtectedCounter: protectedCounter,
     });
   }
 
   handleCreateWallet() {
-    TangemSdk.createWallet(_callback, {TangemSdk.cid: _cardId});
+    TangemSdk.createWallet(_callback, {TangemSdk.cardId: _cardId});
   }
 
   handlePurgeWallet() {
-    TangemSdk.purgeWallet(_callback, {TangemSdk.cid: _cardId});
+    TangemSdk.purgeWallet(_callback, {TangemSdk.cardId: _cardId});
   }
 
   handleSetPin1() {
-    TangemSdk.setPinCode(_callback, PinType.PIN1, {TangemSdk.cid: _cardId});
+    TangemSdk.setPinCode(_callback, PinType.PIN1, {TangemSdk.cardId: _cardId});
   }
 
   handleSetPin2() {
-    TangemSdk.setPinCode(_callback, PinType.PIN2, {TangemSdk.cid: _cardId});
+    TangemSdk.setPinCode(_callback, PinType.PIN2, {TangemSdk.cardId: _cardId});
   }
 
   _showToast(String message) {

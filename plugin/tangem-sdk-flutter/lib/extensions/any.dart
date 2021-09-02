@@ -15,4 +15,6 @@ extension OnObject<T> on T {
     final split = this.toString().split('.');
     return split.length > 1 && split[0] == this.runtimeType.toString();
   }
+
+  bool isNumber() => int.tryParse(this.toString()) != null;
 }

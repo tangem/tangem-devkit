@@ -8,14 +8,14 @@ import 'package:devkit/commons/common_abstracts.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share/share.dart';
 
-class JsonTestListBloc extends BaseBloc {
+class JsonTestAssemblerBloc extends BaseBloc {
   final bsRecords = BehaviorSubject<List<JsonTest>>();
 
   final StorageRepository _storageRepo;
   late final JsonTestsStorage _jsonTestsStorage;
   final _storedJsonTests = <JsonTest>[];
 
-  JsonTestListBloc(this._storageRepo) {
+  JsonTestAssemblerBloc(this._storageRepo) {
     this._jsonTestsStorage = _storageRepo.testsStorage;
     addSubject(bsRecords);
     addSubscription(_jsonTestsStorage.isReadyToUseStream.listen(_listenStorageReady));

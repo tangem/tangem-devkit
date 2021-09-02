@@ -22,7 +22,7 @@ class TestBlock extends ActionBloc<dynamic> {
   invokeAction() async {
     _clearFields();
     if (_inputedCommand.isNullOrEmpty()) {
-      sendError(TangemSdkError("Input the command json first"));
+      sendError(PluginFlutterError("Input the command json first"));
       return;
     }
 
@@ -31,11 +31,11 @@ class TestBlock extends ActionBloc<dynamic> {
       _commandType = _command![TangemSdk.commandType];
 
       if (_commandType == null) {
-        sendError(TangemSdkError("Missing the commandType attribute"));
+        sendError(PluginFlutterError("Missing the commandType attribute"));
         return;
       }
     } catch (e) {
-      sendError(TangemSdkError("Json conversion error: $e"));
+      sendError(PluginFlutterError("Json conversion error: $e"));
       return;
     }
 
@@ -43,10 +43,10 @@ class TestBlock extends ActionBloc<dynamic> {
       createCommandData((commandData) {
         TangemSdk.runCommand(callback, commandData);
       }, (errorMessage) {
-        sendError(TangemSdkError("Command data signature not created. Cause: $errorMessage"));
+        sendError(PluginFlutterError("Command data signature not created. Cause: $errorMessage"));
       });
     } catch (e) {
-      sendError(TangemSdkError("Can't create the command data: $e"));
+      sendError(PluginFlutterError("Can't create the command data: $e"));
     }
   }
 
@@ -116,8 +116,8 @@ class TestBlock extends ActionBloc<dynamic> {
   }
 
   @override
-  sendError(TangemSdkBaseError? error) {
-    if (error is UserCancelledError) return;
+  sendError(TangemSdkPluginError? error) {
+    if (error?.isUserCancelledError() == true) return;
 
     super.sendError(error);
   }

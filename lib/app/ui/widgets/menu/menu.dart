@@ -15,6 +15,7 @@ enum MenuItem {
   personalizationExport,
   navigateToTestScreen,
   navigateToJsonTestAssembler,
+  navigateToJsonTestLauncher,
 }
 
 class Menu {
@@ -31,7 +32,10 @@ class Menu {
             Navigator.of(temporaryContext).pushNamed(Routes.TEST);
             break;
           case MenuItem.navigateToJsonTestAssembler:
-            Navigator.of(temporaryContext).pushNamed(Routes.JSON_TEST_LIST);
+            Navigator.of(temporaryContext).pushNamed(Routes.JSON_TEST_ASSEMBLER);
+            break;
+            case MenuItem.navigateToJsonTestLauncher:
+            Navigator.of(temporaryContext).pushNamed(Routes.JSON_TEST_LAUNCHER);
             break;
         }
       },
@@ -52,7 +56,13 @@ class Menu {
           value: MenuItem.navigateToJsonTestAssembler,
           child: TextWidget("Json tests assembler"),
         );
+        final cardTesterScreenItem = PopupMenuItem(
+          key: ItemId.btnFrom(ItemName.navigateToJsonTestLauncher),
+          value: MenuItem.navigateToJsonTestLauncher,
+          child: TextWidget("Json tests launcher"),
+        );
         menuItemList.add(jsonTestAssemblerScreenItem);
+        menuItemList.add(cardTesterScreenItem);
         return menuItemList;
       },
     );
