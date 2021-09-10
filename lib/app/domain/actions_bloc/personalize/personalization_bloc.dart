@@ -111,7 +111,8 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
 
   importConfig(String jsonConfig) {
     try {
-      final configMap = json.decode(jsonConfig);
+      final cleanJson = jsonConfig.replaceAll("\n", "").replaceAll(String.fromCharCode(160), "");
+      final configMap = json.decode(cleanJson);
       _restoreConfig(PersonalizationConfig.fromJson(configMap));
     } catch (ex) {
       sendSnackbarMessage(ex);
