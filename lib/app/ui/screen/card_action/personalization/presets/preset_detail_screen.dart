@@ -1,19 +1,24 @@
 import 'dart:convert';
 
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
+import 'package:devkit/app/domain/actions_bloc/personalize/repository/personalization_config_repository.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 
 class PresetDetailScreen extends StatelessWidget {
   final PersonalizationBloc _bloc;
   final PresetInfo _presetInfo;
 
-  const PresetDetailScreen(this._bloc, this._presetInfo, {Key? key}) : super(key: key);
+  PresetDetailScreen(RouteSettings settings, {Key? key})
+      : this._bloc = settings.readArgument<PersonalizationBloc>("_bloc"),
+        this._presetInfo = settings.readArgument<PresetInfo>("_presetInfo"),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final json = JsonEncoder.withIndent('  ').convert(_bloc.getConfig(_presetInfo.name)!.toJson());
+    final json = JsonEncoder.withIndent('  ').convert(_presetInfo.config?.toJson() ?? "");
     return Scaffold(
       appBar: AppBar(
         title: TextWidget(_presetInfo.name),
@@ -26,17 +31,9 @@ class PresetDetailScreen extends StatelessWidget {
   }
 
   static void navigate(BuildContext context, PersonalizationBloc bloc, PresetInfo details) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return PresetDetailScreen(bloc, details);
-    }));
+    final args = createArguments("_bloc", bloc).addArgument("_presetInfo", details);
+    Navigator.of(context).pushNamed(Routes.PERSONALIZE_PRESETS_DETAIL, arguments: args);
   }
-}
-
-class PresetInfo {
-  final String name;
-  final String itemName;
-
-  PresetInfo(this.name, this.itemName);
 }
 
 class ShareIconButton extends StatelessWidget {

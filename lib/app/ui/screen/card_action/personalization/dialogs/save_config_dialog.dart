@@ -80,7 +80,7 @@ class _SaveConfigWidgetState extends State<SaveConfigWidget> {
 
   _onPressed(BuildContext context) {
     widget._bloc.saveNewConfig(_controller.text);
-    widget._bloc.fetchSavedConfigNames();
+    widget._bloc.fetchPersonalConfigNames();
     widget._bloc.sendSnackbarMessage("'${_controller.text}' saved");
     Navigator.of(context).pop();
   }
