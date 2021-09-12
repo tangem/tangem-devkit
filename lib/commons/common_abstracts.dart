@@ -74,11 +74,10 @@ abstract class BaseBloc extends DisposableBloc with SnackBarStreamHolder {
   }
 
   @override
-  dispose(){
+  dispose() {
     _subscriptions.forEach((element) => element.cancel());
     _subjects.forEach((element) => element.close());
   }
-
 }
 
 abstract class SnackBarStreamHolder {

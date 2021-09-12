@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:devkit/app/domain/actions_bloc/abstracts.dart';
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_values.dart';
+import 'package:devkit/app/domain/actions_bloc/personalize/repository/personalization_config_repository.dart';
 import 'package:devkit/app/domain/model/personalization/support_classes.dart';
 import 'package:devkit/app/domain/model/personalization/utils.dart';
 import 'package:devkit/commons/common_abstracts.dart';
@@ -19,10 +20,12 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   final PersonalizationValues values = PersonalizationValues();
   final List<BaseSegment> _configSegments = [];
   final _scrollingState = PublishSubject<bool>();
-  final bsSavedConfigNames = BehaviorSubject<List<String>>();
+  final bsPersonalConfigNames = BehaviorSubject<List<String>>();
+  final bsDefaultConfigNames = BehaviorSubject<List<String>>();
   final statedFieldsVisibility = StatedBehaviorSubject<bool>(false);
 
-  late PersonalizationConfigStorage _storage;
+  final Repository<List<PresetInfo>> _defaultConfigRepository = PersonalizationConfigAssetRepository(true);
+  late PersonalizationConfigStorage _personalConfigStorage;
 
   late CardSegment cardNumber;
   late CommonSegment common;
@@ -39,14 +42,14 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
 
   Sink<bool> get scrollingStateSink => _scrollingState.sink;
 
-  PersonalizationBloc(this._storage) {
+  PersonalizationBloc(this._personalConfigStorage) {
     logD(this, "new instance");
     _initSegments();
-    _updateConfigIntoTheSegments(_storage.getCurrent());
+    updateConfigIntoTheSegments(_personalConfigStorage.getCurrent());
   }
 
   _initSegments() {
-    final currentConfig = _storage.getCurrent();
+    final currentConfig = _personalConfigStorage.getCurrent();
     cardNumber = CardSegment(this, currentConfig);
     common = CommonSegment(this, currentConfig);
     signingMethod = SigningMethodSegment(this, currentConfig);
@@ -71,42 +74,58 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   }
 
   restoreDefaultConfig() {
-    _restoreConfig(_storage.getDefault());
+    _restoreConfig(_personalConfigStorage.getDefault());
   }
 
   restoreConfig(String name) {
-    _restoreConfig(_storage.get(name));
+    _restoreConfig(getConfig(name));
   }
 
-  PersonalizationConfig? getConfig(String name) => _storage.get(name);
+  PersonalizationConfig? getConfig(String name) {
+    PersonalizationConfig? config = _personalConfigStorage.get(name);
+    if (config != null) return config;
+
+    final configList = _defaultConfigRepository.get();
+    if (configList == null) return null;
+
+    return configList.firstWhereOrNull((e) => e.name == name)?.config;
+  }
 
   _restoreConfig(PersonalizationConfig? config) {
     if (config == null) return;
 
     final newCopyOfConfig = PersonalizationConfig.fromJson(json.decode(json.encode(config)));
-    _storage.setCurrent(newCopyOfConfig);
-    _storage.save();
-    _updateConfigIntoTheSegments(newCopyOfConfig);
+    _personalConfigStorage.setCurrent(newCopyOfConfig);
+    _personalConfigStorage.save();
+    updateConfigIntoTheSegments(newCopyOfConfig);
   }
 
   saveConfig() {
-    _storage.save();
+    _personalConfigStorage.save();
   }
 
-  fetchSavedConfigNames() {
-    List<String> listNames = _storage.names();
-    bsSavedConfigNames.add(listNames);
+  fetchPersonalConfigNames() {
+    List<String> listNames = _personalConfigStorage.names();
+    bsPersonalConfigNames.add(listNames);
+  }
+
+  fetchDefaultConfigNames() {
+    _defaultConfigRepository.init();
+    _defaultConfigRepository.streamContent.listen((event) {
+      final namesList = event.map((e) => e.name).toList();
+      bsDefaultConfigNames.add(namesList);
+    });
   }
 
   saveNewConfig(String name) {
-    final copyOfCurrent = PersonalizationConfig.fromJson(_storage.getCurrent().toJson());
-    _storage.add(name, copyOfCurrent);
-    _storage.save();
+    final copyOfCurrent = PersonalizationConfig.fromJson(_personalConfigStorage.getCurrent().toJson());
+    _personalConfigStorage.add(name, copyOfCurrent);
+    _personalConfigStorage.save();
   }
 
   deleteConfig(String name) {
-    _storage.remove(name);
-    _storage.save();
+    _personalConfigStorage.remove(name);
+    _personalConfigStorage.save();
   }
 
   importConfig(String jsonConfig) {
@@ -121,11 +140,11 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   }
 
   shareConfig(String name) {
-    _shareConfig(_storage.get(name));
+    _shareConfig(getConfig(name));
   }
 
   shareCurrentConfig() {
-    _shareConfig(_storage.getCurrent());
+    _shareConfig(_personalConfigStorage.getCurrent());
   }
 
   _shareConfig(PersonalizationConfig? config) {
@@ -142,7 +161,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
     }
   }
 
-  _updateConfigIntoTheSegments(PersonalizationConfig? config) {
+  updateConfigIntoTheSegments(PersonalizationConfig? config) {
     if (config == null) return;
 
     _configSegments.forEach((element) => element.update(config));
@@ -150,7 +169,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
 
   @override
   invokeAction() async {
-    final personalizationMap = Utils.createPersonalizationCommandConfig(_storage.getCurrent());
+    final personalizationMap = Utils.createPersonalizationCommandConfig(_personalConfigStorage.getCurrent());
     TangemSdk.personalize(callback, personalizationMap);
   }
 
@@ -165,7 +184,7 @@ class PersonalizationBloc extends ActionBloc<CardResponse> {
   dispose() {
     statedFieldsVisibility.dispose();
     _configSegments.forEach((element) => element.dispose());
-    _storage.save();
+    _personalConfigStorage.save();
     super.dispose();
   }
 }

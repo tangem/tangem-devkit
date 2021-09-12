@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
+import 'package:devkit/app/domain/actions_bloc/personalize/repository/personalization_config_repository.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/navigation/routes.dart';
@@ -17,7 +18,7 @@ class PresetDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final json = JsonEncoder.withIndent('  ').convert(_bloc.getConfig(_presetInfo.name)!.toJson());
+    final json = JsonEncoder.withIndent('  ').convert(_presetInfo.config?.toJson() ?? "");
     return Scaffold(
       appBar: AppBar(
         title: TextWidget(_presetInfo.name),
@@ -33,13 +34,6 @@ class PresetDetailScreen extends StatelessWidget {
     final args = createArguments("_bloc", bloc).addArgument("_presetInfo", details);
     Navigator.of(context).pushNamed(Routes.PERSONALIZE_PRESETS_DETAIL, arguments: args);
   }
-}
-
-class PresetInfo {
-  final String name;
-  final String itemName;
-
-  PresetInfo(this.name, this.itemName);
 }
 
 class ShareIconButton extends StatelessWidget {

@@ -1,5 +1,6 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
+import 'package:devkit/app/ui/screen/card_action/personalization/presets/preset_main_screen.dart';
 import 'package:devkit/app/ui/screen/finders.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
 import 'package:devkit/application.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../helpers.dart';
 import 'dialogs/import_config_dialog.dart';
 import 'dialogs/save_config_dialog.dart';
-import 'presets/preset_list_screen.dart';
 import 'segment_widgets/card_segment_widget.dart';
 import 'segment_widgets/common_segment_widget.dart';
 import 'segment_widgets/pins_segment_widget.dart';
@@ -61,13 +61,13 @@ class PersonalizeFrame extends StatelessWidget {
           IconButton(
               onPressed: () {
                 SaveConfigDialog(bloc).show(context);
-                bloc.fetchSavedConfigNames();
+                bloc.fetchPersonalConfigNames();
               },
               icon: Icon(Icons.save)),
           Menu.popupPersonalization((MenuItem item) {
             switch (item) {
               case MenuItem.personalizationConfigs:
-                PresetListScreen.navigate(context, bloc);
+                PresetMainScreen.navigate(context, bloc);
                 break;
               case MenuItem.personalizationImport:
                 ImportConfigDialog(bloc).show(context);

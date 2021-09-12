@@ -94,6 +94,8 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+    - assets/json/
+    - assets/json/personalization/
 
 
   # To add custom fonts to your application, add a fonts section here,

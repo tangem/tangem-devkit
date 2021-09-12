@@ -8,6 +8,8 @@ import 'package:devkit/app/ui/screen/card_action/issuer_read_ex_data_screen.dart
 import 'package:devkit/app/ui/screen/card_action/issuer_write_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/issuer_write_ex_data_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/personalization/personalization_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/personalization/presets/preset_detail_screen.dart';
+import 'package:devkit/app/ui/screen/card_action/personalization/presets/preset_main_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/scan_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/set_pin_screen.dart';
 import 'package:devkit/app/ui/screen/card_action/sign_screen.dart';
@@ -68,6 +70,10 @@ class Routes {
         return SlideRightRoute((_) => SignScreen(), settings);
       case PERSONALIZE:
         return SlideRightRoute((_) => PersonalizationScreen(), settings);
+      case PERSONALIZE_PRESETS:
+        return SlideRightRoute((_) => PresetMainScreen(), settings);
+      case PERSONALIZE_PRESETS_DETAIL:
+        return SlideRightRoute((_) => PresetDetailScreen(settings), settings);
       case DEPERSONALIZE:
         return SlideRightRoute((_) => DepersonalizationScreen(), settings);
       case CREATE_WALLET:
