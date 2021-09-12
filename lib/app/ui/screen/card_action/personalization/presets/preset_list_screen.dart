@@ -1,6 +1,7 @@
 import 'package:devkit/app/domain/actions_bloc/personalize/personalization_bloc.dart';
 import 'package:devkit/app/resources/app_resources.dart';
 import 'package:devkit/app/ui/widgets/app_widgets.dart';
+import 'package:devkit/navigation/routes.dart';
 import 'package:flutter/material.dart';
 
 import 'preset_detail_screen.dart';
@@ -8,7 +9,9 @@ import 'preset_detail_screen.dart';
 class PresetListScreen extends StatelessWidget {
   final PersonalizationBloc _bloc;
 
-  const PresetListScreen(this._bloc, {Key? key}) : super(key: key);
+  PresetListScreen(RouteSettings settings, {Key? key})
+      : this._bloc = settings.readArgument<PersonalizationBloc>("_bloc"),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +22,8 @@ class PresetListScreen extends StatelessWidget {
   }
 
   static void navigate(BuildContext context, PersonalizationBloc bloc) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      bloc.fetchSavedConfigNames();
-      return PresetListScreen(bloc);
-    }));
+    bloc.fetchSavedConfigNames();
+    Navigator.of(context).pushNamed(Routes.PERSONALIZE_PRESETS, arguments: createArguments("_bloc", bloc));
   }
 }
 

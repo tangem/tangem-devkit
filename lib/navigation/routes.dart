@@ -23,6 +23,7 @@ import 'package:devkit/app_test_assembler/ui/screen/json_test_detail_screen.dart
 import 'package:devkit/app_test_assembler/ui/screen/json_test_list_screen.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_setup_detail_screen.dart';
 import 'package:devkit/app_test_assembler/ui/screen/test_step_detail_screen.dart';
+import 'package:devkit/commons/utils/exp_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tangem_sdk/model/sdk.dart';
@@ -37,6 +38,8 @@ class Routes {
   static const SCAN = "/scan";
   static const SIGN = "/sign";
   static const PERSONALIZE = "/personalize";
+  static const PERSONALIZE_PRESETS = "/personalize/presets";
+  static const PERSONALIZE_PRESETS_DETAIL = "/personalize/presets/detail";
   static const DEPERSONALIZE = "/depersonalize";
   static const CREATE_WALLET = "/create_wallet";
   static const PURGE_WALLET = "/purge_wallet";
@@ -58,66 +61,59 @@ class Routes {
   static Route<dynamic> generateRoutes(RouteSettings settings) {
     switch (settings.name) {
       case MAIN:
-        return MaterialPageRoute(builder: (_) => MainScreen());
+        return SlideRightRoute((_) => MainScreen(), settings);
       case SCAN:
-        return MaterialPageRoute(builder: (_) => ScanScreen());
+        return SlideRightRoute((_) => ScanScreen(), settings);
       case SIGN:
-        return MaterialPageRoute(builder: (_) => SignScreen());
+        return SlideRightRoute((_) => SignScreen(), settings);
       case PERSONALIZE:
-        return MaterialPageRoute(builder: (_) => PersonalizationScreen());
+        return SlideRightRoute((_) => PersonalizationScreen(), settings);
       case DEPERSONALIZE:
-        return MaterialPageRoute(builder: (_) => DepersonalizationScreen());
+        return SlideRightRoute((_) => DepersonalizationScreen(), settings);
       case CREATE_WALLET:
-        return MaterialPageRoute(builder: (_) => CreateWalletScreen());
+        return SlideRightRoute((_) => CreateWalletScreen(), settings);
       case PURGE_WALLET:
-        return MaterialPageRoute(builder: (_) => PurgeWalletScreen());
+        return SlideRightRoute((_) => PurgeWalletScreen(), settings);
       case ISSUER_READ_DATA:
-        return MaterialPageRoute(builder: (_) => ReadIssuerDataScreen());
+        return SlideRightRoute((_) => ReadIssuerDataScreen(), settings);
       case ISSUER_WRITE_DATA:
-        return MaterialPageRoute(builder: (_) => WriteIssuerDataScreen());
+        return SlideRightRoute((_) => WriteIssuerDataScreen(), settings);
       case ISSUER_READ_EX_DATA:
-        return MaterialPageRoute(builder: (_) => ReadIssuerExDataScreen());
+        return SlideRightRoute((_) => ReadIssuerExDataScreen(), settings);
       case ISSUER_WRITE_EX_DATA:
-        return MaterialPageRoute(builder: (_) => WriteIssuerExDataScreen());
+        return SlideRightRoute((_) => WriteIssuerExDataScreen(), settings);
       case USER_READ_DATA:
-        return MaterialPageRoute(builder: (_) => ReadUserDataScreen());
+        return SlideRightRoute((_) => ReadUserDataScreen(), settings);
       case USER_WRITE_DATA:
-        return MaterialPageRoute(builder: (_) => WriteUserDataScreen());
+        return SlideRightRoute((_) => WriteUserDataScreen(), settings);
       case USER_WRITE_PROTECTED_DATA:
-        return MaterialPageRoute(builder: (_) => WriteUserProtectedDataScreen());
+        return SlideRightRoute((_) => WriteUserProtectedDataScreen(), settings);
       case SET_PIN1:
-        return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.PIN1));
+        return SlideRightRoute((_) => SetPinScreen(PinType.PIN1), settings);
       case SET_PIN2:
-        return MaterialPageRoute(builder: (_) => SetPinScreen(PinType.PIN2));
+        return SlideRightRoute((_) => SetPinScreen(PinType.PIN2), settings);
       case FILES_READ:
-        return MaterialPageRoute(builder: (_) => FilesReadScreen());
+        return SlideRightRoute((_) => FilesReadScreen(), settings);
       case FILES_WRITE:
-        return MaterialPageRoute(builder: (_) => FilesWriteScreen());
+        return SlideRightRoute((_) => FilesWriteScreen(), settings);
       case FILES_DELETE:
-        return MaterialPageRoute(builder: (_) => FilesDeleteScreen());
+        return SlideRightRoute((_) => FilesDeleteScreen(), settings);
       case FILES_CHANGE_SETTINGS:
-        return MaterialPageRoute(builder: (_) => FilesChangeSettingsScreen());
+        return SlideRightRoute((_) => FilesChangeSettingsScreen(), settings);
       case RESPONSE:
         return PageRouteBuilder(pageBuilder: (_, __, ___) => ResponseScreen(arguments: settings.arguments));
+
+      // others
       case TEST:
-        return MaterialPageRoute(builder: (_) => TestScreen());
+        return SlideRightRoute((_) => TestScreen(), settings);
       case JSON_TEST_LIST:
-        return MaterialPageRoute(builder: (_) => JsonTestListScreen());
+        return SlideRightRoute((_) => JsonTestListScreen(), settings);
       case JSON_TEST_DETAIL:
-        return CupertinoPageRoute(
-          builder: (_) => JsonTestDetailScreen(),
-          settings: settings,
-        );
+        return SlideRightRoute((_) => JsonTestDetailScreen(), settings);
       case TEST_SETUP_DETAIL:
-        return CupertinoPageRoute(
-          builder: (_) => TestSetupDetailScreen(),
-          settings: settings,
-        );
+        return SlideRightRoute((_) => TestSetupDetailScreen(), settings);
       case TEST_STEP_DETAIL:
-        return CupertinoPageRoute(
-          builder: (_) => TestStepDetailScreen(),
-          settings: settings,
-        );
+        return SlideRightRoute((_) => TestStepDetailScreen(), settings);
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
@@ -126,4 +122,54 @@ class Routes {
         );
     }
   }
+}
+
+typedef ArgumentMap = Map<String, dynamic>;
+
+ArgumentMap createArguments([String? key, dynamic value]) {
+  final map = <String, dynamic>{};
+  if (key != null) map[key] = value;
+  return map;
+}
+
+extension AddArgument on ArgumentMap {
+  ArgumentMap addArgument(String key, dynamic value) {
+    return this..[key] = value;
+  }
+}
+
+extension BuildContextReadArgument on BuildContext {
+  dynamic readArgument<T>(String key) {
+    final args = ModalRoute.of(this)?.settings?.arguments;
+    if (args == null || args is! Map<String, dynamic>) {
+      logE(this, "Can't read argument [$key]");
+      return null;
+    }
+
+    return args[key] as T;
+  }
+}
+
+extension RouteSettingsReadArgument on RouteSettings {
+  dynamic readArgument<T>(String key) {
+    if (this.arguments == null || this.arguments is! Map<String, dynamic>) return null;
+    return (this.arguments as Map<String, dynamic>)[key] as T;
+  }
+}
+
+class SlideRightRoute extends PageRouteBuilder {
+  final WidgetBuilder builder;
+
+  SlideRightRoute(this.builder, [RouteSettings? settings])
+      : super(
+          settings: settings,
+          pageBuilder: (context, animation, secondaryAnimation) => builder(context),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) => SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          ),
+        );
 }

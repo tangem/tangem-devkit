@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../helpers.dart';
 import 'dialogs/import_config_dialog.dart';
 import 'dialogs/save_config_dialog.dart';
-import 'preset_list_screen.dart';
+import 'presets/preset_list_screen.dart';
 import 'segment_widgets/card_segment_widget.dart';
 import 'segment_widgets/common_segment_widget.dart';
 import 'segment_widgets/pins_segment_widget.dart';
