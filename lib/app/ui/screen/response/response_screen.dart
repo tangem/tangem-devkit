@@ -29,7 +29,8 @@ class ResponseFrame extends StatelessWidget {
   late String jsonArguments;
 
   ResponseFrame({Key? key, this.arguments}) : super(key: key) {
-    jsonArguments = json.encode(arguments);
+    final encoder = JsonEncoder.withIndent("   ");
+    jsonArguments = encoder.convert(arguments);
   }
 
   @override
@@ -49,8 +50,11 @@ class ResponseFrame extends StatelessWidget {
         ),
         body: Stack(
           children: <Widget>[
-            TextWidget(jsonArguments, keyName: ItemName.responseJson).visibility(false),
-            _createAppropriateResponseWidget(),
+            SingleChildScrollView(
+              child: TextWidget(jsonArguments, keyName: ItemName.responseJson).visibility(true),
+            ),
+
+            // _createAppropriateResponseWidget(),
           ],
         ),
       ),
