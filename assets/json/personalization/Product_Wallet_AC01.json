@@ -9,7 +9,7 @@
   "allowSetPIN1": true,
   "allowSetPIN2": true,
   "cardData": {
-    "batch": "AB04",
+    "batch": "AC01",
     "blockchain": "ANY",
     "date": "",
     "product_id_card": false,
@@ -21,7 +21,7 @@
   "checkPIN3OnCard": false,
   "count": 0,
   "createWallet": 0,
-  "walletsCount": 1,
+  "walletsCount": 10,
   "curveID": "secp256k1",
   "disablePrecomputedNDEF": false,
   "prohibitDefaultPIN1": false,
@@ -36,7 +36,7 @@
     },
     {
       "type": "URI",
-      "value": "https://tangem.com/ndef/AB03"
+      "value": "https://tangem.com/ndef/AC01"
     }
   ],
   "numberFormat": "",
@@ -48,12 +48,12 @@
   "requireTerminalCertSignature": false,
   "requireTerminalTxSignature": false,
   "restrictOverwriteIssuerExtraData": false,
-  "series": "AB04",
+  "series": "AC",
   "skipCheckPIN2CVCIfValidatedByIssuer": true,
   "skipSecurityDelayIfValidatedByIssuer": true,
   "skipSecurityDelayIfValidatedByLinkedTerminal": true,
   "smartSecurityDelay": true,
-  "startNumber": 4283,
+  "startNumber": 2839,
   "useActivation": false,
   "useBlock": false,
   "useCvc": false,
