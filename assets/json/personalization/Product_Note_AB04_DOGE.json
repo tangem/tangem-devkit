@@ -6,7 +6,7 @@
   "PIN3": "",
   "SigningMethod": 0,
   "isReusable": true,
-  "allowSelectBlockchain": false,
+  "allowSelectBlockchain": true,
   "allowSetPIN1": true,
   "allowSetPIN2": true,
   "prohibitPurgeWallet": false,
