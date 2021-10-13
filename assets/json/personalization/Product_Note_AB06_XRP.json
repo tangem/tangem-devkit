@@ -49,7 +49,7 @@
   "skipSecurityDelayIfValidatedByIssuer": false,
   "skipSecurityDelayIfValidatedByLinkedTerminal": true,
   "smartSecurityDelay": true,
-  "startNumber": 8800000000000,
+  "startNumber": 1415205000006,
   "useActivation": false,
   "useBlock": false,
   "useCvc": false,
